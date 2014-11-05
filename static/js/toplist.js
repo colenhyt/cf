@@ -1,0 +1,4 @@
+
+function getdata(args) {
+    //code
+}
