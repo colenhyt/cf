@@ -34,3 +34,20 @@ Toplist_fillLocalData = function(param) {
 	var db = window.openDatabase(g_dbname,g_dbversion,g_dbfile,g_dbsize);
 	db.transaction(queryData,errorDB);
 }
+
+function Parent(nn,aa){ 
+this.name=nn; 
+this.age=aa; 
+this.lev=function(){ 
+return this.name; 
+};
+};
+
+Parent.prototype.bb = function(){
+	alert('bbb');
+};
+var x =new Parent("ttt",120); 
+var x2 =new Parent("yyy",333); 
+alert(x2.age);
+alert(x.lev()); 
+x2.bb();
