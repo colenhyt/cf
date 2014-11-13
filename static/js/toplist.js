@@ -8,8 +8,14 @@ Toplist.prototype.init = function(){
 }
 
 Toplist.prototype.querySuccess = function(tx,results){
-   var len = results.rows.length;
 	var tab = document.getElementById('top1_tab');
+	var rowLength = tab.rows.length;
+	for (var i=1 ; i< rowLength; i++)
+    {
+        tab.deleteRow(1);
+   }
+
+   var len = results.rows.length;
 	for (var i=0;i<len ; i++)
 	{
 		var item = results.rows.item(i);
@@ -23,7 +29,7 @@ Toplist.prototype.querySuccess = function(tx,results){
 	newTd1.innerText= item.name;
 	newTd2.innerText= item.top;
 	}
-   
+ 
 }
 
 //load server data and save to loal db
@@ -40,6 +46,20 @@ Toplist.prototype.loadData = function(){
 
 	var db = window.openDatabase(g_dbname,g_dbversion,g_dbfile,g_dbsize);
 	db.transaction(queryData,errorDB);
+}
+
+//on close page
+Toplist.prototype.onclose = function() {
+    
+}
+
+Toplist.prototype.onclick = function(clickX,clickY){
+        var options = {
+            keyboard : false,
+            show     : true
+        };
+        this.loadData();
+        $('#myToplist').modal(options);       
 }
 
 var g_toplist = new Toplist();

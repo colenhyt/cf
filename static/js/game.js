@@ -147,8 +147,16 @@ Map.prototype.draw = function(){
 
 }
 
-Map.prototype.onclick = function(obj,event){
+Map.prototype.onclick = function(obj,clickX,clickY){
     log('click map obj: '+obj.name);
+    
+    var clickObj = null;
+    if (obj.name=="toplist"){
+        clickObj = g_toplist;
+    }
+
+    if (clickObj!=null)
+        clickObj.onclick(clickX,clickY);
 }
 
 Scene = function(canvas){
