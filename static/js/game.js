@@ -173,6 +173,7 @@ Scene.prototype.update = function(){
 
 Game = function(name){
 	this.m_name = name;
+	this.tt = 1;
 	this.mm = {"aa":'ss',"bb":'ssb'};
 }
 
@@ -184,6 +185,7 @@ Game.prototype.init = function(canvas){
 	var scene = this.m_scene;
 	scene.init(canvas,640,960);
 	
+	setInterval(this.update,1000);
 }
 
 Game.prototype.init_db = function(){
@@ -201,4 +203,10 @@ Game.prototype.init_db = function(){
 	
 	log('init db ss');
 	
+}
+
+//
+Game.prototype.update = function(){
+    g_main.m_game.tt += 1;
+    log(g_main.m_game.tt);
 }
