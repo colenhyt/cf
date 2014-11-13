@@ -27,22 +27,33 @@ Map = function(mapId,canvas){
 	this.m_imgScale = 1;
 	this.m_canvas = canvas;
 	this.m_mapId = mapId;
+	this.m_mapImg = null;
+	this.m_imgs = [];
 }
 
 Map.prototype.init = function(width,height,mapFile){
 	this.m_width = width;
 	this.m_height = height;
 	this.m_mapFile = mapFile;
-	this.m_mapImg = new Image();
+    this.m_imgs = game_imgs;
 	var map = this;
 	var canvas = this.m_canvas;
-	var img = this.m_mapImg;
 	var pos = this.m_pos;
-    img.onload=function(){
-        map.draw();
-      //  drawImage();
-    };	
-	img.src = mapFile;
+	var mapImg;
+	var mapImgs = this.m_imgs;
+
+    for (var i=0 ; i<mapImgs.length; i++)
+    {
+        var img = new Image();
+        img.src = mapImgs[i].src;
+        img.onload=function(){
+            map.draw();
+        };	       
+        mapImgs[i].img = img;
+        if (mapImgs[i].name=="map"){
+            mapImg = img;
+        }
+    }
 
 
 	windowToCanvas = function(x,y){
@@ -53,8 +64,45 @@ Map.prototype.init = function(width,height,mapFile){
 		};
 	};
 
-	canvas.onclick = function(e){
-		//alert('scene cavas click111');
+	resetPos = function(x,y){
+		var newx = x;
+		var newy = y;
+		if (x>=0)
+		{
+			newx = 0;
+		}else if (mapImg.width+x<canvas.width)
+		{
+			newx = canvas.width - mapImg.width;
+		}
+		if (y>=0)
+		{
+			newy = 0;
+		}else if (mapImg.height+y<canvas.height)
+		{
+			newy = canvas.height - mapImg.height;
+		}
+		return {x:newx,y:newy};
+	};
+
+	canvas.onclick = function(event){
+		var clickX = event.clientX - pos.x;
+		var clickY = event.clientY - pos.y;
+		for (var i=0 ; i<mapImgs.length;i++ )
+        {
+            var image = mapImgs[i];
+//            image.onclick(image);
+            if (image.name!="map")
+            {            
+            
+            if (image.x<=clickX&&clickX<=image.img.width+(image.x-pos.x)&&
+                image.y<=clickY&&clickY<=image.img.height+(image.y-pos.y))
+            {
+               map.onclick(image,clickX,clickY);
+               break;
+            }
+           }
+
+        }
 	};
 
 	canvas.onmousewheel = function(e){
@@ -66,13 +114,19 @@ Map.prototype.init = function(width,height,mapFile){
 		var old_pos = windowToCanvas(event.clientX,event.clientY);
 
 		canvas.onmousemove=function(event){
-			var new_pos = windowToCanvas(event.clientX,event.clientY);
-			var x=new_pos.x-old_pos.x;
-			var y=new_pos.y-old_pos.y;
-			old_pos=new_pos;
-			pos.x+=x;
-			pos.y+=y;
-			map.draw();
+			var curr_pos = windowToCanvas(event.clientX,event.clientY);
+			var x=curr_pos.x-old_pos.x;
+			var newx = pos.x+x;
+			var y=curr_pos.y-old_pos.y;
+			var newy = pos.y+y;
+			var newpos = resetPos(newx,newy);
+			if (newpos.x!=pos.x||newpos.y!=pos.y)
+			{
+				pos.x = newpos.x;
+				pos.y = newpos.y;
+				old_pos = curr_pos;
+				map.draw();
+			}
 		};
 
 	   canvas.onmouseup = function(){
@@ -91,6 +145,7 @@ Map.prototype.init = function(width,height,mapFile){
 			pos.y=pos.y*2-old_pos.y;
 		}else{
 			map.m_imgScale/=2;
+			//log(map.m_mapImg.width);
 			pos.x=pos.x*0.5+old_pos.x*0.5;
 			pos.y=pos.y*0.5+old_pos.y*0.5;
 		}
@@ -99,25 +154,37 @@ Map.prototype.init = function(width,height,mapFile){
 }
 
 Map.prototype.draw = function(){
-    context = this.m_canvas.getContext('2d');
-	var img = this.m_mapImg;
+	var pos = this.m_pos;
+	var scale = this.m_imgScale;
 	var canvas = this.m_canvas;
+    var context = canvas.getContext('2d');
+
    context.clearRect(0,0,canvas.width,canvas.height);
-    context.drawImage(img,0,0,img.width,img.height,this.m_pos.x,this.m_pos.y,img.width*this.m_imgScale,img.height*this.m_imgScale);
+   for (var i=0 ;i<this.m_imgs.length ;i++ )
+   {
+  	 var img = this.m_imgs[i].img;
+  	 var newx = pos.x + this.m_imgs[i].x;
+  	 var newy = pos.y + this.m_imgs[i].y;
+     context.drawImage(img,0,0,img.width,img.height,newx,newy,img.width*scale,img.height*scale);
+   }
+
+}
+
+Map.prototype.onclick = function(obj,event){
+    log('click map obj: '+obj.name);
 }
 
 Scene = function(canvas){
-	this.m_canvas = canvas;
 	this.tt = 33;	
 	this.m_x = 0;	//scene x
 	this.m_y = 0;	//scene y
 		
 }
 
-Scene.prototype.init = function(width,height){
+Scene.prototype.init = function(canvas,width,height){
 	this.m_width = width;
 	this.m_height = height;
-	this.m_map = new Map(12,this.m_canvas);
+	this.m_map = new Map(12,canvas);
 	this.m_map.init(width,height,"static/img/map.jpg");
 }
 
@@ -133,8 +200,8 @@ Game = function(name){
 }
 
 Game.prototype.init = function(canvas){
-	this.m_scene = new Scene(canvas);
+	this.m_scene = new Scene();
 	var scene = this.m_scene;
-	scene.init(640,960);
+	scene.init(canvas,640,960);
 	log(scene.tt);
 }

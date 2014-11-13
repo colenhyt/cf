@@ -1,14 +1,17 @@
 function aaa(){
-	div1.style.left = "150px";
-	log(div1.style.left);
-	var tt=document.getElementById('b2222');
-	tt.style.z-index = 30;
+	log("aaa");
 }
 
 function aaa2(){
 	log("aaa2");
 }
 
+Layer = function(){
+}
+
+Layer.prototype.init = function(){
+
+}
 
 Main = function(){
 }
