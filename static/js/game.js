@@ -185,7 +185,13 @@ Game.prototype.init = function(canvas){
 	var scene = this.m_scene;
 	scene.init(canvas,640,960);
 	
-	setInterval(this.update,1000);
+	var game = this;
+	
+	TimerUpdate = function(){
+	   game.update();
+	};
+	
+	setInterval(TimerUpdate,1000);
 }
 
 Game.prototype.init_db = function(){
@@ -207,6 +213,6 @@ Game.prototype.init_db = function(){
 
 //
 Game.prototype.update = function(){
-    g_main.m_game.tt += 1;
-    log(g_main.m_game.tt);
+    this.tt += 1;
+    log(this.m_name+ this.tt);
 }
