@@ -6,13 +6,6 @@ function aaa2(){
 	log("aaa2");
 }
 
-Layer = function(){
-}
-
-Layer.prototype.init = function(){
-
-}
-
 Main = function(){
 }
 
@@ -22,5 +15,5 @@ Main.prototype.init = function(){
 	this.m_game.init(canvas);
 }
 
-var mm = new Main();
-mm.init();
+var g_main = new Main();
+g_main.init();

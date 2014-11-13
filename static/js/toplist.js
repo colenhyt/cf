@@ -1,6 +1,13 @@
 
-//
- Toplist_querySuccess = function(tx,results){
+Toplist = function(){
+    this.name = "toplist";
+}
+
+Toplist.prototype.init = function(){
+
+}
+
+Toplist.prototype.querySuccess = function(tx,results){
    var len = results.rows.length;
 	var tab = document.getElementById('top1_tab');
 	for (var i=0;i<len ; i++)
@@ -20,34 +27,20 @@
 }
 
 //load server data and save to loal db
-Toplist_loadServerData = function(param) {
-
+Toplist.prototype.loadServerData = function(param) {
+    alert(this.name);
 }
 
-//fill local db data to page
-Toplist_fillLocalData = function(param) {
+//
+Toplist.prototype.loadData = function(){
 
 	function queryData(tx){
-		tx.executeSql('SELECT * FROM '+g_table_top,[],Toplist_querySuccess,errorDB);
+		tx.executeSql('SELECT * FROM '+g_table_top,[],g_toplist.querySuccess,errorDB);
 	}
 
 	var db = window.openDatabase(g_dbname,g_dbversion,g_dbfile,g_dbsize);
 	db.transaction(queryData,errorDB);
 }
 
-function Parent(nn,aa){ 
-this.name=nn; 
-this.age=aa; 
-this.lev=function(){ 
-return this.name; 
-};
-};
-
-Parent.prototype.bb = function(){
-	alert('bbb');
-};
-var x =new Parent("ttt",120); 
-var x2 =new Parent("yyy",333); 
-alert(x2.age);
-alert(x.lev()); 
-x2.bb();
+var g_toplist = new Toplist();
+g_toplist.init();

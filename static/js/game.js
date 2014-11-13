@@ -1,27 +1,4 @@
 
-function gameInit()
-{
-	gameInit_db();
-}
-
-
-
-function gameInit_db(){
- 
-	function createDB(tx){
-		tx.executeSql('CREATE TABLE IF NOT EXISTS t_toplist(id unique,type,top,name,score)');
-	}
-   
-	function initDB_success(){
-		//alert('init successful');
-	}
-
-	var db = window.openDatabase(g_dbname,g_dbversion,g_dbfile,g_dbsize);
-	db.transaction(createDB,errorDB,initDB_success);
-}
-
-//gameInit()
-
 Map = function(mapId,canvas){
 	this.m_pos = {x:0,y:0};
 	this.m_imgScale = 1;
@@ -200,8 +177,28 @@ Game = function(name){
 }
 
 Game.prototype.init = function(canvas){
+	
+	this.init_db();
+	
 	this.m_scene = new Scene();
 	var scene = this.m_scene;
 	scene.init(canvas,640,960);
-	log(scene.tt);
+	
+}
+
+Game.prototype.init_db = function(){
+
+	function createDB(tx){
+		tx.executeSql('CREATE TABLE IF NOT EXISTS t_toplist(id unique,type,top,name,score)');
+   	}
+   
+	function initDB_success(){
+		log('init successful');
+	}
+
+	var db = window.openDatabase(g_dbname,g_dbversion,g_dbfile,g_dbsize);
+	db.transaction(createDB,errorDB,initDB_success);
+	
+	log('init db ss');
+	
 }
