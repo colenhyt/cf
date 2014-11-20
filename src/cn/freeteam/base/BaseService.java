@@ -13,6 +13,8 @@ import cn.freeteam.util.MybatisSessionFactory;
  * 2011-6-14
  */
 public class BaseService extends Base{
+	public static byte DATA_STATUS_ACTIVE = 1;
+	
 	/**
 	 * 初始化指定变量
 	 * @param objs 需要初始化变量列表

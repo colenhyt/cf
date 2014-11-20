@@ -22,7 +22,8 @@ import org.apache.struts2.ServletActionContext;
  *
  */
 public class BaseAction extends BaseService{
-
+	public static int MODAL_SIGNIN = 0;
+	
 	public int pageSize=10;
 	public int currPage=1;
 	public int totalCount=0;

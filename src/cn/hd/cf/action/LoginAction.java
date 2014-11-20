@@ -7,14 +7,25 @@ import java.util.List;
 import cn.freeteam.base.BaseAction;
 import cn.hd.cf.model.Player;
 import cn.hd.cf.model.PlayerWithBLOBs;
+import cn.hd.cf.model.Signindata;
 import cn.hd.cf.service.PlayerService;
+import cn.hd.cf.service.SignindataService;
 
 public class LoginAction extends BaseAction {
 	private Player player;
 	private PlayerService playerService;
+	private SignindataService signindataService;
 	
+	public SignindataService getSignindataService() {
+		return signindataService;
+	}
+
+	public void setSignindataService(SignindataService signindataService) {
+		this.signindataService = signindataService;
+	}
+
 	public LoginAction(){
-		init("playerService");
+		init("playerService","signindataService");
 	}
 	
 	public String register(){
@@ -42,19 +53,27 @@ public class LoginAction extends BaseAction {
 		PlayerWithBLOBs tplayer = playerService.find(player.getPlayerid(),player.getPwd());
 		if (tplayer!=null)
 		{
+			List<Integer> dataIds = findUpdateDataIds(player.getVersions());
 			//取需要更新的模块id
 		}
 		return null;
 	}
 	
-	public List<String> findUpdateDataIds(String oldIds)
+	public List<Integer> findUpdateDataIds(String oldIds)
 	{
-		List<String> dataIds = new ArrayList<String>();
+		List<Integer> dataIds = new ArrayList<Integer>();
 		String[] arrOldIds = oldIds.split(",");
 		for (int i=0;i<arrOldIds.length;i+=2)
 		{
 			String id = arrOldIds[i];
 			String ver = arrOldIds[i+1];
+			int iId = Integer.valueOf(id).intValue();
+			int iVer = Integer.valueOf(ver).intValue();
+			Signindata data1 = signindataService.findActive();
+			if (iId==MODAL_SIGNIN&&data1!=null&&iVer!=data1.getVersion().intValue())
+			{
+				dataIds.add(Integer.valueOf(id));
+			}
 		}
 		return dataIds;
 	}
