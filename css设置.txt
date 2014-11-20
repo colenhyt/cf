@@ -1,0 +1,15 @@
+背景色:
+大背景: zui.css: modal-dialog，
+page高度: .modal-dialog height
+
+tab页内背景 .example
+tab 页头: .nav-tabs
+tab header高度: .modal-header
+tab 横线: .nav-tabs border-bottom
+active tab: .nav-tabs > li.active > a:focus
+
+设置div透明: 把背景色相关属性去掉即可
+
+pane:
+背景色:zui.css:.panel
+panel内容: .panel-body
