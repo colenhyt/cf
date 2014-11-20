@@ -403,16 +403,13 @@ body.doc-javascript .navbar-fixed-left.navbar-collapsed.navbar-inverse .navbar-n
   position: relative;
   padding: 20px;
   margin: 0 0 15px;
-  border-style: solid;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  height: 400px;
   outline: none;
   transition:all 0.3s;
 }
 .example:before
 {
   position: absolute;
-  background-color: rgba(0,0,0,0.1);
   display: block;
   top: -1px;
   right: -41px;
@@ -428,13 +425,7 @@ body.doc-javascript .navbar-fixed-left.navbar-collapsed.navbar-inverse .navbar-n
 }
 .example:focus
 {
-  box-shadow:0px 1px 15px rgba(0,0,0,0.5);
-  -webkit-animation-name: glow;
-  -webkit-animation-duration: 1s;
-  -webkit-animation-iteration-count: infinite;
-  -webkit-animation-direction: alternate;
-  -webkit-animation-timing-function: ease-in-out
-  -webkit-backface-visibility: hidden;
+
 }
 .example:focus:before
 {

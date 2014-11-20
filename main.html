@@ -2,39 +2,51 @@
 <html>
 	<head>
 		<meta charset='gbk'>
-  <link href="dist/css/zui.min.css" rel="stylesheet">
-  <link href="dist/css/doc.css" rel="stylesheet">		
+  <link href="dist/css/zui.css" rel="stylesheet">
+  <link href="dist/css/cf.css" rel="stylesheet">		
 		<title>cf</title>
 	</head>
   <script src="assets/jquery.js"></script>
   <script src="dist/js/zui.min.js"></script>
   <script src="dist/js/doc.js"></script>
   	<body>
-	<div id="b2222" style="position: absolute;top:200px;left: 90px;width:100px;height:100px;z-index:1" onclick="aaa2()">b2222</div>
-	<div id="b1" style="position: absolute;top:200px;left: 90px;width:100px;height:100px;z-index:2" onclick="aaa()">b1111</div>
 		<canvas id="canvas" width="320" height="400"></canvas>
 		<div id="console">www</div>
 		<script type="text/javascript" src="static/js/config.js"></script>
 		<script type="text/javascript" src="static/js/common.js"></script>
 		<script type="text/javascript" src="static/js/game.js"></script>
 		<script type="text/javascript" src="static/js/main.js"></script>
-        <script src="static/js/toplist.js"></script>
+		<script type="text/javascript" src="static/js/task.js"></script>
+        <script type="text/javascript" src="static/js/toplist.js"></script>
         
-<div class="modal fade" id="myToplist">
+        
+<div class="modal fade" id="mytask">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+this is mytask content!!!
+	  </div>
+    </div>
+</div>
+</div>          
+<div class="modal fade" id="mytoplist">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><input type="image"
+        src="static/img/close.png"/></button>
     <ul id="myTab" class="nav nav-tabs">
-      <li class="active"><a href="#top1" data-toggle="tab">单日排名</a></li>
-      <li><a href="#top2" data-toggle="tab">本月排名</a></li>
+      <li><a href="#toplist1" data-toggle="tab">单日排名</a></li>
+      <li><a href="#toplist2" data-toggle="tab">本月排名</a></li>
+      <li class="active"><a href="#toplist3" data-toggle="tab">理财产品</a></li>
     </ul>
       </div>
-<div id="status"></div>
+
     <div class="tab-content">
-      <div class="tab-pane in active" id="top1">
-	  <div class="example">
-         <table class="table table-striped" id="top1_tab">
+      <div class="tab-pane" id="toplist1">
+	    <div class="example">
+         <table class="table table-striped" id="toplist1_tab">
             <thead>
               <tr>
                 <th>排名</th>
@@ -45,17 +57,41 @@
           </table>
 		  </div>
       </div>
-      <div class="tab-pane" id="top2">
-	  <div class="example">
+      <div class="tab-pane" id="toplist2">
+	    <div class="example">
 		 <div class="panel">
         <div class="panel-body">面板内容1</div>
 		<button class="btn btn-primary" data-toggle="modal" data-target="#myModal_table">详情</button>
-      </div>
+         </div>
 		 <div class="panel">
         <div class="panel-heading">面板标题2</div>
         <div class="panel-body">面板内容2</div>
       </div>     
 	  </div>
+	  </div>
+      <div class="tab-pane in active" id="toplist3">
+	    <div class="example">
+		   <div class="panel">
+            <div class="panel-body">理财险</div>
+	       	<button class="btn btn-primary" data-toggle="modal" data-target="#myModal_table">详情</button>
+            </div>
+		   <div class="panel">
+             <div class="panel-body">黄金
+         <table id="toplist1_tab">
+            <thead>
+              <tr>
+                <td class="td-c-name">价格</td>
+                <td class="td-c-value">123</td>
+                <td class="td-c-name">收益</td>
+                <td class="td-c-value">11</td>
+                <td class="td-c-name">周期</td>
+                <td class="td-c-value">99</td>
+              </tr>
+            </thead>
+          </table>             
+             </div>
+           </div>     
+	     </div>	  
 	  </div>
     </div>
   </div>

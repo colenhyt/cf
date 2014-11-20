@@ -3720,6 +3720,7 @@ button.close {
   cursor: pointer;
   background: transparent;
   border: 0;
+  src:static/img/cs.jpg;
 }
 ::-webkit-scrollbar {
   width: 11px;
@@ -4187,13 +4188,13 @@ a.list-group-item:focus {
 }
 .panel {
   margin-bottom: 20px;
-  background-color: #fff;
-  border: 1px solid transparent;
+  background-color: blue;
   border-color: #ddd;
-  border-radius: 4px;
-  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-     -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
-          box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+  border: 1px solid rgba(0, 0, 0, .2);
+  border-radius: 6px;
+  -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
+     -moz-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
+          box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
 }
 .panel > .panel-heading {
   color: #333;
@@ -4208,6 +4209,9 @@ a.list-group-item:focus {
 }
 .panel-body {
   padding: 15px;
+  color:yellow;
+  font-weight: bold;
+  font-size: 25.25px;
 }
 .panel-body:before,
 .panel-body:after {
@@ -5343,7 +5347,7 @@ ol.linenums li {
   }
 }
 .nav-tabs {
-  border-bottom: 1px solid #ddd;
+  font-size:25px;
 }
 .nav-tabs > li {
   float: left;
@@ -6190,20 +6194,11 @@ ol.linenums li {
   color: #fff;
   text-align: center;
 }
-.modal-dialog {
+.modal-dialog{
   z-index: 1050;
   width: auto;
   margin-right: auto;
   margin-left: auto;
-  background-color: #fff;
-  background-clip: padding-box;
-  border: 1px solid #999;
-  border: 1px solid rgba(0, 0, 0, .2);
-  border-radius: 4px;
-  outline: none;
-  -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
-     -moz-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
-          box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
 }
 .modal-dialog.fullscreen {
   width: 100% !important;
@@ -6237,8 +6232,7 @@ ol.linenums li {
 }
 .modal-header {
   min-height: 16.53846154px;
-  padding: 15px;
-  border-bottom: 1px solid #e5e5e5;
+  padding: 0px;
 }
 .modal-header .close {
   margin-top: -2px;

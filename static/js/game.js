@@ -1,5 +1,6 @@
 
 Map = function(mapId,canvas){
+    this.name = "map";
 	this.m_pos = {x:0,y:0};
 	this.m_imgScale = 1;
 	this.m_canvas = canvas;
@@ -67,7 +68,6 @@ Map.prototype.init = function(width,height,mapFile){
 		for (var i=0 ; i<mapImgs.length;i++ )
         {
             var image = mapImgs[i];
-//            image.onclick(image);
             if (image.name!="map")
             {            
             
@@ -135,31 +135,31 @@ Map.prototype.draw = function(){
 	var scale = this.m_imgScale;
 	var canvas = this.m_canvas;
     var context = canvas.getContext('2d');
-
    context.clearRect(0,0,canvas.width,canvas.height);
    for (var i=0 ;i<this.m_imgs.length ;i++ )
    {
-  	 var img = this.m_imgs[i].img;
-  	 var newx = pos.x + this.m_imgs[i].x;
-  	 var newy = pos.y + this.m_imgs[i].y;
-     context.drawImage(img,0,0,img.width,img.height,newx,newy,img.width*scale,img.height*scale);
+  	  var img = this.m_imgs[i].img;
+  	  var newx = this.m_imgs[i].x;
+  	  var newy = this.m_imgs[i].y;
+        if(this.m_imgs[i].abs!=true)
+        {
+  	     newx = pos.x + this.m_imgs[i].x;
+  	     newy = pos.y + this.m_imgs[i].y;
+        }
+      context.drawImage(img,0,0,img.width,img.height,newx,newy,img.width*scale,img.height*scale);
    }
 
 }
 
 Map.prototype.onclick = function(obj,clickX,clickY){
     log('click map obj: '+obj.name);
-    
-    var clickObj = null;
-    if (obj.name=="toplist"){
-        clickObj = g_toplist;
-    }
-
+    var clickObj = g_game.sys[obj.name];
     if (clickObj!=null)
         clickObj.onclick(clickX,clickY);
 }
 
 Scene = function(canvas){
+    this.name = "scene";
 	this.tt = 33;	
 	this.m_x = 0;	//scene x
 	this.m_y = 0;	//scene y
@@ -180,9 +180,10 @@ Scene.prototype.update = function(){
 }
 
 Game = function(name){
-	this.m_name = name;
+	this.name = name;
 	this.tt = 1;
 	this.mm = {"aa":'ss',"bb":'ssb'};
+	this.sys = {};
 }
 
 Game.prototype.init = function(canvas){
@@ -205,7 +206,8 @@ Game.prototype.init = function(canvas){
 Game.prototype.init_db = function(){
 
 	function createDB(tx){
-		tx.executeSql('CREATE TABLE IF NOT EXISTS t_toplist(id unique,type,top,name,score)');
+		tx.executeSql('CREATE TABLE IF NOT EXISTS '+game_tables['toplist']+'(id unique,type,top,name,score)');
+		tx.executeSql('CREATE TABLE IF NOT EXISTS '+game_tables['task']+'(id unique,taskId,name,desc)');
    	}
    
 	function initDB_success(){
@@ -219,8 +221,16 @@ Game.prototype.init_db = function(){
 	
 }
 
+Game.prototype.register = function(obj){
+    this.sys[obj.name] = obj;
+}
+
 //
 Game.prototype.update = function(){
     this.tt += 1;
-    log(this.m_name+ this.tt);
+   // log(this.m_name+ this.tt);
+   for (key in this.sys)
+   {
+        this.sys[key].update();
+   }
 }
