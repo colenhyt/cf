@@ -11,6 +11,19 @@ import cn.hd.cf.model.SignindataExample.Criteria;
 public class SignindataService extends BaseService {
 	private SignindataMapper	signindataMapper;
 	
+	public SignindataMapper getSignindataMapper() {
+		return signindataMapper;
+	}
+
+	public void setSignindataMapper(SignindataMapper signindataMapper) {
+		this.signindataMapper = signindataMapper;
+	}
+
+	public SignindataService()
+	{
+		initMapper("signindataMapper");
+	}
+	
 	public Signindata findActive()
 	{
 		SignindataExample example = new SignindataExample();
@@ -20,5 +33,11 @@ public class SignindataService extends BaseService {
 		if (datas.size()>0)
 			return datas.get(0);
 		return null;
+	}
+	
+	public boolean add(Signindata record)
+	{
+		signindataMapper.insert(record);
+		return true;
 	}
 }

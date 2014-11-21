@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 <html>
+<SCRIPT LANGUAGE="JavaScript">
+var myDate = new Date();
+var ss = myDate.getSeconds(); 
+var ms = myDate.getMilliseconds();
+</script>
 	<head>
 		<meta charset='gbk'>
   <link href="dist/css/zui.css" rel="stylesheet">
@@ -13,9 +18,12 @@
 		<canvas id="canvas" width="320" height="400"></canvas>
 		<div id="console">www</div>
 		<script type="text/javascript" src="static/js/config.js"></script>
+		<script type="text/javascript" src="static/js/dbconfig.js"></script>
+		<script type="text/javascript" src="static/js/sqlite.js"></script>
 		<script type="text/javascript" src="static/js/common.js"></script>
 		<script type="text/javascript" src="static/js/game.js"></script>
 		<script type="text/javascript" src="static/js/main.js"></script>
+		<script type="text/javascript" src="static/js/player.js"></script>
 		<script type="text/javascript" src="static/js/task.js"></script>
         <script type="text/javascript" src="static/js/toplist.js"></script>
         
@@ -97,4 +105,10 @@ this is mytask content!!!
   </div>
 </div>        
   	</body>
+<SCRIPT LANGUAGE="JavaScript">
+var myDate22 = new Date();
+var ss2 = myDate22.getSeconds(); 
+var ms2 = myDate22.getMilliseconds();
+//alert("s: "+(ss2-ss)+",ms: "+(ms2-ms));
+</script>  	
 </html>

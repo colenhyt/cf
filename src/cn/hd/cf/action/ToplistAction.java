@@ -3,9 +3,7 @@ package cn.hd.cf.action;
 import java.util.List;
 
 import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import cn.freeteam.base.BaseAction;
-import cn.hd.cf.model.TestBean;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.ToplistService;
 import cn.hd.event.TimerTest;

@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import cn.freeteam.base.BaseAction;
+import cn.freeteam.util.MD5;
+import cn.freeteam.util.StringUtil;
 import cn.hd.cf.model.Player;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Signindata;
@@ -36,6 +38,7 @@ public class LoginAction extends BaseAction {
 		boolean bExist = playerService.have(player.getAccountid());
 		if (bExist)
 		{
+			System.out.println("account exist :"+player.getAccountid());
 			return null;
 		}
 		PlayerWithBLOBs playerBlob = new PlayerWithBLOBs();
@@ -43,14 +46,15 @@ public class LoginAction extends BaseAction {
 		Date time = new Date(); 
 		playerBlob.setCreatetime(time);
 		playerBlob.setPlayername(player.getPlayername());
-		playerBlob.setPwd("jiaoyanma");
+		String pwd = StringUtil.getRandomString(10);
+		playerBlob.setPwd(MD5.MD5(pwd));
 		playerService.add(playerBlob);
 		return null;
 	}
 	
 	public String login()
 	{
-		PlayerWithBLOBs tplayer = playerService.find(player.getPlayerid(),player.getPwd());
+		PlayerWithBLOBs tplayer = playerService.find(player.getPlayerid(),MD5.MD5(player.getPwd()));
 		if (tplayer!=null)
 		{
 			List<Integer> dataIds = findUpdateDataIds(player.getVersions());

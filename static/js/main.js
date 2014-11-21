@@ -17,4 +17,4 @@ Main.prototype.init = function(){
 
 var g_main = new Main();
 g_main.init();
-g_game = g_main.m_game;
+g_game = g_main.m_game;  

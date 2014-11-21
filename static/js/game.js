@@ -214,8 +214,17 @@ Game.prototype.init_db = function(){
 		log('init successful');
 	}
 
-	var db = window.openDatabase(g_dbname,g_dbversion,g_dbfile,g_dbsize);
-	db.transaction(createDB,errorDB,initDB_success);
+	//var db = window.openDatabase(g_dbname,g_dbversion,g_dbfile,g_dbsize);
+	//db.transaction(createDB,errorDB,initDB_success);
+	
+    g_db = new cDB({
+        _db : window.openDatabase(g_dbname, g_dbversion, g_dbfile , g_dbsize)
+    });
+    
+    if (!g_db.check(game_table_schema)) {
+        g_db = false;
+        alert('Failed to cennect to database.');
+    }
 	
 	log('init db ss');
 	

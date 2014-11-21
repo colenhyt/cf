@@ -12,6 +12,11 @@ import cn.hd.cf.model.PlayerWithBLOBs;
 public class PlayerService extends BaseService {
 	private PlayerMapper playerMapper;
 	
+	public PlayerService()
+	{
+		initMapper("playerMapper");
+	}
+	
 	public PlayerWithBLOBs find(int playerid,String strPwd){
 		PlayerExample example = new PlayerExample();
 		Criteria criteria=example.createCriteria();

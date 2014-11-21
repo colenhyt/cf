@@ -16,16 +16,13 @@ Datamgr = function(){
 Datamgr.prototype = {        
     loadData:function(){
         var module = this;
-	   function queryData(tx){
-           tx.executeSql('SELECT * FROM '+game_tables[module.name],[],module.loadDataCallback,errorDB);
-	   }
- 
-	   var db = window.openDatabase(g_dbname,g_dbversion,g_dbfile,g_dbsize); 
-	   db.transaction(queryData,errorDB);          
+        var sql = 'SELECT * FROM '+game_tables[module.name];
+        g_db.query(sql,module.loadDataCallback);       
     },
     
     loadServerData:function(){
         //var dataobj = $.ajax({url:"../bbs/record.php",async:false});
+        alert('999'+this.name);
         log('9999999');    
     },
     
