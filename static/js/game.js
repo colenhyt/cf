@@ -221,6 +221,8 @@ Game.prototype.init_db = function(){
         _db : window.openDatabase(g_dbname, g_dbversion, g_dbfile , g_dbsize)
     });
     
+   // g_db.dropTable('t_player');
+    
     if (!g_db.check(game_table_schema)) {
         g_db = false;
         alert('Failed to cennect to database.');

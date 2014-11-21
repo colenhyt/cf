@@ -12,6 +12,14 @@ import cn.hd.cf.model.PlayerWithBLOBs;
 public class PlayerService extends BaseService {
 	private PlayerMapper playerMapper;
 	
+	public PlayerMapper getPlayerMapper() {
+		return playerMapper;
+	}
+
+	public void setPlayerMapper(PlayerMapper playerMapper) {
+		this.playerMapper = playerMapper;
+	}
+
 	public PlayerService()
 	{
 		initMapper("playerMapper");
@@ -31,8 +39,8 @@ public class PlayerService extends BaseService {
 	
 	public int add(PlayerWithBLOBs record)
 	{
-		playerMapper.insert(record);
-		DBCommit();
+		playerMapper.insertSelective(record);
+		//DBCommit();
 		return 0;
 	}
 	

@@ -21,8 +21,8 @@ public class ToplistAction extends BaseAction {
 		JSONArray jsonObject = JSONArray.fromObject(tt);
 		//System.out.println("dayliseeeeeeeeeet scrie: "+jsonObject.toString());
 		java.util.Timer timer = new java.util.Timer(true);  
-		TimerTest task = new TimerTest();
-		timer.schedule(task, 3000,3000);   
+		//TimerTest task = new TimerTest();
+		//timer.schedule(task, 3000,3000);   
 		
 		write(jsonObject.toString(),"utf-8");
 		return null;

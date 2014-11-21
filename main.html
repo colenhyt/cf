@@ -28,6 +28,30 @@ var ms = myDate.getMilliseconds();
         <script type="text/javascript" src="static/js/toplist.js"></script>
         
         
+<div class="modal fade" id="myregister">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">¡Á</span><span class="sr-only">¹Ø±Õ</span></button>
+	  </div>
+        <table class="table">
+          <tr>
+            <td>name:</td>
+            <td><input type="text" class='form-control' placeholder="name" id="player.playername"></td>
+          </tr>
+          <tr>
+            <td>password:</td>
+            <td><input type="text" class='form-control' placeholder="password" id="player.pwd"></td>
+          </tr>
+          <tr>
+            <td>commit:</td>
+            <td><input type="button" class='form-control' value="done" onclick="g_player.register()"></td>
+            </tr>
+         </table>	   
+    </div>
+</div>
+</div>  
+        
 <div class="modal fade" id="mytask">
   <div class="modal-dialog">
     <div class="modal-content">

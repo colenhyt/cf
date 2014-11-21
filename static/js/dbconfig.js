@@ -8,9 +8,10 @@ var game_table_schema = [{
         table : 't_player',
         properties : [
             {name : 'playerid',type : 'INT PRIMARY KEY ASC'}, 
-            {name : 'accountid',type : ''}, 
-            {name : 'playername',type : ''}, 
-            {name : 'version',type : ''}
+            {name : 'accountid'}, 
+            {name : 'playername'}, 
+            {name : 'pwd'}, 
+            {name : 'version'}
         ]
     }, {
         table : 'boo',

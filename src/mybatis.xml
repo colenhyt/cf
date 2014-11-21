@@ -42,5 +42,6 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 	<mappers>
 		<mapper resource="cn/hd/cf/model/ToplistMapper.xml"/>
 		<mapper resource="cn/hd/cf/model/PlayerMapper.xml"/>
-			</mappers>
+		<mapper resource="cn/hd/cf/model/SignindataMapper.xml"/>
+					</mappers>
 </configuration>

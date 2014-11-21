@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import net.sf.json.JSONObject;
 import cn.freeteam.base.BaseAction;
 import cn.freeteam.util.MD5;
 import cn.freeteam.util.StringUtil;
@@ -48,12 +49,17 @@ public class LoginAction extends BaseAction {
 		playerBlob.setPlayername(player.getPlayername());
 		String pwd = StringUtil.getRandomString(10);
 		playerBlob.setPwd(MD5.MD5(pwd));
-		playerService.add(playerBlob);
+		int ret = playerService.add(playerBlob);
+		if (ret==0){
+			JSONObject obj = JSONObject.fromObject(playerBlob);
+			write(obj.toString(),"utf-8");
+		}
 		return null;
 	}
 	
 	public String login()
 	{
+		System.out.println("login "+player.getPlayername());
 		PlayerWithBLOBs tplayer = playerService.find(player.getPlayerid(),MD5.MD5(player.getPwd()));
 		if (tplayer!=null)
 		{

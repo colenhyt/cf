@@ -73,6 +73,7 @@ function cDB(confs) {
                     er(tx, __er);
                 else
                     self.callback_error(tx, __er);
+                    alert('error111');
             };
             this._db.transaction(function (tx) {
                 tx.executeSql(sql, (params ? params : []), callback, _er);

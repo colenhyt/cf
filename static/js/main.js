@@ -3,7 +3,7 @@ function aaa(){
 }
 
 function aaa2(){
-	log("aaa2");
+	//alert("aaa2");
 }
 
 Main = function(){
