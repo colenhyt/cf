@@ -31,8 +31,25 @@ Map.prototype.init = function(width,height,mapFile){
         if (mapImgs[i].name=="map"){
             mapImg = img;
         }
+        
+        if (mapImgs[i].hasDiv==true){
+            var div = document.createElement("DIV");
+            div.id = "tag"+mapImgs[i].name;
+            div.style.position = "absolute";
+            if (mapImgs[i].divX>0)
+                div.style.left = mapImgs[i].divX+"px";
+            else 
+                div.style.left = mapImgs[i].x + "px";
+            
+            if (mapImgs[i].divY>0) 
+                div.style.top = mapImgs[i].divY+"px";
+            else
+                div.style.top = mapImgs[i].y + "px";
+            //div.style = "position:absolute;left:100px,top:300px";           
+            var cc = document.getElementById("divhide");
+            cc.insertBefore(div);
+        }        
     }
-
 
 	windowToCanvas = function(x,y){
 		var bbox = canvas.getBoundingClientRect();
@@ -130,6 +147,18 @@ Map.prototype.init = function(width,height,mapFile){
 	};
 }
 
+Map.prototype.addImg = function(img)
+{
+    var map = this;
+    var img0 = new Image();
+    img0.src = img.src;
+    img0.onload=function(){
+         map.draw();
+    };    
+    img.img = img0;
+    this.m_imgs.push(img);
+}
+
 Map.prototype.draw = function(){
 	var pos = this.m_pos;
 	var scale = this.m_imgScale;
@@ -171,6 +200,8 @@ Scene.prototype.init = function(canvas,width,height){
 	this.m_height = height;
 	this.m_map = new Map(12,canvas);
 	this.m_map.init(width,height,"static/img/map.jpg");
+	
+
 }
 
 Scene.prototype.draw = function(){
@@ -221,7 +252,7 @@ Game.prototype.init_db = function(){
         _db : window.openDatabase(g_dbname, g_dbversion, g_dbfile , g_dbsize)
     });
     
-   // g_db.dropTable('t_player');
+    //g_db.dropTable('t_player');
     
     if (!g_db.check(game_table_schema)) {
         g_db = false;

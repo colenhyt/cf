@@ -14,7 +14,7 @@ var ms = myDate.getMilliseconds();
   <script src="assets/jquery.js"></script>
   <script src="dist/js/zui.min.js"></script>
   <script src="dist/js/doc.js"></script>
-  	<body>
+  	<body><div id="divhide"></div>
 		<canvas id="canvas" width="320" height="400"></canvas>
 		<div id="console">www</div>
 		<script type="text/javascript" src="static/js/config.js"></script>
@@ -36,15 +36,19 @@ var ms = myDate.getMilliseconds();
 	  </div>
         <table class="table">
           <tr>
-            <td>name:</td>
+            <td>玩家名:</td>
             <td><input type="text" class='form-control' placeholder="name" id="player.playername"></td>
           </tr>
           <tr>
-            <td>password:</td>
+            <td>密码:</td>
             <td><input type="text" class='form-control' placeholder="password" id="player.pwd"></td>
           </tr>
           <tr>
-            <td>commit:</td>
+            <td>选择一个头像:</td>
+            <td><input type="text" class='form-control' placeholder="password" id="player.headicon"></td>
+          </tr>
+          <tr>
+            <td>保存:</td>
             <td><input type="button" class='form-control' value="done" onclick="g_player.register()"></td>
             </tr>
          </table>	   

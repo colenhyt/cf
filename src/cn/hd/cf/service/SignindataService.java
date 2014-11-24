@@ -38,6 +38,14 @@ public class SignindataService extends BaseService {
 	public boolean add(Signindata record)
 	{
 		signindataMapper.insert(record);
+		DBCommit();
 		return true;
+	}
+	
+	public void resetInacvtive(Signindata record)
+	{
+		record.setStatus(DATA_STATUS_INACTIVE);
+		signindataMapper.updateByPrimaryKey(record);
+		DBCommit();
 	}
 }

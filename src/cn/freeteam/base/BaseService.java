@@ -13,6 +13,7 @@ import cn.freeteam.util.MybatisSessionFactory;
  * 2011-6-14
  */
 public class BaseService extends Base{
+	public static byte DATA_STATUS_INACTIVE = 0;
 	public static byte DATA_STATUS_ACTIVE = 1;
 	
 	/**

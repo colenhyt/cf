@@ -25,7 +25,7 @@ public class MybatisSessionFactory {
      * in the default package. Use #setConfigFile() to update 
      * the location of the configuration file for the current session.   
      */
-    private static String CONFIG_FILE_LOCATION = "/mybatis.xml";
+    private static String CONFIG_FILE_LOCATION = "mybatis.xml";
 	private static final ThreadLocal threadLocal = new ThreadLocal();
     private  static Reader reader ;
     private  static SqlSessionFactoryBuilder sessionFactoryBuilder=new SqlSessionFactoryBuilder(); ;

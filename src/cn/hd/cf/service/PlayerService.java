@@ -40,7 +40,7 @@ public class PlayerService extends BaseService {
 	public int add(PlayerWithBLOBs record)
 	{
 		playerMapper.insertSelective(record);
-		//DBCommit();
+		DBCommit();
 		return 0;
 	}
 	
