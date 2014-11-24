@@ -172,6 +172,19 @@ function cDB(confs) {
             this.query(__sql, callback, __values);
             return true;
         },
+        insertJson : function (tbl, items, callback) {
+            var row = [];
+            for (var i=0;i<items.length;i++){
+                var rowItem = [];
+                var item = items[i];
+                for (key in item){
+                    rowItem.push({"name":key,"value":item[key]});
+                }
+                row.push(rowItem);	
+            }
+            
+            return this.multiInsert(tbl, row,callback);           
+        },        
         insertReplace : function (tbl, rows, debug) {
             var __sql = '',
             _field = null,

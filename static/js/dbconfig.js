@@ -13,6 +13,7 @@ var game_table_schema = [
             {name : 'playername'}, 
             {name : 'pwd'}, 
             {name : 'cash'}, 
+            {name : 'lastsignin'},
             {name : 'sex'}, 
             {name : 'createtime'}, 
             {name : 'version'}

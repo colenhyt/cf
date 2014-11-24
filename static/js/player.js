@@ -1,6 +1,7 @@
 // JavaScript Document
 Player = function(){
     this.name = "player";
+    this.data = {};
 }
 
 Player.prototype = new Datamgr();
@@ -26,26 +27,23 @@ Player.prototype.loadDataCallback = function(tx,results){
 
 
 Player.prototype.register_c = function(sex){
-    var newDate = new Date();
-    var createtime = newDate.toJSON();
+    var createtime = Date.parse(new Date());
     var item = {
         "accountid":1,"playerid":1,"playername":"pname","pwd":"pwd","cash":100,
-        sex:sex,createtime:createtime
+        lastsignin:createtime,sex:sex,createtime:createtime
         };
-        var row = [];
-        row.push([
-            {'name' : 'accountid','value' : item.accountid},
-            {'name' : 'playerid','value' : item.playerid},
-            {'name' : 'playername','value' : item.playername},
-            {'name' : 'cash','value' : item.cash},
-            {'name' : 'sex','value' : item.sex},
-            {'name' : 'createtime','value' : item.createtime},
-            {'name' : 'pwd','value' : item.pwd}
-        ]);
- 	
-       var ret = g_db.insert(game_tables[this.name], row);	
-       alert("register"+item.createtime+";sex:"+item.sex);
-       g_player.login(item);              
+
+        var items = [];
+        items.push(item);
+       var ret = g_db.insertJson(game_tables[this.name], items);	
+
+      // alert("register"+item.createtime+";sex:"+item.sex);
+       var init = g_game.init_client();
+       if (init==true){
+            g_player.login(item);              
+       }else {
+        alert("game client init failed");
+       }
 }
 
 Player.prototype.register = function(){
@@ -71,14 +69,38 @@ Player.prototype.register = function(){
 Player.prototype.login = function(item){
 	//var dataobj = $.ajax({url:"/cf/login_login.do?player.playername="+playername+"&player.pwd="+pwd,async:false});
 //	var obj = eval ("(" + dataobj.responseText + ")");
-    alert("login "+item.createtime);
+     this.data = item;
+    
+    //head img:
     var head_img = head_imgs[0];
     if (head_imgs.length>item.sex)
         head_img = head_imgs[item.sex];
     head_img.name = this.name;
     g_game.m_scene.m_map.addImg(head_img);
+    
+    //cash div
     var tagcash = document.getElementById("tagcash");
     tagcash.innerHTML = "<b>"+item.cash+"</b>";
+    
+    //load signin:
+    var lastDate = new Date(item.lastsignin);
+    var currDate = new Date();
+    //if (lastDate.getMonth()!=currDate.getMonth()&&lastDate.getDate()!=currDate.getDate())
+    {
+        g_signin.start(lastDate);
+    }
+    alert(lastDate);
+   
+}
+
+Player.prototype.updateData = function(sets) {
+    for (key in sets){
+        this.data[key] = sets[key];
+    }
+    
+    var row = [[]];
+    row[0].push(sets);
+    g_db.update(game_tables[this.name],row,[{'name':'playerid','value':this.data.playerid}]);
 }
 
 var g_player = new Player();

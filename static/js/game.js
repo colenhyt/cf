@@ -235,25 +235,13 @@ Game.prototype.init = function(canvas){
 }
 
 Game.prototype.init_db = function(){
-
-	function createDB(tx){
-		tx.executeSql('CREATE TABLE IF NOT EXISTS '+game_tables['toplist']+'(id unique,type,top,name,score)');
-		tx.executeSql('CREATE TABLE IF NOT EXISTS '+game_tables['task']+'(id unique,taskId,name,desc)');
-   	}
-   
-	function initDB_success(){
-		log('init successful');
-	}
-
-	//var db = window.openDatabase(g_dbname,g_dbversion,g_dbfile,g_dbsize);
-	//db.transaction(createDB,errorDB,initDB_success);
-	
     g_db = new cDB({
         _db : window.openDatabase(g_dbname, g_dbversion, g_dbfile , g_dbsize)
     });
     
     //g_db.dropTable('t_player');
-    
+    //g_db.dropTable('t_signin');
+   
     if (!g_db.check(game_table_schema)) {
         g_db = false;
         alert('Failed to cennect to database.');
@@ -261,6 +249,15 @@ Game.prototype.init_db = function(){
 	
 	log('init db ss');
 	
+}
+
+//主角注册后客户端初始化:
+Game.prototype.init_client = function() {
+    //1. 装载第一版js数据到sql
+   g_db.insertJson(game_tables["signin"], data_signindata, function () {
+     alert('insertion done');
+    });
+    return true;
 }
 
 Game.prototype.register = function(obj){
