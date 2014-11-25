@@ -25,4 +25,9 @@ var game_tables = {
     "task":"t_task",
     "player":"t_player",
     "signin":"t_signin",
-}
+};
+
+var feeling_imgs = [
+    {id:1,src:"static/img/feeling_1.png"},{id:2,src:"static/img/feeling_1.png"},{id:3,src:"static/img/feeling_1.png"},
+    {id:4,src:"static/img/feeling_1.png"},{id:5,src:"static/img/feeling_1.png"},{id:6,src:"static/img/feeling_1.png"},
+]
