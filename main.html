@@ -13,7 +13,8 @@ var ms = myDate.getMilliseconds();
 	</head>
   <script src="assets/jquery.js"></script>
   <script src="dist/js/zui.min.js"></script>
-  <script src="dist/js/doc.js"></script>
+  <script src="dist/js/store.js"></script>
+ <script src="dist/js/doc.js"></script>
   	<body><div id="divhide"></div>
 		<canvas id="canvas" width="320" height="400"></canvas>
 		<div id="console">www</div>
@@ -28,6 +29,7 @@ var ms = myDate.getMilliseconds();
 		<script type="text/javascript" src="static/js/task.js"></script>
         <script type="text/javascript" src="static/js/signin.js"></script>
         <script type="text/javascript" src="static/js/toplist.js"></script>
+       <script type="text/javascript" src="static/js/insure.js"></script>
        
         
 <div class="modal fade" id="mysignin">
@@ -46,7 +48,77 @@ var ms = myDate.getMilliseconds();
     </div>
 </div>
 </div>  
+         
+<div class="modal fade" id="myinsure">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+this is insure content!!!
+	  </div>
+      <div class="tab-pane in active" id="toplist3">
+	    <div class="example">
+		   <div class="panel">
+            <div class="panel-body">理财险</div>
+	       	<button class="btn btn-primary" onclick="g_insure.showDetail(1)">详情 111</button>
+            </div>
+		   <div class="panel">
+             <div class="panel-body">黄金
+         <table id="toplist1_tab">
+            <thead>
+              <tr>
+                <td class="td-c-name">价格</td>
+                <td class="td-c-value">123</td>
+                <td class="td-c-name">收益</td>
+                <td class="td-c-value">11</td>
+                <td class="td-c-name">周期</td>
+                <td class="td-c-value">99</td>
+              </tr>
+            </thead>
+          </table>             
+             </div>
+           </div>     
+	     </div>	  
+	  </div>      
+    </div>
+</div>
+</div>
         
+<div class="modal fade" id="myinsure_detail">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+this is insure contaaaaent!!!
+	  </div>
+       <div class="tab-pane in active" id="toplist3">
+	    <div class="example">
+		   <div class="panel">
+            <div class="panel-body">理财险</div>
+	       	<button class="btn btn-primary" data-toggle="modal" data-target="#myModal_table">详情</button>
+            </div>
+		   <div class="panel">
+             <div class="panel-body">黄金
+         <table id="toplist1_tab">
+            <thead>
+              <tr>
+                <td class="td-c-name">价格</td>
+                <td class="td-c-value">123</td>
+                <td class="td-c-name">收益</td>
+                <td class="td-c-value">11</td>
+                <td class="td-c-name">周期</td>
+                <td class="td-c-value">99</td>
+              </tr>
+            </thead>
+          </table>             
+             </div>
+           </div>     
+	     </div>	  
+	  </div>
+    </div>
+</div>
+</div>
+
 <div class="modal fade" id="mytask">
   <div class="modal-dialog">
     <div class="modal-content">
