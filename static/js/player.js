@@ -85,12 +85,11 @@ Player.prototype.login = function(item){
     //load signin:
     var lastDate = new Date(item.lastsignin);
     var currDate = new Date();
-    var time = currDate.getTime() - lastDate.getTime();
-     var days = parseInt(time / (1000 * 60 * 60 * 24));
-   //if (lastDate.getMonth()!=currDate.getMonth()&&lastDate.getDate()!=currDate.getDate())
+    //if (lastDate.getMonth()!=currDate.getMonth()&&lastDate.getDate()!=currDate.getDate())
     {
-        g_signin.start(days);
+        g_signin.start(lastDate);
     }
+    alert(lastDate);
    
 }
 
