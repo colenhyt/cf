@@ -11,13 +11,10 @@ Player.prototype.init = function(){
     this.loadData();
 }
 
-Player.prototype.loadDataCallback = function(tx,results){
+Player.prototype.loadDataCallback = function(tx,results){	
 	if (results.rows.length==0){
-        var options = {
-            keyboard : false,
-            show     : true
-        };	
-	  // $('#myregister').modal(options);  
+
+	  // $('#myregister').modal('show');  
 	   g_player.register_c(0);	   
     }else {
         var item = results.rows.item(0);
@@ -79,8 +76,7 @@ Player.prototype.login = function(item,isRegister){
     g_game.m_scene.m_map.addImg(head_img);
     
     //cash div
-    var tagcash = document.getElementById("tagcash");
-    tagcash.innerHTML = "<b>"+item.cash+"</b>";
+    this.updateView_cash();
     
     if (isRegister==true)
     {
@@ -91,20 +87,27 @@ Player.prototype.login = function(item,isRegister){
 	    var lastDate = new Date(item.lastsignin);
 	    var currDate = new Date();
 	   	if (currDate.getMonth()!=lastDate.getMonth()||currDate.getDate()!=lastDate.getDate())
-	    {
-	        g_signin.start(days);
+	    {//todo:
+	        g_signin.start(0);
 	    }
     }
    
 }
 
-Player.prototype.updateData = function(sets) {
-	//update memory player:
-	for (var i=0;i<sets.length;i++){
-		var set = sets[i];
-	    for (key in set){
-	        this.data[key] = set[key];
-	    }
+Player.prototype.updateView_cash = function() {
+    var tagcash = document.getElementById("tagcash");
+    tagcash.innerHTML = "<b>"+this.data.cash+"</b>";	
+}
+
+Player.prototype.updateData = function(prop) {
+    var sets =[];
+    for (key in prop){
+	this.data[key] = prop[key];
+	sets.push({"name":key,"value":prop[key]});
+	
+	if (key=="cash") {
+	    this.updateView_cash();
+	}
     }
     
     var row = [];
@@ -113,7 +116,7 @@ Player.prototype.updateData = function(sets) {
 }
 
 Player.prototype.prize = function(prizes) {
-	var sets = [];
+	var prop = {};
      for (var i=0;i< prizes.length;i++)
      {
      	var key = "";
@@ -122,11 +125,11 @@ Player.prototype.prize = function(prizes) {
      	else if (prizes[i].t==ITEM_TYPE.EXP)
      		key = "exp";    
      	if (key.length>0){	
-     		var v = this.data[key]+prizes[i].v;     	
-     		sets.push({"name":key,"value":v});
+     		var v = this.data[key]+prizes[i].v;
+		prop[key] = v;
      	}
      }  
-     this.updateData(sets);
+     this.updateData(prop);
 }
 
 Player.prototype.logPlayer = function(logs) {

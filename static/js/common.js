@@ -42,13 +42,8 @@ Datamgr.prototype = {
     },    
 
     onclick:function(clickX,clickY){
-        var options = {
-            keyboard : false,
-            show     : true
-        };
-        
         this.loadData();
-        $('#my'+this.name).modal(options);       
+        $('#my'+this.name).modal('show');      
     },    
 }
 

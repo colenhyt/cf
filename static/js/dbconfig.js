@@ -1,7 +1,6 @@
 // JavaScript Document
 /*=======================================*/
 
-表结构定义 :
 /* dbTable is database structure in this example, and contains 2 tables 'foo' and 'boo' */
 /* and also the table structure in table properties                                                           */
 var game_table_schema = [

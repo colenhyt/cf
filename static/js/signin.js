@@ -81,7 +81,7 @@ Signin.prototype.doSignin = function(){
     
     g_player.logPlayer([{"logtime":Date.parse(new Date()),"feeling":this.feeling}]);
     
-    g_player.updateData([{'name':'lastsignin','value':Date.parse(new Date())}]); 
+    g_player.updateData({'lastsignin':Date.parse(new Date())}); 
     
     $('#mysignin').modal('hide');     
 }
