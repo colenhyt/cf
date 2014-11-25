@@ -8,14 +8,14 @@ var ITEM_TYPE_INSURE = 1;
 
 var data_questdata = [
     {name:"task1",id:1,type:1,desc:"go to get an insure",
-    condition:[
+    need:[
         {itemtype:ITEM_TYPE_CASH,value:10},
             ],
     cost:[
         {t:1,v:1},
     ],
     data:{relateid:2},
-    reward:[
+    prize:[
             {itemtype:ITEM_TYPE_CASH,value:100},
            ],
     }

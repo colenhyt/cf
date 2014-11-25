@@ -18,15 +18,16 @@ var ms = myDate.getMilliseconds();
   	<body><div id="divhide"></div>
 		<canvas id="canvas" width="320" height="400"></canvas>
 		<div id="console">www</div>
-        <script type="text/javascript" src="static/data/signindata.js"></script>
 		<script type="text/javascript" src="static/js/config.js"></script>
+        <script type="text/javascript" src="static/data/signindata.js"></script>
+        <script type="text/javascript" src="static/data/questdata.js"></script>
 		<script type="text/javascript" src="static/js/dbconfig.js"></script>
 		<script type="text/javascript" src="static/js/sqlite.js"></script>
 		<script type="text/javascript" src="static/js/common.js"></script>
 		<script type="text/javascript" src="static/js/game.js"></script>
 		<script type="text/javascript" src="static/js/main.js"></script>
 		<script type="text/javascript" src="static/js/player.js"></script>
-		<script type="text/javascript" src="static/js/task.js"></script>
+		<script type="text/javascript" src="static/js/quest.js"></script>
         <script type="text/javascript" src="static/js/signin.js"></script>
         <script type="text/javascript" src="static/js/toplist.js"></script>
        <script type="text/javascript" src="static/js/insure.js"></script>
@@ -40,7 +41,10 @@ var ms = myDate.getMilliseconds();
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
 	  </div>
             <div> 今天签到获得:
-                <div id="signin_get"></div>
+                <div id="signin_gettoday"></div>
+            </div>
+            <div> 明天签到获得:
+                <div id="signin_gettomorrow"></div>
             </div>
             <div> 选择你今天的心情:
                 <div id ="signin_feeling">signin_feeling</div>  
@@ -119,12 +123,12 @@ this is insure contaaaaent!!!
 </div>
 </div>
 
-<div class="modal fade" id="mytask">
+<div class="modal fade" id="myquest">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
-this is mytask content!!!
+this is myquest content!!!
 	  </div>
     </div>
 </div>

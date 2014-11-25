@@ -9,6 +9,17 @@ log = function(text){
 	//alert(text);
 }
 
+itemStr = function(items,split){
+    var itemDesc;
+    for (var i=0;i<items.length;i++){
+    	var item = items[i];
+    	if (item.t==ITEM_TYPE.CASH)
+    		itemDesc += item.v+ITEM_NAME.CASH+split;
+    	else if (item.t==ITEM_TYPE.EXP)
+    		itemDesc += item.v+ITEM_NAME.EXP+split;
+    }
+    return itemDesc;
+}
 
 Datamgr = function(){   
 }

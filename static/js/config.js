@@ -11,7 +11,7 @@ var game_imgs = [
 //	{name:"player",src:"static/img/icon_player.png",x:0,y:0,abs:true,},
 	{name:"cash",src:"static/img/icon_cash.png",x:130,y:0,abs:true,hasDiv:true,divX:160,divY:10},
 	{name:"toplist",src:"static/img/icon_toplist.jpg",x:90,y:220,},
-	{name:"task",src:"static/img/icon_task.png",x:240,y:80,},
+	{name:"quest",src:"static/img/icon_quest.png",x:240,y:80,},
 	{name:"insure",src:"static/img/icon_insure.png",x:30,y:80,},
 ];
 
@@ -22,12 +22,24 @@ var head_imgs = [
 
 var game_tables = {
     "toplist":"t_toplist",
-    "task":"t_task",
+    "quest":"t_quest",
     "player":"t_player",
     "signin":"t_signin",
+    "playerlog":"t_playerlog",
 };
 
 var feeling_imgs = [
     {id:1,src:"static/img/feeling_1.png"},{id:2,src:"static/img/feeling_1.png"},{id:3,src:"static/img/feeling_1.png"},
     {id:4,src:"static/img/feeling_1.png"},{id:5,src:"static/img/feeling_1.png"},{id:6,src:"static/img/feeling_1.png"},
 ]
+
+var ITEM_TYPE = {
+	CASH : 0,EXP:1
+};
+
+var ITEM_NAME = {
+	CASH : "现金",EXP:"经验"
+};
+
+
+

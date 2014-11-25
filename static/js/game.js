@@ -200,8 +200,6 @@ Scene.prototype.init = function(canvas,width,height){
 	this.m_height = height;
 	this.m_map = new Map(12,canvas);
 	this.m_map.init(width,height,"static/img/map.jpg");
-	
-
 }
 
 Scene.prototype.draw = function(){
@@ -239,7 +237,7 @@ Game.prototype.init_db = function(){
         _db : window.openDatabase(g_dbname, g_dbversion, g_dbfile , g_dbsize)
     });
     
-    //g_db.dropTable('t_player');
+   //g_db.dropTable('t_player');
     //g_db.dropTable('t_signin');
    
     if (!g_db.check(game_table_schema)) {

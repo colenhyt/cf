@@ -29,7 +29,7 @@ Player.prototype.loadDataCallback = function(tx,results){
 Player.prototype.register_c = function(sex){
     var createtime = Date.parse(new Date());
     var item = {
-        "accountid":1,"playerid":1,"playername":"pname","pwd":"pwd","cash":100,
+        "accountid":1,"playerid":1,"playername":"pname","pwd":"pwd","exp":100,"cash":100,
         lastsignin:createtime,sex:sex,createtime:createtime
         };
 
@@ -40,7 +40,7 @@ Player.prototype.register_c = function(sex){
       // alert("register"+item.createtime+";sex:"+item.sex);
        var init = g_game.init_client();
        if (init==true){
-            g_player.login(item);              
+            g_player.login(item,true);              
        }else {
         alert("game client init failed");
        }
@@ -66,7 +66,7 @@ Player.prototype.register = function(){
 	}
 }
 
-Player.prototype.login = function(item){
+Player.prototype.login = function(item,isRegister){
 	//var dataobj = $.ajax({url:"/cf/login_login.do?player.playername="+playername+"&player.pwd="+pwd,async:false});
 //	var obj = eval ("(" + dataobj.responseText + ")");
      this.data = item;
@@ -82,25 +82,62 @@ Player.prototype.login = function(item){
     var tagcash = document.getElementById("tagcash");
     tagcash.innerHTML = "<b>"+item.cash+"</b>";
     
-    //load signin:
-    var lastDate = new Date(item.lastsignin);
-    var currDate = new Date();
-    //if (lastDate.getMonth()!=currDate.getMonth()&&lastDate.getDate()!=currDate.getDate())
+    if (isRegister==true)
     {
-        g_signin.start(lastDate);
+    	g_signin.start(0);
+    	alert('isregister');
+    }else {
+	    //load signin:
+	    var lastDate = new Date(item.lastsignin);
+	    var currDate = new Date();
+	   	if (currDate.getMonth()!=lastDate.getMonth()||currDate.getDate()!=lastDate.getDate())
+	    {
+	        g_signin.start(days);
+	    }
     }
-    alert(lastDate);
    
 }
 
 Player.prototype.updateData = function(sets) {
-    for (key in sets){
-        this.data[key] = sets[key];
+	//update memory player:
+	for (var i=0;i<sets.length;i++){
+		var set = sets[i];
+	    for (key in set){
+	        this.data[key] = set[key];
+	    }
     }
     
-    var row = [[]];
-    row[0].push(sets);
+    var row = [];
+    row.push(sets);
     g_db.update(game_tables[this.name],row,[{'name':'playerid','value':this.data.playerid}]);
+}
+
+Player.prototype.prize = function(prizes) {
+	var sets = [];
+     for (var i=0;i< prizes.length;i++)
+     {
+     	var key = "";
+     	if (prizes[i].t==ITEM_TYPE.CASH)
+     		key = "cash";
+     	else if (prizes[i].t==ITEM_TYPE.EXP)
+     		key = "exp";    
+     	if (key.length>0){	
+     		var v = this.data[key]+prizes[i].v;     	
+     		sets.push({"name":key,"value":v});
+     	}
+     }  
+     this.updateData(sets);
+}
+
+Player.prototype.logPlayer = function(logs) {
+     var items = [];
+     for (var i=0;i< logs.length;i++)
+     {
+     	logs[i].playerid=this.data.playerid;
+     	items.push(logs[i]);
+     }  
+      
+     var ret = g_db.insertJson(game_tables["playerlog"], items);	
 }
 
 var g_player = new Player();
