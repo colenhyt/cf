@@ -251,6 +251,7 @@ Game.prototype.init_db = function(){
 
 //
 Game.prototype.init_client = function() {
+    //1. 
    g_db.insertJson(game_tables["signin"], data_signindata, function () {
      alert('insertion done');
     });
@@ -264,7 +265,7 @@ Game.prototype.register = function(obj){
 //
 Game.prototype.update = function(){
     this.tt += 1;
-   log(this.m_name+ this.tt);
+   // log(this.m_name+ this.tt);
    for (key in this.sys)
    {
         this.sys[key].update();
