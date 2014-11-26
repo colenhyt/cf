@@ -50,7 +50,7 @@ PageUtil.prototype.buildMsg = function(contentId)
 
 PageUtil.prototype.buildSingleTab = function(strTitle)
 {
-     this.addHeader("<button type=\"button\" class=\"close\" data-dismiss=\"modal\"><span aria-hidden=\"true\">¡Á</span><span class=\"sr-only\">¹Ø±Õ</span></button>");
+     this.addHeader("<button type=\"button\" class=\"close\" data-dismiss=\"modal\"><span aria-hidden=\"true\">*</span><span class=\"sr-only\">å…³é—­</span></button>");
 
 	var header = "<ul id=\""+this.id+"Tab\" class=\"nav nav-tabs\">"
      header += "<li class=\"active\"><a href=\"#insure1\" data-toggle=\"tab\">"+strTitle+"</a></li>"

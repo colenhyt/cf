@@ -38,7 +38,7 @@ var ITEM_TYPE = {
 };
 
 var ITEM_NAME = {
-	CASH : "现金",EXP:"经验"
+	CASH : "鐜伴噾",EXP:"缁忛獙"
 };
 
 

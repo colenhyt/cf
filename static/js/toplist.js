@@ -22,11 +22,9 @@ Toplist.prototype.loadDataCallback = function(tx,results){
 	{
 		var item = results.rows.item(i);
 	var newTr = tab.insertRow(i+1);
-	//添加列
 	var newTd0 = newTr.insertCell();
 	var newTd1 = newTr.insertCell();
 	var newTd2 = newTr.insertCell();
-	//设置列内容
 	newTd0.innerHTML = item.score; 
 	newTd1.innerText= item.name;
 	newTd2.innerText= item.top;

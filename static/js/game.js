@@ -249,9 +249,9 @@ Game.prototype.init_db = function(){
 	
 }
 
-//主角注册后客户端初始化:
+//
 Game.prototype.init_client = function() {
-    //1. 装载第一版js数据到sql
+    //1. 
    g_db.insertJson(game_tables["signin"], data_signindata, function () {
      alert('insertion done');
     });

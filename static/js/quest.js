@@ -19,7 +19,7 @@ Quest.prototype.buildHTML = function()
 	var page = new PageUtil(this.tagname);
 	var content = 	 "<div class=\"cfpage\">"
 	  content += "this is myquest content!!!"
-	  content += "<button class=\"btn btn-primary\" data-toggle=\"modal\" onclick=\"g_insure.buy(1)\">¹ºÂò</button>"
+	  content += "<button class=\"btn btn-primary\" data-toggle=\"modal\" onclick=\"g_insure.buy(1)\">è´­ä¹°</button>"
 	  content += "</div>"
 	page.addContent(content);
 	

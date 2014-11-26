@@ -14,17 +14,17 @@ Signin.prototype.init = function(){
 Signin.prototype.buildHTML = function()
 {
 	var page = new PageUtil(this.tagname);
-    var header ="<input type='button' class='form-control' onclick='g_signin.doSignin()' value='签到'/>"
-    header += "<button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>×</span><span class='sr-only'>关闭</span></button>"	
+    var header ="<input type='button' class='form-control' onclick='g_signin.doSignin()' value='绛惧埌'/>"
+    header += "<button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>*</span><span class='sr-only'>鍏抽棴</span></button>"	
 	page.addHeader(header);
 
-	var content = "<div> 今天签到获得:"
+	var content = "<div> 浠婂ぉ鑾峰緱:"
     content +=      "      <div id='signin_gettoday'></div>"
     content +=       " </div>"
-    content +=           "  <div> 明天签到获得:"
+    content +=           "  <div> 鏄庡ぉ鑾峰緱:"
     content +=            "     <div id='signin_gettomorrow'></div>"
     content +=            " </div>"
-    content +=            " <div> 选择你今天的心情:"
+    content +=            " <div> 閫夋嫨浣犵殑蹇冩儏:"
     content +=            "     <div id ='signin_feeling'>signin_feeling</div>  "
     content +=            " </div>"
 
@@ -92,7 +92,7 @@ Signin.prototype.show = function(){
         tagfeel.appendChild(img);       
     }
     
-    $('#mysignin').modal('show');       
+    $('#'+this.tagname).modal('show');       
 }
 
 Signin.prototype.doSignin = function(){
@@ -106,9 +106,9 @@ Signin.prototype.doSignin = function(){
     
     g_player.logPlayer([{"logtime":Date.parse(new Date()),"feeling":this.feeling}]);
     
-    g_player.updateData([{'name':'lastsignin','value':Date.parse(new Date())}]); 
+    g_player.updateData({'lastsignin':Date.parse(new Date())}); 
     
-    $('#mysignin').modal('hide');     
+    $('#'+this.tagname).modal('hide');     
 }
 
 var g_signin = new Signin();
