@@ -43,7 +43,7 @@ Datamgr.prototype = {
 
     onclick:function(clickX,clickY){
         this.loadData();
-        $('#my'+this.name).modal('show');       
+        $('#my'+this.name).modal('show');      
     },    
 }
 

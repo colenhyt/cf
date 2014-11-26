@@ -11,7 +11,7 @@ Player.prototype.init = function(){
     this.loadData();
 }
 
-Player.prototype.loadDataCallback = function(tx,results){
+Player.prototype.loadDataCallback = function(tx,results){	
 	if (results.rows.length==0){
 	  // $('#myregister').modal('show');  
 	   g_player.register_c(0);	   
