@@ -1,6 +1,8 @@
 // JavaScript Document
 Player = function(){
     this.name = "player";
+    this.count = 0;
+    this.syncDuration = 5;
     this.data = {};
 }
 
@@ -26,9 +28,10 @@ Player.prototype.register_c = function(sex){
     var createtime = Date.parse(new Date());
     var item = {
         "accountid":1,"playerid":1,"playername":"pname","pwd":"pwd","exp":100,"cash":100,
+	quest:"[]",
         lastsignin:createtime,sex:sex,createtime:createtime
         };
-
+	
         var items = [];
         items.push(item);
        var ret = g_db.insertJson(game_tables[this.name], items);	
@@ -66,6 +69,7 @@ Player.prototype.login = function(item,isRegister){
 	//var dataobj = $.ajax({url:"/cf/login_login.do?player.playername="+playername+"&player.pwd="+pwd,async:false});
 //	var obj = eval ("(" + dataobj.responseText + ")");
      this.data = item;
+     this.quest = eval(item.quest);
     
     //head img:
     var head_img = head_imgs[0];
@@ -130,6 +134,10 @@ Player.prototype.prize = function(prizes) {
      }  
      this.updateData(prop);
 }
+     
+Player.prototype.syncData = function(){
+	//alert('pp.syncData');
+}   
 
 Player.prototype.logPlayer = function(logs) {
      var items = [];

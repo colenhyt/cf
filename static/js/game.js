@@ -210,7 +210,8 @@ Scene.prototype.update = function(){
 
 Game = function(name){
 	this.name = name;
-	this.tt = 1;
+	this.count = 1;
+       this.syncDuration = 6;
 	this.mm = {"aa":'ss',"bb":'ssb'};
 	this.sys = {};
 }
@@ -249,9 +250,8 @@ Game.prototype.init_db = function(){
 	
 }
 
-//
+//:
 Game.prototype.init_client = function() {
-    //1. 
    g_db.insertJson(game_tables["signin"], data_signindata, function () {
      alert('insertion done');
     });
@@ -261,11 +261,19 @@ Game.prototype.init_client = function() {
 Game.prototype.register = function(obj){
     this.sys[obj.name] = obj;
 }
-
+     
+Game.prototype.syncData = function(){
+	//alert('Game.syncData');
+}   
+   
 //
 Game.prototype.update = function(){
-    this.tt += 1;
-   // log(this.m_name+ this.tt);
+    this.count += 1;
+   if (this.count>=this.syncDuration) {
+        this.syncData();
+        this.count = 0;
+    }
+	
    for (key in this.sys)
    {
         this.sys[key].update();

@@ -19,7 +19,7 @@ Quest.prototype.buildHTML = function()
 	var page = new PageUtil(this.tagname);
 	var content = 	 "<div class=\"cfpage\">"
 	  content += "this is myquest content!!!"
-	  content += "<button class=\"btn btn-primary\" data-toggle=\"modal\" onclick=\"g_insure.buy(1)\">购买</button>"
+	  content += "<button class=\"btn btn-primary\" data-toggle=\"modal\" onclick=\"g_quest.acceptQuest(33)\">接受</button>"
 	  content += "</div>"
 	page.addContent(content);
 	
@@ -27,11 +27,24 @@ Quest.prototype.buildHTML = function()
 }
 
 Quest.prototype.acceptQuest = function(questId){
-    alert('acceptQuest'+questId);
+    for (var i=0;i<g_player.quest.length;i++){
+	if (g_player.quest[i].id==questId) {
+	    g_msg.show("quest has been received",MSG.INFO);
+	    return;
+	}
+    }
+    g_player.quest.push({id:questId});
+    var strQuest = JSON.stringify(g_player.quest);
+    g_player.updateData({quest:strQuest});
+    
 }
 
 Quest.prototype.onAcceptQuest = function(){
     alert('onAcceptQuest');
+}
+
+Quest.prototype.onDoneQuest = function(){
+    alert('onDoneQuest');
 }
 
 Quest.prototype.loadDataCallback = function(tx,results){

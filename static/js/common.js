@@ -38,7 +38,12 @@ Datamgr.prototype = {
     },
     
     update:function(){
-        log(this.name);
+	this.count += 1;
+        log(this.name+this.count);
+	if (this.count>=this.syncDuration) {
+	    this.syncData();
+	    this.count = 0;
+	}
     },    
 
     onclick:function(clickX,clickY){
