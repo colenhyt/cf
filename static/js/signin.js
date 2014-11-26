@@ -1,11 +1,36 @@
 // JavaScript Document
 Signin = function(){
+	this.name = "signin"
+	this.tagname = "my"+this.name
 }
 
 Signin.prototype = new Datamgr();
 
 Signin.prototype.init = function(){
 	this.feeling = -1;
+	this.buildHTML();
+}
+
+Signin.prototype.buildHTML = function()
+{
+	var page = new PageUtil(this.tagname);
+    var header ="<input type='button' class='form-control' onclick='g_signin.doSignin()' value='签到'/>"
+    header += "<button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>×</span><span class='sr-only'>关闭</span></button>"	
+	page.addHeader(header);
+
+	var content = "<div> 今天签到获得:"
+    content +=      "      <div id='signin_gettoday'></div>"
+    content +=       " </div>"
+    content +=           "  <div> 明天签到获得:"
+    content +=            "     <div id='signin_gettomorrow'></div>"
+    content +=            " </div>"
+    content +=            " <div> 选择你今天的心情:"
+    content +=            "     <div id ='signin_feeling'>signin_feeling</div>  "
+    content +=            " </div>"
+
+	page.addContent(content);
+
+	document.write(page.toString());
 }
 
 Signin.prototype.start = function(startDay){ 
@@ -73,7 +98,7 @@ Signin.prototype.show = function(){
 Signin.prototype.doSignin = function(){
 	if (this.feeling<0)
 	{
-		alert('pls choose a feeling');
+		g_msg.show('pls choose a feeling',MSG.INFO);
 		return;
 	}
 	

@@ -22,6 +22,7 @@ var ms = myDate.getMilliseconds();
         <script type="text/javascript" src="static/data/signindata.js"></script>
         <script type="text/javascript" src="static/data/questdata.js"></script>
 		<script type="text/javascript" src="static/js/dbconfig.js"></script>
+		<script type="text/javascript" src="static/js/htmlutil.js"></script>
 		<script type="text/javascript" src="static/js/sqlite.js"></script>
 		<script type="text/javascript" src="static/js/common.js"></script>
 		<script type="text/javascript" src="static/js/game.js"></script>
@@ -31,78 +32,20 @@ var ms = myDate.getMilliseconds();
         <script type="text/javascript" src="static/js/signin.js"></script>
         <script type="text/javascript" src="static/js/toplist.js"></script>
        <script type="text/javascript" src="static/js/insure.js"></script>
+		<script type="text/javascript" src="static/js/message.js"></script>
        
-        
-<div class="modal fade" id="mysignin">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-      <input type="button" class='form-control' onclick="g_signin.doSignin()" value="签到"/>
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
-	  </div>
-            <div> 今天签到获得:
-                <div id="signin_gettoday"></div>
-            </div>
-            <div> 明天签到获得:
-                <div id="signin_gettomorrow"></div>
-            </div>
-            <div> 选择你今天的心情:
-                <div id ="signin_feeling">signin_feeling</div>  
-            </div>
-    </div>
-</div>
-</div>  
          
-<div class="modal fade" id="myinsure">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
-this is insure content!!!
-	  </div>
-      <div class="tab-pane in active" id="toplist3">
-	    <div class="example">
-		   <div class="panel">
-            <div class="panel-body">理财险</div>
-	       	<button class="btn btn-primary" onclick="g_insure.showDetail(1)">详情 111</button>
-            </div>
-		   <div class="panel">
-             <div class="panel-body">黄金
-         <table id="toplist1_tab">
-            <thead>
-              <tr>
-                <td class="td-c-name">价格</td>
-                <td class="td-c-value">123</td>
-                <td class="td-c-name">收益</td>
-                <td class="td-c-value">11</td>
-                <td class="td-c-name">周期</td>
-                <td class="td-c-value">99</td>
-              </tr>
-            </thead>
-          </table>             
-             </div>
-           </div>     
-	     </div>	  
-	  </div>      
-    </div>
-</div>
-</div>
-        
 <div class="modal fade" id="myinsure_detail">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
-this is insure contaaaaent!!!
 	  </div>
-       <div class="tab-pane in active" id="toplist3">
-	    <div class="example">
+       <div class="tab-pane in active" id="insure_detail1">
+	    <div class="cfpagedetail">
 		   <div class="panel">
-            <div class="panel-body">理财险</div>
-	       	<button class="btn btn-primary" data-toggle="modal" data-target="#myModal_table">详情</button>
-            </div>
-		   <div class="panel">
-             <div class="panel-body">黄金
+             <div><h2>平安保险</h2>
+             <div>投保后，在保险期间，可以规避对应的风险，规避经济上的损失</div>
          <table id="toplist1_tab">
             <thead>
               <tr>
@@ -114,7 +57,9 @@ this is insure contaaaaent!!!
                 <td class="td-c-value">99</td>
               </tr>
             </thead>
-          </table>             
+          </table>     
+          <button class="btn btn-primary" data-toggle="modal" onclick="g_insure.buy(1)">购买</button>
+          <button class="btn btn-primary" data-toggle="modal" data-dismiss="modal">取消</button>        
              </div>
            </div>     
 	     </div>	  
@@ -123,16 +68,6 @@ this is insure contaaaaent!!!
 </div>
 </div>
 
-<div class="modal fade" id="myquest">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
-this is myquest content!!!
-	  </div>
-    </div>
-</div>
-</div>          
 <div class="modal fade" id="mytoplist">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -148,7 +83,7 @@ this is myquest content!!!
 
     <div class="tab-content">
       <div class="tab-pane" id="toplist1">
-	    <div class="example">
+	    <div class="cfpage">
          <table class="table table-striped" id="toplist1_tab">
             <thead>
               <tr>
@@ -161,7 +96,7 @@ this is myquest content!!!
 		  </div>
       </div>
       <div class="tab-pane" id="toplist2">
-	    <div class="example">
+	    <div class="cfpage">
 		 <div class="panel">
         <div class="panel-body">面板内容1</div>
 		<button class="btn btn-primary" data-toggle="modal" data-target="#myModal_table">详情</button>
@@ -173,7 +108,7 @@ this is myquest content!!!
 	  </div>
 	  </div>
       <div class="tab-pane in active" id="toplist3">
-	    <div class="example">
+	    <div class="cfpage">
 		   <div class="panel">
             <div class="panel-body">理财险</div>
 	       	<button class="btn btn-primary" data-toggle="modal" data-target="#myModal_table">详情</button>
