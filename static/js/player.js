@@ -76,6 +76,7 @@ Player.prototype.login = function(item,isRegister){
     //cash div
     this.updateView_cash();
     
+   
     if (isRegister==true)
     {
     	g_signin.start(0);

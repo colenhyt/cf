@@ -38,17 +38,21 @@ Datamgr.prototype = {
     },
     
     update:function(){
-	this.count += 1;
-        log(this.name+this.count);
-	if (this.count>=this.syncDuration) {
-	    this.syncData();
-	    this.count = 0;
-	}
+		this.count += 1;
+	        log(this.name+this.count);
+		if (this.count>=this.syncDuration) {
+		    this.syncData();
+		    this.count = 0;
+		}
     },    
 
     onclick:function(clickX,clickY){
-        this.loadData();
-        $('#my'+this.name).modal('show');       
+    	if (this.name=="player"){
+        	g_title.loadData();
+         }else{
+	        this.loadData();
+	        $('#my'+this.name).modal('show');    
+         }  
     },    
 }
 

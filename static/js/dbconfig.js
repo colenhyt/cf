@@ -59,6 +59,15 @@ var game_table_schema = [
         ]
     },
     {
+        table : 't_title',
+        properties : [
+            {name : 'id',type : 'INT PRIMARY KEY ASC'}, 
+            {name : 'level'}, 
+            {name : 'name'}, 
+            {name : 'exp'}, 
+        ]
+    },
+    {
         table : 't_event',
         properties : [
             {name : 'eventid',type : 'INT PRIMARY KEY ASC'}, 

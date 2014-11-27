@@ -201,15 +201,15 @@ if(typeof jQuery === "undefined") {throw new Error("ZUI requires jQuery");}
         }
     };
 
-    var store = new Store();
+    //var store = new Store();
 
-    window.store = store;
+    //window.store = store;
 
-    window.store.noConflict = function()
-    {
-        window.store = old;
-        return store;
-    }
+//    window.store.noConflict = function()
+//    {
+//        window.store = old;
+//        return store;
+//    }
 }(window, jQuery);
 
 /*
@@ -1240,7 +1240,7 @@ Date.prototype.addMonths = function (value)
     $(window).resize(resetCssClass);
     resetCssClass();
 }(jQuery);
-
+ 
 /* ========================================================================
  * Bootstrap: transition.js v3.2.0
  * http://getbootstrap.com/javascript/#transitions
@@ -1779,7 +1779,7 @@ Date.prototype.addMonths = function (value)
   })
 
 }(window.jQuery);
-
+ 
 /* ========================================================================
  * Bootstrap: collapse.js v3.0.0
  * http://twbs.github.com/bootstrap/javascript.html#collapse
@@ -2178,6 +2178,7 @@ Date.prototype.addMonths = function (value)
   }
 
   Modal.prototype.show = function (_relatedTarget, position) {
+ 
     var that = this
     var e    = $.Event('show.zui.modal', { relatedTarget: _relatedTarget })
 
@@ -2429,7 +2430,7 @@ Date.prototype.addMonths = function (value)
   })
 
 }(jQuery);
-
+ 
 /* ========================================================================
  * ZUI: modal.trigger.js v1.2.0
  * http://zui.sexy/docs/javascript.html#modals
@@ -2438,7 +2439,7 @@ Date.prototype.addMonths = function (value)
 +function($)
 {
     "use strict";
-
+ 
     if(!$.fn.modal) throw new Error('Modal trigger requires modal.js')
 
     // ONCE MODAL CLASS DEFINITION
@@ -2536,7 +2537,7 @@ Date.prototype.addMonths = function (value)
     }
 
     ModalTrigger.prototype.show = function(option)
-    {
+    {  
         var options = $.extend({}, this.options, option);
         this.init(options);
         var that    = this,

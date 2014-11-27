@@ -242,7 +242,7 @@ Game.prototype.init_db = function(){
     
    //g_db.dropTable('t_player');
    //g_db.dropTable('t_insure');
-   //g_db.dropTable('t_game');
+  // g_db.dropTable('t_game');
    
     if (!g_db.check(game_table_schema)) {
         g_db = false;
@@ -263,7 +263,6 @@ Game.prototype.loadDataCallback = function(tx,results){
      		g_player.init();
     	});	
     }else {
-    	g_insure.loadData();
     	g_player.init();
     }
 }
@@ -274,9 +273,12 @@ Game.prototype.init_clientDB = function() {
      g_signin.loadData();
     });
    g_db.insertJson(game_tables["insure"], data_insuredata, function () {
-    g_insure.loadData();
+    //g_insure.loadData();
    });
-   return true;
+   g_db.insertJson(game_tables["title"], data_titledata, function () {
+    //alert('title insert done');
+   })
+    return true;
 }
 
 Game.prototype.register = function(obj){

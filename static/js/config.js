@@ -27,6 +27,7 @@ var game_tables = {
     "player":"t_player",
     "signin":"t_signin",
     "insure":"t_insure",
+    "title":"t_title",
     "playerlog":"t_playerlog",
 };
 

@@ -11,7 +11,6 @@ Insure.prototype.init = function(){
     g_game.register(this);
     //store.enable();
     this.buildHTML_body();
-    store.set('colen11','rrrrr5555');
 }
 
 Insure.prototype.loadDataCallback = function(tx,results){
