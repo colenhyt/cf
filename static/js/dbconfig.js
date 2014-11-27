@@ -5,6 +5,14 @@
 /* and also the table structure in table properties                                                           */
 var game_table_schema = [
     {
+        table : 't_game',
+        properties : [
+            {name : 'id',type : 'INT PRIMARY KEY ASC'}, 
+            {name : 'dataLoaded'}, 
+            {name : 'createtime'}, 
+        ]
+    },
+    {
         table : 't_player',
         properties : [
             {name : 'playerid',type : 'INT PRIMARY KEY ASC'}, 
@@ -37,6 +45,17 @@ var game_table_schema = [
             {name : 'day'}, 
             {name : 'type'}, 
             {name : 'value'}, 
+        ]
+    },
+    {
+        table : 't_insure',
+        properties : [
+            {name : 'id',type : 'INT PRIMARY KEY ASC'}, 
+            {name : 'type'}, 
+            {name : 'name'}, 
+            {name : 'prize'}, 
+            {name : 'profit'}, 
+            {name : 'period'}, 
         ]
     },
     {

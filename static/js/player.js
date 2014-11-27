@@ -37,12 +37,7 @@ Player.prototype.register_c = function(sex){
        var ret = g_db.insertJson(game_tables[this.name], items);	
 
       // alert("register"+item.createtime+";sex:"+item.sex);
-       var init = g_game.init_client();
-       if (init==true){
-            g_player.login(item,true);              
-       }else {
-        alert("game client init failed");
-       }
+       g_player.login(item,true); 
 }
 
 Player.prototype.register = function(){
@@ -151,4 +146,4 @@ Player.prototype.logPlayer = function(logs) {
 }
 
 var g_player = new Player();
-g_player.init();
+

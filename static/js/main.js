@@ -11,7 +11,7 @@ Main = function(){
 
 Main.prototype.init = function(){
     var canvas=document.getElementById('canvas');
-	this.m_game = new Game('game');
+	this.m_game = new Game();
 	this.m_game.init(canvas);
 }
  

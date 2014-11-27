@@ -22,9 +22,11 @@ var head_imgs = [
 
 var game_tables = {
     "toplist":"t_toplist",
+    "game":"t_game",
     "quest":"t_quest",
     "player":"t_player",
     "signin":"t_signin",
+    "insure":"t_insure",
     "playerlog":"t_playerlog",
 };
 

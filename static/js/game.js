@@ -208,13 +208,15 @@ Scene.prototype.draw = function(){
 Scene.prototype.update = function(){
 }
 
-Game = function(name){
-	this.name = name;
+Game = function(){
+	this.name = "game";
 	this.count = 1;
-       this.syncDuration = 6;
+    this.syncDuration = 6;
 	this.mm = {"aa":'ss',"bb":'ssb'};
 	this.sys = {};
 }
+
+Game.prototype = new Datamgr();
 
 Game.prototype.init = function(canvas){
 	
@@ -227,7 +229,7 @@ Game.prototype.init = function(canvas){
 	var game = this;
 	
 	TimerUpdate = function(){
-	   game.update();
+	  // game.update();
 	};
 	
 	setInterval(TimerUpdate,1000);
@@ -238,7 +240,7 @@ Game.prototype.init_db = function(){
         _db : window.openDatabase(g_dbname, g_dbversion, g_dbfile , g_dbsize)
     });
     
-   //g_db.dropTable('t_player');
+   g_db.dropTable('t_player');
     //g_db.dropTable('t_signin');
    
     if (!g_db.check(game_table_schema)) {
@@ -246,14 +248,32 @@ Game.prototype.init_db = function(){
         alert('Failed to cennect to database.');
     }
 	
+	this.loadData();
+	
 	log('init db ss');
 	
 }
 
+Game.prototype.loadDataCallback = function(tx,results){
+	if (results.rows.length==0){
+		var data_game = [{id:1,dataLoaded:true,createtime:Date.parse(new Date())}];
+   		g_db.insertJson(game_tables["game"], data_game, function () {
+     		g_game.init_clientDB();
+    	});	
+    }else {
+    	g_game.init_clientDB();
+    }
+}
+
 //:
-Game.prototype.init_client = function() {
-   g_db.insertJson(game_tables["signin"], data_signindata, function () {
-     alert('insertion done');
+Game.prototype.init_clientDB = function() {
+   g_db.insertJson(game_tables["signin"], data_signindata, function () {    
+     g_insure.loadData();
+    });
+   g_db.insertJson(game_tables["insure"], data_insuredata, function () {
+   alert('insert in done');
+    g_insure.loadData();
+     g_player.init();
     });
     return true;
 }

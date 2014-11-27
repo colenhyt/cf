@@ -1,5 +1,5 @@
 /*!
- * ZUI - v1.1.0 - 2014-08-28
+ * ZUI - v1.2.0-beta - 2014-11-08
  * http://zui.sexy
  * GitHub: https://github.com/easysoft/zui.git 
  * Copyright (c) 2014 cnezsoft.com; Licensed MIT
@@ -7,7 +7,7 @@
 
 /* Some code copy from Bootstrap v3.0.0 by @fat and @mdo. (Copyright 2013 Twitter, Inc. Licensed under http://www.apache.org/licenses/)*/
 
-if (typeof jQuery === "undefined") { throw new Error("ZUI requires jQuery") }
+if(typeof jQuery === "undefined") {throw new Error("ZUI requires jQuery");}
 
 /* Store */
 +function(window, $)
@@ -36,6 +36,7 @@ if (typeof jQuery === "undefined") { throw new Error("ZUI requires jQuery") }
         if($.isEmptyObject(this.page))
         {
             this.remove(pageName);
+            
         }
         else
         {
@@ -786,6 +787,7 @@ if (typeof jQuery === "undefined") { throw new Error("ZUI requires jQuery") }
  * @param  object|array args
  * @return string
  */
+(function(){
 String.prototype.format = function(args)
 {
     var result = this;
@@ -836,6 +838,7 @@ String.prototype.isNum = function(s)
     }
     return false;
 }
+})();
 
 /**
  * Format date to a string
@@ -1216,7 +1219,7 @@ Date.prototype.addMonths = function (value)
 }(window, jQuery);
 
 /* Device */
-+function($, window, document, Math)
++function($)
 {
     var desktopLg = 1200,
         desktop   = 992,
@@ -1236,7 +1239,7 @@ Date.prototype.addMonths = function (value)
 
     $(window).resize(resetCssClass);
     resetCssClass();
-}(jQuery,window,document,Math);
+}(jQuery);
 
 /* ========================================================================
  * Bootstrap: transition.js v3.2.0
@@ -2443,7 +2446,7 @@ Date.prototype.addMonths = function (value)
     var ModalTrigger = function(options)
     {
         options      = $.extend({}, ModalTrigger.DEFAULTS, options);
-        this.$modal  = $('#' + options.name);
+        this.$modal;
         this.isShown = false;
         this.options = options;
         this.id      = $.uuid();
@@ -2506,7 +2509,7 @@ Date.prototype.addMonths = function (value)
             }
         }
 
-        var $modal = this.$modal;
+        var $modal = $('#' + options.name);
         if($modal.length)
         {
             if(!this.isShown) $modal.off('.zui.modal');

@@ -1,29 +1,57 @@
 Insure = function(){
     this.name = "insure";
     this.tagname = "my"+this.name;
+    this.pagename = this.tagname+"page";
+    this.data = [];
 }
 
 Insure.prototype = new Datamgr();
 
 Insure.prototype.init = function(){
     g_game.register(this);
-    this.buildHTML();
     //store.enable();
+    this.buildHTML_Body();
     store.set('colen11','rrrrr5555');
 }
 
-Insure.prototype.buildHTML = function()
+Insure.prototype.loadDataCallback = function(tx,results){
+alert('load in count:'+results.rows.length);
+	for (var i=0;i<results.rows.length;i++){
+        g_insure.data.push[results.rows.item[i]];
+    }
+    g_insure.buildHTML_data();
+}
+
+Insure.prototype.buildHTML_Body = function()
 {
 	var page = new PageUtil(this.tagname);
 	page.buildSingleTab("保险业务");
 	var content = 	"<div class=\"tab-pane in active\" id=\"insure1\">";
-	content += "<div class=\"cfpage\">"
-	  content += "<div class=\"panel\" ID=\"insure_d1\" onclick=\"g_insure.showDetail(1)\">"
-     content += "<div class=\"panel-body\">保险</div>"
-      content += "</div>"
-	  content += "</div></div>"
+	content += "<div class=\"cfpage\" id='"+this.pagename+"'>"
+    
+    content += "</div></div>"
 	page.addContent(content);
 	document.write(page.toString());
+}
+
+Insure.prototype.buildHTML_data = function()
+{
+	var content = 	"";
+	if (this.data.length<=0){
+		  content += "<div class=\"panel\" ID=\"insure_d1\"><div class=\"panel-body\">no insure item</div>"
+      content += "</div>"
+	}else {
+		for (var i=0;i<this.data.length;i++){
+			var item = this.data[i];
+		  content += "<div class=\"panel\" ID=\"insure_d1\" onclick=\"g_insure.showDetail("+item.id+")\">"
+		     content += "<div class=\"panel-body\">"+item.name+"</div>"
+      content += "</div>"
+		}
+	}
+     
+	content += "</div></div>"
+	var tag = document.getElementById(this.pagename);
+	tag.innerHTML = content;
 }
 
 Insure.prototype.buildHTML_detail = function()
@@ -66,4 +94,4 @@ Insure.prototype.buy = function(id){
 }
 
 var g_insure = new Insure();
-g_insure.init();
+ g_insure.init();
