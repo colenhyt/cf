@@ -10,19 +10,20 @@ Insure.prototype = new Datamgr();
 Insure.prototype.init = function(){
     g_game.register(this);
     //store.enable();
-    this.buildHTML_Body();
+    this.buildHTML_body();
     store.set('colen11','rrrrr5555');
 }
 
 Insure.prototype.loadDataCallback = function(tx,results){
-alert('load in count:'+results.rows.length);
+	g_insure.data.splice(0,g_insure.data.length);
 	for (var i=0;i<results.rows.length;i++){
-        g_insure.data.push[results.rows.item[i]];
+		var item = results.rows.item(i);
+        g_insure.data.push(item);
     }
     g_insure.buildHTML_data();
 }
 
-Insure.prototype.buildHTML_Body = function()
+Insure.prototype.buildHTML_body = function()
 {
 	var page = new PageUtil(this.tagname);
 	page.buildSingleTab("保险业务");
@@ -44,12 +45,23 @@ Insure.prototype.buildHTML_data = function()
 		for (var i=0;i<this.data.length;i++){
 			var item = this.data[i];
 		  content += "<div class=\"panel\" ID=\"insure_d1\" onclick=\"g_insure.showDetail("+item.id+")\">"
-		     content += "<div class=\"panel-body\">"+item.name+"</div>"
-      content += "</div>"
+		     content += "<div class=\"panel-body\"><h2>"+item.name+"</h2>"
+			 content += "        <table id='toplist1_tab'>"
+			 content += "           <thead>"
+			 content += "             <tr>"
+			 content += "               <td class='td-c-name'>价格</td>"
+			 content += "               <td class='td-c-value'>"+item.price+"</td>"
+			 content += "               <td class='td-c-name'>收益</td>"
+			 content += "               <td class='td-c-value'>"+item.profit+"</td>"
+			 content += "               <td class='td-c-name'>周期</td>"
+			 content += "               <td class='td-c-value'>"+item.period+"</td>"
+			content += "              </tr>"
+			content += "            </thead>"
+			content += "          </table>"
+      content += "</div></div>"
 		}
 	}
      
-	content += "</div></div>"
 	var tag = document.getElementById(this.pagename);
 	tag.innerHTML = content;
 }

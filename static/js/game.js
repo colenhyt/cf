@@ -240,8 +240,9 @@ Game.prototype.init_db = function(){
         _db : window.openDatabase(g_dbname, g_dbversion, g_dbfile , g_dbsize)
     });
     
-   g_db.dropTable('t_player');
-    //g_db.dropTable('t_signin');
+   //g_db.dropTable('t_player');
+   //g_db.dropTable('t_insure');
+   //g_db.dropTable('t_game');
    
     if (!g_db.check(game_table_schema)) {
         g_db = false;
@@ -259,23 +260,23 @@ Game.prototype.loadDataCallback = function(tx,results){
 		var data_game = [{id:1,dataLoaded:true,createtime:Date.parse(new Date())}];
    		g_db.insertJson(game_tables["game"], data_game, function () {
      		g_game.init_clientDB();
+     		g_player.init();
     	});	
     }else {
-    	g_game.init_clientDB();
+    	g_insure.loadData();
+    	g_player.init();
     }
 }
 
 //:
 Game.prototype.init_clientDB = function() {
    g_db.insertJson(game_tables["signin"], data_signindata, function () {    
-     g_insure.loadData();
+     g_signin.loadData();
     });
    g_db.insertJson(game_tables["insure"], data_insuredata, function () {
-   alert('insert in done');
     g_insure.loadData();
-     g_player.init();
-    });
-    return true;
+   });
+   return true;
 }
 
 Game.prototype.register = function(obj){

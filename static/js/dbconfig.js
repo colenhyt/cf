@@ -53,7 +53,7 @@ var game_table_schema = [
             {name : 'id',type : 'INT PRIMARY KEY ASC'}, 
             {name : 'type'}, 
             {name : 'name'}, 
-            {name : 'prize'}, 
+            {name : 'price'}, 
             {name : 'profit'}, 
             {name : 'period'}, 
         ]
