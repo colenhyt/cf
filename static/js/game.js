@@ -242,7 +242,7 @@ Game.prototype.init_db = function(){
     
    //g_db.dropTable('t_player');
    //g_db.dropTable('t_insure');
-  // g_db.dropTable('t_game');
+   //g_db.dropTable('t_game');
    
     if (!g_db.check(game_table_schema)) {
         g_db = false;
@@ -277,6 +277,9 @@ Game.prototype.init_clientDB = function() {
    });
    g_db.insertJson(game_tables["title"], data_titledata, function () {
     //alert('title insert done');
+   })
+   g_db.insertJson(game_tables["quest"], data_questdata, function () {
+    alert('quest insert done');
    })
     return true;
 }

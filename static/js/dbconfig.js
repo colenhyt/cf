@@ -70,9 +70,23 @@ var game_table_schema = [
     {
         table : 't_event',
         properties : [
-            {name : 'eventid',type : 'INT PRIMARY KEY ASC'}, 
+            {name : 'id',type : 'INT PRIMARY KEY ASC'}, 
             {name : 'type'}, 
             {name : 'value'}, 
         ]
     },
+    {
+        table : 't_quest',
+        properties : [
+            {name : 'id',type : 'INT PRIMARY KEY ASC'}, 
+            {name : 'name'}, 
+            {name : 'type'}, 
+            {name : 'desc'}, 
+            {name : 'need'}, 
+            {name : 'cost'}, 
+            {name : 'target'}, 
+            {name : 'prize'}, 
+        ]
+    },
 ];
+
