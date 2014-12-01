@@ -219,6 +219,9 @@ Game = function(){
 Game.prototype = new Datamgr();
 
 Game.prototype.init = function(canvas){
+	store.set('tt','colcncolcn');
+	alert(store.get('ttt'));
+	
 	
 	this.init_db();
 	
@@ -236,10 +239,11 @@ Game.prototype.init = function(canvas){
 }
 
 Game.prototype.init_db = function(){
+  alert('open database');
     g_db = new cDB({
         _db : window.openDatabase(g_dbname, g_dbversion, g_dbfile , g_dbsize)
     });
-    
+    alert('open database');
    //g_db.dropTable('t_player');
    //g_db.dropTable('t_insure');
    //g_db.dropTable('t_game');

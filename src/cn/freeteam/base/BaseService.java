@@ -59,4 +59,5 @@ public class BaseService extends Base{
 		//调用set方法
 		method.invoke(this, obj);
 	}
+	
 }

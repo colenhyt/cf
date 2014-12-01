@@ -1,43 +1,54 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>图片滚动</title>
+</head>
+<body>
+<style type="text/css">
+<!--
+#picScroll {background: #FFF;overflow:hidden;border: 1px dashed #CCC;width: 745px;}
+#picScroll img {border: 3px solid #F2F2F2;}
+#picSdiv {float: left;width: 800%;}
+#picSdiv1 {float: left;}
+#picSdiv2 {float: left;}
+-->
+</style>
+<div id="picScroll">
+    <div id="picSdiv">
+        <div id="picSdiv1">
+            <a href="#"><img src="static/img/1/1.jpg" border="0" width="185" height="240" /></a>
+            <a href="#"><img src="static/img/1/2.jpg" border="0" width="185" height="240" /></a>
+            <a href="#"><img src="static/img/1/3.jpg" border="0" width="185" height="240" /></a>
+            <a href="#"><img src="static/img/1/4.jpg" border="0" width="185" height="240" /></a>
+            <a href="#"><img src="static/img/1/5.jpg" border="0" width="185" height="240" /></a>
+            <a href="#"><img src="static/img/1/6.jpg" border="0" width="185" height="240" /></a>
+            <a href="#"><img src="static/img/1/7.jpg" border="0" width="185" height="240" /></a>
+            <a href="#"><img src="static/img/1/8.jpg" border="0" width="185" height="240" /></a>
+            <a href="#"><img src="static/img/1/9.jpg" border="0" width="185" height="240" /></a>
+            <a href="#"><img src="static/img/1/10.jpg" border="0" width="185" height="240" /></a>
+            <a href="#"><img src="static/img/1/11.jpg" border="0" width="185" height="240" /></a>
+            <a href="#"><img src="static/img/1/12.jpg" border="0" width="185" height="240" /></a>
+        </div>
+        <div id="picSdiv2"></div>
+    </div>
+</div>
+<!--下面是js代码,请在测试时加上script标签-->
 <SCRIPT LANGUAGE="JavaScript">
-var myDate = new Date();
-var ss = myDate.getSeconds(); 
-var ms = myDate.getMilliseconds();
+var speed=10;
+var picS=document.getElementByIdx_x("picScroll");
+var picS1=document.getElementByIdx_x("picSdiv1");
+function Marquee(){
+    if(picS.scrollLeft >= picS1.offsetWidth)
+        picS.scrollLeft =0;
+    else{
+        picS.scrollLeft++;
+    }
+}
+var MyMar=setInterval(Marquee,speed);
+picS.onmouseover=function() {clearInterval(MyMar)};
+picS.onmouseout=function() {MyMar=setInterval(Marquee,speed)};
 </script>
-	<head>
-		<meta charset='gbk'>
-  <link href="dist/css/zui.css" rel="stylesheet">
-  <link href="dist/css/cf.css" rel="stylesheet">		
-		<title>cf</title>
-	</head>
-  <script src="assets/jquery.js"></script>
-  <script src="dist/js/zui.min.js"></script>
-  <script src="dist/js/store.js"></script>
- <script src="dist/js/doc.js"></script>dd
-  	<body><div id="divhide"></div>
-		<canvas id="canvas" width="320" height="400"></canvas>
-		<div id="console">www</div>
-		<script type="text/javascript" src="static/js/config.js"></script>
-        <script type="text/javascript" src="static/data/signindata.js"></script>
-        <script type="text/javascript" src="static/data/questdata.js"></script>
-		<script type="text/javascript" src="static/js/dbconfig.js"></script>
-		<script type="text/javascript" src="static/js/htmlutil.js"></script>
-		<script type="text/javascript" src="static/js/sqlite.js"></script>
-		<script type="text/javascript" src="static/js/common.js"></script>
-		<script type="text/javascript" src="static/js/game.js"></script>
-		<script type="text/javascript" src="static/js/main.js"></script>
-		<script type="text/javascript" src="static/js/player.js"></script>
-		<script type="text/javascript" src="static/js/quest.js"></script>
-        <script type="text/javascript" src="static/js/signin.js"></script>
-        <script type="text/javascript" src="static/js/toplist.js"></script>
-       <script type="text/javascript" src="static/js/insure.js"></script>
-  
-  	</body>
-<SCRIPT LANGUAGE="JavaScript">
-var myDate22 = new Date();
-var ss2 = myDate22.getSeconds(); 
-var ms2 = myDate22.getMilliseconds();
-//alert("s: "+(ss2-ss)+",ms: "+(ms2-ms));
-</script>  	
+<!--上面是js代码,请在测试时加上script标签-->
+</body>
 </html>

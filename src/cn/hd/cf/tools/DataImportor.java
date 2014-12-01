@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.List;
 
@@ -16,12 +18,13 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import cn.freeteam.base.Base;
 import cn.freeteam.base.BaseService;
-import cn.hd.cf.model.Signin;
+import cn.hd.cf.model.*;
 import cn.hd.cf.model.Signindata;
 import cn.hd.cf.service.SignindataService;
 
-public class DataImportor {
+public class DataImportor extends Base{
 	private static String CONFIG_PATH_JS = "static/data/";
 	private static String CONFIG_FILE_LOCATION = "cfdata.xlsx";
 	
@@ -38,36 +41,87 @@ public class DataImportor {
 		signindataService = new SignindataService();
 	}
 	
-	public void importSignindata()
+	public void importData(String dataName)
 	{
-		Signindata currData = signindataService.findActive();
-		float newVersion = getDataversion(DATA_NAME_SIGNIN);
-		if (currData!=null&&currData.getVersion()>=newVersion){
-			if (currData.getVersion()>=newVersion)
+		try {
+			String strClassName = "cn.hd.cf.service."+dataName.substring(0,1).toUpperCase()+dataName.substring(1,dataName.length());
+			strClassName += "Service";
+			Object serviceOjb = Class.forName(strClassName).newInstance();
+			Method serviceMethod=serviceOjb.getClass().getMethod("findActive",null) ;
+			Object currObj = serviceMethod.invoke(serviceOjb, null);		
+
+			Float newVersion = getDataversion(dataName);
+			
+		if (currObj!=null){
+			Method method=currObj.getClass().getMethod("getVersion",null) ;
+			Float currVer = (Float)method.invoke(currObj, null);		
+			if (currVer.floatValue()>=newVersion.floatValue())
 			{
-				System.out.println("current data version("+currData.getVersion()+") is not less than xlsx version("+newVersion+"),could not import");
+				System.out.println(dataName+" current data version("+currVer.floatValue()+") is not less than xlsx version("+newVersion+"),could not import");
+				return;
 			}
-			return;
 		}
 		
-		JSONArray data = getJsondata(DATA_NAME_SIGNIN);
-		System.out.println(data.toString());
-		List<Signin> list = JSONArray.toList(data, Signin.class);
-		Signindata signindata = new Signindata();
-		signindata.setStatus(Byte.valueOf(BaseService.DATA_STATUS_ACTIVE));
+		strClassName = "cn.hd.cf.model."+dataName.substring(0,1).toUpperCase()+dataName.substring(1,dataName.length());
+		 Object dataOjb = Class.forName(strClassName).newInstance();
+		 
+		 Class[] argsClass = new Class[1];     
+
+		Byte param = Byte.valueOf(BaseService.DATA_STATUS_ACTIVE);
+	    argsClass[0] = param.getClass();			
+		Method method=dataOjb.getClass().getMethod("setStatus",argsClass) ;
+		method.invoke(dataOjb, param);		
+
+		param = Byte.valueOf((byte)2);
+	    argsClass[0] = param.getClass();			
+		method=dataOjb.getClass().getMethod("setType",argsClass) ;
+		method.invoke(dataOjb, param);		
+
 		Date time = new Date(); 
-		signindata.setCreatetime(time);	
-		signindata.setType(Byte.valueOf((byte)2));
-		signindata.setData(data.toString().getBytes());
-		signindata.setVersion(newVersion);
-		boolean ret = false;
-//		ret = signindataService.add(signindata);
+	    argsClass[0] = time.getClass();			
+		method=dataOjb.getClass().getMethod("setCreatetime",argsClass) ;
+		method.invoke(dataOjb, time);	
 		
-		if (ret&&currData!=null)
+	    argsClass[0] = Float.class;
+		method=dataOjb.getClass().getMethod("setVersion",argsClass) ;
+		method.invoke(dataOjb, newVersion);		
+
+		JSONArray data = getJsondata(dataName);
+		System.out.println("find "+dataName+" xls data:"+data.toString());
+	    argsClass[0] = byte[].class;			
+		method=dataOjb.getClass().getMethod("setData",argsClass) ;
+		method.invoke(dataOjb, data.toString().getBytes());		
+			
+		boolean ret = false;
+		argsClass[0] = dataOjb.getClass();
+		serviceMethod=serviceOjb.getClass().getMethod("add",argsClass) ;
+		ret = (boolean)serviceMethod.invoke(serviceOjb, dataOjb);		
+		
+		if (ret&&currObj!=null)
 		{
-			signindataService.resetInacvtive(currData);
+			argsClass[0] = currObj.getClass();
+			serviceMethod=serviceOjb.getClass().getMethod("resetInacvtive",argsClass) ;
+			serviceMethod.invoke(serviceOjb, currObj);		
+			System.out.println(dataName+"old data status reset success!!");
 		}
-		System.out.println("version("+newVersion+") import data success");
+		System.out.println(dataName+"(version:"+newVersion+") import success!!");
+		} catch (InstantiationException | IllegalAccessException
+				| ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void outputAllJsData()
@@ -151,7 +205,7 @@ public class DataImportor {
 	}
 	
 	
-	private float getDataversion(String strSheetName)
+	private Float getDataversion(String strSheetName)
 	{
 		XSSFSheet st = getSheet(strSheetName);
         int rows=st.getLastRowNum()+1;//总行数  
@@ -165,7 +219,8 @@ public class DataImportor {
    	        if (cell1.getCellType()==XSSFCell.CELL_TYPE_NUMERIC)
    	        	version = Double.valueOf(cell1.getNumericCellValue());  			
    		}
-   		return (float)version;
+   		float ver = (float)version;
+   		return Float.valueOf(ver);
 	}
 	
 	private XSSFSheet getSheet(String strSheetName)
@@ -189,8 +244,8 @@ public class DataImportor {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		DataImportor importor = new DataImportor();
-		//importor.importSignindata();
-		importor.outputAllJsData();
+		importor.importData("titledata");
+//		importor.outputAllJsData();
 	}
 
 }

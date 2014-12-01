@@ -257,9 +257,9 @@ public class XMLConfigBuilder extends BaseBuilder
          String url = child.getStringAttribute("url");
 
          if ((resource != null) && (url == null)) {
-        	 if(dialect != null){
-        		 resource = resource.replace(".xml", "_"+dialect+".xml");//从方言指定位置查找
-        	 }
+//        	 if(dialect != null){
+//        		 resource = resource.replace(".xml", "_"+dialect+".xml");//从方言指定位置查找
+//        	 }
 
            ErrorContext.instance().resource(resource);
            InputStream inputStream = Resources.getResourceAsStream(resource);
