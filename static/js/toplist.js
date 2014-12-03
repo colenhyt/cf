@@ -6,7 +6,6 @@ Toplist = function(){
 Toplist.prototype = new Datamgr();
 
 Toplist.prototype.init = function(){
-    g_game.register(this);
 }
 
 Toplist.prototype.loadDataCallback = function(tx,results){

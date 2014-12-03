@@ -9,30 +9,27 @@ Title = function(){
 Title.prototype = new Datamgr();
 
 Title.prototype.init = function(){
-	//this.loadData();
+	var tdata = store.get(this.name);
+	if (tdata==null)
+	{
+		store.set(this.name,data_titledata);
+	} 
 }
 
-Title.prototype.loadDataCallback = function(tx,results){
-	for (var i=0;i<results.rows.length;i++){
-		var item = results.rows.item(i);
-        g_title.data.push(item);
-    }
-    g_title.loadTitle();
-}
-
-Title.prototype.loadTitle = function(){
+Title.prototype.show = function(){
 	var pexp = g_player.data.exp;
 	var id = -1;
-	for (var i=0;i<this.data.length;i++){
-		var item = this.data[i];
+	var tdata = store.get(this.name);
+	for (var i=0;i<tdata.length;i++){
+		var item = tdata[i];
 		if (item.exp<=pexp){
-			if (id==-1||this.data[i].exp<item.exp)
+			if (id==-1||tdata[i].exp<item.exp)
 				id = i;
 		}
     }
     if (id>=0){
-    	this.item = this.data[id];
-    	//alert('称号是：'+this.item.name);
+    	this.item = tdata[id];
+    	alert('称号是：'+this.item.name);
     }
 }
 var g_title = new Title();

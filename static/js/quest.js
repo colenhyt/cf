@@ -12,9 +12,12 @@ Quest = function(){
 Quest.prototype = new Datamgr();
 
 Quest.prototype.init = function(duration){
-    g_game.register(this);
     this.duration = duration;
-    //this.loadData();
+	var tdata = store.get(this.name);
+	if (tdata==null)
+	{
+		store.set(this.name,data_questdata);
+	} 
     this.buildHTML_body();
 }
 
@@ -45,15 +48,16 @@ Quest.prototype.buildHTML_body = function()
 	
 }
 
-Quest.prototype.buildHTML_data = function()
+Quest.prototype.show = function()
 {
+	var tdata = store.get(this.name);
 	var content = 	"";
-	if (this.data.length<=0){
+	if (tdata.length<=0){
 		  content += "<div class='panel' ID='insure_d1'><div class='panel-body'>no quest item</div>"
       content += "</div>"
 	}else {
-		for (key in this.data){
-			var item = this.data[key];
+		for (key in tdata){
+			var item = tdata[key];
 		  content += "<div class='panel' ID='"+this.pagename+item.id+"' onclick='g_quest.showDetail("+item.id+")'>"
 		     content += "<div class='panel-body'><h2>"+item.name+"</h2>"
 			 content += "        <table id='"+this.tagname+"tab'>"
@@ -74,10 +78,13 @@ Quest.prototype.buildHTML_data = function()
      
 	var tag = document.getElementById(this.pagename);
 	tag.innerHTML = content;
+    $('#my'+this.name).modal('show');    
 }
 
 Quest.prototype.showDetail = function(id){  
-var item = this.data[id];
+	var tdata = store.get(this.name);
+   var item = tdata[id-1];
+   if (item==null) return;
 
 var content =      "        <div><h2>"+item.name+"</h2>"
  content += "            <div>"+item.desc+"</div>"

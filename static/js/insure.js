@@ -10,8 +10,11 @@ Insure = function(){
 Insure.prototype = new Datamgr();
 
 Insure.prototype.init = function(){
-    g_game.register(this);
-    //store.enable();
+	var tdata = store.get(this.name);
+	if (tdata==null)
+	{
+		store.set(this.name,data_insuredata);
+	}     
     this.buildHTML_body();
 }
 
@@ -43,15 +46,16 @@ Insure.prototype.buildHTML_body = function()
 	document.write(pagedetail.toString());
 }
 
-Insure.prototype.buildHTML_data = function()
+Insure.prototype.show = function()
 {
+	var tdata = store.get(this.name);
 	var content = 	"";
-	if (this.data.length<=0){
+	if (tdata.length<=0){
 		  content += "<div class=\"panel\" ID=\"insure_d1\"><div class=\"panel-body\">no insure item</div>"
       content += "</div>"
 	}else {
-		for ( key in this.data){
-			var item = this.data[key];
+		for ( key in tdata){
+			var item = tdata[key];
 		  content += "<div class=\"panel\" ID=\"insure_d1\" onclick=\"g_insure.showDetail("+item.id+")\">"
 		     content += "<div class=\"panel-body\"><h2>"+item.name+"</h2>"
 			 content += "        <table id='toplist1_tab'>"
@@ -72,6 +76,8 @@ Insure.prototype.buildHTML_data = function()
      
 	var tag = document.getElementById(this.pagename);
 	tag.innerHTML = content;
+	
+    $('#my'+this.name).modal('show');    
 }
 
 Insure.prototype.buildHTML_detail = function()
@@ -84,7 +90,9 @@ Insure.prototype.loadDetail = function(id){
 }
 
 Insure.prototype.showDetail = function(id){    
-   var item = this.data[id];
+	var tdata = store.get(this.name);
+   var item = tdata[id-1];
+   if (item==null) return;
         
 var content =      "        <div><h2>"+item.name+"</h2>"
  content += "            <div>投保后，在保险期间，可以规避对应的风险，规避经济上的损失</div>"

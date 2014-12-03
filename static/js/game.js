@@ -219,11 +219,12 @@ Game = function(){
 Game.prototype = new Datamgr();
 
 Game.prototype.init = function(canvas){
-	store.set('tt','colcncolcn');
-	alert(store.get('ttt'));
-	
-	
-	this.init_db();
+	var tdata = store.get(this.name);
+	if (tdata==null)
+	{
+		var data_game = [{id:1,dataLoaded:true,createtime:Date.parse(new Date())}];
+		store.set(this.name,data_game);
+	}
 	
 	this.m_scene = new Scene();
 	var scene = this.m_scene;
@@ -232,60 +233,19 @@ Game.prototype.init = function(canvas){
 	var game = this;
 	
 	TimerUpdate = function(){
-	  // game.update();
+	   game.update();
 	};
 	
 	setInterval(TimerUpdate,1000);
-}
-
-Game.prototype.init_db = function(){
-  alert('open database');
-    g_db = new cDB({
-        _db : window.openDatabase(g_dbname, g_dbversion, g_dbfile , g_dbsize)
-    });
-    alert('open database');
-   //g_db.dropTable('t_player');
-   //g_db.dropTable('t_insure');
-   //g_db.dropTable('t_game');
-   
-    if (!g_db.check(game_table_schema)) {
-        g_db = false;
-        alert('Failed to cennect to database.');
-    }
 	
-	this.loadData();
+	this.register(g_insure);
+	this.register(g_title);
+	this.register(g_quest);
+	this.register(g_player);
+	this.register(g_toplist);
 	
-	log('init db ss');
+	g_player.init();
 	
-}
-
-Game.prototype.loadDataCallback = function(tx,results){
-	if (results.rows.length==0){
-		var data_game = [{id:1,dataLoaded:true,createtime:Date.parse(new Date())}];
-   		g_db.insertJson(game_tables["game"], data_game, function () {
-     		g_game.init_clientDB();
-     		g_player.init();
-    	});	
-    }else {
-    	g_player.init();
-    }
-}
-
-//:
-Game.prototype.init_clientDB = function() {
-   g_db.insertJson(game_tables["signin"], data_signindata, function () {    
-     g_signin.loadData();
-    });
-   g_db.insertJson(game_tables["insure"], data_insuredata, function () {
-    //g_insure.loadData();
-   });
-   g_db.insertJson(game_tables["title"], data_titledata, function () {
-    //alert('title insert done');
-   })
-   g_db.insertJson(game_tables["quest"], data_questdata, function () {
-    alert('quest insert done');
-   })
-    return true;
 }
 
 Game.prototype.register = function(obj){

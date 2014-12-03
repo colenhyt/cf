@@ -48,10 +48,9 @@ Datamgr.prototype = {
 
     onclick:function(clickX,clickY){
     	if (this.name=="player"){
-        	g_title.loadData();
+        	g_title.show();
          }else{
-	        this.loadData();
-	        $('#my'+this.name).modal('show');    
+	        this.show();
          }  
     },    
 }

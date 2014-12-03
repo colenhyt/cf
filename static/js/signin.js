@@ -8,6 +8,11 @@ Signin.prototype = new Datamgr();
 
 Signin.prototype.init = function(){
 	this.feeling = -1;
+	var tdata = store.get(this.name);
+	if (tdata==null)
+	{
+		store.set(this.name,data_signindata);
+	} 	
 	this.buildHTML_body();
 }
 
@@ -41,28 +46,25 @@ Signin.prototype.start = function(startDay){
     var signin = this;    
     var vstartDay = startDay + 1;	//
     
-    var query = 'SELECT * FROM t_signin where day>='+vstartDay+' and day<='+(vstartDay+1);
-    g_db.query(query, function (tx, res) {
-       if (res.rows.length) {
-            //alert('found ' + res.rows.length + ' record(s)');
-        } else {
-            alert('table foo is empty');
-        }
-        	signin.data = [];
-        	signin.data_to = [];
-        	for (var i=0;i<res.rows.length;i++)
-        	{
-        		var item = res.rows.item(i);
-        		var item2 ={"t":item.type,"v":item.value};
-        		if (item.day==vstartDay){
-        			signin.data.push(item2);
-        		}else if (item.day==vstartDay+1){
-        			signin.data_to.push(item2);
-        		}
-        	}
-            signin.show();
-    });     
-}
+    var data = store.get(this.name);
+    if (data!=null)
+    {
+    	signin.data = [];
+    	signin.data_to = [];
+    	for (var i=0;i<data.length;i++)
+    	{
+    		var item = data[i];
+    		var item2 ={"t":item.type,"v":item.value};
+    		if (item.day==vstartDay){
+    			signin.data.push(item2);
+    		}else if (item.day==vstartDay+1){
+    			signin.data_to.push(item2);
+    		}
+    	} 
+    	if (signin.data.length>0)   
+        	signin.show();
+    }
+ }
 
 Signin.prototype.show = function(){
     var signin = this;    

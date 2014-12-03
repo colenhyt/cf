@@ -11,10 +11,9 @@ Main = function(){
 
 Main.prototype.init = function(){
     var canvas=document.getElementById('canvas');
-	this.m_game = new Game();
-	this.m_game.init(canvas);
+	g_game = new Game();
+	g_game.init(canvas);
 }
  
 var g_main = new Main();
 g_main.init();
-g_game = g_main.m_game;  
