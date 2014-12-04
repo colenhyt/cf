@@ -13,29 +13,33 @@ Signin.prototype.init = function(){
 	{
 		store.set(this.name,data_signindata);
 	} 	
-	this.buildHTML_body();
+	this.buildHTML();
 }
 
-Signin.prototype.loadDataCallback = function(tx,results){
-
-}
-
-Signin.prototype.buildHTML_body = function()
+Signin.prototype.buildHTML = function()
 {
 	var page = new PageUtil(this.tagname);
-    var header ="<input type='button' class='form-control' onclick='g_signin.doSignin()' value='签到'/>"
-    header += "<button type='button' class='close' data-dismiss='modal'><span aria-hidden='true'>*</span><span class='sr-only'>关闭</span></button>"	
-	page.addHeader(header);
+	var content = "<table class='cf-m-header'>"
+	content += " <tr>"
+	content += "  <td width='100'>"
+    content += "<input type='button' class='form-control' onclick='g_signin.doSignin()' value='签到'/>"
+	content += "</td>"
+	content += "   <td align='right'>"
+    content += "<button type='button' class='close' data-dismiss='modal'><img src='static/img/close.png'></button>"	
+	content += "</td>"
+	content += " </tr>"
+	content += "</table>"
+	page.addHeader(content);
 
-	var content = "<div> 今天获得:"
+	content = "<div class='cf-signin-prize'><div> 今天获得:"
     content +=      "      <div id='signin_gettoday'></div>"
     content +=       " </div>"
-    content +=           "  <div> 明天获得:"
+    content +=           "  <div> 明天将获得:"
     content +=            "     <div id='signin_gettomorrow'></div>"
-    content +=            " </div>"
-    content +=            " <div> 选择你的心情:"
+    content +=            " </div></div>"
+    content +=            " <div class='cf-signin-feeling'> 请选择你今天的心情:"
     content +=            "     <div id ='signin_feeling'>signin_feeling</div>  "
-    content +=            " </div>"
+    content +=            " </div></div>"
 
 	page.addContent(content);
 
@@ -90,6 +94,7 @@ Signin.prototype.show = function(){
         img.src = imgData.src;
         img.id = "imgfeeling_"+imgData.id;
         img.sid = imgData.id;
+        img.width = 50;
         img.onclick = function(){          
             signin.feeling = this.sid;
             this.style.border = "1px red";

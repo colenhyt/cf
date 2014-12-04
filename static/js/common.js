@@ -10,7 +10,7 @@ log = function(text){
 }
 
 itemStr = function(items,split){
-    var itemDesc;
+    var itemDesc = "";
     for (var i=0;i<items.length;i++){
     	var item = items[i];
     	if (item.t==ITEM_TYPE.CASH)
@@ -47,11 +47,7 @@ Datamgr.prototype = {
     },    
 
     onclick:function(clickX,clickY){
-    	if (this.name=="player"){
-        	g_title.show();
-         }else{
-	        this.show();
-         }  
+	     this.show();
     },    
 }
 

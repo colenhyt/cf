@@ -30,10 +30,36 @@
           box-shadow: 0 3px 9px rgba(0, 0, 0, .5);  
 }
 
+.cf-m-header {
+margin-left:30px;
+margin-top:30px;
+width: auto;
+}
+
+.cf-button {
+  height: 24px;
+  padding: 2px 8px;
+  font-size: 18px;
+  line-height: 1.5;
+  border-radius: 3px;
+}
+
+.cf-signin-prize{
+margin-left:30px;
+padding-top:10px;
+padding-bottom:20px;
+}
+
+.cf-signin-feeling{
+margin-left:30px;
+padding-top:10px;
+padding-bottom:20px
+}
+
 .td-c-name {
     color: green;
     font-size:18px;
-    padding-right:5px
+    padding-right:5px;
 }
 .td-c-value {
     color: #000;

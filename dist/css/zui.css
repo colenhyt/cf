@@ -6198,6 +6198,11 @@ ol.linenums li {
   z-index: 1050;
   width: auto;
   margin-right: auto;
+  background-color: #ffffff;
+  font-size:18px;
+  color: blue;
+  border-color: blue;
+  border: 3;
   margin-left: auto;
 }
 .modal-dialog.fullscreen {

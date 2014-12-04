@@ -15,18 +15,10 @@ Insure.prototype.init = function(){
 	{
 		store.set(this.name,data_insuredata);
 	}     
-    this.buildHTML_body();
+    this.buildHTML();
 }
 
-Insure.prototype.loadDataCallback = function(tx,results){
-	for (var i=0;i<results.rows.length;i++){
-		var item = results.rows.item(i);
-		g_insure.data[item.id] = item;
-    }
-    g_insure.buildHTML_data();
-}
-
-Insure.prototype.buildHTML_body = function()
+Insure.prototype.buildHTML = function()
 {
 	var page = new PageUtil(this.tagname);
 	page.buildSingleTab("保险业务");
@@ -78,15 +70,6 @@ Insure.prototype.show = function()
 	tag.innerHTML = content;
 	
     $('#my'+this.name).modal('show');    
-}
-
-Insure.prototype.buildHTML_detail = function()
-{
-	
-}
-
-Insure.prototype.loadDetail = function(id){
-  
 }
 
 Insure.prototype.showDetail = function(id){    

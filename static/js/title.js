@@ -16,21 +16,19 @@ Title.prototype.init = function(){
 	} 
 }
 
-Title.prototype.show = function(){
+Title.prototype.getName = function(lv){
 	var pexp = g_player.data.exp;
 	var id = -1;
+	var name = "";
 	var tdata = store.get(this.name);
 	for (var i=0;i<tdata.length;i++){
 		var item = tdata[i];
-		if (item.exp<=pexp){
-			if (id==-1||tdata[i].exp<item.exp)
-				id = i;
+		if (item.level==lv){
+			name = item.name;
+			break;
 		}
     }
-    if (id>=0){
-    	this.item = tdata[id];
-    	alert('称号是：'+this.item.name);
-    }
+    return name;
 }
 var g_title = new Title();
 g_title.init();
