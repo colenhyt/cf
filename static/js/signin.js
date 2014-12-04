@@ -106,9 +106,7 @@ Signin.prototype.doSignin = function(){
 	
     g_player.prize(this.data);
     
-    g_player.logPlayer([{"logtime":Date.parse(new Date()),"feeling":this.feeling}]);
-    
-    g_player.updateData({'lastsignin':Date.parse(new Date())}); 
+    g_playerlog.updateSignin(this.feeling);
     
     $('#'+this.tagname).modal('hide');     
 }

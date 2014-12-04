@@ -18,21 +18,13 @@ Quest.prototype.init = function(duration){
 	{
 		store.set(this.name,data_questdata);
 	} 
-    this.buildHTML_body();
+    this.buildHTML();
 }
 
-Quest.prototype.loadDataCallback = function(tx,results){
-	for (var i=0;i<results.rows.length;i++){
-		var item = results.rows.item(i);
-        g_quest.data[item.id]= item;
-    }
-    g_quest.buildHTML_data();
-}
-
-Quest.prototype.buildHTML_body = function()
+Quest.prototype.buildHTML = function()
 {
 	var page = new PageUtil(this.tagname);
-	page.buildSingleTab("任务列表");
+	page.buildSingleTab("每日任务");
 	var content = 	"<div class='tab-pane in active' id='quest1'>";
 	content += "<div class='cfpage' id='"+this.pagename+"'>"
     content += "</div></div>"
@@ -125,8 +117,10 @@ Quest.prototype.acceptQuest = function(id){
 }
 
 
-Quest.prototype.onAcceptQuest = function(){
-    alert('onAcceptQuest');
+Quest.prototype.onAcceptDaily = function(){
+    //alert('onAcceptDaily');
+    return false;
+    
 }
 
 Quest.prototype.doneQuest = function(questId){

@@ -1,3 +1,67 @@
+Playerlog = function(){
+	this.name = "playerlog";
+}
+
+Playerlog.prototype.init = function(){
+	var tdata = store.get(this.name);
+	if (tdata==null)
+	{
+		store.set(this.name,{});
+	}
+}
+
+Playerlog.prototype.addlog = function(){
+	var currDate = new Date();
+ 	var jsonCurr = Date.parse(currDate);
+	var daylog = {feeling:-1,dailyquest:0,logs:[jsonCurr]};
+	var tdata = store.get(this.name);
+	var currdlog = tdata[currDate.toDateString()];
+	if (currdlog) {
+		currdlog.logs.push(jsonCurr);
+		daylog = currdlog;
+	}
+	
+	tdata[currDate.toDateString()] = daylog;
+	store.set(this.name,tdata);
+}
+
+Playerlog.prototype.findTodayLog = function(){
+	var needSignin = true;
+	var needDailyQuest = true;
+	var currDate = new Date();
+	var tdata = store.get(this.name);
+	var todaylog = tdata[currDate.toDateString()];
+	if (todaylog){
+		if (todaylog.feeling>=0)
+			needSignin = false;
+		if (todaylog.dailyquest==1)
+			needDailyQuest = false;		
+	}
+	return [needDailyQuest,needSignin];
+}
+
+Playerlog.prototype.updateQuest = function(){
+	var currDate = new Date();
+	var tdata = store.get(this.name);
+	var currdlog = tdata[currDate.toDateString()];
+	if (currdlog) {
+		currdlog.dailyquest = 1;
+	}
+	tdata[currDate.toDateString()] = currdlog;
+	store.set(this.name,tdata);
+}
+
+Playerlog.prototype.updateSignin = function(feeling){
+	var currDate = new Date();
+	var tdata = store.get(this.name);
+	var currdlog = tdata[currDate.toDateString()];
+	if (currdlog) {
+		currdlog.feeling = feeling;
+	}
+	tdata[currDate.toDateString()] = currdlog;
+	store.set(this.name,tdata);
+}
+
 // JavaScript Document
 Player = function(){
     this.name = "player";
@@ -5,6 +69,7 @@ Player = function(){
     this.syncDuration = 5;
     this.data = {};
 	this.tagname = "my"+this.name
+	this.logname = this.name+"log"
 }
 
 Player.prototype = new Datamgr();
@@ -18,7 +83,6 @@ Player.prototype.init = function(){
 		this.register_c(0);
 		isRe = true;
 	}    
-	
      this.login(isRe); 
 }
 
@@ -108,19 +172,22 @@ Player.prototype.login = function(isRegister){
     //cash div
     this.updateView_cash();
     
-   
-    if (isRegister==true)
-    {
-    	g_signin.start(0);
-    }else {
-	    //load signin:
-	    var lastDate = new Date(item.lastsignin);
-	    var currDate = new Date();
-	   	//if (currDate.getMonth()!=lastDate.getMonth()||currDate.getDate()!=lastDate.getDate())
-	    {//todo
-	        g_signin.start(0);
-	    }
+    g_playerlog.addlog();
+    
+ 	var dlog = g_playerlog.findTodayLog();	   
+    if (dlog[0]==true)
+	{
+	        var accept = g_quest.onAcceptDaily();
+	        if (accept)
+	        {
+	        	g_playerlog.updateQuest();
+	        }
     }
+    	   
+	if (dlog[1]==true)
+	{
+		g_signin.start(0);
+	}
    
 }
 
@@ -174,6 +241,9 @@ Player.prototype.logPlayer = function(logs) {
      }  
  	store.set("playerlog",tdata);
 }
+
+var g_playerlog = new Playerlog()
+g_playerlog.init();
 
 var g_player = new Player();
 
