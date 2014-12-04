@@ -24,6 +24,24 @@ PageUtil = function(id,zIndex){
    
 }
 
+PageUtil.prototype.buildHeader1 = function(title,titelCallback)
+{
+	var content = "<div class='cf-m-header'>"
+	content += " <table><tr>"
+	content += "  <td width='100'>"
+    content += "<input type='button' class='form-control' "
+    if (titelCallback.length>0)
+    	content += "onclick='"+titelCallback+"()'"
+    content += " value='"+title+"'/>"
+	content += "</td>"
+	content += "   <td align='right'>"
+    content += "<button type='button' class='close' data-dismiss='modal'><img src='static/img/close.png'></button>"	
+	content += "</td>"
+	content += " </tr>"
+	content += "</table></div>"	
+	return content;
+}
+
 PageUtil.prototype.addHeader = function(strHeader)
 {
 	this.header += strHeader;

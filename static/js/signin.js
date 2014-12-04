@@ -19,16 +19,7 @@ Signin.prototype.init = function(){
 Signin.prototype.buildHTML = function()
 {
 	var page = new PageUtil(this.tagname);
-	var content = "<table class='cf-m-header'>"
-	content += " <tr>"
-	content += "  <td width='100'>"
-    content += "<input type='button' class='form-control' onclick='g_signin.doSignin()' value='签到'/>"
-	content += "</td>"
-	content += "   <td align='right'>"
-    content += "<button type='button' class='close' data-dismiss='modal'><img src='static/img/close.png'></button>"	
-	content += "</td>"
-	content += " </tr>"
-	content += "</table>"
+	var content = page.buildHeader1('签到','g_signin.doSignin');
 	page.addHeader(content);
 
 	content = "<div class='cf-signin-prize'><div> 今天获得:"

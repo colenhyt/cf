@@ -12,6 +12,8 @@ active tab: .nav-tabs > li.active > a:focus
 
 设置div透明: 把背景色相关属性去掉即可
 
+button:
+.form-control: 4557
 pane:
 背景色:zui.css:.panel
 panel内容: .panel-body

@@ -31,16 +31,7 @@ Player.prototype.init = function(){
 Player.prototype.buildHTML = function()
 {
 	var page = new PageUtil(this.tagname);
-	var content = "<table class='cf-m-header'>"
-	content += " <tr>"
-	content += "  <td width='100'>"
-    content += "<input type='button' class='form-control' value='个人等级'/>"
-	content += "</td>"
-	content += "   <td align='right'>"
-    content += "<button type='button' class='close' data-dismiss='modal'><img src='static/img/close.png'></button>"	
-	content += "</td>"
-	content += " </tr>"
-	content += "</table>"
+	var content = page.buildHeader1('个人等级','');
 	page.addHeader(content);
 
 	content = "<div id='player_content'></div>"
@@ -50,6 +41,7 @@ Player.prototype.buildHTML = function()
 }
 
 Player.prototype.show = function(){
+	var texp = store.get("exp");
 	var lv = this.getLevel();
 	var content = "<div class='cf-signin-prize'>"
 	content += "<table>"
@@ -59,7 +51,7 @@ Player.prototype.show = function(){
 	content += "</td>"
 	content += "   <td>"
     content += "等级:"+lv+"<br>"	
-    content += "经验:"+this.data.exp	
+    content += "经验:"+texp[lv-1]+"/"+this.data.exp	
 	content += "</td>"
 	content += " </tr>"
 	content += "</table>"
@@ -71,7 +63,6 @@ Player.prototype.show = function(){
     
     var get = document.getElementById("player_content");
     get.innerHTML = content;
-
     
     $('#'+this.tagname).modal('show');       
 }
