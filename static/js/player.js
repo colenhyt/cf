@@ -13,11 +13,11 @@ Playerlog.prototype.init = function(){
 Playerlog.prototype.addlog = function(){
 	var currDate = new Date();
  	var jsonCurr = Date.parse(currDate);
-	var daylog = {feeling:-1,dailyquest:0,logs:[jsonCurr]};
+	var daylog = {feeling:-1,dailyquest:0,logins:[jsonCurr]};
 	var tdata = store.get(this.name);
 	var currdlog = tdata[currDate.toDateString()];
 	if (currdlog) {
-		currdlog.logs.push(jsonCurr);
+		currdlog.logins.push(jsonCurr);
 		daylog = currdlog;
 	}
 	
@@ -227,20 +227,6 @@ Player.prototype.prize = function(prizes) {
 Player.prototype.syncData = function(){
 	//alert('pp.syncData');
 }   
-
-Player.prototype.logPlayer = function(logs) {
-	var tdata = store.get("playerlog");
-	if (tdata==null)
-	{
-		store.set("playerlog",[]);
-		tdata = store.get("playerlog");
-	}
-     for (var i=0;i< logs.length;i++)
-     {
-     	tdata.push(logs[i]);
-     }  
- 	store.set("playerlog",tdata);
-}
 
 var g_playerlog = new Playerlog()
 g_playerlog.init();
