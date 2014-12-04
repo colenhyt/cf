@@ -1,5 +1,6 @@
 Insure = function(){
     this.name = "insure";
+    this.pageCount = 3;
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
     this.tagdetailname = this.tagname+"detail";
@@ -21,35 +22,42 @@ Insure.prototype.init = function(){
 Insure.prototype.buildHTML = function()
 {
 	var page = new PageUtil(this.tagname);
-	page.buildSingleTab("保险业务");
-	var content = 	"<div class=\"tab-pane in active\" id=\"insure1\">";
-	content += "<div class=\"cfpage\" id='"+this.pagename+"'>"
+	page.buildSingleTab("保险");
+	var content = 	"<div class='tab-pane in active' id='insure1'>";
+	content += "<div class='cfpage' id='"+this.pagename+"'>"
     
     content += "</div></div>"
 	page.addContent(content);
 	document.write(page.toString());
 	
 	var pagedetail = new PageUtil(this.tagdetailname);
-	content = 	"<div class=\"tab-pane in active\" id=\"insure2\">";
-	content += "<div class=\"cfpage\" id='"+this.pagedetailname+"'>"
+	content = 	"<div class='tab-pane in active' id='insure2'>";
+	content += "<div class='cfpage' id='"+this.pagedetailname+"'>"
     
     content += "</div></div>"
 	pagedetail.addContent(content);
 	document.write(pagedetail.toString());
 }
 
-Insure.prototype.show = function()
+Insure.prototype.buildPage = function(page)
 {
+	if (page<0)
+		return
+		
 	var tdata = store.get(this.name);
 	var content = 	"";
 	if (tdata.length<=0){
-		  content += "<div class=\"panel\" ID=\"insure_d1\"><div class=\"panel-body\">no insure item</div>"
+		  content += "<div class='panel' ID='insure_d1'><div class='panel-body'>没有产品</div>"
       content += "</div>"
 	}else {
-		for ( key in tdata){
-			var item = tdata[key];
-		  content += "<div class=\"panel\" ID=\"insure_d1\" onclick=\"g_insure.showDetail("+item.id+")\">"
-		     content += "<div class=\"panel-body\"><h2>"+item.name+"</h2>"
+		var start = page* this.pageCount;
+		var end = (page+1)* this.pageCount;
+		if (end>tdata.length)
+			end = tdata.length;
+		for (var i=start;i<end;i++){
+			var item = tdata[i];
+		  content += "<div class='panel' ID='insure_d1' onclick='g_insure.showDetail("+item.id+")'>"
+		     content += "<div class='panel-body'><h2>"+item.name+"</h2>"
 			 content += "        <table id='toplist1_tab'>"
 			 content += "           <thead>"
 			 content += "             <tr>"
@@ -62,12 +70,29 @@ Insure.prototype.show = function()
 			content += "              </tr>"
 			content += "            </thead>"
 			content += "          </table>"
-      content += "</div></div>"
+      		content += "</div></div>"
 		}
+		
+		var tpages = parseInt(tdata.length/this.pageCount);
+		var tmodel = tdata.length%this.pageCount;
+		if (tmodel>0)
+			tpages++;
+        
+		content +=     "        <div style='color:#ffffff'>"
+		content += "<input type='button' class='form-control2' value='上一页' onclick='g_insure.buildPage("+(page-1)+")'/>"
+		content += ""+(page+1)+"/"+tpages
+		content += "<input type='button' class='form-control2' value='下一页' onclick='g_insure.buildPage("+(page+1)+")'/>"
+		content += "           </div>  "
 	}
      
 	var tag = document.getElementById(this.pagename);
 	tag.innerHTML = content;
+	
+}
+
+Insure.prototype.show = function()
+{
+	this.buildPage(0);
 	
     $('#my'+this.name).modal('show');    
 }

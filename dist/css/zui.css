@@ -5367,7 +5367,8 @@ ol.linenums li {
 .nav-tabs > li.active > a:focus {
   color: #808080;
   cursor: default;
-  background-color: #fff;
+  font-weight:bold;
+  background-color: rgba(26,19,100,1);
   border: 1px solid #ddd;
   border-bottom-color: transparent;
 }
@@ -6198,11 +6199,7 @@ ol.linenums li {
   z-index: 1050;
   width: auto;
   margin-right: auto;
-  background-color: #ffffff;
-  font-size:18px;
-  color: blue;
-  border-color: blue;
-  border: 3;
+  background-color:none;
   margin-left: auto;
 }
 .modal-dialog.fullscreen {

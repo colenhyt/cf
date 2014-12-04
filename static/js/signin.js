@@ -18,7 +18,7 @@ Signin.prototype.init = function(){
 
 Signin.prototype.buildHTML = function()
 {
-	var page = new PageUtil(this.tagname);
+	var page = new PageUtil(this.tagname,0,'modal-content2');
 	var content = page.buildHeader1('签到','g_signin.doSignin');
 	page.addHeader(content);
 

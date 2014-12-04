@@ -9,6 +9,7 @@ Title = function(){
 Title.prototype = new Datamgr();
 
 Title.prototype.init = function(){
+store.remove(this.name);
 	var tdata = store.get(this.name);
 	if (tdata==null)
 	{
@@ -16,20 +17,32 @@ Title.prototype.init = function(){
 	} 
 }
 
-Title.prototype.getName = function(lv){
+Title.prototype.getLevel = function(){
 	var pexp = g_player.data.exp;
+	var lv = 0;
+	var tdata = store.get(this.name);
+	for (var i=0;i<tdata.length;i++){
+		if (tdata[i].exp<=pexp){
+			lv = tdata[i].level;
+		}
+    }
+    return lv;
+}
+
+Title.prototype.getData = function(lv){
 	var id = -1;
-	var name = "";
+	var item;
 	var tdata = store.get(this.name);
 	for (var i=0;i<tdata.length;i++){
 		var item = tdata[i];
-		if (item.level==lv){
-			name = item.name;
+		if (tdata[i].level==lv){
+			item = tdata[i];
 			break;
 		}
     }
-    return name;
+    return item;
 }
+
 var g_title = new Title();
 g_title.init();
 

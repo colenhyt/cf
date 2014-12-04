@@ -19,18 +19,12 @@ Player.prototype.init = function(){
 		isRe = true;
 	}    
 	
-	tdata = store.get("exp");
-	if (tdata==null)
-	{
-		store.set("exp",data_expdata);
-	} 	
-	
      this.login(isRe); 
 }
 
 Player.prototype.buildHTML = function()
 {
-	var page = new PageUtil(this.tagname);
+	var page = new PageUtil(this.tagname,0,'modal-content2');
 	var content = page.buildHeader1('个人等级','');
 	page.addHeader(content);
 
@@ -42,7 +36,7 @@ Player.prototype.buildHTML = function()
 
 Player.prototype.show = function(){
 	var texp = store.get("exp");
-	var lv = this.getLevel();
+	var lv = g_title.getLevel();
 	var content = "<div class='cf-signin-prize'>"
 	content += "<table>"
 	content += " <tr>"
@@ -51,32 +45,20 @@ Player.prototype.show = function(){
 	content += "</td>"
 	content += "   <td>"
     content += "等级:"+lv+"<br>"	
-    content += "经验:"+texp[lv-1]+"/"+this.data.exp	
+    content += "经验:"+g_title.getData(lv).exp+"/"+this.data.exp	
 	content += "</td>"
 	content += " </tr>"
 	content += "</table>"
     content += " </div>"
     content +=            " <div class='cf-signin-feeling'> "
-    content += "当前等级称号:"+g_title.getName(lv)+"<br>"
-    content += "下个等级称号:"+g_title.getName(lv+1)+"<br>"
+    content += "当前等级称号:"+g_title.getData(lv).name+"<br>"
+    content += "下个等级称号:"+g_title.getData(lv+1).name+"<br>"
     content +=            " </div>"
     
     var get = document.getElementById("player_content");
     get.innerHTML = content;
     
     $('#'+this.tagname).modal('show');       
-}
-
-Player.prototype.getLevel = function(){
-	var pexp = this.data.exp;
-	var lv = 0;
-	var tdata = store.get("exp");
-	for (var i=0;i<tdata.length;i++){
-		if (tdata[i]<=pexp){
-			lv = i;
-		}
-    }
-    return lv+1;
 }
 
 Player.prototype.register_c = function(sex){
