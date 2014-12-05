@@ -25,11 +25,29 @@ Datamgr = function(){
 }
 
 Datamgr.prototype = {        
-    loadData:function(){
-        var module = this;
-        var sql = 'SELECT * FROM '+game_tables[module.name];
-        g_db.query(sql,module.loadDataCallback);       
-    },
+
+	buildHTML:function(titleName){
+		var page = new PageUtil(this.tagname);
+		page.buildSingleTab(titleName);
+		var content = 	"<div class='tab-pane in active' id='quest1'>";
+		content += "<div class='cfpage' id='"+this.pagename+"'>"
+	    content += "</div></div>"
+		page.addContent(content);
+		document.write(page.toString());	
+		
+		var pagedetail = new PageUtil(this.tagdetailname);
+		content = 	"<div class=\"tab-pane in active\" id='quest2'>";
+		content += "<div class=\"cfpage\" id='"+this.pagedetailname+"'>"
+	    content += "</div></div>"
+		pagedetail.addContent(content);
+		document.write(pagedetail.toString());	
+	},
+
+
+	show:function(){
+		this.buildPage(0);
+    	$('#'+this.tagname).modal('show');   
+	},
     
     loadServerData:function(){
         //var dataobj = $.ajax({url:"../bbs/record.php",async:false});

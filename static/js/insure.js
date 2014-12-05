@@ -16,27 +16,7 @@ Insure.prototype.init = function(){
 	{
 		store.set(this.name,data_insuredata);
 	}     
-    this.buildHTML();
-}
-
-Insure.prototype.buildHTML = function()
-{
-	var page = new PageUtil(this.tagname);
-	page.buildSingleTab("保险");
-	var content = 	"<div class='tab-pane in active' id='insure1'>";
-	content += "<div class='cfpage' id='"+this.pagename+"'>"
-    
-    content += "</div></div>"
-	page.addContent(content);
-	document.write(page.toString());
-	
-	var pagedetail = new PageUtil(this.tagdetailname);
-	content = 	"<div class='tab-pane in active' id='insure2'>";
-	content += "<div class='cfpage' id='"+this.pagedetailname+"'>"
-    
-    content += "</div></div>"
-	pagedetail.addContent(content);
-	document.write(pagedetail.toString());
+    this.buildHTML("保险");
 }
 
 Insure.prototype.buildPage = function(page)
@@ -88,13 +68,6 @@ Insure.prototype.buildPage = function(page)
 	var tag = document.getElementById(this.pagename);
 	tag.innerHTML = content;
 	
-}
-
-Insure.prototype.show = function()
-{
-	this.buildPage(0);
-	
-    $('#my'+this.name).modal('show');    
 }
 
 Insure.prototype.showDetail = function(id){    

@@ -6,7 +6,8 @@ Quest = function(){
     this.pagename = this.tagname+"page";
     this.tagdetailname = this.tagname+"detail";
     this.pagedetailname = this.tagdetailname+"page";
-    this.data = {};
+    this.dailyCount = 2;
+    this.pageCount = 3;
 }
 
 Quest.prototype = new Datamgr();
@@ -18,39 +19,33 @@ Quest.prototype.init = function(duration){
 	{
 		store.set(this.name,data_questdata);
 	} 
-    this.buildHTML();
+    this.buildHTML("每日任务");
 }
 
-Quest.prototype.buildHTML = function()
+Quest.prototype.buildPage = function(page)
 {
-	var page = new PageUtil(this.tagname);
-	page.buildSingleTab("每日任务");
-	var content = 	"<div class='tab-pane in active' id='quest1'>";
-	content += "<div class='cfpage' id='"+this.pagename+"'>"
-    content += "</div></div>"
-	page.addContent(content);
-	document.write(page.toString());	
+	var quest = g_player.data.quest;
 	
-	var pagedetail = new PageUtil(this.tagdetailname);
-	content = 	"<div class=\"tab-pane in active\" id='quest2'>";
-	content += "<div class=\"cfpage\" id='"+this.pagedetailname+"'>"
-    content += "</div></div>"
-	pagedetail.addContent(content);
-	document.write(pagedetail.toString());	
-	
-}
-
-Quest.prototype.show = function()
-{
 	var tdata = store.get(this.name);
 	var content = 	"";
-	if (tdata.length<=0){
+	if (quest.length<=0){
 		  content += "<div class='panel' ID='insure_d1'><div class='panel-body'>no quest item</div>"
       content += "</div>"
 	}else {
-		for (key in tdata){
-			var item = tdata[key];
-		  content += "<div class='panel' ID='"+this.pagename+item.id+"' onclick='g_quest.showDetail("+item.id+")'>"
+		var start = page* this.pageCount;
+		var end = (page+1)* this.pageCount;
+		if (end>quest.length)
+			end = quest.length;	
+		for (var i=start;i< end;i++){
+			var q = quest[i];
+			var item;
+			for (var j=0;j<tdata.length;j++){
+				if (tdata[j].id==q.id){
+					item = tdata[j];
+					break;
+				}
+			}			
+		  	content += "<div class='panel' ID='"+this.pagename+item.id+"' onclick='g_quest.showDetail("+item.id+")'>"
 		     content += "<div class='panel-body'><h2>"+item.name+"</h2>"
 			 content += "        <table id='"+this.tagname+"tab'>"
 			 content += "           <thead>"
@@ -61,16 +56,28 @@ Quest.prototype.show = function()
 			 content += "               <td class='td-c-value'>"+item.need+"</td>"
 			 content += "               <td class='td-c-name'>奖励</td>"
 			 content += "               <td class='td-c-value'>"+item.prize+"</td>"
+			 content += "               <td class='td-c-name'>状态</td>"
+			 content += "               <td class='td-c-value'>"+q.status+"</td>"
 			content += "              </tr>"
 			content += "            </thead>"
 			content += "          </table>"
-      content += "</div></div>"
+      		content += "</div></div>"
 		}
+		
+		var tpages = parseInt(quest.length/this.pageCount);
+		var tmodel = quest.length%this.pageCount;
+		if (tmodel>0)
+			tpages++;
+        
+		content +=     "        <div style='color:#ffffff'>"
+		content += "<input type='button' class='form-control2' value='上一页' onclick='g_quest.buildPage("+(page-1)+")'/>"
+		content += ""+(page+1)+"/"+tpages
+		content += "<input type='button' class='form-control2' value='下一页' onclick='g_quest.buildPage("+(page+1)+")'/>"
+		content += "           </div>  "		
 	}
-     
+	
 	var tag = document.getElementById(this.pagename);
-	tag.innerHTML = content;
-    $('#my'+this.name).modal('show');    
+	tag.innerHTML = content;	
 }
 
 Quest.prototype.showDetail = function(id){  
@@ -116,11 +123,23 @@ Quest.prototype.acceptQuest = function(id){
     
 }
 
-
 Quest.prototype.onAcceptDaily = function(){
-    //alert('onAcceptDaily');
-    return false;
-    
+	var tdata = store.get(this.name);
+	var qids = [];
+	var cc = this.dailyCount;
+	if (cc>tdata.length)
+		cc = tdata.length;
+	var qkeys = [];
+	var pquest = g_player.data.quest;
+	var jsonCurr = Date.parse(new Date());
+	for (var i=0;i<cc;i++)
+	{
+		var index = Math.floor(Math.random()*tdata.length);
+		pquest.push({id:tdata[index].id,accept:jsonCurr,status:0});
+		tdata.splice(index,1);
+	}
+	g_player.updateData({quest:pquest});
+    return true;
 }
 
 Quest.prototype.doneQuest = function(questId){
@@ -130,10 +149,6 @@ Quest.prototype.doneQuest = function(questId){
 	    return;
 	}
     }
-    g_player.quest.push({id:questId});
-    var strQuest = JSON.stringify(g_player.quest);
-    g_player.updateData({quest:strQuest});
-    
 }
 
 Quest.prototype.onDoneQuest = function(){

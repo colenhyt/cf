@@ -129,7 +129,7 @@ Player.prototype.register_c = function(sex){
     var createtime = Date.parse(new Date());
     var item = {
         "accountid":1,"playerid":1,"playername":"pname","pwd":"pwd","exp":100,"cash":100,
-	quest:"[]",
+	quest:[],
         lastsignin:createtime,sex:sex,createtime:createtime
         };
 	
@@ -218,6 +218,8 @@ Player.prototype.prize = function(prizes) {
      		key = "exp";    
      	if (key.length>0){	
      		var v = this.data[key]+prizes[i].v;
+     		if (v<0)
+     			v = 0;
 			prop[key] = v;
      	}
      }  
@@ -227,10 +229,8 @@ Player.prototype.prize = function(prizes) {
 Player.prototype.syncData = function(){
 	//alert('pp.syncData');
 }   
-
 var g_playerlog = new Playerlog()
 g_playerlog.init();
-
 var g_player = new Player();
 
 
