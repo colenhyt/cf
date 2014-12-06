@@ -2,7 +2,7 @@ package cn.hd.cf.service;
 
 import java.util.List;
 
-import cn.freeteam.base.BaseService;
+import cn.hd.base.BaseService;
 import cn.hd.cf.dao.QuestdataMapper;
 import cn.hd.cf.model.QuestdataExample;
 import cn.hd.cf.model.Questdata;

@@ -5,14 +5,15 @@ import java.util.Date;
 import java.util.List;
 
 import net.sf.json.JSONObject;
-import cn.freeteam.base.BaseAction;
-import cn.freeteam.util.MD5;
-import cn.freeteam.util.StringUtil;
+import cn.hd.base.BaseAction;
 import cn.hd.cf.model.Player;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Signindata;
 import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.service.SignindataService;
+import cn.hd.event.EventManager;
+import cn.hd.util.MD5;
+import cn.hd.util.StringUtil;
 
 public class LoginAction extends BaseAction {
 	private Player player;
@@ -29,28 +30,32 @@ public class LoginAction extends BaseAction {
 
 	public LoginAction(){
 		init("playerService","signindataService");
+		EventManager.getInstance().start();
 	}
 	
 	public String register(){
-		if (player.getPlayername().length()<=0)
-		{
-			return null;
-		}
-		boolean bExist = playerService.have(player.getAccountid());
+//		if (player.getPlayername().length()<=0)
+//		{
+//			return null;
+//		}
+		boolean bExist = playerService.have(player.getPlayername());
 		if (bExist)
 		{
-			System.out.println("account exist :"+player.getAccountid());
+			System.out.println("account exist :name:"+player.getAccountid());
 			return null;
 		}
+		String ipAddr = getHttpRequest().getRemoteAddr();
 		PlayerWithBLOBs playerBlob = new PlayerWithBLOBs();
 		playerBlob.setAccountid(player.getAccountid());
+		playerBlob.setPlayername(ipAddr);
 		Date time = new Date(); 
+		playerBlob.setLastsignin(time);
 		playerBlob.setCreatetime(time);
-		playerBlob.setPlayername(player.getPlayername());
 		String pwd = StringUtil.getRandomString(10);
 		playerBlob.setPwd(MD5.MD5(pwd));
 		int ret = playerService.add(playerBlob);
 		if (ret==0){
+			System.out.println("this is playerid "+playerBlob.getPlayerid());
 			JSONObject obj = JSONObject.fromObject(playerBlob);
 			write(obj.toString(),"utf-8");
 		}
@@ -59,13 +64,17 @@ public class LoginAction extends BaseAction {
 	
 	public String login()
 	{
-		System.out.println("login "+player.getPlayername());
-		PlayerWithBLOBs tplayer = playerService.find(player.getPlayerid(),MD5.MD5(player.getPwd()));
-		if (tplayer!=null)
+		PlayerWithBLOBs playerBlob = playerService.find(player.getPlayerid(),player.getPwd());
+		if (playerBlob==null)
 		{
-			List<Integer> dataIds = findUpdateDataIds(player.getVersions());
-			//取需要更新的模块id
+			System.out.println("no player found:playerid:"+player.getPlayerid());
+			return null;
 		}
+		System.out.println("player "+player.getPlayerid()+" login success");
+		//List<Integer> dataIds = findUpdateDataIds(player.getVersions());
+		//取需要更新的模块id
+		JSONObject obj = JSONObject.fromObject(playerBlob);
+		write(obj.toString(),"utf-8");
 		return null;
 	}
 	

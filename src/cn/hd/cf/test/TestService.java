@@ -2,10 +2,10 @@ package cn.hd.cf.test;
 
 import java.util.Date;
 
-import cn.freeteam.util.MD5;
 import cn.hd.cf.action.LoginAction;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.service.PlayerService;
+import cn.hd.util.MD5;
 
 public class TestService {
 	

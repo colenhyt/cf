@@ -2,7 +2,7 @@ package cn.hd.cf.service;
 
 import java.util.List;
 
-import cn.freeteam.base.BaseService;
+import cn.hd.base.BaseService;
 import cn.hd.cf.dao.PlayerMapper;
 import cn.hd.cf.model.Player;
 import cn.hd.cf.model.PlayerExample;
@@ -44,10 +44,10 @@ public class PlayerService extends BaseService {
 		return 0;
 	}
 	
-	public boolean have(int accountid){
+	public boolean have(String playerName){
 		PlayerExample example = new PlayerExample();
 		Criteria criteria=example.createCriteria();
-		criteria.andAccountidEqualTo(Integer.valueOf(accountid));
+		criteria.andPlayernameEqualTo(playerName);
 		List<Player> players = playerMapper.selectByExample(example);
 		return players.size()>0;	
 	}

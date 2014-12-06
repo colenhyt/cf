@@ -18,10 +18,9 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import cn.freeteam.base.Base;
-import cn.freeteam.base.BaseService;
+import cn.hd.base.Base;
+import cn.hd.base.BaseService;
 import cn.hd.cf.model.*;
-import cn.hd.cf.model.Signindata;
 import cn.hd.cf.service.SignindataService;
 
 public class DataImportor extends Base{
@@ -244,7 +243,8 @@ public class DataImportor extends Base{
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		DataImportor importor = new DataImportor();
-		importor.importData("titledata");
+		importor.importData("eventdata");
+		importor.outputJsData("eventdata");
 //		importor.outputAllJsData();
 	}
 

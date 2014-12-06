@@ -69,7 +69,6 @@ Player = function(){
     this.syncDuration = 5;
     this.data = {};
 	this.tagname = "my"+this.name
-	this.logname = this.name+"log"
 }
 
 Player.prototype = new Datamgr();
@@ -80,7 +79,7 @@ Player.prototype.init = function(){
 	var tdata = store.get(this.name);
 	if (tdata==null)
 	{
-		this.register_c(0);
+		this.register();
 		isRe = true;
 	}    
      this.login(isRe); 
@@ -125,47 +124,52 @@ Player.prototype.show = function(){
     $('#'+this.tagname).modal('show');       
 }
 
-Player.prototype.register_c = function(sex){
-    var createtime = Date.parse(new Date());
-    var item = {
-        "accountid":1,"playerid":1,"playername":"pname","pwd":"pwd","exp":100,"cash":100,
-	quest:[],
-        lastsignin:createtime,sex:sex,createtime:createtime
-        };
-	
-	store.set(this.name,item);
-}
-
 Player.prototype.register = function(){
-    var pname = document.getElementById("player.playername");
-    var pheadicon = document.getElementById("player.headicon");
-    var ppwd = document.getElementById("player.pwd");
-	var dataobj = $.ajax({url:"/cf/login_register.do?player.accountid=1&player.playername="+pname.value+"&player.pwd="+ppwd.value,async:false});
-	var obj = eval ("(" + dataobj.responseText + ")");
-	if (obj.playername!=null){
-        var row = [];
-        row.push([
-            {'name' : 'accountid','value' : obj.accountid},
-            {'name' : 'playerid','value' : obj.playerid},
-            {'name' : 'playername','value' : obj.playername},
-            {'name' : 'pwd','value' : obj.pwd},
-            {'name' : 'version','value' : obj.version},
-        ]);
- 	
-       var ret = g_db.insert(game_tables[this.name], row);	              
-	}
+//    var pname = document.getElementById("player.playername");
+//    var pheadicon = document.getElementById("player.headicon");
+//    var ppwd = document.getElementById("player.pwd");
+    var createtime = Date.parse(new Date());
+     var player = {
+        "accountid":1,"playerid":1,"playername":"playerxxx","exp":0,"cash":0,
+	quest:[],
+        lastsignin:createtime,sex:0,createtime:createtime
+        };
+           
+	var dataobj = $.ajax({url:"/cf/login_register.do?player.accountid="+player.accountid+"&player.playername="+player.playername,async:false});
+	try    {
+		var obj = eval ("(" + dataobj.responseText + ")");
+		if (obj!=null&&obj.pwd!=null){
+			player.playerid = obj.playerid;
+			player.pwd = obj.pwd;
+		}
+	}   catch  (e)   {
+	    alert(e.name  +   " :  "   +  dataobj.responseText);
+	    return;
+	}	
+
+	
+	store.set(this.name,player);
 }
 
 Player.prototype.login = function(isRegister){
-	//var dataobj = $.ajax({url:"/cf/login_login.do?player.playername="+playername+"&player.pwd="+pwd,async:false});
-//	var obj = eval ("(" + dataobj.responseText + ")");
      this.data = store.get(this.name);
-     var item = this.data;
+     var player = this.data;
+     
+	var dataobj = $.ajax({url:"/cf/login_login.do?player.playerid="+player.playerid+"&player.pwd="+player.pwd,async:false});
+	try    {
+		var obj = eval ("(" + dataobj.responseText + ")");
+		if (obj!=null){
+			
+		}
+	}   catch  (e)   {
+	    log(e.name  +   " :  "   +  dataobj.responseText);
+	    return;
+	}	
     
     //head img:
     var head_img = head_imgs[0];
-    if (head_imgs.length>item.sex)
-        head_img = head_imgs[item.sex];
+    if (head_imgs.length>player.sex)
+        head_img = head_imgs[player.sex];
     head_img.name = this.name;
     g_game.m_scene.m_map.addImg(head_img);
     

@@ -2,7 +2,7 @@ package cn.hd.cf.service;
 
 import java.util.List;
 
-import cn.freeteam.base.BaseService;
+import cn.hd.base.BaseService;
 import cn.hd.cf.dao.TitledataMapper;
 import cn.hd.cf.model.TitledataExample;
 import cn.hd.cf.model.Titledata;

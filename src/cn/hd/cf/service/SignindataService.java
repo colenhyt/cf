@@ -2,7 +2,7 @@ package cn.hd.cf.service;
 
 import java.util.List;
 
-import cn.freeteam.base.BaseService;
+import cn.hd.base.BaseService;
 import cn.hd.cf.dao.SignindataMapper;
 import cn.hd.cf.model.SignindataExample;
 import cn.hd.cf.model.Signindata;

@@ -46,5 +46,6 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<mapper resource="cn/hd/cf/model/QuestdataMapper.xml"/>
 		<mapper resource="cn/hd/cf/model/InsuredataMapper.xml"/>
 		<mapper resource="cn/hd/cf/model/TitledataMapper.xml"/>
-											</mappers>
+		<mapper resource="cn/hd/cf/model/EventdataMapper.xml"/>
+													</mappers>
 </configuration>
