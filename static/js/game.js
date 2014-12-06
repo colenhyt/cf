@@ -24,6 +24,9 @@ Map.prototype.init = function(width,height,mapFile){
     {
         var img = new Image();
         img.src = mapImgs[i].src;
+        if (mapImgs[i].zindex>0){
+        	img.style.zIndex = "1700"
+        }
         img.onload=function(){
             map.draw();
         };	       
@@ -35,6 +38,8 @@ Map.prototype.init = function(width,height,mapFile){
         if (mapImgs[i].hasDiv==true){
             var div = document.createElement("DIV");
             div.id = "tag"+mapImgs[i].name;
+            div.style.color = "#ffffff";
+            div.style.font = "bold 18px arial,serif";
             div.style.position = "absolute";
             if (mapImgs[i].divX>0)
                 div.style.left = mapImgs[i].divX+"px";
@@ -170,7 +175,7 @@ Map.prototype.draw = function(){
   	  var img = this.m_imgs[i].img;
   	  var newx = this.m_imgs[i].x;
   	  var newy = this.m_imgs[i].y;
-        if(this.m_imgs[i].abs!=true)
+         if(this.m_imgs[i].abs!=true)
         {
   	     newx = pos.x + this.m_imgs[i].x;
   	     newy = pos.y + this.m_imgs[i].y;

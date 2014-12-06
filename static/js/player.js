@@ -75,13 +75,16 @@ Player.prototype = new Datamgr();
 
 Player.prototype.init = function(){
     var isRe = false;
+    var ret = true;
     this.buildHTML();
+    store.remove(this.name);
 	var tdata = store.get(this.name);
 	if (tdata==null)
 	{
-		this.register();
+		ret = this.register();
 		isRe = true;
-	}    
+	}   
+	if (ret==true) 
      this.login(isRe); 
 }
 
@@ -130,25 +133,27 @@ Player.prototype.register = function(){
 //    var ppwd = document.getElementById("player.pwd");
     var createtime = Date.parse(new Date());
      var player = {
-        "accountid":1,"playerid":1,"playername":"playerxxx","exp":0,"cash":0,
+        "accountid":1,"playerid":-1,"playername":"playerxxx","exp":0,"cash":0,
 	quest:[],
         lastsignin:createtime,sex:0,createtime:createtime
         };
            
 	var dataobj = $.ajax({url:"/cf/login_register.do?player.accountid="+player.accountid+"&player.playername="+player.playername,async:false});
 	try    {
-		var obj = eval ("(" + dataobj.responseText + ")");
-		if (obj!=null&&obj.pwd!=null){
-			player.playerid = obj.playerid;
-			player.pwd = obj.pwd;
+		if (dataobj!=null&&dataobj.responseText.length>0) {
+			var obj = eval ("(" + dataobj.responseText + ")");
+			if (obj!=null&&obj.pwd!=null){
+				player.playerid = obj.playerid;
+				player.pwd = obj.pwd;
+			}
 		}
 	}   catch  (e)   {
-	    alert(e.name  +   " :  "   +  dataobj.responseText);
-	    return;
+	    logerr(e.name  +   " :  "   +  dataobj.responseText);
+	   // return false;
 	}	
 
-	
 	store.set(this.name,player);
+	return true;
 }
 
 Player.prototype.login = function(isRegister){
@@ -157,13 +162,15 @@ Player.prototype.login = function(isRegister){
      
 	var dataobj = $.ajax({url:"/cf/login_login.do?player.playerid="+player.playerid+"&player.pwd="+player.pwd,async:false});
 	try    {
-		var obj = eval ("(" + dataobj.responseText + ")");
-		if (obj!=null){
-			
+		if (dataobj!=null&&dataobj.responseText.length>0) {
+			var obj = eval ("(" + dataobj.responseText + ")");
+			if (obj!=null){
+				
+			}
 		}
 	}   catch  (e)   {
-	    log(e.name  +   " :  "   +  dataobj.responseText);
-	    return;
+	    logerr(e.name  +   " :  "   +  dataobj.responseText);
+	   // return false;
 	}	
     
     //head img:
@@ -172,9 +179,6 @@ Player.prototype.login = function(isRegister){
         head_img = head_imgs[player.sex];
     head_img.name = this.name;
     g_game.m_scene.m_map.addImg(head_img);
-    
-    //cash div
-    this.updateView_cash();
     
     g_playerlog.addlog();
     
@@ -187,27 +191,35 @@ Player.prototype.login = function(isRegister){
 	        	g_playerlog.updateQuest();
 	        }
     }
+    
+    //player props
+    this.flushPageview();
     	   
 	if (dlog[1]==true)
 	{
 		g_signin.start(0);
 	}
-   
+   return true;
 }
 
-Player.prototype.updateView_cash = function() {
-    var tagcash = document.getElementById("tagcash");
-    tagcash.innerHTML = "<b>"+this.data.cash+"</b>";	
+Player.prototype.flushPageview = function() {
+    var tag = document.getElementById("tagcash");
+    tag.innerHTML = this.data.cash;	
+    tag = document.getElementById("tagcard");
+    tag.innerHTML = this.data.exp;	
+    tag = document.getElementById("tagplayer");
+	var lv = g_title.getLevel();
+    tag.innerHTML = g_title.getData(lv).name;	
+    tag = document.getElementById("taglevel");
+    tag.innerHTML = lv;	
 }
 
 Player.prototype.updateData = function(prop) {
     var sets =[];
     for (key in prop){
 		this.data[key] = prop[key];
-		if (key=="cash") {
-		    this.updateView_cash();
-		}
     }
+	this.flushPageview();
     store.set(this.name,this.data);
 }
 
@@ -236,5 +248,3 @@ Player.prototype.syncData = function(){
 var g_playerlog = new Playerlog()
 g_playerlog.init();
 var g_player = new Player();
-
-

@@ -9,6 +9,11 @@ log = function(text){
 	//alert(text);
 }
 
+logerr = function(text){
+	 var console=document.getElementById('consoleerr');
+	console.innerHTML = text;
+}
+
 itemStr = function(items,split){
     var itemDesc = "";
     for (var i=0;i<items.length;i++){

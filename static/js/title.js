@@ -34,7 +34,6 @@ Title.prototype.getData = function(lv){
 	var item;
 	var tdata = store.get(this.name);
 	for (var i=0;i<tdata.length;i++){
-		var item = tdata[i];
 		if (tdata[i].level==lv){
 			item = tdata[i];
 			break;
