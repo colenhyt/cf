@@ -77,7 +77,6 @@ Player.prototype.init = function(){
     var isRe = false;
     var ret = true;
     this.buildHTML();
-    store.remove(this.name);
 	var tdata = store.get(this.name);
 	if (tdata==null)
 	{
@@ -245,6 +244,9 @@ Player.prototype.prize = function(prizes) {
 Player.prototype.syncData = function(){
 	//alert('pp.syncData');
 }   
+
+store.remove("player");
+store.remove("playerlog");
 var g_playerlog = new Playerlog()
 g_playerlog.init();
 var g_player = new Player();

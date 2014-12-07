@@ -243,8 +243,8 @@ public class DataImportor extends Base{
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		DataImportor importor = new DataImportor();
-		importor.importData("eventdata");
-		importor.outputJsData("eventdata");
+		importor.importData("stockdata");
+		importor.outputJsData("stockdata");
 //		importor.outputAllJsData();
 	}
 

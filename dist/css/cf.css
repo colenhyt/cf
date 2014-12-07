@@ -27,17 +27,7 @@
 .cfpage
 {
   position: relative;
-  padding: 20px;
-  margin: 0 0 15px;
-  height: 500px;
-  outline: none;
-  transition:all 0.3s;
-  background-color: rgba(26,19,100,1);
-  border: 1px solid rgba(0, 0, 0, .2);
-  border-radius: 6px;  
-  -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
-     -moz-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
-          box-shadow: 0 3px 9px rgba(0, 0, 0, .5);  
+ 
 }
 
 .cfpagedetail
@@ -69,10 +59,16 @@ padding-top:20px;
 width: auto;
 }
 
+.cf-m-title {
+position:relative;
+float:middle;
+margin-top:10px;
+margin-left:-240px;
+}
+
 .cf-signin-prize{
-margin-left:30px;
-padding-top:10px;
-padding-bottom:20px;
+position:relative;
+
 }
 
 .cf-signin-feeling{

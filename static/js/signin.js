@@ -2,6 +2,7 @@
 Signin = function(){
 	this.name = "signin"
 	this.tagname = "my"+this.name
+    this.pagename = this.tagname+"page";
 }
 
 Signin.prototype = new Datamgr();
@@ -13,16 +14,18 @@ Signin.prototype.init = function(){
 	{
 		store.set(this.name,data_signindata);
 	} 	
-	this.buildHTML();
+	this.buildHTML("title_signin.png");
+	this.buildPage(0);
 }
 
-Signin.prototype.buildHTML = function()
+Signin.prototype.buildPage = function(page)
 {
-	var page = new PageUtil(this.tagname,0,'modal-content2');
-	var content = page.buildHeader1('签到','g_signin.doSignin');
-	page.addHeader(content);
+//	var page = new PageUtil(this.tagname,0,'modal-content2');
+//	var content = page.buildHeader1('签到','g_signin.doSignin');
+//	page.addHeader(content);
 
-	content = "<div class='cf-signin-prize'><div> 今天获得:"
+	var content = "<div class='cf-signin-prize'>"
+	content +=	"<div> 今天获得:"
     content +=      "      <div id='signin_gettoday'></div>"
     content +=       " </div>"
     content +=           "  <div> 明天将获得:"
@@ -30,11 +33,12 @@ Signin.prototype.buildHTML = function()
     content +=            " </div></div>"
     content +=            " <div class='cf-signin-feeling'> 请选择你今天的心情:"
     content +=            "     <div id ='signin_feeling'>signin_feeling</div>  "
-    content +=            " </div></div>"
+    content +=       " </div>"
+    content +=            " </div>"
 
-	page.addContent(content);
+	var tag = document.getElementById(this.pagename);
+	tag.innerHTML = content;
 
-	document.write(page.toString());
 }
 
 Signin.prototype.start = function(startDay){ 
@@ -62,6 +66,7 @@ Signin.prototype.start = function(startDay){
  }
 
 Signin.prototype.show = function(){
+	
     var signin = this;    
     var get = document.getElementById("signin_gettoday");
     get.innerHTML = itemStr(this.data,"<br>");
@@ -93,8 +98,11 @@ Signin.prototype.show = function(){
         //div.appendChild(img);    
         tagfeel.appendChild(img);       
     }
-    
-    $('#'+this.tagname).modal('show');       
+    var option = {
+    	position : 50,
+    	show     : true
+	}
+    $('#'+this.tagname).modal(option);       
 }
 
 Signin.prototype.doSignin = function(){

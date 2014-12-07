@@ -69,12 +69,13 @@ PageUtil.prototype.buildMsg = function(contentId)
 	this.addContent(content);
 }
 
-PageUtil.prototype.buildSingleTab = function(strTitle)
+PageUtil.prototype.buildSingleTab = function(titleImg)
 {
      this.addHeader("<button type='button' class='close' data-dismiss='modal'><img src='static/img/close.png'></button>");
 
 	var header = "<ul id='"+this.id+"Tab' class='nav nav-tabs'>"
-     header += "<li class='active'><a href='#insure1' data-toggle='tab'>"+strTitle+"</a></li>"
+     header += "<img src='static/img/title_bg.png'>"
+     header += "<img src='static/img/"+titleImg+"' class='cf-m-title'>"
     header += "</ul>"
 	
 	this.addHeader(header);

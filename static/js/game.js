@@ -24,9 +24,6 @@ Map.prototype.init = function(width,height,mapFile){
     {
         var img = new Image();
         img.src = mapImgs[i].src;
-        if (mapImgs[i].zindex>0){
-        	img.style.zIndex = "1700"
-        }
         img.onload=function(){
             map.draw();
         };	       
@@ -249,6 +246,7 @@ Game.prototype.init = function(canvas){
 	this.register(g_player);
 	this.register(g_toplist);
 	this.register(g_event);
+	this.register(g_stock);
 	
 	g_player.init();
 	

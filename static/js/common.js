@@ -31,21 +31,22 @@ Datamgr = function(){
 
 Datamgr.prototype = {        
 
-	buildHTML:function(titleName){
+	buildHTML:function(titleImgName){
 		var page = new PageUtil(this.tagname);
-		page.buildSingleTab(titleName);
+		page.buildSingleTab(titleImgName);
 		var content = 	"<div class='tab-pane in active' id='quest1'>";
+		content += "<img src='static/img/pop_big.png' style='position:relative;right:20px'>"
 		content += "<div class='cfpage' id='"+this.pagename+"'>"
 	    content += "</div></div>"
 		page.addContent(content);
 		document.write(page.toString());	
 		
-		var pagedetail = new PageUtil(this.tagdetailname);
-		content = 	"<div class=\"tab-pane in active\" id='quest2'>";
-		content += "<div class=\"cfpage\" id='"+this.pagedetailname+"'>"
-	    content += "</div></div>"
-		pagedetail.addContent(content);
-		document.write(pagedetail.toString());	
+//		var pagedetail = new PageUtil(this.tagdetailname);
+//		content = 	"<div class=\"tab-pane in active\" id='quest2'>";
+//		content += "<div class=\"cfpage\" id='"+this.pagedetailname+"'>"
+//	    content += "</div></div>"
+//		pagedetail.addContent(content);
+//		document.write(pagedetail.toString());	
 	},
 
 

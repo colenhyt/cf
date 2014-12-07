@@ -16,7 +16,7 @@ Insure.prototype.init = function(){
 	{
 		store.set(this.name,data_insuredata);
 	}     
-    this.buildHTML("保险");
+    this.buildHTML("title_insure.png");
 }
 
 Insure.prototype.buildPage = function(page)
