@@ -1,4 +1,20 @@
-   
+a = [
+	{a22:2},
+	{a1:15},
+	{a22:1},
+	{a1:4},
+	{a1:6},
+]
+function test1(a,b){
+	if (a.a1==null)
+		a.a1 = 1;
+	if (b.a1==null)
+		b.a1 = 1;
+	return (a.a1-b.a1);
+}
+a.sort(test1);
+//for (var i=0;i<a.length;i++)
+//alert(a[i].a1);   
 function errorDB(err){
    alert("Error processing SQL: "+err.code);
 }
@@ -31,11 +47,11 @@ Datamgr = function(){
 
 Datamgr.prototype = {        
 
-	buildHTML:function(titleImgName){
+	buildHTML:function(){
 		var page = new PageUtil(this.tagname);
+		var titleImgName = "title_"+this.name+".png";
 		page.buildSingleTab(titleImgName);
 		var content = 	"<div class='tab-pane in active' id='quest1'>";
-		content += "<img src='static/img/pop_big.png' style='position:relative;right:20px'>"
 		content += "<div class='cfpage' id='"+this.pagename+"'>"
 	    content += "</div></div>"
 		page.addContent(content);
@@ -50,6 +66,26 @@ Datamgr.prototype = {
 	},
 
 
+	buildPaging:function(currPage,itemCount)
+	{
+		var content = ""
+		var pageCount = parseInt(itemCount/this.pageCount);
+		var tmodel = itemCount%this.pageCount;
+		if (tmodel>0)
+			pageCount++;
+
+		if (pageCount==1) 
+			return content;
+			
+		var clickCallback = "g_"+this.name+".buildPage";
+		content +=     "        <div>"
+		content += "<input type='button' class='button_paging' value='上一页' onclick='"+clickCallback+"("+(currPage-1)+")'/>"
+		content += ""+(currPage+1)+"/"+pageCount
+		content += "<input type='button' class='button_paging' value='下一页' onclick='"+clickCallback+"("+(currPage+1)+")'/>"
+		content += "           </div>  "
+		return content;
+	},
+	
 	show:function(){
 		this.buildPage(0);
     	$('#'+this.tagname).modal('show');   

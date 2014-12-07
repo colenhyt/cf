@@ -14,7 +14,7 @@ Signin.prototype.init = function(){
 	{
 		store.set(this.name,data_signindata);
 	} 	
-	this.buildHTML("title_signin.png");
+	this.buildHTML();
 	this.buildPage(0);
 }
 

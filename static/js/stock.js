@@ -1,6 +1,6 @@
 Stock = function(){
     this.name = "stock";
-    this.pageCount = 3;
+    this.pageCount = 5;
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
     this.tagdetailname = this.tagname+"detail";
@@ -16,7 +16,7 @@ Stock.prototype.init = function(){
 	{
 		store.set(this.name,data_stockdata);
 	}     
-    this.buildHTML("title_stock.png");
+    this.buildHTML();
 }
 
 Stock.prototype.buildPage = function(page)
@@ -27,7 +27,7 @@ Stock.prototype.buildPage = function(page)
 	var tdata = store.get(this.name);
 	var content = 	"";
 	if (tdata.length<=0){
-		  content += "<div class='panel' ID='stock_d1'><div class='panel-body'>没有产品</div>"
+		  content += "<div class='cfpanel' ID='stock_d1'><div class='panel-body'>没有产品</div>"
       content += "</div>"
 	}else {
 		var start = page* this.pageCount;
@@ -36,7 +36,7 @@ Stock.prototype.buildPage = function(page)
 			end = tdata.length;
 		for (var i=start;i<end;i++){
 			var item = tdata[i];
-		  content += "<div class='panel' ID='stock_d1' onclick='g_stock.showDetail("+item.id+")'>"
+		  content += "<div class='cfpanel' ID='stock_d1' onclick='g_stock.showDetail("+item.id+")'>"
 		     content += "<div class='panel-body'><h2>"+item.name+"</h2>"
 			 content += "        <table id='toplist1_tab'>"
 			 content += "           <thead>"
@@ -53,16 +53,7 @@ Stock.prototype.buildPage = function(page)
       		content += "</div></div>"
 		}
 		
-		var tpages = parseInt(tdata.length/this.pageCount);
-		var tmodel = tdata.length%this.pageCount;
-		if (tmodel>0)
-			tpages++;
-        
-		content +=     "        <div style='color:#ffffff'>"
-		content += "<input type='button' class='form-control2' value='上一页' onclick='g_stock.buildPage("+(page-1)+")'/>"
-		content += ""+(page+1)+"/"+tpages
-		content += "<input type='button' class='form-control2' value='下一页' onclick='g_stock.buildPage("+(page+1)+")'/>"
-		content += "           </div>  "
+        content += this.buildPaging(page,tdata.length);
 	}
      
 	var tag = document.getElementById(this.pagename);

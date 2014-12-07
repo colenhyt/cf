@@ -19,7 +19,7 @@ Quest.prototype.init = function(duration){
 	{
 		store.set(this.name,data_questdata);
 	} 
-    this.buildHTML("每日任务");
+    this.buildHTML();
 }
 
 Quest.prototype.buildPage = function(page)
@@ -45,7 +45,7 @@ Quest.prototype.buildPage = function(page)
 					break;
 				}
 			}			
-		  	content += "<div class='panel' ID='"+this.pagename+item.id+"' onclick='g_quest.showDetail("+item.id+")'>"
+		  	content += "<div class='cfpanel' ID='"+this.pagename+item.id+"' onclick='g_quest.showDetail("+item.id+")'>"
 		     content += "<div class='panel-body'><h2>"+item.name+"</h2>"
 			 content += "        <table id='"+this.tagname+"tab'>"
 			 content += "           <thead>"
@@ -64,16 +64,7 @@ Quest.prototype.buildPage = function(page)
       		content += "</div></div>"
 		}
 		
-		var tpages = parseInt(quest.length/this.pageCount);
-		var tmodel = quest.length%this.pageCount;
-		if (tmodel>0)
-			tpages++;
-        
-		content +=     "        <div style='color:#ffffff'>"
-		content += "<input type='button' class='form-control2' value='上一页' onclick='g_quest.buildPage("+(page-1)+")'/>"
-		content += ""+(page+1)+"/"+tpages
-		content += "<input type='button' class='form-control2' value='下一页' onclick='g_quest.buildPage("+(page+1)+")'/>"
-		content += "           </div>  "		
+        content += this.buildPaging(page,quest.length);
 	}
 	
 	var tag = document.getElementById(this.pagename);

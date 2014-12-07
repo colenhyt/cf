@@ -18,6 +18,7 @@ Map.prototype.init = function(width,height,mapFile){
 	var canvas = this.m_canvas;
 	var pos = this.m_pos;
 	var mapImg;
+	this.m_imgs.sort(this.sortImg);
 	var mapImgs = this.m_imgs;
 
     for (var i=0 ; i<mapImgs.length; i++)
@@ -153,12 +154,21 @@ Map.prototype.addImg = function(img)
 {
     var map = this;
     var img0 = new Image();
+    this.m_imgs.push(img);
+   this.m_imgs.sort(this.sortImg);
     img0.src = img.src;
     img0.onload=function(){
          map.draw();
     };    
     img.img = img0;
-    this.m_imgs.push(img);
+}
+
+Map.prototype.sortImg = function(img1,img2){
+	if (img1.zindex==null)
+		img1.zindex = 1;
+	if (img2.zindex==null)
+		img2.zindex = 1;
+	return (img1.zindex-img2.zindex);
 }
 
 Map.prototype.draw = function(){
@@ -247,6 +257,8 @@ Game.prototype.init = function(canvas){
 	this.register(g_toplist);
 	this.register(g_event);
 	this.register(g_stock);
+	this.register(g_bank);
+	this.register(g_help);
 	
 	g_player.init();
 	
