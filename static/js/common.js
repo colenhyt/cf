@@ -56,12 +56,12 @@ Datamgr.prototype = {
 		page.addContent(content);
 		document.write(page.toString());	
 		
-//		var pagedetail = new PageUtil(this.tagdetailname);
-//		content = 	"<div class=\"tab-pane in active\" id='quest2'>";
-//		content += "<div class=\"cfpage\" id='"+this.pagedetailname+"'>"
-//	    content += "</div></div>"
-//		pagedetail.addContent(content);
-//		document.write(pagedetail.toString());	
+		var pagedetail = new PageUtil(this.tagdetailname);
+		content = 	"<div class=\"tab-pane in active\" id='quest2'>";
+		content += "<div class=\"cfpage\" id='"+this.pagedetailname+"'>"
+	    content += "</div></div>"
+		pagedetail.addContent(content);
+		document.write(pagedetail.toString());	
 	},
 
 
@@ -108,6 +108,18 @@ Datamgr.prototype = {
     onclick:function(clickX,clickY){
 	     this.show();
     },    
+    
+	findItem:function(id){
+		var tdata = store.get(this.name);
+		var item;
+		for (var i=0;i<tdata.length;i++){
+			if (tdata[i].id==id){
+				item = tdata[i];
+				break;
+			}
+		}
+		return item;
+	},	
 }
 
 Datamgr.prototype.constructor = Datamgr;

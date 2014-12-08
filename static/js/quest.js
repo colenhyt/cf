@@ -14,6 +14,7 @@ Quest.prototype = new Datamgr();
 
 Quest.prototype.init = function(duration){
     this.duration = duration;
+     store.remove(this.name)
 	var tdata = store.get(this.name);
 	if (tdata==null)
 	{
@@ -126,7 +127,7 @@ Quest.prototype.onAcceptDaily = function(){
 	for (var i=0;i<cc;i++)
 	{
 		var index = Math.floor(Math.random()*tdata.length);
-		pquest.push({id:tdata[index].id,accept:jsonCurr,status:0});
+		pquest.push({id:tdata[index].id,accept:jsonCurr,status:QUEST_STATUS.ACTIVE});
 		tdata.splice(index,1);
 	}
 	g_player.updateData({quest:pquest});
@@ -134,16 +135,39 @@ Quest.prototype.onAcceptDaily = function(){
 }
 
 Quest.prototype.doneQuest = function(questId){
-    for (var i=0;i<g_player.quest.length;i++){
-	if (g_player.quest[i].id==questId) {
-	    g_msg.show("quest has been received",MSG.INFO);
-	    return;
-	}
+	var items = g_player.data.quest;
+    for (var i=0;i<items.length;i++){
+    	var item = items[i];
+ 		if (item.id==questId) {
+			if (item.status==QUEST_STATUS.DONE){
+				alert('该任务已被完成');
+				break;
+			}
+			items[i].status = QUEST_STATUS.DONE;
+			g_player.updateData({quest:items});
+   			var quest = this.findItem(questId);
+			g_player.prize(quest.prize);
+		    break;
+		}
     }
 }
 
 Quest.prototype.onDoneQuest = function(){
     alert('onDoneQuest');
+}
+
+
+Quest.prototype.onBuyInsure = function(inItem){
+	var items = g_player.data.quest;
+    for (var i=0;i<items.length;i++){
+		if (items[i].status==QUEST_STATUS.ACTIVE) {
+	    	var quest = this.findItem(items[i].id);
+			if (quest.type==QUEST_TYPE.BUY_INSURE){
+				this.doneQuest(quest.id);
+			    break;
+		    }
+		}
+    }
 }
 
 Quest.prototype.constructor = Quest;

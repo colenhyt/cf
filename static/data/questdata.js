@@ -4,10 +4,10 @@ var quest_type = [
 ]
 
 var ITEM_TYPE_CASH = 0;
-var ITEM_TYPE_INSURE = 1;
+var ITEM_TYPE_EXP = 1;
 
 var data_questdata = [
-    {name:"买个保险",id:1,type:1,desc:"随便买个保险",
+    {name:"买个保险",id:1,type:0,desc:"随便买个保险",
     need:[
         {t:ITEM_TYPE_CASH,v:10},
             ],
@@ -16,10 +16,10 @@ var data_questdata = [
     ],
     target:[],
     prize:[
-            {t:ITEM_TYPE_CASH,v:100},
+            {t:ITEM_TYPE_CASH,v:200}, {t:ITEM_TYPE_EXP,v:70},
            ],
     },
-    {name:"买个股票",id:2,type:2,desc:"蓝筹股",
+    {name:"买个股票",id:2,type:1,desc:"蓝筹股",
     need:[
         {t:ITEM_TYPE_CASH,v:30},
             ],
@@ -31,7 +31,7 @@ var data_questdata = [
             {t:ITEM_TYPE_CASH,v:120},
            ],
     },
-    {name:"买个平安股票",id:3,type:2,desc:"平安股票",
+    {name:"买个平安股票",id:3,type:1,desc:"平安股票",
     need:[
         {t:ITEM_TYPE_CASH,v:30},
             ],

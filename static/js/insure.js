@@ -11,6 +11,7 @@ Insure = function(){
 Insure.prototype = new Datamgr();
 
 Insure.prototype.init = function(){
+ store.remove(this.name)
 	var tdata = store.get(this.name);
 	if (tdata==null)
 	{
@@ -42,11 +43,11 @@ Insure.prototype.buildPage = function(page)
 			 content += "           <thead>"
 			 content += "             <tr>"
 			 content += "               <td class='td-c-name'>价格</td>"
-			 content += "               <td class='td-c-value'>"+item.price+"</td>"
+			 content += "               <td class='td-c-value'>￥"+item.price+"</td>"
 			 content += "               <td class='td-c-name'>收益</td>"
 			 content += "               <td class='td-c-value'>"+item.profit+"</td>"
 			 content += "               <td class='td-c-name'>周期</td>"
-			 content += "               <td class='td-c-value'>"+item.period+"</td>"
+			 content += "               <td class='td-c-value'>"+item.period+"h</td>"
 			content += "              </tr>"
 			content += "            </thead>"
 			content += "          </table>"
@@ -81,7 +82,7 @@ content += "              </tr>"
 content += "            </thead>"
 content += "          </table>     "
 content += "          <button class='btn btn-primary' data-toggle='modal' onclick='g_insure.buy("+id+")'>购买</button>"
-content += "          <button class='btn btn-primary' data-toggle='modal' data-dismiss='modal'>取消</button>      "  
+content += "          <button class='btn btn-primary' data-toggle='modal' onclick='g_insure.buy(-1)'>取消</button>      "  
 content += "             </div>"
 content += "           </div>  "
 	
@@ -92,7 +93,25 @@ content += "           </div>  "
 }
 
 Insure.prototype.buy = function(id){
-//alert('buy'+id);
+if (id>0)
+{
+	var item = this.findItem(id);
+	if (item!=null){
+		if (g_player.data.cash<item.price){
+			alert('你的钱不够');
+			return;
+		}
+		var pinsure = g_player.data.insure;
+		if (pinsure==null)
+			pinsure=[];
+		var jsonCurr = Date.parse(new Date());
+		pinsure.push({id:item.id,accept:jsonCurr,status:0});
+		var cash = g_player.data.cash - item.price;
+		var pdata = {"insure":pinsure,"cash":cash};
+		g_player.updateData(pdata);
+		g_quest.onBuyInsure(item);
+	}
+}
   $('#myinsure_detail').modal('hide');
 }
 

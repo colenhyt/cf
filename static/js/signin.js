@@ -3,12 +3,13 @@ Signin = function(){
 	this.name = "signin"
 	this.tagname = "my"+this.name
     this.pagename = this.tagname+"page";
+	this.feeling = -1;
 }
 
 Signin.prototype = new Datamgr();
 
 Signin.prototype.init = function(){
-	this.feeling = -1;
+	store.remove(this.name);
 	var tdata = store.get(this.name);
 	if (tdata==null)
 	{
@@ -34,6 +35,7 @@ Signin.prototype.buildPage = function(page)
     content +=            " <div class='cf-signin-feeling'> 请选择你今天的心情:"
     content +=            "     <div id ='signin_feeling'>signin_feeling</div>  "
     content +=       " </div>"
+    content +=       "<input type='button' value='签到' onclick='g_signin.doSignin()'>"
     content +=            " </div>"
 
 	var tag = document.getElementById(this.pagename);
@@ -108,7 +110,7 @@ Signin.prototype.show = function(){
 Signin.prototype.doSignin = function(){
 	if (this.feeling<0)
 	{
-		g_msg.show('pls choose a feeling',MSG.INFO);
+		alert('请选择你今天的心情',MSG.INFO);
 		return;
 	}
 	

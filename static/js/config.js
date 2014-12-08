@@ -51,6 +51,14 @@ var feeling_imgs = [
     {id:4,src:"static/img/feeling_1.png"},{id:5,src:"static/img/feeling_1.png"},{id:6,src:"static/img/feeling_1.png"},
 ]
 
+var QUEST_TYPE = {
+	BUY_INSURE:0,BUY_STOCK:1,
+}
+
+var QUEST_STATUS = {
+	ACTIVE:0,DONE:1,
+}
+
 var ITEM_TYPE = {
 	CASH : 0,EXP:1
 };
@@ -58,6 +66,5 @@ var ITEM_TYPE = {
 var ITEM_NAME = {
 	CASH : "现金",EXP:"经验"
 };
-
 
 

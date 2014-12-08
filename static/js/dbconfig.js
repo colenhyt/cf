@@ -22,6 +22,8 @@ var game_table_schema = [
             {name : 'exp'}, 
             {name : 'cash'},
             {name : 'quest'}, 
+            {name : 'insure'}, 
+            {name : 'stock'}, 
             {name : 'lastsignin'},
             {name : 'sex'}, 
             {name : 'createtime'}, 

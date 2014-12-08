@@ -231,6 +231,7 @@ Player.prototype.prize = function(prizes) {
      for (var i=0;i< prizes.length;i++)
      {
      	var key = "";
+     	alert(prizes[i].t);
      	if (prizes[i].t==ITEM_TYPE.CASH)
      		key = "cash";
      	else if (prizes[i].t==ITEM_TYPE.EXP)
@@ -249,8 +250,8 @@ Player.prototype.syncData = function(){
 	//alert('pp.syncData');
 }   
 
-store.remove("player");
-store.remove("playerlog");
+//store.remove("player");
+//store.remove("playerlog");
 var g_playerlog = new Playerlog()
 g_playerlog.init();
 var g_player = new Player();

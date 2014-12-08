@@ -11,6 +11,7 @@ Stock = function(){
 Stock.prototype = new Datamgr();
 
 Stock.prototype.init = function(){
+ store.remove(this.name)
 	var tdata = store.get(this.name);
 	if (tdata==null)
 	{
