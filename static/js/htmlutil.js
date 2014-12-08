@@ -71,12 +71,21 @@ PageUtil.prototype.buildMsg = function(contentId)
 
 PageUtil.prototype.buildSingleTab = function(titleImg)
 {
-     this.addHeader("<button type='button' class='close' data-dismiss='modal'><img src='static/img/close.png'></button>");
+	var bg = "close.png";
+	var img = game_page_imgs[bg];
+	var width = img.width * game_screen.swidth;
+     var header = "<button type='button' class='close' data-dismiss='modal'>"
+     header += "<img src='static/img/"+bg+"' width='"+width+"'>"
+     header += "</button>";
 
-	var header = "<ul id='"+this.id+"Tab' class='nav nav-tabs'>"
-     header += "<img src='static/img/title_bg.png'>"
-     header += "<img src='static/img/"+titleImg+"' class='cf-m-title'>"
+	bg = "title_bg.png";
+	img = game_page_imgs[bg];
+	width = img.width * game_screen.swidth;
+	header += "<ul id='"+this.id+"Tab' class='nav nav-tabs'>"
+     header += "<img src='static/img/"+bg+"' width='"+width+"'>"
+ 	img = game_page_imgs[titleImg];
+ 	width = img.width * game_screen.swidth;
+     header += "<img src='static/img/"+titleImg+"' width='"+width+"' class='cf-m-title'>"
     header += "</ul>"
-	
 	this.addHeader(header);
 }

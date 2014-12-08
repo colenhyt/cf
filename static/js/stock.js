@@ -34,6 +34,7 @@ Stock.prototype.buildPage = function(page)
 		var end = (page+1)* this.pageCount;
 		if (end>tdata.length)
 			end = tdata.length;
+		  content += "<div>"
 		for (var i=start;i<end;i++){
 			var item = tdata[i];
 		  content += "<div class='cfpanel' ID='stock_d1' onclick='g_stock.showDetail("+item.id+")'>"
@@ -52,6 +53,7 @@ Stock.prototype.buildPage = function(page)
 			content += "          </table>"
       		content += "</div></div>"
 		}
+     		content += "</div>"
 		
         content += this.buildPaging(page,tdata.length);
 	}

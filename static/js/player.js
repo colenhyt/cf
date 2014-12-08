@@ -177,7 +177,7 @@ Player.prototype.login = function(isRegister){
     if (head_imgs.length>player.sex)
         head_img = head_imgs[player.sex];
     head_img.name = this.name;
-    g_game.m_scene.m_map.addImg(head_img);
+    g_game.addImg(head_img);
     
     g_playerlog.addlog();
     

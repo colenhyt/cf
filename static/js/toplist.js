@@ -20,7 +20,19 @@ Toplist.prototype.init = function(){
 	{
 		store.set(this.tagtab2,data_toplistdata2);
 	} 
-	this.buildHTML("排行榜");
+	this.buildHTML2();
+}
+
+Toplist.prototype.buildHTML2 = function()
+{
+		var page = new PageUtil(this.tagname);
+		var titleImgName = "title_"+this.name+".png";
+		page.buildSingleTab(titleImgName);
+		var content = 	"<div class='tab-pane in active' id='quest1'>";
+		content += "<div class='cfpage' id='"+this.pagename+"'>"
+	    content += "</div></div>"
+		page.addContent(content);
+		document.write(page.toString());
 }
 
 Toplist.prototype.buildPage = function(page)

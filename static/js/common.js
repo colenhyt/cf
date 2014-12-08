@@ -85,11 +85,6 @@ Datamgr.prototype = {
 		content += "           </div>  "
 		return content;
 	},
-	
-	show:function(){
-		this.buildPage(0);
-    	$('#'+this.tagname).modal('show');   
-	},
     
     loadServerData:function(){
         //var dataobj = $.ajax({url:"../bbs/record.php",async:false});
@@ -105,6 +100,11 @@ Datamgr.prototype = {
 		    this.count = 0;
 		}
     },    
+	
+	show:function(){
+		this.buildPage(0);
+    	$('#'+this.tagname).modal('show');   
+	},
 
     onclick:function(clickX,clickY){
 	     this.show();

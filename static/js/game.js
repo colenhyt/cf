@@ -163,6 +163,17 @@ Map.prototype.addImg = function(img)
     img.img = img0;
 }
 
+Map.prototype.removeImg = function(img)
+{
+	for (var i=0;i<this.m_imgs.length;i++)
+	{
+		if (this.m_imgs[i].name==img.name){
+			this.m_imgs.slice(i,1);
+			break;
+		}
+	}
+}
+
 Map.prototype.sortImg = function(img1,img2){
 	if (img1.zindex==null)
 		img1.zindex = 1;
@@ -267,7 +278,15 @@ Game.prototype.init = function(canvas){
 Game.prototype.register = function(obj){
     this.sys[obj.name] = obj;
 }
-     
+
+Game.prototype.addImg = function(img){
+    this.m_scene.m_map.addImg(img);
+}
+
+Game.prototype.removeImg = function(img){
+    this.m_scene.m_map.removeImg(img);
+}
+         
 Game.prototype.syncData = function(){
 	//alert('Game.syncData');
 }   

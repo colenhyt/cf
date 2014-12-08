@@ -6,6 +6,10 @@ var g_dbsize = 200000;
 var g_game;
 var g_db;
 
+var game_screen = {
+	swidth:window.screen.width/1280,sheight:window.screen.height/720
+}
+
 var game_imgs = [
 	{name:"map",src:"static/img/map.png",x:0,y:0,zindex:0},
 	{name:"cash_back",src:"static/img/icon_back.png",x:150,y:15,abs:true},
@@ -27,16 +31,16 @@ var head_imgs = [
 	{name:"women",src:"static/img/icon_girl.png",x:0,y:0,abs:true,hasDiv:true,divX:160,divY:10,zindex:10},
 ]
 
-var game_tables = {
-    "toplist":"t_toplist",
-    "game":"t_game",
-    "quest":"t_quest",
-    "player":"t_player",
-    "signin":"t_signin",
-    "insure":"t_insure",
-    "title":"t_title",
-    "playerlog":"t_playerlog",
-};
+var game_page_imgs = {
+	"close.png":{width:77,height:69},
+	"title_bg.png":{width:268,height:69},
+	"title_signin.png":{width:185,height:41},
+	"title_quest.png":{width:185,height:41},
+	"title_insure.png":{width:185,height:41},
+	"title_stock.png":{width:185,height:41},
+	"title_bank.png":{width:185,height:41},
+	"title_help.png":{width:185,height:41},
+}
 
 var feeling_imgs = [
     {id:1,src:"static/img/feeling_1.png"},{id:2,src:"static/img/feeling_1.png"},{id:3,src:"static/img/feeling_1.png"},
