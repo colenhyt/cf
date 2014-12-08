@@ -38,6 +38,10 @@ Stock.prototype.buildPage = function(page)
 		  content += "<div>"
 		for (var i=start;i<end;i++){
 			var item = tdata[i];
+			var pstock = g_player.getPlayerStock(item);
+			if (pstock==null) {
+			    pstock = {profit:0,avgPrice:0};
+			}
 		  content += "<div class='cfpanel' ID='stock_d1' onclick='g_stock.showDetail("+item.id+")'>"
 		     content += "<div class='panel-body'><h2>"+item.name+"</h2>"
 			 content += "        <table id='toplist1_tab'>"
@@ -46,7 +50,9 @@ Stock.prototype.buildPage = function(page)
 			 content += "               <td class='td-c-name'>价格</td>"
 			 content += "               <td class='td-c-value'>"+item.price+"</td>"
 			 content += "               <td class='td-c-name'>收益</td>"
-			 content += "               <td class='td-c-value'>"+item.profit+"</td>"
+			 content += "               <td class='td-c-value'>"+pstock.profit+"</td>"
+			 content += "               <td class='td-c-name'>平均价格</td>"
+			 content += "               <td class='td-c-value'>"+pstock.avgPrice+"</td>"
 			 content += "               <td class='td-c-name'>周期</td>"
 			 content += "               <td class='td-c-value'>"+item.period+"</td>"
 			content += "              </tr>"
@@ -83,6 +89,7 @@ var content =      "        <div><h2>"+item.name+"</h2>"
 content += "              </tr>"
 content += "            </thead>"
 content += "          </table>     "
+content += "          <div id='stock_count'>3</div>     "
 content += "          <button class='btn btn-primary' data-toggle='modal' onclick='g_stock.buy("+id+")'>购买</button>"
 content += "          <button class='btn btn-primary' data-toggle='modal' data-dismiss='modal'>取消</button>      "  
 content += "             </div>"
@@ -95,7 +102,46 @@ content += "           </div>  "
 }
 
 Stock.prototype.buy = function(id){
-//alert('buy'+id);
+    if (id<=0){
+	return;
+    }
+    var tag = document.getElementById('stock_count');
+    var count = parseInt(tag.innerText);
+    if (count<=0) {
+	alert('coiuld not choose 0 coiunt');
+	return;
+    }
+    var item = this.findItem(id);
+    if (item!=null){
+	    var needCash = item.price * count;
+	    if (g_player.data.cash<needCash){
+		    alert('你的钱不够');
+		    return;
+	    }
+	    var pstock = g_player.data.stock;
+	    if (pstock==null)
+		    pstock=[];
+	    var tstock = {id:item.id,items:[]};
+	    var index = -1;
+	    for (var i=0;i<pstock.length;i++){
+		if (pstock[i].id==item.id) {
+		    tstock = pstock[i];
+		    index = i;
+		    break;
+		}
+	    }
+	    var jsonCurr = Date.parse(new Date());
+	    tstock.items.push({accept:jsonCurr,status:0,price:item.price,count:count});
+	    if (index>=0) {
+		pstock[i] = tstock;
+	    }else {
+		pstock.push(tstock);		
+	    }
+	    var cash = g_player.data.cash - needCash;
+	    var pdata = {"stock":pstock,"cash":cash};
+	    g_player.updateData(pdata);
+	    g_quest.onBuyStock(item);
+    }
   $('#'+this.tagdetailname).modal('hide');
 }
 

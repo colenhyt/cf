@@ -231,7 +231,6 @@ Player.prototype.prize = function(prizes) {
      for (var i=0;i< prizes.length;i++)
      {
      	var key = "";
-     	alert(prizes[i].t);
      	if (prizes[i].t==ITEM_TYPE.CASH)
      		key = "cash";
      	else if (prizes[i].t==ITEM_TYPE.EXP)
@@ -245,7 +244,37 @@ Player.prototype.prize = function(prizes) {
      }  
      this.updateData(prop);
 }
-     
+
+Player.prototype.getStocks = function() {
+    var stocks = this.data.stock;
+    var tstocks = {};
+    for (var i=0;i<stocks.length;i++){
+	var items = stocks[i].items;
+	var amount = 0;
+	var totalCount = 0;
+	for (var j=0;j<items.length;j++){
+	    if (items[j].status==0) {
+		amount += items[j].price * items[j].count;
+		totalCount += items[j].count;
+	    }
+	}
+ 	tstocks[stocks[i].id] = {amount:amount,count:totalCount};
+   }
+    return tstocks;
+}
+
+Player.prototype.getPlayerStock = function(stock) {
+    var profit = 0;
+    var avgPrice = 0;
+    var pstock = this.getStocks()[stock.id];
+     if (pstock!=null) {
+	profit = pstock["amount"] - pstock["count"]*stock.price;
+	avgPrice = pstock["amount"]/pstock["count"];
+	
+    }    
+    return {profit:profit,avgPrice:avgPrice};
+}
+
 Player.prototype.syncData = function(){
 	//alert('pp.syncData');
 }   

@@ -134,21 +134,20 @@ Quest.prototype.onAcceptDaily = function(){
     return true;
 }
 
-Quest.prototype.doneQuest = function(questId){
+Quest.prototype.doneQuest = function(quest){
 	var items = g_player.data.quest;
     for (var i=0;i<items.length;i++){
     	var item = items[i];
- 		if (item.id==questId) {
-			if (item.status==QUEST_STATUS.DONE){
-				alert('该任务已被完成');
-				break;
-			}
-			items[i].status = QUEST_STATUS.DONE;
-			g_player.updateData({quest:items});
-   			var quest = this.findItem(questId);
-			g_player.prize(quest.prize);
-		    break;
+	if (item.id==quest.id) {
+		if (item.status==QUEST_STATUS.DONE){
+			alert('该任务已被完成');
+			break;
 		}
+		items[i].status = QUEST_STATUS.DONE;
+		g_player.updateData({"quest":items});
+		g_player.prize(quest.prize);
+	    break;
+	}
     }
 }
 
@@ -157,14 +156,27 @@ Quest.prototype.onDoneQuest = function(){
 }
 
 
-Quest.prototype.onBuyInsure = function(inItem){
+Quest.prototype.onBuyInsure = function(item){
 	var items = g_player.data.quest;
     for (var i=0;i<items.length;i++){
 		if (items[i].status==QUEST_STATUS.ACTIVE) {
 	    	var quest = this.findItem(items[i].id);
-			if (quest.type==QUEST_TYPE.BUY_INSURE){
-				this.doneQuest(quest.id);
-			    break;
+		    if (quest.type==QUEST_TYPE.BUY_INSURE){
+			this.doneQuest(quest);
+			break;
+		    }
+		}
+    }
+}
+
+Quest.prototype.onBuyStock = function(item){
+	var items = g_player.data.quest;
+    for (var i=0;i<items.length;i++){
+		if (items[i].status==QUEST_STATUS.ACTIVE) {
+	    	var quest = this.findItem(items[i].id);
+		    if (quest.type==QUEST_TYPE.BUY_STOCK){
+			this.doneQuest(quest);
+			break;
 		    }
 		}
     }
