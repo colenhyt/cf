@@ -1,4 +1,5 @@
 /* CSS Document */
+img{ max-width:100%;} 
 .modal-content2{
   background-color: #ffffff;
   font-size:18px;
@@ -17,8 +18,7 @@ background:url('../../static/img/bt_yellow.png');
 .cfpage
 {
   position: relative;
-  height:654px;
-  margin-left:-20px;
+  height:100%;
   padding-top:25px;
  background:url('../../static/img/pop_big.png') no-repeat;
 }
@@ -28,7 +28,7 @@ background:url('../../static/img/bt_yellow.png');
   height:100px;
   margin-left:20px;
   margin-bottom:8px;
- background:url('../../static/img/panel_bg.png') no-repeat;
+ background:url('../../static/img/panel_bg.png') no-repeat 100%;
 }
 
 .cfpagedetail
@@ -69,6 +69,7 @@ margin-left:-240px;
 
 .cf-signin-prize{
 position:relative;
+margin-top:-300px;
 margin-left:30px;
 padding-top:30px;
 padding-bottom:20px

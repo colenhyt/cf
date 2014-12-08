@@ -8,14 +8,14 @@ PageUtil = function(id,zIndex,contentClass){
 		head += " style='z-index:"+zIndex+"'>";
 	else
 		head += ">"
-  	head += "<div class='modal-dialog'>";
+	head += "<div class='modal-dialog'>";		
   	if (contentClass&&contentClass.length>0)
     	head += "<div class='"+contentClass+"'>";
     else
     	head += "<div class='modal-content'>";
     
     var footer = "";
-    footer +="</div>";
+	footer += "</div>";
 	footer += "</div>";
     footer +="</div>";
     
@@ -73,19 +73,16 @@ PageUtil.prototype.buildSingleTab = function(titleImg)
 {
 	var bg = "close.png";
 	var img = game_page_imgs[bg];
-	var width = img.width * game_screen.swidth;
-     var header = "<button type='button' class='close' data-dismiss='modal'>"
-     header += "<img src='static/img/"+bg+"' width='"+width+"'>"
-     header += "</button>";
+	var width = Math.floor(img.width *100 /Scene_Width);
+     var header = "<img data-dismiss='modal' src='static/img/"+bg+"' style='width:"+width+"%'>"
 
 	bg = "title_bg.png";
 	img = game_page_imgs[bg];
-	width = img.width * game_screen.swidth;
-	header += "<ul id='"+this.id+"Tab' class='nav nav-tabs'>"
-     header += "<img src='static/img/"+bg+"' width='"+width+"'>"
+	width = Math.floor(img.width *100 /Scene_Width);
+     header += "<img src='static/img/"+bg+"' style='width:"+width+"%;padding-left:-100px'>"
  	img = game_page_imgs[titleImg];
- 	width = img.width * game_screen.swidth;
-     header += "<img src='static/img/"+titleImg+"' width='"+width+"' class='cf-m-title'>"
-    header += "</ul>"
+ 	width = Math.floor(img.width *100/ Scene_Width);
+     header += "<img src='static/img/"+titleImg+"' style='width:"+width+"%;left:-240px;margin-top:5px'>"
+      header += ""
 	this.addHeader(header);
 }

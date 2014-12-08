@@ -6196,6 +6196,7 @@ ol.linenums li {
 .modal-dialog{
   z-index: 1050;
   width: auto;
+  height: 100%;
   margin-right: auto;
   background-color:none;
   margin-left: auto;

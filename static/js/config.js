@@ -6,7 +6,7 @@ var g_dbsize = 200000;
 var g_game;
 var g_db;
 
-var Scene_Width = 720;
+var Scene_Width = 640;
 var Scene_Height = 1280;
 
 var game_screen = {
@@ -43,6 +43,7 @@ var game_page_imgs = {
 	"title_stock.png":{width:185,height:41},
 	"title_bank.png":{width:185,height:41},
 	"title_help.png":{width:185,height:41},
+	"pop_big.png":{width:580,height:654},
 }
 
 var feeling_imgs = [

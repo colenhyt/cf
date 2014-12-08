@@ -37,7 +37,7 @@ Signin.prototype.buildPage = function(page)
     content +=            " </div>"
 
 	var tag = document.getElementById(this.pagename);
-	tag.innerHTML = content;
+	tag.innerHTML = tag.innerHTML+ content;
 
 }
 
