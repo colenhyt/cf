@@ -10,7 +10,10 @@ Main = function(){
 }
 
 Main.prototype.init = function(){
-    var canvas=document.getElementById('canvas');
+    var canvas = document.createElement("canvas");
+    canvas.width = Scene_Width;
+    canvas.height = Scene_Height;
+    document.body.appendChild(canvas);
 	g_game = new Game();
 	g_game.init(canvas);
 }

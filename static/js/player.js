@@ -204,13 +204,17 @@ Player.prototype.login = function(isRegister){
 Player.prototype.flushPageview = function() {
     var tag = document.getElementById("tagcash");
     tag.innerHTML = this.data.cash;	
+    tag.style.display = "";
     tag = document.getElementById("tagcard");
     tag.innerHTML = this.data.exp;	
+    tag.style.display = "";
     tag = document.getElementById("tagplayer");
 	var lv = g_title.getLevel();
     tag.innerHTML = g_title.getData(lv).name;	
+    tag.style.display = "";
     tag = document.getElementById("taglevel");
     tag.innerHTML = lv;	
+    tag.style.display = "";
 }
 
 Player.prototype.updateData = function(prop) {

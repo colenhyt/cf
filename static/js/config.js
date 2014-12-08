@@ -6,8 +6,11 @@ var g_dbsize = 200000;
 var g_game;
 var g_db;
 
+var Scene_Width = 720;
+var Scene_Height = 1280;
+
 var game_screen = {
-	swidth:window.screen.width/1280,sheight:window.screen.height/720
+	swidth:window.screen.width/Scene_Width,sheight:window.screen.height/Scene_Height
 }
 
 var game_imgs = [

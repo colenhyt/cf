@@ -1,33 +1,29 @@
-a = [
-	{a22:2},
-	{a1:15},
-	{a22:1},
-	{a1:4},
-	{a1:6},
-]
-function test1(a,b){
-	if (a.a1==null)
-		a.a1 = 1;
-	if (b.a1==null)
-		b.a1 = 1;
-	return (a.a1-b.a1);
-}
-a.sort(test1);
-//for (var i=0;i<a.length;i++)
-//alert(a[i].a1);   
+  
 function errorDB(err){
    alert("Error processing SQL: "+err.code);
 }
 
 log = function(text){
-	 var console=document.getElementById('console');
-	console.innerHTML = text;
+	var name = "console";
+	 var div=document.getElementById(name);
+	if (div==null){
+	    var div = document.createElement("div");
+	    div.id = name;
+	    document.body.appendChild(div);	
+    }	 
+	div.innerHTML = text;
 	//alert(text);
 }
 
 logerr = function(text){
-	 var console=document.getElementById('consoleerr');
-	console.innerHTML = text;
+	var name = "consoleerr";
+	 var div=document.getElementById(name);
+	if (div==null){
+	    var div = document.createElement("div");
+	    div.id = name;
+	    document.body.appendChild(div);	
+    }	
+	div.innerHTML = text;
 }
 
 itemStr = function(items,split){
