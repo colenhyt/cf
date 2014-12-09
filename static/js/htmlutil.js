@@ -57,7 +57,8 @@ PageUtil.prototype.addContent = function(strContent)
 
 PageUtil.prototype.toString = function()
 {
-	return this.head+this.header+"</div>"+this.content+this.footer;
+	var content = this.head+this.header+"</div>"+this.content+this.footer;
+	return content;
 }
 
 PageUtil.prototype.buildMsg = function(contentId)
@@ -71,18 +72,15 @@ PageUtil.prototype.buildMsg = function(contentId)
 
 PageUtil.prototype.buildSingleTab = function(titleImg)
 {
-	var bg = "close.png";
-	var img = game_page_imgs[bg];
-	var width = Math.floor(img.width *100 /Scene_Width);
-     var header = "<img data-dismiss='modal' src='static/img/"+bg+"' style='width:"+width+"%'>"
+     this.addHeader("<button type='button' class='close' data-dismiss='modal'><img src='static/img/close.png' class='cf_title_close'></button>");
 
-	bg = "title_bg.png";
-	img = game_page_imgs[bg];
-	width = Math.floor(img.width *100 /Scene_Width);
-     header += "<img src='static/img/"+bg+"' style='width:"+width+"%;padding-left:-100px'>"
- 	img = game_page_imgs[titleImg];
- 	width = Math.floor(img.width *100/ Scene_Width);
-     header += "<img src='static/img/"+titleImg+"' style='width:"+width+"%;left:-240px;margin-top:5px'>"
-      header += ""
+//	var header = "<ul id='"+this.id+"Tab' class='nav nav-tabs'>"
+//     header += "<img src='static/img/title_bg.png' class='cf_title_bg'>"
+//     header += "<img src='static/img/"+titleImg+"' class='cf-m-title'>"
+//    header += "</ul>"
+    
+	var header = "<ul id='"+this.id+"Tab' class='nav nav-tabs'>"
+     header += "<div class='cf_title_bg'><img src='static/img/"+titleImg+"' class='cf_title'></div>"
+    header += "</ul>"	
 	this.addHeader(header);
 }

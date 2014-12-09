@@ -6199,7 +6199,7 @@ ol.linenums li {
   height: 100%;
   margin-right: auto;
   background-color:none;
-  margin-left: auto;
+  margin-left: 10px;
 }
 .modal-dialog.fullscreen {
   width: 100% !important;
@@ -6282,14 +6282,11 @@ ol.linenums li {
 .modal-footer .btn-block + .btn-block {
   margin-left: 0;
 }
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 580px) {
   .modal-dialog {
-    width: 75%;
+    width: 340px;
     margin-top: 30px;
     margin-bottom: 30px;
-    -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
-       -moz-box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
   }
 }
 .tooltip {

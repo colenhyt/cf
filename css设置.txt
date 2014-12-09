@@ -3,6 +3,7 @@
 大背景: zui.css: modal-dialog，
 page高度: .modal-dialog height
 背景色:.modal-dialog background-color,6197
+边框阴影: @media screen and (min-width: 580px), 6285
 
 tab页内背景 .example
 tab 页头: .nav-tabs

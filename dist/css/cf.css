@@ -1,5 +1,6 @@
 /* CSS Document */
 img{ max-width:100%;} 
+
 .modal-content2{
   background-color: #ffffff;
   font-size:18px;
@@ -11,16 +12,26 @@ img{ max-width:100%;}
 .button_paging {
 border:none;
 width:174px;
-height:64px;
 font-size:20px;
 background:url('../../static/img/bt_yellow.png');
+filter:"progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale')"; 
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
 }
+
 .cfpage
 {
   position: relative;
-  height:100%;
-  padding-top:25px;
+  padding-left:30px
+  outline: none;
+  transition:all 0.3s;
+  font-size:18px;
+  color:#ffffff;
+width:340px;
+height:323px;
  background:url('../../static/img/pop_big.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
 }
 .cfpanel
 {
@@ -46,6 +57,55 @@ background:url('../../static/img/bt_yellow.png');
           box-shadow: 0 3px 9px rgba(0, 0, 0, .5);  
 }
 
+.cf_title_bg {
+float:left;
+margin-left:15px;
+width:160px;
+height:39px;
+background:url('../../static/img/title_bg.png') no-repeat;
+filter:"progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale')"; 
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
+
+.cf_title {
+position:relative;
+float:left;
+margin-left:20px;
+margin-top:10px;
+width:111px;
+height:25px;
+font-size:28px;
+font-weight: bold;
+color:#ffffff;
+border:none;
+filter:"progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale')"; 
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
+
+
+.cf_title_close{
+float:right;
+  width:46px;
+  margin-right:15px;
+}
+
+.cfpage_content{
+margin-left:30px;
+padding-top:30px;
+padding-bottom:10px
+}
+
+.cf_font2 {
+color:yellow;
+}
+
+.cf_font3 {
+margin-top:10px;
+color:blue;
+}
+
 .cf-button {
   height: 24px;
   padding: 2px 8px;
@@ -54,33 +114,27 @@ background:url('../../static/img/bt_yellow.png');
   border-radius: 3px;
 }
 
-.cf-m-header {
-margin-left:30px;
-padding-top:20px;
-width: auto;
+.cf_signin_feeling{
+margin-left:-5px;
+margin-top:20px;
+padding-bottom:20px;
+}
+.cf_signin_feeling2{
+margin-left:-5px;
+width:305px;
+height:136px;
+background:url('../../static/img/signin_bg.png') no-repeat;
+filter:"progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale')"; 
+-moz-background-size:100% 100%;  
+    background-size:100% 100%; 
 }
 
-.cf-m-title {
-position:relative;
-float:middle;
-margin-top:10px;
-margin-left:-240px;
+.cf_feeling{
+margin-left:15px;
+width:3px;
+margin-top:20px;
+padding-bottom:20px;
 }
-
-.cf-signin-prize{
-position:relative;
-margin-top:-300px;
-margin-left:30px;
-padding-top:30px;
-padding-bottom:20px
-}
-
-.cf-signin-feeling{
-margin-left:30px;
-padding-top:10px;
-padding-bottom:20px
-}
-
 .td-c-name {
     color: green;
     font-size:18px;

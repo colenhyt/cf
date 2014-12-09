@@ -44,24 +44,22 @@ Datamgr = function(){
 Datamgr.prototype = {        
 
 	buildHTML:function(){
-		var page = new PageUtil(this.tagname);
-		var titleImgName = "title_"+this.name+".png";
-		page.buildSingleTab(titleImgName);
-	var img = game_page_imgs["pop_big.png"];
-	var width = Math.floor(img.width *100 /Scene_Width);
-	var height = Math.floor(img.height *100 /Scene_Height);
-		var content = "<div id='"+this.pagename+"'>"
-	   // content += "<img src='static/img/pop_big.png'' style='width:"+width+"%;height:"+height+"%;padding-left:10px'></div>"
-	    content += "<img src='static/img/pop_big.png'' style='padding-left:10px'></div>"
-		page.addContent(content);
-		document.write(page.toString());	
-		
-		var pagedetail = new PageUtil(this.tagdetailname);
-		content = 	"<div class=\"tab-pane in active\" id='quest2'>";
-		content += "<div class=\"cfpage\" id='"+this.pagedetailname+"'>"
-	    content += "</div></div>"
-		pagedetail.addContent(content);
-		document.write(pagedetail.toString());	
+         var page = new PageUtil(this.tagname);
+        var titleImgName = "title_"+this.name+".png";
+        page.buildSingleTab(titleImgName);
+         var content =     "<div class='tab-pane in active' id='quest1'>";
+        content += "<div class='cfpage' id='"+this.pagename+"'>"
+        content += "</div></div>"
+        page.addContent(content);
+        document.write(page.toString());    
+        
+        var pagedetail = new PageUtil(this.tagdetailname);
+        content =     "<div class=\"tab-pane in active\" id='quest2'>";
+        content += "<div class=\"cfpage\" id='"+this.pagedetailname+"'>"
+        content += "</div></div>"
+        pagedetail.addContent(content);
+        document.write(pagedetail.toString());    
+
 	},
 
 

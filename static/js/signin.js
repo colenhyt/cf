@@ -25,21 +25,20 @@ Signin.prototype.buildPage = function(page)
 //	var content = page.buildHeader1('签到','g_signin.doSignin');
 //	page.addHeader(content);
 
-	var content = "<div class='cf-signin-prize'>"
-	content +=	"<div> 今天获得:"
-    content +=      "      <div id='signin_gettoday'></div>"
-    content +=       " </div>"
-    content +=           "  <div> 明天将获得:"
-    content +=            "     <div id='signin_gettomorrow'></div>"
-    content +=            " </div></div>"
-    content +=            " <div class='cf-signin-feeling'> 请选择你今天的心情:"
-    content +=            "     <div id ='signin_feeling'>signin_feeling</div>  "
-    content +=       " </div>"
-    content +=       "<input type='button' value='签到' onclick='g_signin.doSignin()'>"
+	var content = "<div class='cfpage_content'>"
+	content +=	" 今天签到将获得工资:"
+    content +=      "      <span id='signin_gettoday class='cf_font2'>10000元</span><br>"
+    content +=           "  明天签到将获得工资:"
+    content +=            "     <span id='signin_gettomorrow' class='cf_font2'>25000元</span>"
+    content +=            "     <div class='cf_font3'>注:连续签到工资将会有提升</div>"
+    content +=            " <div class='cf_signin_feeling'> 请选择你今天的心情:"
+    content +=            "     <div id ='signin_feeling' class='cf_signin_feeling2'>signin_feeling</div>  "
+   // content +=       "<input type='button' value='签到' onclick='g_signin.doSignin()'>"
+     content +=       " </div>"
     content +=            " </div>"
 
 	var tag = document.getElementById(this.pagename);
-	tag.innerHTML = tag.innerHTML+ content;
+	tag.innerHTML = content;
 
 }
 
@@ -71,10 +70,10 @@ Signin.prototype.show = function(){
 	
     var signin = this;    
     var get = document.getElementById("signin_gettoday");
-    get.innerHTML = itemStr(this.data,"<br>");
+   // get.innerHTML = itemStr(this.data,"<br>");
  
     get = document.getElementById("signin_gettomorrow");
-    get.innerHTML = itemStr(this.data_to,"<br>");
+   // get.innerHTML = itemStr(this.data_to,"<br>");
 
     var tagfeel = document.getElementById("signin_feeling");
     
@@ -90,6 +89,8 @@ Signin.prototype.show = function(){
         div.id = "divfeeling_"+this.id;
         var img = new Image();
         img.src = imgData.src;
+        img.style.marginTop = "20px";
+        img.style.marginLeft = "20px";
         img.id = "imgfeeling_"+imgData.id;
         img.sid = imgData.id;
         img.width = 50;
