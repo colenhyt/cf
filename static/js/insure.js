@@ -38,20 +38,16 @@ Insure.prototype.buildPage = function(page)
 		for (var i=start;i<end;i++){
 			var item = tdata[i];
 		  content += "<div class='cfpanel' ID='insure_d1' onclick='g_insure.showDetail("+item.id+")'>"
-		     content += "<div class='panel-body'><h2>"+item.name+"</h2>"
-			 content += "        <table id='toplist1_tab'>"
+		     content += "<h2 class='cf_h'>"+item.name+"</h2>"
+			 content += "        <table id='toplist1_tab' width='100%'>"
 			 content += "           <thead>"
 			 content += "             <tr>"
-			 content += "               <td class='td-c-name'>价格</td>"
-			 content += "               <td class='td-c-value'>￥"+item.price+"</td>"
-			 content += "               <td class='td-c-name'>收益</td>"
-			 content += "               <td class='td-c-value'>"+item.profit+"</td>"
-			 content += "               <td class='td-c-name'>周期</td>"
-			 content += "               <td class='td-c-value'>"+item.period+"h</td>"
+			 content += "               <td>价格:￥"+item.price+"</td>"
+			 content += "               <td class='td_right'>周期:"+item.period+"h</td>"
 			content += "              </tr>"
 			content += "            </thead>"
 			content += "          </table>"
-      		content += "</div></div>"
+      		content += "</div>"
 		}
         
         content += this.buildPaging(page,tdata.length);

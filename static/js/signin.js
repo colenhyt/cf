@@ -42,7 +42,9 @@ Signin.prototype.buildPage = function(page)
 
 }
 
-Signin.prototype.start = function(startDay){ 
+Signin.prototype.start = function(startDay){
+	return;
+	 
     var signin = this;    
     var vstartDay = startDay + 1;	//
     

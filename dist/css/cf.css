@@ -1,6 +1,9 @@
 /* CSS Document */
 img{ max-width:100%;} 
-
+body {
+  font-size:18px;
+  color:#ffffff;
+}
 .modal-content2{
   background-color: #ffffff;
   font-size:18px;
@@ -9,6 +12,10 @@ img{ max-width:100%;}
   border: 3;
 }
 
+td {
+font-size:15px;
+  font-weight: bold;
+}
 .button_paging {
 border:none;
 width:174px;
@@ -22,24 +29,37 @@ filter:"progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale')
 .cfpage
 {
   position: relative;
-  padding-left:30px
+  padding-top:10px;
+  padding-left:25px;
   outline: none;
   transition:all 0.3s;
-  font-size:18px;
-  color:#ffffff;
 width:340px;
-height:323px;
+height:392px;
  background:url('../../static/img/pop_big.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
 }
+
+.cfpage.mysigninpage
+{
+padding-top:20px;
+height:323px;
+}
+.cf_h{
+color:yellow;
+}
+
 .cfpanel
 {
   position: relative;
-  height:100px;
-  margin-left:20px;
-  margin-bottom:8px;
- background:url('../../static/img/panel_bg.png') no-repeat 100%;
+  width:310px;
+  height:60px;
+  padding-left:10px;
+  margin-top:-16px;
+  margin-left:-10px;
+ background:url('../../static/img/panel_bg.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
 }
 
 .cfpagedetail
@@ -92,8 +112,6 @@ float:right;
 }
 
 .cfpage_content{
-margin-left:30px;
-padding-top:30px;
 padding-bottom:10px
 }
 
@@ -135,13 +153,6 @@ width:3px;
 margin-top:20px;
 padding-bottom:20px;
 }
-.td-c-name {
-    color: green;
-    font-size:18px;
-    padding-right:5px;
-}
-.td-c-value {
-    color: #ffffff;
-    font-size:18px;
-    padding-right:50px;
+.td_right {
+position:right;
 }
