@@ -93,7 +93,6 @@ margin-left:15px;
 width:160px;
 height:39px;
 background:url('../../static/img/title_bg.png') no-repeat;
-filter:"progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale')"; 
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
 }
@@ -114,6 +113,15 @@ filter:"progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale')
     background-size:100% 100%;  
 }
 
+.cf_stock_buycount {
+position:relative;
+float:left;
+margin-left:20px;
+margin-top:10px;
+border:none;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
 
 .cf_title_close{
 float:right;

@@ -87,9 +87,13 @@ var content =      "        <div><h2>"+item.name+"</h2>"
  content += "               <td class='td-c-name'>周期</td>"
  content += "               <td class='td-c-value'>"+item.period+"</td>"
 content += "              </tr>"
+ content += "             <tr>"
+ content += "               <td colspan='2' class='td-c-name'><input type='button' value='-' class='cf_stock_buycount' onclick='g_stock.countBuy(-1)'></td>"
+ content += "               <td colspan='2' class='td-c-name'><input type='text' id='stock_count' value='1' style='width:80px;text-align:center'></td>"
+ content += "               <td colspan='2' class='td-c-name'><input type='button' value='+' class='cf_stock_buycount' onclick='g_stock.countBuy(1)'></td>"
+content += "              </tr>"
 content += "            </thead>"
 content += "          </table>     "
-content += "          <div id='stock_count'>3</div>     "
 content += "          <button class='btn btn-primary' onclick='g_stock.buy("+id+")'>购买</button>"
 content += "          <button class='btn btn-primary' data-dismiss='modal'>取消</button>      "  
 content += "             </div>"
@@ -99,6 +103,17 @@ content += "           </div>  "
 	tag.innerHTML = content;
         
 	$('#'+this.tagdetailname).modal({position:80,show: true});  
+}
+
+Stock.prototype.countBuy = function(count){
+    var tag = document.getElementById('stock_count');
+    var currCount = parseInt(tag.value);
+    if (currCount+count<=0) {
+	currCount = 1;
+    }else
+	currCount += count;
+    tag.value = currCount;
+    //alert(tag.value);
 }
 
 Stock.prototype.buy = function(id){
