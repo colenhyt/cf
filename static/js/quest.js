@@ -37,6 +37,7 @@ Quest.prototype.buildPage = function(page)
 		var end = (page+1)* this.pageCount;
 		if (end>quest.length)
 			end = quest.length;	
+		  content += "<div style='height:330px'>"
 		for (var i=start;i< end;i++){
 			var q = quest[i];
 			var item;
@@ -47,7 +48,7 @@ Quest.prototype.buildPage = function(page)
 				}
 			}			
 		  	content += "<div class='cfpanel' ID='"+this.pagename+item.id+"' onclick='g_quest.showDetail("+item.id+")'>"
-		     content += "<div class='panel-body'><h2>"+item.name+"</h2>"
+		     content += "<h2 class='cf_h'>"+item.name+"</h2>"
 			 content += "        <table id='"+this.tagname+"tab'>"
 			 content += "           <thead>"
 			 content += "             <tr>"
@@ -62,8 +63,9 @@ Quest.prototype.buildPage = function(page)
 			content += "              </tr>"
 			content += "            </thead>"
 			content += "          </table>"
-      		content += "</div></div>"
+      		content += "</div>"
 		}
+   		content += "</div>"
 		
         content += this.buildPaging(page,quest.length);
 	}

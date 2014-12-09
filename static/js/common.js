@@ -76,10 +76,10 @@ Datamgr.prototype = {
 			return content;
 			
 		var clickCallback = "g_"+this.name+".buildPage";
-		content +=     "        <div>"
+		content +=     "        <div width='90%'>"
 		content += "<input type='button' class='button_paging' value='上一页' onclick='"+clickCallback+"("+(currPage-1)+")'/>"
-		content += ""+(currPage+1)+"/"+pageCount
-		content += "<input type='button' class='button_paging' value='下一页' onclick='"+clickCallback+"("+(currPage+1)+")'/>"
+		content += "<span class='cf_span'>"+(currPage+1)+"/"+pageCount+"</span>"
+		content += "<input type='button' class='button_paging pagingright' value='下一页' onclick='"+clickCallback+"("+(currPage+1)+")'/>"
 		content += "           </div>  "
 		return content;
 	},
@@ -101,7 +101,7 @@ Datamgr.prototype = {
 	
 	show:function(){
 		this.buildPage(0);
-    	$('#'+this.tagname).modal('show');   
+          $('#'+this.tagname).modal({position:50,show: true});     
 	},
 
     onclick:function(clickX,clickY){

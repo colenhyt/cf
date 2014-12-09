@@ -17,15 +17,25 @@ font-size:15px;
   font-weight: bold;
 }
 .button_paging {
+  position: relative;
+  float:left;
 border:none;
-width:174px;
+width:104px;
 font-size:20px;
 background:url('../../static/img/bt_yellow.png');
-filter:"progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale')"; 
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
 }
+.button_paging.pagingright {
+  float:right;
+  margin-right:15px;
+}
 
+.cf_span {
+  position: relative;
+  margin-left:30px;
+  color:green;
+}
 .cfpage
 {
   position: relative;

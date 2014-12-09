@@ -35,7 +35,7 @@ Stock.prototype.buildPage = function(page)
 		var end = (page+1)* this.pageCount;
 		if (end>tdata.length)
 			end = tdata.length;
-		  content += "<div>"
+		  content += "<div style='height:330px'>"
 		for (var i=start;i<end;i++){
 			var item = tdata[i];
 			var pstock = g_player.getPlayerStock(item);
@@ -43,7 +43,7 @@ Stock.prototype.buildPage = function(page)
 			    pstock = {profit:0,avgPrice:0};
 			}
 		  content += "<div class='cfpanel' ID='stock_d1' onclick='g_stock.showDetail("+item.id+")'>"
-		     content += "<div class='panel-body'><h2>"+item.name+"</h2>"
+		     content += "<h2 class='cf_h'>"+item.name+"</h2>"
 			 content += "        <table id='toplist1_tab'>"
 			 content += "           <thead>"
 			 content += "             <tr>"
@@ -58,7 +58,7 @@ Stock.prototype.buildPage = function(page)
 			content += "              </tr>"
 			content += "            </thead>"
 			content += "          </table>"
-      		content += "</div></div>"
+      		content += "</div>"
 		}
      		content += "</div>"
 		
@@ -90,15 +90,15 @@ content += "              </tr>"
 content += "            </thead>"
 content += "          </table>     "
 content += "          <div id='stock_count'>3</div>     "
-content += "          <button class='btn btn-primary' data-toggle='modal' onclick='g_stock.buy("+id+")'>购买</button>"
-content += "          <button class='btn btn-primary' data-toggle='modal' data-dismiss='modal'>取消</button>      "  
+content += "          <button class='btn btn-primary' onclick='g_stock.buy("+id+")'>购买</button>"
+content += "          <button class='btn btn-primary' data-dismiss='modal'>取消</button>      "  
 content += "             </div>"
 content += "           </div>  "
 	
 	var tag = document.getElementById(this.pagedetailname);
 	tag.innerHTML = content;
         
-	$('#'+this.tagdetailname).modal('show');
+	$('#'+this.tagdetailname).modal({position:80,show: true});  
 }
 
 Stock.prototype.buy = function(id){

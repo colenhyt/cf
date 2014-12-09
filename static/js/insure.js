@@ -35,6 +35,7 @@ Insure.prototype.buildPage = function(page)
 		var end = (page+1)* this.pageCount;
 		if (end>tdata.length)
 			end = tdata.length;
+		  content += "<div style='height:330px'>"
 		for (var i=start;i<end;i++){
 			var item = tdata[i];
 		  content += "<div class='cfpanel' ID='insure_d1' onclick='g_insure.showDetail("+item.id+")'>"
@@ -49,6 +50,7 @@ Insure.prototype.buildPage = function(page)
 			content += "          </table>"
       		content += "</div>"
 		}
+   		content += "</div>"
         
         content += this.buildPaging(page,tdata.length);
 	}
@@ -77,8 +79,8 @@ var content =      "        <div><h2>"+item.name+"</h2>"
 content += "              </tr>"
 content += "            </thead>"
 content += "          </table>     "
-content += "          <button class='btn btn-primary' data-toggle='modal' onclick='g_insure.buy("+id+")'>购买</button>"
-content += "          <button class='btn btn-primary' data-toggle='modal' onclick='g_insure.buy(-1)'>取消</button>      "  
+content += "          <button class='btn btn-primary' onclick='g_insure.buy("+id+")'>购买</button>"
+content += "          <button class='btn btn-primary' data-dismiss='modal'>取消</button>      "  
 content += "             </div>"
 content += "           </div>  "
 	
