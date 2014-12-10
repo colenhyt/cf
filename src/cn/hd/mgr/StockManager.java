@@ -48,7 +48,7 @@ public class StockManager {
     public void update(){
     	tick ++;
 		//stock price update:
-//		if (tick==STOCK_QUOTE_PERIOD)
+		if (tick==STOCK_QUOTE_PERIOD)
 		{
 			Random r = new Random();
 			tick = 0;

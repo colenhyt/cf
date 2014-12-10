@@ -22,7 +22,7 @@ public class EventManager extends java.util.TimerTask{
 		isStart = true;
 		
 		java.util.Timer timer = new java.util.Timer(true);  
-		timer.schedule(this, 1000,1000);   		
+		timer.schedule(this, 3000,3000);   		
 	}
 
 	@Override
