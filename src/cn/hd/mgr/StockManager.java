@@ -14,6 +14,7 @@ import cn.hd.cf.service.StockdataService;
 
 public class StockManager {
 	private int STOCK_QUOTE_PERIOD = 7;
+	private int STOCK_SAVE_PERIOD = 3600;
 	private StockdataService stockdataService;
 	private int tick = 0;
 	private List<Stock> stocks;
@@ -48,10 +49,9 @@ public class StockManager {
     public void update(){
     	tick ++;
 		//stock price update:
-		if (tick==STOCK_QUOTE_PERIOD)
+		if (tick%STOCK_QUOTE_PERIOD==0)
 		{
 			Random r = new Random();
-			tick = 0;
 		   	for (int i=0;i<stocks.size();i++){
 	    		Stock stock = stocks.get(i);
 	    		float r2 = (float)r.nextInt(stock.getPer().intValue());
@@ -68,7 +68,15 @@ public class StockManager {
 	    		stock.setPrice(ps);
 	    		System.out.println("股票价格变化: "+stock.getName()+",涨跌幅:"+stock.getPer()+",原价格:"+oldPs+",现价格:"+stock.getPrice());
 	    	}
-	    }			
+	    }		
+		
+		//数据库保存:
+		if (tick%STOCK_SAVE_PERIOD==0){
+			String jsonString = stockdataService.beanListToJson(stocks,Stock.class);
+			stockData.setData(jsonString.getBytes());
+			stockData.setCreatetime(new Date());
+			stockdataService.updateByKey(stockData);
+		}
 	}
     
     public static void main(String[] args) {

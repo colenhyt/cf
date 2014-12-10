@@ -71,7 +71,7 @@ public class BaseService extends Base{
      * @param beanClass  
      * @return  
      */
-	public static <T> List<T> jsonToBeanList(String jsonString, Class<T> beanClass) {
+	public <T> List<T> jsonToBeanList(String jsonString, Class<T> beanClass) {
     	 
         JSONArray jsonArray = JSONArray.fromObject(jsonString);
         JSONObject jsonObject;
@@ -89,5 +89,27 @@ public class BaseService extends Base{
          
         return list;
  
+    }  
+	
+	
+    /**  
+     * 把java对象列表转成json 字符串  
+     *
+     * @param jsonString  
+     * @param beanClass  
+     * @return  
+     */
+	public <T> String beanListToJson(List<T> list, Class<T> beanClass) {
+        JSONArray jsonArray = new JSONArray();
+        JSONObject jsonObject;
+        T bean;
+ 
+        for (int i = 0; i < list.size(); i++) {
+        	bean = list.get(i);
+           jsonObject = JSONObject.fromObject(bean);
+           jsonArray.add(jsonObject); 
+        }
+        return jsonArray.toString();
     }   	
+	
 }

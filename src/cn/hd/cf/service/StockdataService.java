@@ -42,6 +42,13 @@ public class StockdataService extends BaseService {
 		return true;
 	}
 	
+	public boolean updateByKey(Stockdata record)
+	{
+		stockdataMapper.updateByPrimaryKey(record);
+		DBCommit();
+		return true;
+	}
+	
 	public void resetInacvtive(Stockdata record)
 	{
 		record.setStatus(DATA_STATUS_INACTIVE);
