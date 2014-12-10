@@ -85,7 +85,7 @@ public class DataImportor extends Base{
 		method=dataOjb.getClass().getMethod("setVersion",argsClass) ;
 		method.invoke(dataOjb, newVersion);		
 
-		if (dataName=="stockdata"){
+		if (dataName=="stockdata"||dataName=="eventdata"){
 			Float freq = getRowData(dataName,2);
 			Integer ifreq = Integer.valueOf(freq.intValue());
 		    argsClass[0] = Integer.class;
@@ -146,6 +146,11 @@ public class DataImportor extends Base{
 				fileDes.createNewFile();
 			}
 	        out = new FileOutputStream(fileDes);
+	        if (dataName=="eventdata"){
+				Float freq = getRowData(dataName,2);
+				Integer ifreq = Integer.valueOf(freq.intValue());
+		        out.write(("var data_"+dataName+"_feq = "+ifreq+";\n\n").getBytes());
+	        }
 	        out.write(("var data_"+dataName+"=[\n").getBytes());
 			JSONArray data = getJsondata(dataName);
 			for (int i=0;i<data.size();i++){
@@ -251,7 +256,7 @@ public class DataImportor extends Base{
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		DataImportor importor = new DataImportor();
-		String name = "stockdata";
+		String name = "eventdata";
 		importor.importData(name);
 		importor.outputJsData(name);
 //		importor.outputAllJsData();

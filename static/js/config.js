@@ -69,4 +69,5 @@ var ITEM_NAME = {
 	CASH : "现金",EXP:"经验"
 };
 
-
+var EVENT_TYPE = [
+];

@@ -1,6 +1,6 @@
 Stock = function(){
     this.name = "stock";
-    this.pageCount = 5;
+    this.pageCount = 4;
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
     this.tagdetailname = this.tagname+"detail";
@@ -60,6 +60,9 @@ Stock.prototype.buildPage = function(page)
 			content += "          </table>"
       		content += "</div>"
 		}
+			content += "           <div style='margin-top:10px'>  "
+			content += "          股市开放时间为8:00AM-9:00PM"  
+			content += "             </div>"
      		content += "</div>"
 		
         content += this.buildPaging(page,tdata.length);
@@ -75,8 +78,12 @@ Stock.prototype.showDetail = function(id){
    var item = tdata[id-1];
    if (item==null) return;
         
-var content =      "        <div><h2>"+item.name+"</h2>"
- content += "            <div>投保后，在保险期间，可以规避对应的风险，规避经济上的损失</div>"
+var content =      "        <div><h2 style='margin-top:-5px;margin-bottom:-5px'>"+item.name+"</h2>"
+content += "<img src='static/img/pop_line.png'>"
+ content += "<span style='margin-top:10px;margin-bottom:30px;height:180px'> 投保后，在保险期间，可以规避对应的风险，规避经济上的损失</span>"
+content += "<img src='static/img/pop_line.png'>"
+ content +=	"</div>"
+ content += "           <div>  "
  content += "        <table id='toplist1_tab'>"
  content += "           <thead>"
  content += "             <tr>"
@@ -88,16 +95,20 @@ var content =      "        <div><h2>"+item.name+"</h2>"
  content += "               <td class='td-c-value'>"+item.period+"</td>"
 content += "              </tr>"
  content += "             <tr>"
- content += "               <td colspan='2' class='td-c-name'><input type='button' value='-' class='cf_stock_buycount' onclick='g_stock.countBuy(-1)'></td>"
- content += "               <td colspan='2' class='td-c-name'><input type='text' id='stock_count' value='1' style='width:80px;text-align:center'></td>"
- content += "               <td colspan='2' class='td-c-name'><input type='button' value='+' class='cf_stock_buycount' onclick='g_stock.countBuy(1)'></td>"
+ content += "               <td colspan='3' class='td-c-name'><input type='button' class='cf_bt_green' value='加持100' onclick='g_stock.countBuy(-1)'></td>"
+ content += "               <td colspan='3' class='td-c-name'><input type='button' class='cf_bt_green right' value='减持100' onclick='g_stock.countBuy(1)'></td>"
+content += "              </tr>"
+ content += "             <tr>"
+ content += "               <td colspan='3' style='float:right'><img src='static/img/icon_tip.png' style='width:20px;height:17px'></td>"
+ content += "               <td colspan='3' class='cf_font4'>100股=1手</td>"
 content += "              </tr>"
 content += "            </thead>"
 content += "          </table>     "
-content += "          <button class='btn btn-primary' onclick='g_stock.buy("+id+")'>购买</button>"
-content += "          <button class='btn btn-primary' data-dismiss='modal'>取消</button>      "  
-content += "             </div>"
 content += "           </div>  "
+content += "           <div style='margin-top:10px'>  "
+content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>      "  
+content += "          <button class='cf_bt' onclick='g_stock.buy("+id+")'>购买</button>"
+content += "             </div>"
 	
 	var tag = document.getElementById(this.pagedetailname);
 	tag.innerHTML = content;

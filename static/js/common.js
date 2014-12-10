@@ -55,8 +55,12 @@ Datamgr.prototype = {
         document.write(page.toString());    
         
         var pagedetail = new PageUtil(this.tagdetailname);
+        var psubclass = "";
+        if (this.name=="insure"||this.name=="event")
+        	psubclass = "small";
+        pclass = "cfpagedetail "+psubclass;
         content =     "<div class=\"tab-pane in active\" id='quest2'>";
-        content += "<div class=\"cfpage\" id='"+this.pagedetailname+"'>"
+        content += "<div class='"+pclass+"' id='"+this.pagedetailname+"'>"
         content += "</div></div>"
         pagedetail.addContent(content);
         document.write(pagedetail.toString());    
@@ -77,9 +81,9 @@ Datamgr.prototype = {
 			
 		var clickCallback = "g_"+this.name+".buildPage";
 		content +=     "        <div width='90%'>"
-		content += "<input type='button' class='button_paging' value='上一页' onclick='"+clickCallback+"("+(currPage-1)+")'/>"
+		content += "<input type='button' class='cf_bt pagingleft' value='上一页' onclick='"+clickCallback+"("+(currPage-1)+")'/>"
 		content += "<span class='cf_span'>"+(currPage+1)+"/"+pageCount+"</span>"
-		content += "<input type='button' class='button_paging pagingright' value='下一页' onclick='"+clickCallback+"("+(currPage+1)+")'/>"
+		content += "<input type='button' class='cf_bt pagingright' value='下一页' onclick='"+clickCallback+"("+(currPage+1)+")'/>"
 		content += "           </div>  "
 		return content;
 	},

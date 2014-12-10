@@ -65,8 +65,11 @@ Insure.prototype.showDetail = function(id){
    var item = tdata[id-1];
    if (item==null) return;
         
-var content =      "        <div><h2>"+item.name+"</h2>"
+var content =      "        <div><h2 style='margin-top:-5px;margin-bottom:-5px;text-align:center'>"+item.name+"</h2>"
+content += "<img src='static/img/pop_line.png'>"
  content += "            <div>投保后，在保险期间，可以规避对应的风险，规避经济上的损失</div>"
+ content +=	"</div>"
+ content += "           <div style='margin-top:10px;margin-bottom:30px;height:150px'>  "
  content += "        <table id='toplist1_tab'>"
  content += "           <thead>"
  content += "             <tr>"
@@ -77,17 +80,34 @@ var content =      "        <div><h2>"+item.name+"</h2>"
  content += "               <td class='td-c-name'>周期</td>"
  content += "               <td class='td-c-value'>"+item.period+"</td>"
 content += "              </tr>"
+ content += "             <tr>"
+ content += "               <td colspan='2' class='td-c-name'><input type='button' class='cf_count' onclick='g_insure.countBuy(-1)'></td>"
+ content += "               <td colspan='2' class='td-c-name'><input type='text' id='insure_count' value='1' style='width:80px;text-align:center'></td>"
+ content += "               <td colspan='2' class='td-c-name'><input type='button' class='cf_count add' onclick='g_insure.countBuy(1)'></td>"
+content += "              </tr>"
 content += "            </thead>"
 content += "          </table>     "
-content += "          <button class='btn btn-primary' onclick='g_insure.buy("+id+")'>购买</button>"
-content += "          <button class='btn btn-primary' data-dismiss='modal'>取消</button>      "  
-content += "             </div>"
 content += "           </div>  "
+content += "           <div style='margin-top:10px'>  "
+content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>      "  
+content += "          <button class='cf_bt' onclick='g_stock.buy("+id+")'>购买</button>"
+content += "             </div>"
 	
 	var tag = document.getElementById(this.pagedetailname);
 	tag.innerHTML = content;
         
 	$('#'+this.tagdetailname).modal('show');
+}
+
+Insure.prototype.countBuy = function(count){
+    var tag = document.getElementById('insure_count');
+    var currCount = parseInt(tag.value);
+    if (currCount+count<=0) {
+	currCount = 1;
+    }else
+	currCount += count;
+    tag.value = currCount;
+    //alert(tag.value);
 }
 
 Insure.prototype.buy = function(id){

@@ -46,7 +46,10 @@ Quest.prototype.buildPage = function(page)
 					item = tdata[j];
 					break;
 				}
-			}			
+			}
+			var img = "notdone.png";
+			if (item.status==QUEST_STATUS.DONE)	
+				img = "done.png";		
 		  	content += "<div class='cfpanel' ID='"+this.pagename+item.id+"' onclick='g_quest.showDetail("+item.id+")'>"
 		     content += "<h2 class='cf_h'>"+item.name+"</h2>"
 			 content += "        <table id='"+this.tagname+"tab'>"
@@ -54,12 +57,11 @@ Quest.prototype.buildPage = function(page)
 			 content += "             <tr>"
 			 content += "               <td class='td-c-name'>描述</td>"
 			 content += "               <td class='td-c-value'>"+item.desc+"</td>"
-			 content += "               <td class='td-c-name'>条件</td>"
-			 content += "               <td class='td-c-value'>"+item.need+"</td>"
-			 content += "               <td class='td-c-name'>奖励</td>"
-			 content += "               <td class='td-c-value'>"+item.prize+"</td>"
-			 content += "               <td class='td-c-name'>状态</td>"
-			 content += "               <td class='td-c-value'>"+q.status+"</td>"
+			 content += "               <td class='td-c-value'><img style='width:78px;height:27px' src='static/img/"+img+"'></td>"
+//			 content += "               <td class='td-c-name'>条件</td>"
+//			 content += "               <td class='td-c-value'>"+item.need+"</td>"
+//			 content += "               <td class='td-c-name'>奖励</td>"
+//			 content += "               <td class='td-c-value'>"+item.prize+"</td>"
 			content += "              </tr>"
 			content += "            </thead>"
 			content += "          </table>"
