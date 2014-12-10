@@ -49,7 +49,7 @@ public class DataImportor extends Base{
 			Method serviceMethod=serviceOjb.getClass().getMethod("findActive",null) ;
 			Object currObj = serviceMethod.invoke(serviceOjb, null);		
 
-			Float newVersion = getDataversion(dataName);
+			Float newVersion = getRowData(dataName,0);
 			
 		if (currObj!=null){
 			Method method=currObj.getClass().getMethod("getVersion",null) ;
@@ -85,6 +85,14 @@ public class DataImportor extends Base{
 		method=dataOjb.getClass().getMethod("setVersion",argsClass) ;
 		method.invoke(dataOjb, newVersion);		
 
+		if (dataName=="stockdata"){
+			Float freq = getRowData(dataName,2);
+			Integer ifreq = Integer.valueOf(freq.intValue());
+		    argsClass[0] = Integer.class;
+			method=dataOjb.getClass().getMethod("setFreq",argsClass) ;
+			method.invoke(dataOjb, ifreq);		
+		}
+		
 		JSONArray data = getJsondata(dataName);
 		System.out.println("find "+dataName+" xls data:"+data.toString());
 	    argsClass[0] = byte[].class;			
@@ -182,9 +190,9 @@ public class DataImportor extends Base{
                     case XSSFCell.CELL_TYPE_STRING: // 字符串    
                         record += "\""+cell.getStringCellValue()+"\",";
                         break;    
-                    case XSSFCell.CELL_TYPE_NUMERIC: // 数字,转为整形
-                    	double value = cell.getNumericCellValue();
-                        record += Integer.valueOf((int)value)+",";
+                    case XSSFCell.CELL_TYPE_NUMERIC: // 数字,转为float
+                    	float value = (float)cell.getNumericCellValue();
+                        record += value+",";
                         break;    
                     case XSSFCell.CELL_TYPE_BOOLEAN: // bool 
                         record += cell.getBooleanCellValue()+",";
@@ -204,17 +212,17 @@ public class DataImportor extends Base{
 	}
 	
 	
-	private Float getDataversion(String strSheetName)
+	private Float getRowData(String strSheetName,int column)
 	{
 		XSSFSheet st = getSheet(strSheetName);
         int rows=st.getLastRowNum()+1;//总行数  
         //version
         XSSFRow row0=st.getRow(ROW_INDEX_RECORD);//:row 0 
-        XSSFCell cell0=row0.getCell(0); 
+        XSSFCell cell0=row0.getCell(column); 
         double version = 0;
    		if (cell0.getCellType()==XSSFCell.CELL_TYPE_STRING)
    		{
-   	        XSSFCell cell1=row0.getCell(1); 
+   	        XSSFCell cell1=row0.getCell(column+1); 
    	        if (cell1.getCellType()==XSSFCell.CELL_TYPE_NUMERIC)
    	        	version = Double.valueOf(cell1.getNumericCellValue());  			
    		}
@@ -243,7 +251,7 @@ public class DataImportor extends Base{
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		DataImportor importor = new DataImportor();
-		String name = "insuredata";
+		String name = "stockdata";
 		importor.importData(name);
 		importor.outputJsData(name);
 //		importor.outputAllJsData();

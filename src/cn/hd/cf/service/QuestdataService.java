@@ -29,7 +29,7 @@ public class QuestdataService extends BaseService {
 		QuestdataExample example = new QuestdataExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andStatusEqualTo(Byte.valueOf(DATA_STATUS_ACTIVE));
-		List<Questdata> datas = questdataMapper.selectByExample(example);
+		List<Questdata> datas = questdataMapper.selectByExampleWithBLOBs(example);
 		if (datas.size()>0)
 			return datas.get(0);
 		return null;

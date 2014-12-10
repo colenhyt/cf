@@ -29,7 +29,7 @@ public class StockdataService extends BaseService {
 		StockdataExample example = new StockdataExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andStatusEqualTo(Byte.valueOf(DATA_STATUS_ACTIVE));
-		List<Stockdata> datas = stockdataMapper.selectByExample(example);
+		List<Stockdata> datas = stockdataMapper.selectByExampleWithBLOBs(example);
 		if (datas.size()>0)
 			return datas.get(0);
 		return null;

@@ -29,7 +29,7 @@ public class SignindataService extends BaseService {
 		SignindataExample example = new SignindataExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andStatusEqualTo(Byte.valueOf(DATA_STATUS_ACTIVE));
-		List<Signindata> datas = signindataMapper.selectByExample(example);
+		List<Signindata> datas = signindataMapper.selectByExampleWithBLOBs(example);
 		if (datas.size()>0)
 			return datas.get(0);
 		return null;

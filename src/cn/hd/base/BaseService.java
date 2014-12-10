@@ -3,7 +3,11 @@ package cn.hd.base;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import cn.hd.util.MybatisSessionFactory;
 
 
@@ -60,4 +64,30 @@ public class BaseService extends Base{
 		method.invoke(this, obj);
 	}
 	
+    /**  
+     * 从json对象集合表达式中得到一个java对象列表  
+     *
+     * @param jsonString  
+     * @param beanClass  
+     * @return  
+     */
+	public static <T> List<T> jsonToBeanList(String jsonString, Class<T> beanClass) {
+    	 
+        JSONArray jsonArray = JSONArray.fromObject(jsonString);
+        JSONObject jsonObject;
+        T bean;
+        int size = jsonArray.size();
+        List<T> list = new ArrayList<T>(size);
+ 
+        for (int i = 0; i < size; i++) {
+ 
+            jsonObject = jsonArray.getJSONObject(i);
+            bean = (T) JSONObject.toBean(jsonObject, beanClass);
+            list.add(bean);
+ 
+        }
+         
+        return list;
+ 
+    }   	
 }

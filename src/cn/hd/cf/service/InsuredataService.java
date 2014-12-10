@@ -29,7 +29,7 @@ public class InsuredataService extends BaseService {
 		InsuredataExample example = new InsuredataExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andStatusEqualTo(Byte.valueOf(DATA_STATUS_ACTIVE));
-		List<Insuredata> datas = insuredataMapper.selectByExample(example);
+		List<Insuredata> datas = insuredataMapper.selectByExampleWithBLOBs(example);
 		if (datas.size()>0)
 			return datas.get(0);
 		return null;

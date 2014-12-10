@@ -8,13 +8,12 @@
 <script language="javascript">
 
 
-  var htmlobj=$.ajax({url:"/cfserver/toplist_daylist.do?toplist.id=1",async:false});
-
+  var htmlobj=$.ajax({url:"/cf/stock_list.do",async:false});
 
 
 var obj = eval ("(" + htmlobj.responseText + ")");
 
-
+alert(obj[0].name+""+obj[0].price);
 //setInterval( "foo()", 5000 ); 
 
 </script>

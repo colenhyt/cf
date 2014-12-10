@@ -11,7 +11,7 @@ import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Signindata;
 import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.service.SignindataService;
-import cn.hd.event.EventManager;
+import cn.hd.mgr.EventManager;
 import cn.hd.util.MD5;
 import cn.hd.util.StringUtil;
 

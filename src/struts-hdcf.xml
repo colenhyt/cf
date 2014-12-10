@@ -13,4 +13,10 @@
 		<action name="toplist_*" method="{1}" class="cn.hd.cf.action.ToplistAction">
 		</action>
 	</package>
+	    
+	<package name="stock" extends="struts-default" namespace="/">
+		<action name="stock_*" method="{1}" class="cn.hd.cf.action.StockAction">
+		</action>
+	</package>	
+	
 </struts>

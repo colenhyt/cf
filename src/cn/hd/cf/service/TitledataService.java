@@ -29,7 +29,7 @@ public class TitledataService extends BaseService {
 		TitledataExample example = new TitledataExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andStatusEqualTo(Byte.valueOf(DATA_STATUS_ACTIVE));
-		List<Titledata> datas = titledataMapper.selectByExample(example);
+		List<Titledata> datas = titledataMapper.selectByExampleWithBLOBs(example);
 		if (datas.size()>0)
 			return datas.get(0);
 		return null;
