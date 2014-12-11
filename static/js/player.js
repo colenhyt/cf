@@ -68,7 +68,9 @@ Player = function(){
     this.count = 0;
     this.syncDuration = 5;
     this.data = {};
-	this.tagname = "my"+this.name
+    this.tagname = "my"+this.name;
+    this.pagename = this.tagname+"page";
+       this.pageheader = this.tagname+"header";
 }
 
 Player.prototype = new Datamgr();
@@ -89,17 +91,24 @@ Player.prototype.init = function(){
 
 Player.prototype.buildHTML = function()
 {
-	var page = new PageUtil(this.tagname,0,'modal-content2');
-	var content = page.buildHeader1('个人等级','');
-	page.addHeader(content);
-
-	content = "<div id='player_content'></div>"
+		var page = new PageUtil(this.tagname);
+            page.addHeader("<button type='button' class='close' data-dismiss='modal'><img src='static/img/close.png' class='cf_title_close top'></button>");
+	var header = "<ul id='"+this.id+"Tab' class='nav nav-tabs'>"
+            header += "<div id='"+this.pageheader+"'></div>"
+           header += "</ul>"	
+	page.addHeader(header);
+	
+	var content = "<div id='player_content' class='cfpage small'></div>"
 	page.addContent(content);
-
 	document.write(page.toString());
+	
 }
 
 Player.prototype.show = function(){
+        var   header = "<button class='cf_title_bg'>个人等级</button>"       	
+	var tagHeader = document.getElementById(this.pageheader);
+	tagHeader.innerHTML = header;
+	
 	var texp = store.get("exp");
 	var lv = g_title.getLevel();
 	var content = "<div class='cf-signin-prize'>"
@@ -123,7 +132,7 @@ Player.prototype.show = function(){
     var get = document.getElementById("player_content");
     get.innerHTML = content;
     
-    $('#'+this.tagname).modal('show');       
+    $('#'+this.tagname).modal({position:50,show: true});       
 }
 
 Player.prototype.register = function(){

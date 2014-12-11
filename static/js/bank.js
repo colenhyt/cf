@@ -8,39 +8,29 @@ Bank = function(){
 Bank.prototype = new Datamgr();
 
 Bank.prototype.init = function(){
-	this.buildHTML("title_bank.png");
-}
-
-Bank.prototype.buildPage = function(page)
-{
-//	var page = new PageUtil(this.tagname,0,'modal-content2');
-//	var content = page.buildHeader1('签到','g_bank.doBank');
-//	page.addHeader(content);
-
-	var content = "<div class='cf-bank-prize'>"
-	content +=	"<div> 今天获得:"
-    content +=      "      <div id='bank_gettoday'></div>"
-    content +=       " </div>"
-    content +=           "  <div> 明天将获得:"
-    content +=            "     <div id='bank_gettomorrow'></div>"
-    content +=            " </div></div>"
-    content +=            " <div class='cf-bank-feeling'> 请选择你今天的心情:"
-    content +=            "     <div id ='bank_feeling'>bank_feeling</div>  "
-    content +=       " </div>"
-    content +=            " </div>"
-
-	var tag = document.getElementById(this.pagename);
-	tag.innerHTML = content;
-
+	this.buildHTML();
 }
 
 Bank.prototype.show = function(){
 	
-     var option = {
-    	position : 50,
-    	show     : true
-	}
-    $('#'+this.tagname).modal(option);       
+	var content = "<div class='cfpanel bank'>"
+	content +=	"<div> 存款:<span>¥29381</span></div>"
+	content +=	"<div> 股票价值:<span>¥5901</span></div>"
+	content +=	"<div> 保险价值:<span>¥5901</span></div>"
+	content +=	"<div> 总资产值:<span>¥15901</span></div>"
+	content +=	"<div> <img src='static/img/icon_toplist.png'>当前排名:<span>3</span></div>"
+    content +=            " </div>"
+    content +=	"</div>"
+    content +=            " <div class='cf-bank-feeling'> <span>每天</span> 8:00AM~9:00PM"
+    content +=            "     <div>每小时结算利息<div>  "
+    content +=            "     <div><span>当前利率:</span><div>  "
+    content +=       " </div>"
+    content +=            " </div>"
+
+	var tag = document.getElementById(this.pagename);
+	tag.innerHTML = content;	
+
+    $('#'+this.tagname).modal({position:50,show:true});       
 }
 
 var g_bank = new Bank();

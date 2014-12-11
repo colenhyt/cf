@@ -48,7 +48,12 @@ Datamgr.prototype = {
         var titleImgName = "title_"+this.name+".png";
         page.buildSingleTab(titleImgName);
          var content =     "<div class='tab-pane in active' id='quest1'>";
-         var pclass = "cfpage "+this.pagename;
+         var pclass = "cfpage ";
+         if (this.name=="signin") {
+            pclass += "small";
+         }else if (this.name=="bank") {
+            pclass += "bank"
+         }
         content += "<div class='"+pclass+"' id='"+this.pagename+"'>"
         content += "</div></div>"
         page.addContent(content);

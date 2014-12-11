@@ -21,10 +21,6 @@ Signin.prototype.init = function(){
 
 Signin.prototype.buildPage = function(page)
 {
-//	var page = new PageUtil(this.tagname,0,'modal-content2');
-//	var content = page.buildHeader1('签到','g_signin.doSignin');
-//	page.addHeader(content);
-
 	var content = "<div class='cfpage_content'>"
 	content +=	" 今天签到将获得工资:"
     content +=      "      <span id='signin_gettoday class='cf_font2'>10000元</span><br>"
@@ -43,7 +39,7 @@ Signin.prototype.buildPage = function(page)
 }
 
 Signin.prototype.start = function(startDay){
-	return;
+	//return;
 	 
     var signin = this;    
     var vstartDay = startDay + 1;	//
