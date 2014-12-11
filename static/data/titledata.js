@@ -7,17 +7,17 @@ var data_titledata = [
 ]
 
 var data_toplistdata = [
-{id:1,name:'colen',score:12899},
-{id:2,name:'colen2',score:8199},
-{id:3,name:'colen3',score:1899},
-{id:4,name:'colen4',score:2899},
-{id:5,name:'colen5',score:3899},
-{id:6,name:'colen6',score:899},
+{id:1,name:'colen',score:12899,zan:150},
+{id:2,name:'colen2',score:8199,zan:140},
+{id:3,name:'colen3',score:1899,zan:80},
+{id:4,name:'colen4',score:2899,zan:90},
+{id:5,name:'colen5',score:3899,zan:70},
+{id:6,name:'colen6',score:899,zan:50},
 ]
 
 
 var data_toplistdata2 = [
-{id:1,name:'colen33',score:12899},
-{id:2,name:'colen22',score:8199},
-{id:3,name:'colen13',score:1899},
+{id:1,name:'colen33',score:12899,zan:550},
+{id:2,name:'colen22',score:8199,zan:150},
+{id:3,name:'colen13',score:1899,zan:60},
 ]

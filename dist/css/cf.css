@@ -69,11 +69,12 @@ height:392px;
     background-size:100% 100%;  
 }
 
-.cfpage.mysigninpage
+.cfpage.small
 {
 padding-top:20px;
 height:323px;
 }
+
 .cf_h{
 color:yellow;
 }
@@ -89,6 +90,16 @@ color:yellow;
  background:url('../../static/img/panel_bg.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
+}
+
+.cfpanel.bank{
+  margin-top:3px;
+  margin-bottom: 10px;
+  width:310px;
+  height:260px;
+  background:url('../../static/img/bank_bg.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;   
 }
 
 .cfpagedetail
@@ -112,9 +123,12 @@ color:yellow;
 .cf_title_bg {
 float:left;
 margin-left:15px;
+vertical-align: bottom;
 border:none;
 width:160px;
 height:39px;
+color: #ffffff;
+font-size: 20px;
 background:url('../../static/img/title_bg.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  

@@ -11,6 +11,8 @@ Toplist = function(){
 Toplist.prototype = new Datamgr();
 
 Toplist.prototype.init = function(){
+        store.remove(this.tagtab1);
+        store.remove(this.tagtab2);
 	var tdata = store.get(this.tagtab1);
 	if (tdata==null)
 	{
@@ -92,7 +94,7 @@ Toplist.prototype.buildPage = function(page)
 			 content += "               <td class='td-c-value'>"+item.id+"</td>"
 			 content += "               <td class='td-c-value'>"+item.name+"</td>"
 			 content += "               <td class='td-c-value'>"+item.score+"</td>"
-			 content += "               <td class='td-c-value'><input type='button' class='cf_top_zan' onclick='g_toplist.zan("+item.id+")'>*33</td>"
+			 content += "               <td class='td-c-value'><input type='button' class='cf_top_zan' onclick='g_toplist.zan("+page+","+item.id+")'>*<span id='zan_"+item.id+"'>"+item.zan+"</span></td>"
 			content += "              </tr>"
 			 content += "             <tr>"
 			 content += "               <td colspan='4'><img src='static/img/top_line.png'></td>"
@@ -107,9 +109,23 @@ Toplist.prototype.buildPage = function(page)
 	tag.innerHTML = content;
 }
 
-Toplist.prototype.zan = function(playerId)
+Toplist.prototype.zan = function(page,playerId)
 {
-    alert('zan'+playerId);
+    var zanTag = document.getElementById('zan_'+playerId);
+    var zanCount = parseInt(zanTag.innerHTML)+1;
+    zanTag.innerHTML = zanCount;
+    var dbName = this.tagtab1;
+    if (page==1) {
+        dbName = this.tagtab2;
+    }
+    var tdata = store.get(dbName);
+    for (var i=0;i<tdata.length;i++){
+        if (tdata[i].id==playerId) {
+            tdata[i].zan = zanCount;
+             break;
+        }
+    }
+    store.set(dbName,tdata);
 }
 
 var g_toplist = new Toplist();
