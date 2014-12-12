@@ -70,17 +70,12 @@ PageUtil.prototype.buildMsg = function(contentId)
 	this.addContent(content);
 }
 
-PageUtil.prototype.buildSingleTab = function(titleImg)
+PageUtil.prototype.buildSingleTab = function(titleImg,pName)
 {
      this.addHeader("<button type='button' class='close' data-dismiss='modal'><img src='static/img/close.png' class='cf_title_close'></button>");
-
-//	var header = "<ul id='"+this.id+"Tab' class='nav nav-tabs'>"
-//     header += "<img src='static/img/title_bg.png' class='cf_title_bg'>"
-//     header += "<img src='static/img/"+titleImg+"' class='cf-m-title'>"
-//    header += "</ul>"
     
 	var header = "<ul id='"+this.id+"Tab' class='nav nav-tabs'>"
-     header += "<div class='cf_title_bg'><img src='static/img/"+titleImg+"' class='cf_title'></div>"
+     header += "<div class='cf_title_bg' onclick='g_"+pName+".onClickHead()'><img src='static/img/"+titleImg+"' class='cf_title'></div>"
     header += "</ul>"	
 	this.addHeader(header);
 }

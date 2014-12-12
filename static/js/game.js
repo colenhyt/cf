@@ -85,12 +85,13 @@ Map.prototype.init = function(width,height,mapFile){
 	canvas.onclick = function(event){
 		var clickX = event.clientX - pos.x;
 		var clickY = event.clientY - pos.y;
+//		clickX = clickX/0.6;
+//		clickY = clickY/0.6-20;
 		for (var i=0 ; i<mapImgs.length;i++ )
         {
             var image = mapImgs[i];
             if (image.name!="map")
             {            
-            
             if (image.x<=clickX&&clickX<=image.img.width+(image.x-pos.x)&&
                 image.y<=clickY&&clickY<=image.img.height+(image.y-pos.y))
             {

@@ -3,6 +3,12 @@ function errorDB(err){
    alert("Error processing SQL: "+err.code);
 }
 
+log33 = function(text){
+	 var div2=document.getElementById('testpos');
+	 div2.innerHTML = text;
+	 div2.style.color = 'black';
+}
+
 log = function(text){
 	var name = "console";
 	 var div=document.getElementById(name);
@@ -46,7 +52,7 @@ Datamgr.prototype = {
 	buildHTML:function(){
          var page = new PageUtil(this.tagname);
         var titleImgName = "title_"+this.name+".png";
-        page.buildSingleTab(titleImgName);
+        page.buildSingleTab(titleImgName,this.name);
          var content =     "<div class='tab-pane in active' id='quest1'>";
          var pclass = "cfpage ";
          if (this.name=="signin") {
@@ -98,6 +104,11 @@ Datamgr.prototype = {
         alert('999'+this.name);
         log('9999999');    
     },
+    
+    onClickHead:function(){
+        if (this.name=='signin')
+        	g_signin.doSignin(); 
+    },    
     
     update:function(){
 		this.count += 1;
