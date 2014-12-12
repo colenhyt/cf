@@ -6,9 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import net.sf.json.JSONArray;
@@ -24,20 +26,16 @@ import cn.hd.cf.model.*;
 import cn.hd.cf.service.SignindataService;
 
 public class DataImportor extends Base{
+	private String cfg_file;
 	private static String CONFIG_PATH_JS = "static/data/";
-	private static String CONFIG_FILE_LOCATION = "cfdata.xlsx";
 	
-	public static String DATA_NAME_SIGNIN = "signindata";
+	public static int ROW_INDEX_RECORD = 0;
+	public static int ROW_INDEX_NAME = 2;
+	public static int ROW_INDEX_DATA = 3;
 	
-	private int ROW_INDEX_RECORD = 0;
-	private int ROW_INDEX_NAME = 2;
-	private int ROW_INDEX_DATA = 3;
-	
-	private SignindataService signindataService;
-
-	public DataImportor()
+	public DataImportor(String _cfg_file)
 	{
-		signindataService = new SignindataService();
+		cfg_file = _cfg_file;
 	}
 	
 	public void importData(String dataName)
@@ -93,7 +91,7 @@ public class DataImportor extends Base{
 			method.invoke(dataOjb, ifreq);		
 		}
 		
-		JSONArray data = getJsondata(dataName);
+		JSONArray data = getJsondata(dataName,ROW_INDEX_NAME,ROW_INDEX_DATA);
 		System.out.println("find "+dataName+" xls data:"+data.toString());
 	    argsClass[0] = byte[].class;			
 		method=dataOjb.getClass().getMethod("setData",argsClass) ;
@@ -131,33 +129,54 @@ public class DataImportor extends Base{
 		}
 	}
 	
-	public void outputAllJsData()
-	{
-		outputJsData(DATA_NAME_SIGNIN);
+	public void outputXls2Js(){
+        File fileDes = new File(cfg_file);  
+        InputStream str;
+		String dName = "quotedata";
+		try {
+			str = new FileInputStream(fileDes);
+	        XSSFWorkbook xwb = new XSSFWorkbook(str);  //利用poi读取excel文件流  
+	        Iterator<XSSFSheet> iterator = xwb.iterator();
+			RandomAccessFile  dataFile = new RandomAccessFile(CONFIG_PATH_JS+"/"+dName+".js","rw");
+			dataFile.setLength(0);
+			dataFile.write(("\n").getBytes());
+			dataFile.write(("var data_quotedata=[\n").getBytes());
+	        while (iterator.hasNext())
+	        {
+	        	XSSFSheet i = (XSSFSheet) iterator.next();
+	        	outputJsData2(dataFile,i.getSheetName(),0,1);
+	        	System.out.println(i.getSheetName());
+	        	
+	        }	
+			dataFile.write(("]\n").getBytes());
+	        dataFile.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  		
 	}
 	
-	public void outputJsData(String dataName)
+	public void outputAllJsData()
 	{
-        File fileDes = new File(CONFIG_PATH_JS+"/"+dataName+".js");  
-        FileOutputStream out = null;
+		outputJsData("signindata",ROW_INDEX_NAME,ROW_INDEX_DATA);
+	}
+	
+	public void outputJsData2(RandomAccessFile fileDes,String dataName,int nameIndex,int dataIndex)
+	{
 		try {
-			if (!fileDes.exists())
-			{
-				fileDes.createNewFile();
-			}
-	        out = new FileOutputStream(fileDes);
-	        if (dataName=="eventdata"){
-				Float freq = getRowData(dataName,2);
-				Integer ifreq = Integer.valueOf(freq.intValue());
-		        out.write(("var data_"+dataName+"_feq = "+ifreq+";\n\n").getBytes());
-	        }
-	        out.write(("var data_"+dataName+"=[\n").getBytes());
-			JSONArray data = getJsondata(dataName);
+	        long fileLength = fileDes.length();
+            //将写文件指针移到文件尾。
+	        fileDes.seek(fileLength);	     
+	        fileDes.write(("{name:'"+dataName+"',quote:[\n").getBytes());
+			JSONArray data = getArraydata(dataName,nameIndex,dataIndex,30);
 			for (int i=0;i<data.size();i++){
-			out.write(data.get(i).toString().getBytes());
-			out.write(",\n".getBytes());
+				fileDes.write(data.get(i).toString().getBytes());
+				fileDes.write(",\n".getBytes());
 			}
-			out.write("]\n".getBytes());
+			fileDes.write("]},\n".getBytes());
 			System.out.println("output ("+dataName+")js data success");
 			
 		} catch (IOException e) {
@@ -166,31 +185,30 @@ public class DataImportor extends Base{
 		}
  	}
 	
-	private JSONArray getJsondata(String strSheetName)
+	private JSONArray getArraydata(String strSheetName,int nameIndex,int dataIndex,int maxRow)
 	{
 		JSONArray jsondata = new JSONArray();
 		XSSFSheet st = getSheet(strSheetName);
-        int rows=st.getLastRowNum()+1;//总行数  
+        int rows = maxRow+1;//总行数  
         if (rows<2){
         	return jsondata;
         }
         int cols;//总列数  
         //schema
-        XSSFRow row1=st.getRow(ROW_INDEX_NAME);//:row name
+        XSSFRow row1=st.getRow(nameIndex);//:row name
       
-        for(int i=ROW_INDEX_DATA;i<rows;i++){  
+        for(int i=dataIndex;i<rows;i++){  
             XSSFRow row=st.getRow(i);//读取某一行数据  
             if(row!=null){  
                 //获取行中所有列数据  
                 cols=row.getLastCellNum();  
-                String record = "{";
+                String record = "[";
             for(int j=0;j<cols;j++){  
                 XSSFCell cell=row.getCell(j);  
                 if(cell==null){  
                     System.out.print("   ");    
                 }else{  
                 //判断单元格的数据类型  
-                	record += "\""+row1.getCell(j).getStringCellValue()+"\":";
                 switch (cell.getCellType()) {    
                     case XSSFCell.CELL_TYPE_STRING: // 字符串    
                         record += "\""+cell.getStringCellValue()+"\",";
@@ -208,7 +226,7 @@ public class DataImportor extends Base{
                     }    
             }  
             }  
-                record += "}";
+                record += "]";
                 jsondata.add(record);
             }  
         }  
@@ -237,7 +255,7 @@ public class DataImportor extends Base{
 	
 	private XSSFSheet getSheet(String strSheetName)
 	{
-        File fileDes = new File(CONFIG_FILE_LOCATION);  
+        File fileDes = new File(cfg_file);  
         InputStream str;
 		try {
 			str = new FileInputStream(fileDes);
@@ -253,13 +271,97 @@ public class DataImportor extends Base{
 		return null;
 	}
 	
+	private JSONArray getJsondata(String strSheetName,int nameIndex,int dataIndex)
+	{
+		JSONArray jsondata = new JSONArray();
+		XSSFSheet st = getSheet(strSheetName);
+	    int rows=st.getLastRowNum()+1;//总行数  
+	    if (rows<2){
+	    	return jsondata;
+	    }
+	    int cols;//总列数  
+	    //schema
+	    XSSFRow row1=st.getRow(nameIndex);//:row name
+	
+	    for(int i=dataIndex;i<rows;i++){  
+	        XSSFRow row=st.getRow(i);//读取某一行数据  
+	        if(row!=null){  
+	            //获取行中所有列数据  
+	            cols=row.getLastCellNum();  
+	            String record = "{";
+	        for(int j=0;j<cols;j++){  
+	            XSSFCell cell=row.getCell(j);  
+	            if(cell==null){  
+	                System.out.print("   ");    
+	            }else{  
+	            //判断单元格的数据类型  
+	            	record += "\""+row1.getCell(j).getStringCellValue()+"\":";
+	            switch (cell.getCellType()) {    
+	                case XSSFCell.CELL_TYPE_STRING: // 字符串    
+	                    record += "\""+cell.getStringCellValue()+"\",";
+	                    break;    
+	                case XSSFCell.CELL_TYPE_NUMERIC: // 数字,转为float
+	                	float value = (float)cell.getNumericCellValue();
+	                    record += value+",";
+	                    break;    
+	                case XSSFCell.CELL_TYPE_BOOLEAN: // bool 
+	                    record += cell.getBooleanCellValue()+",";
+	                    break;    
+	                default:    
+	                    record += cell.getNumericCellValue()+",";
+	                    break;    
+	                }    
+	        }  
+	        }  
+	            record += "}";
+	            jsondata.add(record);
+	        }  
+	    }  
+	    		
+		return jsondata;
+	}
+
+	public void outputJsData(String dataName,int nameIndex,int dataIndex)
+	{
+	    File fileDes = new File(CONFIG_PATH_JS+"/"+dataName+".js");  
+	    FileOutputStream out = null;
+		try {
+			if (!fileDes.exists())
+			{
+				fileDes.createNewFile();
+			}
+	        out = new FileOutputStream(fileDes);
+	        if (dataName=="eventdata"){
+				Float freq = getRowData(dataName,2);
+				Integer ifreq = Integer.valueOf(freq.intValue());
+		        out.write(("var data_"+dataName+"_feq = "+ifreq+";\n\n").getBytes());
+	        }
+	        out.write(("var data_"+dataName+"=[\n").getBytes());
+			JSONArray data = getJsondata(dataName,nameIndex,dataIndex);
+			for (int i=0;i<data.size();i++){
+			out.write(data.get(i).toString().getBytes());
+			out.write(",\n".getBytes());
+			}
+			out.write("]\n".getBytes());
+			System.out.println("output ("+dataName+")js data success");
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		DataImportor importor = new DataImportor();
-		String name = "eventdata";
-		importor.importData(name);
-		importor.outputJsData(name);
+		DataImportor importor = new DataImportor("cfdata.xlsx");
+		String name = "stockdata";
+//		importor.importData(name);
+		//importor.outputJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);
 //		importor.outputAllJsData();
+		
+		DataImportor importor2 = new DataImportor("stockdata.xlsx");
+		importor2.outputXls2Js();
+		
 	}
 
 }

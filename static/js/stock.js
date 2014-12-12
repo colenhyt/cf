@@ -115,7 +115,7 @@ content += "             </div>"
 	tag.innerHTML = content;
         
     g_stockdetail.drawQuote(id);
-	$('#'+this.tagdetailname).modal({position:80,show: true});  
+	$('#'+this.tagdetailname).modal({position:0,show: true});  
 }
 
 Stock.prototype.countBuy = function(count){
