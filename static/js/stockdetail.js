@@ -14,14 +14,26 @@ Stockdetail.prototype.init = function(){
 	//this.buildHTML();
 }
 
-Stockdetail.prototype.drawQuote = function(stockId){
+Stockdetail.prototype.drawQuote = function(stockName){
+	var stock;
+	for (var i=0;i<data_quotedata.length;i++){
+		if (data_quotedata[i].name==stockName){
+			stock = data_quotedata[i];
+			break;
+		}
+	}
+	if (stock==null){
+		alert('no stock quote for:'+stockName);
+		return;
+	}
+		
 	var time = new Date();
 	var stockHead = {currPs:123.66,dir:0,per:5.5,currTime:time,status:1};
-	var titleText = stockHead.currPs+":"+stockHead.dir+":("+stockHead.per+")";
+	var titleText = stock.name+","+stockHead.currPs+":"+stockHead.dir+":("+stockHead.per+")";
 	var subTitleText = stockHead.currTime+":s"+stockHead.status+"(北京时间)"
-		var flow=[];
-		for(var i=0;i<15;i++){
-			flow.push(Math.floor(Math.random()*(20+((i%16)*5)))+10);
+		var flow = [];
+		for(var i=0;i<stock.quote.length;i++){
+			flow.push(stock.quote[i][2]);
 		}
 		
 		var data = [

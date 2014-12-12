@@ -114,7 +114,7 @@ content += "             </div>"
 	var tag = document.getElementById(this.pagedetailname);
 	tag.innerHTML = content;
         
-    g_stockdetail.drawQuote(id);
+    g_stockdetail.drawQuote(item.name);
 	$('#'+this.tagdetailname).modal({position:0,show: true});  
 }
 
