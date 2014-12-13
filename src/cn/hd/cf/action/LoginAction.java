@@ -6,7 +6,7 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 import cn.hd.base.BaseAction;
-import cn.hd.cf.model.Player;
+import cn.hd.cf.model.Message;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Signindata;
 import cn.hd.cf.service.PlayerService;
@@ -16,7 +16,7 @@ import cn.hd.util.MD5;
 import cn.hd.util.StringUtil;
 
 public class LoginAction extends BaseAction {
-	private Player player;
+	private PlayerWithBLOBs player;
 	private PlayerService playerService;
 	private SignindataService signindataService;
 	
@@ -49,7 +49,6 @@ public class LoginAction extends BaseAction {
 		playerBlob.setAccountid(player.getAccountid());
 		playerBlob.setPlayername(ipAddr);
 		Date time = new Date(); 
-		playerBlob.setLastsignin(time);
 		playerBlob.setCreatetime(time);
 		String pwd = StringUtil.getRandomString(10);
 		playerBlob.setPwd(MD5.MD5(pwd));
@@ -78,6 +77,25 @@ public class LoginAction extends BaseAction {
 		return null;
 	}
 	
+	public String update()
+	{
+		String pp = getHttpRequest().getParameter("player");
+		JSONObject ppObj = JSONObject.fromObject(pp);
+		PlayerWithBLOBs playerBlob = (PlayerWithBLOBs)JSONObject.toBean(ppObj,PlayerWithBLOBs.class);
+		if (playerBlob==null)
+		{
+			System.out.println("no player found:playerid:"+player.getPlayerid());
+			return null;
+		}
+		int ret = playerService.updateByKey(playerBlob);
+		//System.out.println("update player("+playerBlob.getPlayername()+"):ret: "+ret);
+		Message msg = new Message();
+		msg.setCode(ret);
+		JSONObject obj = JSONObject.fromObject(msg);
+		write(obj.toString(),"utf-8");
+		return null;
+	}
+	
 	public List<Integer> findUpdateDataIds(String oldIds)
 	{
 		List<Integer> dataIds = new ArrayList<Integer>();
@@ -96,10 +114,10 @@ public class LoginAction extends BaseAction {
 		}
 		return dataIds;
 	}
-	public Player getPlayer() {
+	public PlayerWithBLOBs getPlayer() {
 		return player;
 	}
-	public void setPlayer(Player player) {
+	public void setPlayer(PlayerWithBLOBs player) {
 		this.player = player;
 	}
 	public PlayerService getPlayerService() {

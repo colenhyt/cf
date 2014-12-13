@@ -142,8 +142,7 @@ Player.prototype.register = function(){
     var createtime = Date.parse(new Date());
      var player = {
         "accountid":1,"playerid":-1,"playername":"playerxxx","exp":0,"cash":0,
-	quest:[],
-        lastsignin:createtime,sex:0,createtime:createtime
+		quest:[],sex:0,createtime:createtime
         };
            
 	var dataobj = $.ajax({url:"/cf/login_register.do?player.accountid="+player.accountid+"&player.playername="+player.playername,async:false});
@@ -167,13 +166,19 @@ Player.prototype.register = function(){
 Player.prototype.login = function(isRegister){
      this.data = store.get(this.name);
      var player = this.data;
-     
+     var serverPlayer;
 	var dataobj = $.ajax({url:"/cf/login_login.do?player.playerid="+player.playerid+"&player.pwd="+player.pwd,async:false});
 	try    {
 		if (dataobj!=null&&dataobj.responseText.length>0) {
 			var obj = eval ("(" + dataobj.responseText + ")");
 			if (obj!=null){
-				
+				serverPlayer = obj;
+				if (obj.quest)
+					serverPlayer.quest = eval ("(" + obj.quest + ")");
+				if (obj.stock)
+					serverPlayer.stock = eval ("(" + obj.stock + ")");
+				if (obj.insure)
+					serverPlayer.insure = eval ("(" + obj.insure + ")");
 			}
 		}
 	}   catch  (e)   {
@@ -235,6 +240,34 @@ Player.prototype.updateData = function(prop) {
     store.set(this.name,this.data);
 }
 
+Player.prototype.clone = function(data) {
+	var pl = this.data;
+	data.playerid = pl.playerid;
+	data.accountid = pl.accountid;
+	data.sex = pl.sex;
+	data.createtime = pl.createtime;
+	data.playername = pl.playername;
+	data.pwd = pl.pwd;
+	data.cash = pl.cash;
+	data.exp = pl.exp;
+	if (pl.quest!=null)
+		data.quest = pl.quest.concat();
+	if (pl.stock=null)
+		data.stock = pl.stock.concat();
+	if (pl.insure=null)
+		data.insure = pl.insure.concat();
+}
+
+Player.prototype.syncData = function(){
+	var data = {};
+	this.clone(data);
+	data.quest = JSON.stringify(data.quest);
+	data.stock = JSON.stringify(data.stock);
+	data.insure = JSON.stringify(data.insure);
+	var updateStr = "player="+JSON.stringify(data);
+	$.ajax({type:"post",url:"/cf/login_update.do",data:updateStr,success:this.syncCallback});  
+}
+
 Player.prototype.prize = function(prizes) {
 	var prop = {};
      for (var i=0;i< prizes.length;i++)
@@ -285,10 +318,6 @@ Player.prototype.getPlayerStock = function(stock) {
     }    
     return {profit:profit,avgPrice:avgPrice};
 }
-
-Player.prototype.syncData = function(){
-	//alert('pp.syncData');
-}   
 
 //store.remove("player");
 //store.remove("playerlog");

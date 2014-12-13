@@ -44,6 +44,13 @@ public class PlayerService extends BaseService {
 		return 0;
 	}
 	
+	public int updateByKey(PlayerWithBLOBs record)
+	{
+		playerMapper.updateByPrimaryKeyWithBLOBs(record);
+		DBCommit();
+		return 0;
+	}
+	
 	public boolean have(String playerName){
 		PlayerExample example = new PlayerExample();
 		Criteria criteria=example.createCriteria();
