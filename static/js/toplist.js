@@ -92,10 +92,10 @@ Toplist.prototype.buildPage = function(page)
 		     content += "<div>"
 			 content += "        <table id='toplist1_tab' style='width:100%'>"
 			 content += "             <tr>"
-			 content += "               <td class='td-c-value'>"+item.id+"</td>"
-			 content += "               <td class='td-c-value'>"+item.name+"</td>"
-			 content += "               <td class='td-c-value'>"+item.score+"</td>"
-			 content += "               <td class='td-c-value'><input type='button' class='cf_top_zan' onclick='g_toplist.zan("+page+","+item.id+")'>*<span id='zan_"+item.id+"'>"+item.zan+"</span></td>"
+			 content += "               <td class='td-c-value'>"+item.playername+"</td>"
+			 content += "               <td class='td-c-value'>"+item.money+"</td>"
+			 content += "               <td class='td-c-value'>"+(i+1)+"</td>"
+			 content += "               <td class='td-c-value'><input type='button' class='cf_top_zan' onclick='g_toplist.zan("+page+","+item.playerid+")'>*<span id='zan_"+item.playerid+"'>"+item.zan+"</span></td>"
 			content += "              </tr>"
 			 content += "             <tr>"
 			 content += "               <td colspan='4'><img src='static/img/top_line.png'></td>"
@@ -127,6 +127,12 @@ Toplist.prototype.zan = function(page,playerId)
         }
     }
     store.set(dbName,tdata);
+	try  {
+		var data = "toplist.playerid="+playerId+"&toplist.zan="+zanCount;
+		$.ajax({type:"post",url:"/cf/toplist_zan.do",data:data});
+	}   catch  (e)   {
+	    logerr(e.name);
+	}    
 }
 
 Toplist.prototype.updateData = function(data){
@@ -144,8 +150,7 @@ Toplist.prototype.syncCallback=function(dataobj){
 	
 Toplist.prototype.syncData = function(){
 	try  {
-		var data = "toplist.type=1";
-		$.ajax({type:"post",url:"/cf/toplist_list.do",data:data,success:this.syncCallback});
+		$.ajax({type:"post",url:"/cf/toplist_list.do",success:this.syncCallback});
 	}   catch  (e)   {
 	    logerr(e.name);
 	}   

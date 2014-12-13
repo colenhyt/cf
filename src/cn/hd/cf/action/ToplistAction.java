@@ -3,6 +3,7 @@ package cn.hd.cf.action;
 import java.util.List;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import cn.hd.base.BaseAction;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.ToplistService;
@@ -16,10 +17,20 @@ public class ToplistAction extends BaseAction {
 	}
 	
 	public String list(){
-		List<Toplist> tt = toplistService.findByType(toplist.getType());
+		List<Toplist> tt = toplistService.findAll();
 		JSONArray jsonObject = JSONArray.fromObject(tt);
-		System.out.println("dayliseeeeeeeeeet scrie: "+jsonObject.toString());
+		
 		write(jsonObject.toString(),"utf-8");
+		return null;
+	}
+	
+	public String zan(){
+		Toplist toplist2 = toplistService.findByPlayerId(toplist.getPlayerid());
+		System.out.println("toplist zan: playerid="+toplist.getPlayerid()+",zan="+toplist.getZan());
+		if (toplist2!=null){
+			toplist2.setZan(toplist.getZan());
+			toplistService.updateByKey(toplist2);
+		}
 		return null;
 	}
 	
