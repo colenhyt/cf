@@ -9,8 +9,10 @@ import cn.hd.base.BaseAction;
 import cn.hd.cf.model.Message;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Signindata;
+import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.service.SignindataService;
+import cn.hd.cf.service.ToplistService;
 import cn.hd.mgr.EventManager;
 import cn.hd.util.MD5;
 import cn.hd.util.StringUtil;
@@ -19,7 +21,16 @@ public class LoginAction extends BaseAction {
 	private PlayerWithBLOBs player;
 	private PlayerService playerService;
 	private SignindataService signindataService;
+	private ToplistService	toplistService;
 	
+	public ToplistService getToplistService() {
+		return toplistService;
+	}
+
+	public void setToplistService(ToplistService toplistService) {
+		this.toplistService = toplistService;
+	}
+
 	public SignindataService getSignindataService() {
 		return signindataService;
 	}
@@ -29,7 +40,7 @@ public class LoginAction extends BaseAction {
 	}
 
 	public LoginAction(){
-		init("playerService","signindataService");
+		init("playerService","signindataService","toplistService");
 		EventManager.getInstance().start();
 	}
 	
@@ -87,7 +98,30 @@ public class LoginAction extends BaseAction {
 			System.out.println("no player found:playerid:"+player.getPlayerid());
 			return null;
 		}
+		playerBlob.setCash(5000);
 		int ret = playerService.updateByKey(playerBlob);
+		Toplist toplist = toplistService.findByPlayerId(playerBlob.getPlayerid());
+		if (toplist==null){
+			toplist = toplistService.findByLessMoney(playerBlob.getCash());
+			int topCount = toplistService.findCount();
+			if (toplist!=null||topCount<10){
+				Toplist newtop = new Toplist();
+				newtop.setPlayerid(playerBlob.getPlayerid());
+				newtop.setPlayername(playerBlob.getPlayername());
+				newtop.setMoney(Float.valueOf(playerBlob.getCash()));
+				newtop.setZan(0);
+				toplistService.add(newtop);				
+			}
+//			if (toplist!=null&&topCount>10){
+//				toplistService.remove(toplist.getId());
+//			}
+		}else {
+			float topMoney = toplist.getMoney().floatValue();
+			if (playerBlob.getCash()>topMoney){
+				toplist.setMoney(Float.valueOf(playerBlob.getCash()));
+				toplistService.updateByKey(toplist);
+			}
+		}
 		//System.out.println("update player("+playerBlob.getPlayername()+"):ret: "+ret);
 		Message msg = new Message();
 		msg.setCode(ret);

@@ -268,7 +268,7 @@ Player.prototype.syncData = function(){
 	try  {
 		$.ajax({type:"post",url:"/cf/login_update.do",data:updateStr,success:this.syncCallback});
 	}   catch  (e)   {
-	    logerr(e.name);
+	    document.write(e.name);
 	}   
 }
 

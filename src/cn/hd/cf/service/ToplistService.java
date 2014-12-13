@@ -11,12 +11,6 @@ import cn.hd.cf.model.ToplistExample.Criteria;
 public class ToplistService extends BaseService {
 	private ToplistMapper toplistMapper;
 	
-	public Toplist findById(int id){
-		Toplist ccc = toplistMapper.selectByPrimaryKey(id);
-		System.out.println("find list id "+ccc.getId());
-		return ccc;
-	}
-	
 	public List<Toplist> findByType(int type){
 		ToplistExample example=new ToplistExample();
 		Criteria criteria=example.createCriteria();		
@@ -36,11 +30,40 @@ public class ToplistService extends BaseService {
 		return null;
 	}
 	
+	public Toplist findByLessMoney(float fMoney){
+		ToplistExample example=new ToplistExample();
+		Criteria criteria=example.createCriteria();		
+		criteria.andMoneyLessThan(fMoney);
+		List<Toplist> list = toplistMapper.selectByExample(example);
+		if (list.size()>0)
+			return list.get(0);
+		
+		return null;
+	}	
+	
+	public int findCount(){
+		ToplistExample example=new ToplistExample();
+		return toplistMapper.countByExample(example);
+	}	
+	
+	public int add(Toplist record){
+		toplistMapper.insert(record);
+		DBCommit();
+		return 0;
+	}
+	
+	public int remove(int id){
+		toplistMapper.deleteByPrimaryKey(Integer.valueOf(id));
+		DBCommit();
+		return 0;
+	}
+	
 	public int updateByKey(Toplist record){
 		toplistMapper.updateByPrimaryKey(record);
 		DBCommit();
 		return 0;
 	}
+	
 	public List<Toplist> findAll(){
 		ToplistExample example=new ToplistExample();
 		example.setOrderByClause("money desc");

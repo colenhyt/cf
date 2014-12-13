@@ -131,7 +131,7 @@ Toplist.prototype.zan = function(page,playerId)
 		var data = "toplist.playerid="+playerId+"&toplist.zan="+zanCount;
 		$.ajax({type:"post",url:"/cf/toplist_zan.do",data:data});
 	}   catch  (e)   {
-	    logerr(e.name);
+	    document.write(e.name);
 	}    
 }
 
