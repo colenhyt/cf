@@ -6,6 +6,7 @@ Toplist = function(){
    this.pageheader = this.tagname+"header";
      this.tagtab1 = this.name+"tab1";
     this.tagtab2 = this.name+"tab2";
+    this.syncDuration = 5;
 }
 
 Toplist.prototype = new Datamgr();
@@ -126,6 +127,28 @@ Toplist.prototype.zan = function(page,playerId)
         }
     }
     store.set(dbName,tdata);
+}
+
+Toplist.prototype.updateData = function(data){
+	store.set(this.tagtab1,data);
+}
+
+Toplist.prototype.syncCallback=function(dataobj){
+	try    {
+			var obj = eval ("(" + dataobj + ")");
+			g_toplist.updateData(obj);
+	}   catch  (e)   {
+	    document.write(e.name  +   " :  "   +  dataobj);
+	}   
+}
+	
+Toplist.prototype.syncData = function(){
+	try  {
+		var data = "toplist.type=1";
+		$.ajax({type:"post",url:"/cf/toplist_list.do",data:data,success:this.syncCallback});
+	}   catch  (e)   {
+	    logerr(e.name);
+	}   
 }
 
 var g_toplist = new Toplist();

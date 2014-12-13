@@ -265,7 +265,20 @@ Player.prototype.syncData = function(){
 	data.stock = JSON.stringify(data.stock);
 	data.insure = JSON.stringify(data.insure);
 	var updateStr = "player="+JSON.stringify(data);
-	$.ajax({type:"post",url:"/cf/login_update.do",data:updateStr,success:this.syncCallback});  
+	try  {
+		$.ajax({type:"post",url:"/cf/login_update.do",data:updateStr,success:this.syncCallback});
+	}   catch  (e)   {
+	    logerr(e.name);
+	}   
+}
+
+Player.prototype.syncCallback=function(dataobj){
+	try    {
+			var obj = eval ("(" + dataobj + ")");
+			//alert(obj);
+	}   catch  (e)   {
+	    document.write(e.name  +   " :  "   +  dataobj);
+	}   
 }
 
 Player.prototype.prize = function(prizes) {

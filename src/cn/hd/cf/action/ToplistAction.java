@@ -15,12 +15,10 @@ public class ToplistAction extends BaseAction {
 		init("toplistService");
 	}
 	
-	public String daylist(){
-		List<Toplist> tt = toplistService.findByType(toplist.getId());
+	public String list(){
+		List<Toplist> tt = toplistService.findByType(toplist.getType());
 		JSONArray jsonObject = JSONArray.fromObject(tt);
-		//System.out.println("dayliseeeeeeeeeet scrie: "+jsonObject.toString());
-		//timer.schedule(task, 3000,3000);   
-		
+		System.out.println("dayliseeeeeeeeeet scrie: "+jsonObject.toString());
 		write(jsonObject.toString(),"utf-8");
 		return null;
 	}

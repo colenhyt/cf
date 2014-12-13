@@ -294,10 +294,9 @@ Game.prototype.syncData = function(){
    
 //
 Game.prototype.update = function(){
-    this.count += 1;
-   if (this.count>=this.syncDuration) {
+    this.count ++;
+   if (this.count%this.syncDuration==0) {
         this.syncData();
-        this.count = 0;
     }
 	
    for (key in this.sys)

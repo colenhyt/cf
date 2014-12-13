@@ -129,23 +129,13 @@ Datamgr.prototype = {
     },    
     
     update:function(){
+    	if (this.count==null)
+    		this.count = 0;
 		this.count += 1;
-	        log(this.name+this.count);
-		if (this.count%this.syncDuration==0) {
-		    this.syncData();
-		}
+	   if (this.count%this.syncDuration==0) {
+	        this.syncData();
+	    }
     },    
-
-	syncCallback:function(dataobj){
-		try    {
-				var obj = eval ("(" + dataobj + ")");
-//				if (obj!=null){
-//					alert("sync callback:");
-				}
-		}   catch  (e)   {
-		    document.write(e.name  +   " :  "   +  dataobj);
-		}   
-	},	
 	
 	show:function(){
 		this.buildPage(0);
