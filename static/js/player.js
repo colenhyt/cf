@@ -183,6 +183,8 @@ Player.prototype.find = function(playerid){
 			var obj = eval ("(" + dataobj.responseText + ")");
 			if (obj!=null){
 				serverPlayer = obj;
+				if (obj.saving)
+					serverPlayer.saving = eval ("(" + obj.saving + ")");
 				if (obj.quest)
 					serverPlayer.quest = eval ("(" + obj.quest + ")");
 				if (obj.stock)
@@ -250,9 +252,25 @@ Player.prototype.login = function(isRegister){
    return true;
 }
 
+Player.prototype.getTotal = function(data) {
+	var saving = 0;
+	for (var i=0;i<data.saving.length;i++){
+		saving += data.saving[i].amount;
+	}
+	var insure = 0;
+	for (var i=0;i<data.insure.length;i++){
+		insure += data.insure[i].amount;
+	}
+	var stock = 0;
+	for (var i=0;i<data.stock.length;i++){
+		stock += data.stock[i].amount;
+	}
+	return {saving:saving,insure:insure,stock:stock};
+}
+
 Player.prototype.flushPageview = function() {
     var tag = document.getElementById("tagcash");
-    tag.innerHTML = this.data.cash;	
+    tag.innerHTML = this.data.saving[0].amount;	
     tag.style.display = "";
     tag = document.getElementById("tagcard");
     tag.innerHTML = this.data.exp;	
@@ -288,10 +306,12 @@ Player.prototype.clone = function(data) {
 		data.saving = pl.saving.concat();
 	if (pl.quest!=null)
 		data.quest = pl.quest.concat();
-	if (pl.stock=null)
+	if (pl.stock!=null)
 		data.stock = pl.stock.concat();
-	if (pl.insure=null)
+	if (pl.insure!=null)
 		data.insure = pl.insure.concat();
+	if (pl.finan!=null)
+		data.finan = pl.finan.concat();
 }
 
 Player.prototype.syncData = function(){
@@ -301,8 +321,8 @@ Player.prototype.syncData = function(){
 	data.quest = JSON.stringify(data.quest);
 	data.stock = JSON.stringify(data.stock);
 	data.insure = JSON.stringify(data.insure);
+	data.finan = JSON.stringify(data.finan);
 	var updateStr = "player="+JSON.stringify(data);
-	alert(updateStr);
 	try  {
 		$.ajax({type:"post",url:"/cf/login_update.do",data:updateStr,success:this.syncCallback});
 	}   catch  (e)   {

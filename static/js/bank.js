@@ -22,12 +22,14 @@ Bank.prototype.showBank = function(playerId){
 	if (player==null){
 		return;
 	}
+	var data = g_player.getTotal(player);
+	var total = data.saving+data.insure+data.stock;
 	
 	var content = "<div class='cfpanel bank'>"
-	content +=	"<div> 存款:<span>¥"+player.cash+"</span></div>"
-	content +=	"<div> 股票价值:<span>¥"+player.cash+"</span></div>"
-	content +=	"<div> 保险价值:<span>¥"+player.cash+"</span></div>"
-	content +=	"<div> 总资产值:<span>¥"+player.cash+"</span></div>"
+	content +=	"<div> 存款:<span>¥"+data.saving+"</span></div>"
+	content +=	"<div> 股票价值:<span>¥"+data.stock+"</span></div>"
+	content +=	"<div> 保险价值:<span>¥"+data.insure+"</span></div>"
+	content +=	"<div> 总资产值:<span>¥"+total+"</span></div>"
 	content +=	"<div> <img src='static/img/icon_toplist.png'>当前排名:<span>3</span></div>"
     content +=            " </div>"
     content +=	"</div>"
@@ -41,18 +43,18 @@ Bank.prototype.showBank = function(playerId){
 	var tag = document.getElementById(this.pagename);
 	tag.innerHTML = content;	
 
-	this.showPie(player);
+	this.showPie(data);
 	
     $('#'+this.tagname).modal({position:50,show:true});       
 }
 
-Bank.prototype.showPie = function(player){
+Bank.prototype.showPie = function(data){
 	var divName = this.graphName;
 	
 	var data = [
-	        	{name : '存款',value : 75.75,color:'#9d4a4a'},
-	        	{name : '保险',value : 14.88,color:'#97b3bc'},
-	        	{name : '股票',value : 19.84,color:'#5d7f97'},
+	        	{name : '存款',value : data.saving,color:'#9d4a4a'},
+	        	{name : '保险',value : data.insure,color:'#97b3bc'},
+	        	{name : '股票',value : data.stock,color:'#5d7f97'},
         	];
 	
 	new iChart.Pie2D({
