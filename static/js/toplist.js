@@ -92,7 +92,7 @@ Toplist.prototype.buildPage = function(page)
 		     content += "<div>"
 			 content += "        <table id='toplist1_tab' style='width:100%'>"
 			 content += "             <tr>"
-			 content += "               <td class='td-c-value'>"+item.playername+"</td>"
+			 content += "               <td class='td-c-value'><div onclick='g_bank.showBank("+item.playerid+")'>"+item.playername+"</div></td>"
 			 content += "               <td class='td-c-value'>"+item.money+"</td>"
 			 content += "               <td class='td-c-value'>"+(i+1)+"</td>"
 			 content += "               <td class='td-c-value'><input type='button' class='cf_top_zan' onclick='g_toplist.zan("+page+","+item.playerid+")'>*<span id='zan_"+item.playerid+"'>"+item.zan+"</span></td>"

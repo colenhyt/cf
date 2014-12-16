@@ -37,6 +37,17 @@ public class PlayerService extends BaseService {
 		return null;
 	}
 	
+	public PlayerWithBLOBs findByPlayerId(int playerid){
+		PlayerExample example = new PlayerExample();
+		Criteria criteria=example.createCriteria();
+		criteria.andPlayeridEqualTo(Integer.valueOf(playerid));
+		List<PlayerWithBLOBs> players = playerMapper.selectByExampleWithBLOBs(example);
+		if (players.size()>0)
+			return players.get(0);
+		
+		return null;
+	}
+	
 	public int add(PlayerWithBLOBs record)
 	{
 		playerMapper.insertSelective(record);

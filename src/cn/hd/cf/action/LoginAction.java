@@ -88,6 +88,22 @@ public class LoginAction extends BaseAction {
 		return null;
 	}
 	
+	public String get()
+	{
+		PlayerWithBLOBs playerBlob = playerService.findByPlayerId(player.getPlayerid());
+		if (playerBlob==null)
+		{
+			System.out.println("no player found:playerid:"+player.getPlayerid());
+			return null;
+		}
+		System.out.println("player "+player.getPlayerid()+" found");
+		//List<Integer> dataIds = findUpdateDataIds(player.getVersions());
+		//取需要更新的模块id
+		JSONObject obj = JSONObject.fromObject(playerBlob);
+		write(obj.toString(),"utf-8");
+		return null;
+	}
+	
 	public String update()
 	{
 		String pp = getHttpRequest().getParameter("player");

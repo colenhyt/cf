@@ -14,7 +14,7 @@ Stockdetail.prototype.init = function(){
 	//this.buildHTML();
 }
 
-Stockdetail.prototype.drawQuote = function(stockName){
+Stockdetail.prototype.drawQuote = function(stockName,divName){
 	var stock;
 	for (var i=0;i<data_quotedata.length;i++){
 		if (data_quotedata[i].name==stockName){
@@ -49,7 +49,7 @@ Stockdetail.prototype.drawQuote = function(stockName){
 		var labels = ["9:30","10:30","11:30","13:00","14:00","15:00"];
 		
 		var chart = new iChart.LineBasic2D({
-			render : 'canvasDiv',
+			render : divName,
 			data: data,
 			align:'center',
 			title : {

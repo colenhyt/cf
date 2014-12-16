@@ -5,6 +5,7 @@ Stock = function(){
     this.pagename = this.tagname+"page";
     this.tagdetailname = this.tagname+"detail";
     this.pagedetailname = this.tagdetailname+"page";
+    this.graphName = this.name+"graph";
     this.data = {};
 }
 
@@ -83,7 +84,7 @@ content += "<img src='static/img/pop_line.png'>"
  content += "<span style='margin-top:10px;margin-bottom:30px;height:180px'> 投保后，在保险期间，可以规避对应的风险，规避经济上的损失</span>"
 content += "<img src='static/img/pop_line.png'>"
  content +=	"</div>"
-content += "<div id='canvasDiv' style='margin-left:-10px'></div>"
+content += "<div id='"+this.graphName +"' style='margin-left:-10px'></div>"
  content += "           <div>  "
  content += "        <table id='toplist1_tab'>"
  content += "           <thead>"
@@ -114,7 +115,7 @@ content += "             </div>"
 	var tag = document.getElementById(this.pagedetailname);
 	tag.innerHTML = content;
         
-    g_stockdetail.drawQuote(item.name);
+    g_stockdetail.drawQuote(item.name,this.graphName);
 	$('#'+this.tagdetailname).modal({position:0,show: true});  
 }
 

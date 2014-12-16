@@ -136,9 +136,6 @@ Player.prototype.show = function(){
 }
 
 Player.prototype.register = function(){
-//    var pname = document.getElementById("player.playername");
-//    var pheadicon = document.getElementById("player.headicon");
-//    var ppwd = document.getElementById("player.pwd");
     var createtime = Date.parse(new Date());
      var player = {
         "accountid":1,"playerid":-1,"playername":"playerxxx","exp":0,"cash":0,
@@ -161,6 +158,29 @@ Player.prototype.register = function(){
 
 	store.set(this.name,player);
 	return true;
+}
+
+Player.prototype.find = function(playerid){
+     var serverPlayer;
+	var dataobj = $.ajax({url:"/cf/login_get.do?player.playerid="+playerid,async:false});
+	try    {
+		if (dataobj!=null&&dataobj.responseText.length>0) {
+			var obj = eval ("(" + dataobj.responseText + ")");
+			if (obj!=null){
+				serverPlayer = obj;
+				if (obj.quest)
+					serverPlayer.quest = eval ("(" + obj.quest + ")");
+				if (obj.stock)
+					serverPlayer.stock = eval ("(" + obj.stock + ")");
+				if (obj.insure)
+					serverPlayer.insure = eval ("(" + obj.insure + ")");
+			}
+		}
+	}   catch  (e)   {
+	    logerr(e.name  +   " :  "   +  dataobj.responseText);
+	   // return false;
+	}
+	return serverPlayer;
 }
 
 Player.prototype.login = function(isRegister){
