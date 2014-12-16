@@ -112,7 +112,11 @@ Datamgr.prototype = {
 		content +=     "        <div width='90%'>"
 		content += "<input type='button' class='cf_bt pagingleft' value='上一页' onclick='"+clickCallback+"("+(currPage-1)+")'/>"
 		content += "<span class='cf_span'>"+(currPage+1)+"/"+pageCount+"</span>"
-		content += "<input type='button' class='cf_bt pagingright' value='下一页' onclick='"+clickCallback+"("+(currPage+1)+")'/>"
+                var nextClick = ""
+                if (currPage+1<pageCount) {
+                  nextClick = " onclick='"+clickCallback+"("+(currPage+1)+")'";
+                }
+		content += "<input type='button' class='cf_bt pagingright' "+nextClick+" value='下一页'/>"
 		content += "           </div>  "
 		return content;
 	},

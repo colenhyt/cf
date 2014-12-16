@@ -65,8 +65,13 @@ Stockdetail.prototype.drawQuote = function(stockName,divName){
 				color:'#b4b4b4'
 			},
 			animation:true,
-			width : 500,
+			offsetx: 5,
+			width : 350,
 			height : 400,
+			border:{
+					enable:false,
+				 },
+			background_color: "#eeeeee",
 			tip:{
 				enable:true,
 				shadow:true,
@@ -135,7 +140,7 @@ Stockdetail.prototype.drawQuote = function(stockName,divName){
 					chart.target.textAlign('start')
 					.textBaseline('bottom')
 					.textFont('600 11px 微软雅黑')
-					.fillText('价格',x-40,y-12,false,'#9d987a')
+					.fillText('价格',x-20,y-12,false,'#9d987a')
 					.textBaseline('top')
 					.fillText('',x+w+12,y+h+10,false,'#9d987a');
 					
