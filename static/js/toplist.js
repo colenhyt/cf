@@ -12,17 +12,15 @@ Toplist = function(){
 Toplist.prototype = new Datamgr();
 
 Toplist.prototype.init = function(){
-        store.remove(this.tagtab1);
-        store.remove(this.tagtab2);
 	var tdata = store.get(this.tagtab1);
 	if (tdata==null)
 	{
-		store.set(this.tagtab1,data_toplistdata);
+		store.set(this.tagtab1,[]);
 	} 
 	tdata = store.get(this.tagtab2);
 	if (tdata==null)
 	{
-		store.set(this.tagtab2,data_toplistdata2);
+		store.set(this.tagtab2,[]);
 	} 
 	this.buildHTML2();
 }

@@ -50,9 +50,9 @@ Bank.prototype.showPie = function(player){
 	var divName = this.graphName;
 	
 	var data = [
-	        	{name : '存款',value : 35.75,color:'#9d4a4a'},
-	        	{name : '股票',value : 29.84,color:'#5d7f97'},
-	        	{name : '保险',value : 24.88,color:'#97b3bc'},
+	        	{name : '存款',value : 75.75,color:'#9d4a4a'},
+	        	{name : '保险',value : 14.88,color:'#97b3bc'},
+	        	{name : '股票',value : 19.84,color:'#5d7f97'},
         	];
 	
 	new iChart.Pie2D({

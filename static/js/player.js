@@ -138,24 +138,39 @@ Player.prototype.show = function(){
 Player.prototype.register = function(){
     var createtime = Date.parse(new Date());
      var player = {
-        "accountid":1,"playerid":-1,"playername":"playerxxx","exp":0,"cash":0,
+        "accountid":1,"playerid":-1,"playername":"playeraaa14","exp":0,savings:[],
 		quest:[],sex:0,createtime:createtime
         };
            
 	var dataobj = $.ajax({url:"/cf/login_register.do?player.accountid="+player.accountid+"&player.playername="+player.playername,async:false});
+	var retcode = 0;
 	try    {
 		if (dataobj!=null&&dataobj.responseText.length>0) {
 			var obj = eval ("(" + dataobj.responseText + ")");
-			if (obj!=null&&obj.pwd!=null){
-				player.playerid = obj.playerid;
-				player.pwd = obj.pwd;
+			if (obj!=null){
+			//error:
+				if (obj.code!=null){
+					retcode = obj.code;
+				}else if (obj.pwd!=null){
+					player.playerid = obj.playerid;
+					player.pwd = obj.pwd;
+				}
 			}
 		}
 	}   catch  (e)   {
-	    logerr(e.name  +   " :  "   +  dataobj.responseText);
-	   // return false;
+	    document.write(e.name  +   " :  "   +  dataobj.responseText);
+	    return false;
 	}	
-
+	if (retcode>0){
+		alert('注册失败: '+retcode);
+		return;
+	}
+	
+	//获得初始登陆奖励:
+	var prize = data_initdata[0];
+	player.exp = prize.exp;
+	player.saving = [{type:0,amount:prize.money,createtime:createtime}];
+	
 	store.set(this.name,player);
 	return true;
 }
@@ -268,8 +283,9 @@ Player.prototype.clone = function(data) {
 	data.createtime = pl.createtime;
 	data.playername = pl.playername;
 	data.pwd = pl.pwd;
-	data.cash = pl.cash;
 	data.exp = pl.exp;
+	if (pl.saving!=null)
+		data.saving = pl.saving.concat();
 	if (pl.quest!=null)
 		data.quest = pl.quest.concat();
 	if (pl.stock=null)
@@ -281,10 +297,12 @@ Player.prototype.clone = function(data) {
 Player.prototype.syncData = function(){
 	var data = {};
 	this.clone(data);
+	data.saving = JSON.stringify(data.saving);
 	data.quest = JSON.stringify(data.quest);
 	data.stock = JSON.stringify(data.stock);
 	data.insure = JSON.stringify(data.insure);
 	var updateStr = "player="+JSON.stringify(data);
+	alert(updateStr);
 	try  {
 		$.ajax({type:"post",url:"/cf/login_update.do",data:updateStr,success:this.syncCallback});
 	}   catch  (e)   {
@@ -306,15 +324,25 @@ Player.prototype.prize = function(prizes) {
      for (var i=0;i< prizes.length;i++)
      {
      	var key = "";
-     	if (prizes[i].t==ITEM_TYPE.CASH)
-     		key = "cash";
-     	else if (prizes[i].t==ITEM_TYPE.EXP)
+     	if (prizes[i].t==ITEM_TYPE.EXP){
      		key = "exp";    
-     	if (key.length>0){	
      		var v = this.data[key]+prizes[i].v;
      		if (v<0)
      			v = 0;
 			prop[key] = v;
+     	}else if (prizes[i].t==ITEM_TYPE.CASH){
+     		var saving = this.data.saving;
+     		if (saving.length==0){
+		     	var createtime = Date.parse(new Date());
+     			saving.push({type:0,amount:prizes[i].v,createtime:createtime});
+     		}else {
+	     		for (var i=0;i<saving.length;i++){
+	     			if (saving[i].type==0){
+	     				saving[i].amount += prizes[i].v;
+	     				break;
+	     			}
+	     		}
+     		}
      	}
      }  
      this.updateData(prop);

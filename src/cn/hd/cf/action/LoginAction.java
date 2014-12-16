@@ -52,20 +52,24 @@ public class LoginAction extends BaseAction {
 		boolean bExist = playerService.have(player.getPlayername());
 		if (bExist)
 		{
-			System.out.println("account exist :name:"+player.getAccountid());
+			System.out.println("account exist :name:"+player.getPlayername());
+			Message msg = new Message();
+			msg.setCode(1);		//重名
+			JSONObject obj = JSONObject.fromObject(msg);
+			write(obj.toString(),"utf-8");
 			return null;
 		}
 		String ipAddr = getHttpRequest().getRemoteAddr();
 		PlayerWithBLOBs playerBlob = new PlayerWithBLOBs();
 		playerBlob.setAccountid(player.getAccountid());
-		playerBlob.setPlayername(ipAddr);
+		playerBlob.setPlayername(player.getPlayername());
 		Date time = new Date(); 
 		playerBlob.setCreatetime(time);
 		String pwd = StringUtil.getRandomString(10);
 		playerBlob.setPwd(MD5.MD5(pwd));
 		int ret = playerService.add(playerBlob);
 		if (ret==0){
-			System.out.println("this is playerid "+playerBlob.getPlayerid());
+			System.out.println("register playerid "+playerBlob.getPlayerid());
 			JSONObject obj = JSONObject.fromObject(playerBlob);
 			write(obj.toString(),"utf-8");
 		}
@@ -114,17 +118,16 @@ public class LoginAction extends BaseAction {
 			System.out.println("no player found:playerid:"+player.getPlayerid());
 			return null;
 		}
-		playerBlob.setCash(5000);
 		int ret = playerService.updateByKey(playerBlob);
 		Toplist toplist = toplistService.findByPlayerId(playerBlob.getPlayerid());
 		if (toplist==null){
-			toplist = toplistService.findByLessMoney(playerBlob.getCash());
+			toplist = toplistService.findByLessMoney(0);
 			int topCount = toplistService.findCount();
 			if (toplist!=null||topCount<10){
 				Toplist newtop = new Toplist();
 				newtop.setPlayerid(playerBlob.getPlayerid());
 				newtop.setPlayername(playerBlob.getPlayername());
-				newtop.setMoney(Float.valueOf(playerBlob.getCash()));
+				newtop.setMoney(Float.valueOf(0));
 				newtop.setZan(0);
 				toplistService.add(newtop);				
 			}
@@ -133,8 +136,8 @@ public class LoginAction extends BaseAction {
 //			}
 		}else {
 			float topMoney = toplist.getMoney().floatValue();
-			if (playerBlob.getCash()>topMoney){
-				toplist.setMoney(Float.valueOf(playerBlob.getCash()));
+			if (0>topMoney){
+				toplist.setMoney(Float.valueOf(0));
 				toplistService.updateByKey(toplist);
 			}
 		}
