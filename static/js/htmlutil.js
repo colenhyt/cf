@@ -30,8 +30,8 @@ PageUtil = function(id,zIndex,contentClass){
 PageUtil.prototype.buildSingleTab = function(titleImg,pName)
 {
 	var header = "<ul id='"+this.id+"Tab' class='nav nav-tabs'>"
-     header += "<div onclick='g_"+pName+".onClickHead()'><img src='static/img/"+titleImg+"'></div>"
-    header += "<button type='button' class='close' data-dismiss='modal'><img src='static/img/close.png'></button>"	
+     header += "<div class='cf_title_bg' onclick='g_"+pName+".onClickHead()'><img src='static/img/"+titleImg+"'></div>"
+    header += "<button type='button' class='close' data-dismiss='modal'><img src='static/img/close.png' class='cf_title_close'></button>"	
     header += "</ul>"	
 	this.addHeader(header);
 }

@@ -62,8 +62,7 @@ color:#ffffff;
   padding-left:25px;
   outline: none;
   transition:all 0.3s;
-width:340px;
-height:392px;
+width:580px;
  background:url('../../static/img/pop_big.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
@@ -82,8 +81,6 @@ color:yellow;
 .cfpanel
 {
   position: relative;
-  width:310px;
-  height:60px;
   padding-left:10px;
   margin-top:-16px;
   margin-left:-10px;
@@ -125,8 +122,8 @@ float:left;
 margin-left:15px;
 vertical-align: bottom;
 border:none;
-width:160px;
-height:39px;
+width:268px;
+height:69px;
 color: #ffffff;
 font-size: 20px;
 background:url('../../static/img/title_bg.png') no-repeat;
@@ -163,10 +160,9 @@ background:url('../../static/img/title_toplist_mon.png') no-repeat;
 .cf_title {
 position:relative;
 float:left;
-margin-left:20px;
-margin-top:10px;
-width:111px;
-height:25px;
+margin-top:30px;
+width:185px;
+height:41px;
 font-size:28px;
 font-weight: bold;
 color:#ffffff;
@@ -217,7 +213,8 @@ background:url('../../static/img/bt_add.png') no-repeat;
 
 .cf_title_close{
 float:right;
-  width:46px;
+  width:77px;
+  height:71px;
   margin-right:15px;
 }
 

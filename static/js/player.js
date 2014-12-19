@@ -270,7 +270,7 @@ Player.prototype.getTotal = function(data) {
 
 Player.prototype.flushPageview = function() {
     var tag = document.getElementById("tagcash");
-    tag.innerHTML = this.data.saving[0].amount;	
+    //tag.innerHTML = this.data.saving[0].amount;	
     tag.style.display = "";
     tag = document.getElementById("tagcard");
     tag.innerHTML = this.data.exp;	
