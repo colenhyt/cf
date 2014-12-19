@@ -27,22 +27,13 @@ PageUtil = function(id,zIndex,contentClass){
    
 }
 
-PageUtil.prototype.buildHeader1 = function(title,titelCallback)
+PageUtil.prototype.buildSingleTab = function(titleImg,pName)
 {
-	var content = "<div class='cf-m-header'>"
-	content += " <table><tr>"
-	content += "  <td width='100'>"
-    content += "<input type='button' class='form-control' "
-    if (titelCallback.length>0)
-    	content += "onclick='"+titelCallback+"()'"
-    content += " value='"+title+"'/>"
-	content += "</td>"
-	content += "   <td align='right'>"
-    content += "<button type='button' class='close' data-dismiss='modal'><img src='static/img/close.png'></button>"	
-	content += "</td>"
-	content += " </tr>"
-	content += "</table></div>"	
-	return content;
+	var header = "<ul id='"+this.id+"Tab' class='nav nav-tabs'>"
+     header += "<div onclick='g_"+pName+".onClickHead()'><img src='static/img/"+titleImg+"'></div>"
+    header += "<button type='button' class='close' data-dismiss='modal'><img src='static/img/close.png'></button>"	
+    header += "</ul>"	
+	this.addHeader(header);
 }
 
 PageUtil.prototype.addHeader = function(strHeader)
@@ -68,14 +59,4 @@ PageUtil.prototype.buildMsg = function(contentId)
 	content +="<button class='close-messager'>&times;</button></div>"
 	
 	this.addContent(content);
-}
-
-PageUtil.prototype.buildSingleTab = function(titleImg,pName)
-{
-     this.addHeader("<button type='button' class='close' data-dismiss='modal'><img src='static/img/close.png' class='cf_title_close'></button>");
-    
-	var header = "<ul id='"+this.id+"Tab' class='nav nav-tabs'>"
-     header += "<div class='cf_title_bg' onclick='g_"+pName+".onClickHead()'><img src='static/img/"+titleImg+"' class='cf_title'></div>"
-    header += "</ul>"	
-	this.addHeader(header);
 }

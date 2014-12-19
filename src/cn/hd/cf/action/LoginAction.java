@@ -4,13 +4,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import cn.hd.base.BaseAction;
 import cn.hd.cf.model.Message;
 import cn.hd.cf.model.PlayerWithBLOBs;
+import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Signindata;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.PlayerService;
+import cn.hd.cf.service.SavingService;
 import cn.hd.cf.service.SignindataService;
 import cn.hd.cf.service.ToplistService;
 import cn.hd.mgr.EventManager;
@@ -20,6 +23,14 @@ import cn.hd.util.StringUtil;
 public class LoginAction extends BaseAction {
 	private PlayerWithBLOBs player;
 	private PlayerService playerService;
+	private SavingService savingService;
+	public SavingService getSavingService() {
+		return savingService;
+	}
+
+	public void setSavingService(SavingService savingService) {
+		this.savingService = savingService;
+	}
 	private SignindataService signindataService;
 	private ToplistService	toplistService;
 	
@@ -40,8 +51,16 @@ public class LoginAction extends BaseAction {
 	}
 
 	public LoginAction(){
-		init("playerService","signindataService","toplistService");
+		init("playerService","signindataService","toplistService","savingService");
 		EventManager.getInstance().start();
+	}
+	
+	public String connect(){
+		Message msg = new Message();
+		msg.setCode(0);
+		JSONObject obj = JSONObject.fromObject(msg);
+		write(obj.toString(),"utf-8");
+		return null;
 	}
 	
 	public String register(){
@@ -84,6 +103,10 @@ public class LoginAction extends BaseAction {
 			System.out.println("no player found:playerid:"+player.getPlayerid());
 			return null;
 		}
+		List<Saving> savings = savingService.findByPlayerId(player.getPlayerid());
+		JSONArray  jsonSaving = JSONArray.fromObject(savings);
+		playerBlob.setSaving(jsonSaving.toString());
+		
 		System.out.println("player "+player.getPlayerid()+" login success");
 		//List<Integer> dataIds = findUpdateDataIds(player.getVersions());
 		//取需要更新的模块id
@@ -119,6 +142,8 @@ public class LoginAction extends BaseAction {
 			return null;
 		}
 		int ret = playerService.updateByKey(playerBlob);
+		JSONArray jsonSaving = JSONArray.fromObject(playerBlob.getSaving());
+		
 		Toplist toplist = toplistService.findByPlayerId(playerBlob.getPlayerid());
 		if (toplist==null){
 			toplist = toplistService.findByLessMoney(0);

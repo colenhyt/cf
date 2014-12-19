@@ -13,10 +13,6 @@ Help.prototype.init = function(){
 
 Help.prototype.buildPage = function(page)
 {
-//	var page = new PageUtil(this.tagname,0,'modal-content2');
-//	var content = page.buildHeader1('签到','g_help.doHelp');
-//	page.addHeader(content);
-
 	var content = "<div class='cf-help-prize'>"
 	content +=	"<div> 今天获得:"
     content +=      "      <div id='help_gettoday'></div>"

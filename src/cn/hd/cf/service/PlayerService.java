@@ -25,6 +25,11 @@ public class PlayerService extends BaseService {
 		initMapper("playerMapper");
 	}
 	
+	public List<PlayerWithBLOBs> findAll(){
+		PlayerExample example = new PlayerExample();
+		return playerMapper.selectByExampleWithBLOBs(example);
+	}
+	
 	public PlayerWithBLOBs find(int playerid,String strPwd){
 		PlayerExample example = new PlayerExample();
 		Criteria criteria=example.createCriteria();
