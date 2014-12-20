@@ -50,6 +50,21 @@ logerr = function(text){
 	div.innerHTML = text;
 }
 
+myajax = function(url,dataParam,async){
+	if (async==null)
+		async = false;
+		
+	var rsp = $.ajax({type:"post",url:"/cf/"+url+".do",data:dataParam,async:async});
+	try    {
+		if (rsp!=null&&rsp.responseText.length>0) {
+			return eval ("(" + rsp.responseText + ")");
+		}
+	}   catch  (e)   {
+	    document.write(e.name  +   " :  "   +  rsp.responseText);
+	    return null;
+	}	
+}
+
 obj2ParamStr = function(objName,objProp)
 {
 	var str = "";

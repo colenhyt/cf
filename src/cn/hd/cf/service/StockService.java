@@ -48,11 +48,11 @@ public class StockService extends BaseService {
 		return true;
 	}
 	
-	public boolean add(Stock record)
+	public int add(Stock record)
 	{
 		stockMapper.insert(record);
 		DBCommit();
-		return true;
+		return 0;
 	}
 	
 	public boolean update(Stock record)

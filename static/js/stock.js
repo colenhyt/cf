@@ -97,8 +97,8 @@ content += "<div id='"+this.graphName +"' style='margin-left:-12px'></div>"
  content += "               <td class='td-c-value'>"+item.unit+"</td>"
 content += "              </tr>"
  content += "             <tr>"
- content += "               <td colspan='3' class='td-c-name'><input type='button' class='cf_bt_green' value='减持100' onclick='g_stock.countBuy("+item.id+",-1)'></td>"
- content += "               <td colspan='3' class='td-c-name'><input type='button' class='cf_bt_green right' value='加持100' onclick='g_stock.countBuy("+item.id+",1)'></td>"
+ content += "               <td colspan='3' class='td-c-name'><input type='button' class='cf_bt_green' value='减持100' onclick='g_stock.confirmBuy("+item.id+",-1)'></td>"
+ content += "               <td colspan='3' class='td-c-name'><input type='button' class='cf_bt_green right' value='加持100' onclick='g_stock.confirmBuy("+item.id+",1)'></td>"
 content += "              </tr>"
  content += "             <tr>"
  content += "               <td colspan='3' style='float:right'><img src='static/img/icon_tip.png' style='width:20px;height:17px'></td>"
@@ -115,74 +115,67 @@ content += "             </div>"
 	var tag = document.getElementById(this.pagedetailname);
 	tag.innerHTML = content;
         
-    g_stockdetail.drawQuote(item.name,this.graphName);
+    //g_stockdetail.drawQuote(item.name,this.graphName);
 	$('#'+this.tagdetailname).modal({position:0,show: true});  
 }
 
-Stock.prototype.countBuy = function(id,count){
+Stock.prototype.confirmBuy = function(id,qty){
    var item = this.findItem(id);
 	var strDesc = "确定";
-	if (count>0) {
-		strDesc += "加持";
-	    var needCash = item.price * count;
+	if (qty>0) {
+	    var needCash = item.price * qty;
 	    var cash = g_player.saving[0].amount;
 	    if (cash<needCash){
 		    g_msg.open("你的钱不够");
 		    return;
 	    }		
+		strDesc += "加持";
 	}else {
 		strDesc += "减持";
 	}
 		
-	strDesc += "股票"+item.name+count+"手???";
-	g_msg.open(strDesc,"g_stock.buy",id,count);
+	strDesc += "股票"+item.name+qty+"手???";
+	g_msg.open(strDesc,"g_stock.buy",id,qty);
 }
 
-Stock.prototype.buy = function(id,count){
-	alert('conform buy:'+id+count);
-	return;
-	
-    if (id<=0){
-	return;
-    }
-    var tag = document.getElementById('stock_count');
-    var count = parseInt(tag.innerText);
-    if (count<=0) {
-	alert('coiuld not choose 0 coiunt');
-	return;
-    }
+Stock.prototype.buy = function(id,qty){
+
+    if (id<=0)	return;
+
     var item = this.findItem(id);
-    if (item!=null){
-	    var needCash = item.price * count;
-	    if (g_player.data.cash<needCash){
-		    alert('你的钱不够');
-		    return;
-	    }
-	    var pstock = g_player.data.stock;
-	    if (pstock==null)
-		    pstock=[];
-	    var tstock = {id:item.id,items:[]};
-	    var index = -1;
-	    for (var i=0;i<pstock.length;i++){
-		if (pstock[i].id==item.id) {
-		    tstock = pstock[i];
-		    index = i;
-		    break;
-		}
-	    }
-	    var jsonCurr = Date.parse(new Date());
-	    tstock.items.push({accept:jsonCurr,status:0,price:item.price,count:count});
-	    if (index>=0) {
-		pstock[i] = tstock;
-	    }else {
-		pstock.push(tstock);		
-	    }
-	    var cash = g_player.data.cash - needCash;
-	    var pdata = {"stock":pstock,"cash":cash};
-	    g_player.updateData(pdata);
-	    g_quest.onBuyStock(item);
+    if (item==null){
+		g_msg.open("找不到该股票: id="+id);
+		return;    
+   	}
+   	
+    var needCash = item.price * qty;
+	var cash = g_player.saving[0].amount;
+    if (cash<needCash){
+	    g_msg.open("你的钱不够");
+	    return;
     }
-  $('#'+this.tagdetailname).modal('hide');
+     var jsonDate = Date.parse(new Date());
+    var tstock = {id:item.id,playerid:g_player.data.playerid,createtime:jsonDate
+    	,status:0,price:item.price,qty:qty};
+			
+	var dataParam = obj2ParamStr("stock",tstock);
+	var ret = myajax("stock_add",dataParam);
+	if (ret==null||ret.code!=0)
+	{
+		g_msg.open("股票购买失败:code="+ret.code);
+		return;
+	}
+	
+    var pstock = g_player.stock;
+    if (pstock==null)
+	    pstock=[];
+	pstock.push(tstock);
+    var newcash = cash - needCash;
+    var pdata = {"cash":newcash};
+    g_player.updateData(pdata);
+    g_quest.onBuyStock(item);
+	g_msg.open("股票购买成功:"+item.name);
+    $('#'+this.tagdetailname).modal('hide');
 }
 
 //取行情:

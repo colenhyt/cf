@@ -13,7 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 
+import net.sf.json.JSONObject;
+
 import org.apache.struts2.ServletActionContext;
+
+import cn.hd.cf.model.Message;
 
 
 /**
@@ -87,6 +91,13 @@ public class BaseAction extends BaseService{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void writeMsg(int code){
+		Message msg = new Message();
+		msg.setCode(code);
+		JSONObject obj = JSONObject.fromObject(msg);
+		write(obj.toString(),"utf-8");			
 	}
 	/**
 	 * 判断是否为站点总管理员

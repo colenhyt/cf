@@ -219,10 +219,7 @@ public class LoginAction extends BaseAction {
 			}
 		}
 		//System.out.println("update player("+playerBlob.getPlayername()+"):ret: "+ret);
-		Message msg = new Message();
-		msg.setCode(ret);
-		JSONObject obj = JSONObject.fromObject(msg);
-		write(obj.toString(),"utf-8");
+		writeMsg(ret);
 		return null;
 	}
 	

@@ -30,7 +30,7 @@ Msg.prototype.buildHTML = function()
         document.write(pagedetail.toString());  
 }
 
-Msg.prototype.open = function(desc,okCallback,cbParam1,cbParam2)
+Msg.prototype.open = function(desc,okCallback,cbParam1,cbParam2,cbParam3)
 {
 var content = "            <div>"+desc+"</div>"
 content += "           <div style='margin-top:10px'>  "
@@ -38,7 +38,13 @@ if (okCallback==null){
 	content += "          <button class='cf_bt' data-dismiss='modal'>确认</button>"	
 }else {
 	content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>"
-	content += "          <button class='cf_bt' onclick='"+okCallback+"("+cbParam1+","+cbParam2+")'>确认</button>"
+	if (cbParam1==null)
+		cbParam1 = "1";
+	if (cbParam2==null)
+		cbParam2 = "1";
+	if (cbParam3==null)
+		cbParam3 = "1";
+	content += "          <button class='cf_bt' onclick='"+okCallback+"("+cbParam1+","+cbParam2+","+cbParam3+")'>确认</button>"
 }
 	content += "             </div>"
 	var tag = document.getElementById(this.pagename);
