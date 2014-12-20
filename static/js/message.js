@@ -9,7 +9,8 @@ var MSG = {
 
 Msg = function(){
 	this.name ="msg"
-	this.tagname = "my"+this.name;
+    this.tagname = "my"+this.name;
+    this.pagename = this.tagname+"page";
 }
 
 Msg.prototype.init = function()
@@ -19,16 +20,31 @@ Msg.prototype.init = function()
 
 Msg.prototype.buildHTML = function()
 {
-	var page = new PageUtil(this.tagname,2000);
-	page.buildMsg("messager-content");
-	document.write(page.toString());
+        var pagedetail = new PageUtil(this.tagname);
+        var psubclass = "";
+        pclass = "cfpagedetail small";
+        content =     "<div class=\"tab-pane in active\" id='quest2'>";
+        content += "<div class='"+pclass+"' id='"+this.pagename+"'>"
+        content += "</div></div>"
+        pagedetail.addContent(content);
+        document.write(pagedetail.toString());  
 }
 
-Msg.prototype.show = function(strMsg,level)
+Msg.prototype.open = function(desc,okCallback,cbParam1,cbParam2)
 {
-	var tag = document.getElementById("messager-content");
-	tag.innerHTML = strMsg;
-	 $('#'+this.tagname).modal('show');  
+var content = "            <div>"+desc+"</div>"
+content += "           <div style='margin-top:10px'>  "
+if (okCallback==null){
+	content += "          <button class='cf_bt' data-dismiss='modal'>确认</button>"	
+}else {
+	content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>"
+	content += "          <button class='cf_bt' onclick='"+okCallback+"("+cbParam1+","+cbParam2+")'>确认</button>"
+}
+	content += "             </div>"
+	var tag = document.getElementById(this.pagename);
+	tag.innerHTML = content;
+	
+	 $('#'+this.tagname).modal({position:200,show: true});  
 }
 
 var g_msg = new Msg()

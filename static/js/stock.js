@@ -78,7 +78,7 @@ Stock.prototype.buildPage = function(page)
 
 Stock.prototype.showDetail = function(id){    
 	var tdata = store.get(this.name);
-   var item = tdata[id-1];
+   var item = this.findItem(id);
    if (item==null) return;
         
 var content =      "        <div><h2 style='margin-top:-5px;margin-bottom:-5px'>"+item.name+"</h2>"
@@ -97,8 +97,8 @@ content += "<div id='"+this.graphName +"' style='margin-left:-12px'></div>"
  content += "               <td class='td-c-value'>"+item.unit+"</td>"
 content += "              </tr>"
  content += "             <tr>"
- content += "               <td colspan='3' class='td-c-name'><input type='button' class='cf_bt_green' value='加持100' onclick='g_stock.countBuy(-1)'></td>"
- content += "               <td colspan='3' class='td-c-name'><input type='button' class='cf_bt_green right' value='减持100' onclick='g_stock.countBuy(1)'></td>"
+ content += "               <td colspan='3' class='td-c-name'><input type='button' class='cf_bt_green' value='减持100' onclick='g_stock.countBuy("+item.id+",-1)'></td>"
+ content += "               <td colspan='3' class='td-c-name'><input type='button' class='cf_bt_green right' value='加持100' onclick='g_stock.countBuy("+item.id+",1)'></td>"
 content += "              </tr>"
  content += "             <tr>"
  content += "               <td colspan='3' style='float:right'><img src='static/img/icon_tip.png' style='width:20px;height:17px'></td>"
@@ -119,36 +119,29 @@ content += "             </div>"
 	$('#'+this.tagdetailname).modal({position:0,show: true});  
 }
 
-Stock.prototype.countBuy = function(count){
-    var tag = document.getElementById('stock_count');
-    var currCount = parseInt(tag.value);
-    if (currCount+count<=0) {
-	currCount = 1;
-    }else
-	currCount += count;
-    tag.value = currCount;
-    //alert(tag.value);
-}
-
-//取行情:
-Stock.prototype.updateQuotes = function(){
-	var quotes ;
-	try  {
-		var dataobj = $.ajax({type:"post",url:"/cf/stock_quote.do",async:false});
-		if (dataobj!=null&&dataobj.responseText.length>0) {
-			quotes = eval ("(" + dataobj.responseText + ")");
-		}
-	}   catch  (e)   {
-	    document.write(e.name);
-	} 
-	if (quotes!=null){
-		store.set(this.name,quotes);
-		//var tdata = store.get(this.name);
-	
+Stock.prototype.countBuy = function(id,count){
+   var item = this.findItem(id);
+	var strDesc = "确定";
+	if (count>0) {
+		strDesc += "加持";
+	    var needCash = item.price * count;
+	    var cash = g_player.saving[0].amount;
+	    if (cash<needCash){
+		    g_msg.open("你的钱不够");
+		    return;
+	    }		
+	}else {
+		strDesc += "减持";
 	}
+		
+	strDesc += "股票"+item.name+count+"手???";
+	g_msg.open(strDesc,"g_stock.buy",id,count);
 }
 
-Stock.prototype.buy = function(id){
+Stock.prototype.buy = function(id,count){
+	alert('conform buy:'+id+count);
+	return;
+	
     if (id<=0){
 	return;
     }
@@ -192,5 +185,22 @@ Stock.prototype.buy = function(id){
   $('#'+this.tagdetailname).modal('hide');
 }
 
+//取行情:
+Stock.prototype.updateQuotes = function(){
+	var quotes ;
+	try  {
+		var dataobj = $.ajax({type:"post",url:"/cf/stock_quote.do",async:false});
+		if (dataobj!=null&&dataobj.responseText.length>0) {
+			quotes = eval ("(" + dataobj.responseText + ")");
+		}
+	}   catch  (e)   {
+	    document.write(e.name);
+	} 
+	if (quotes!=null){
+		store.set(this.name,quotes);
+		//var tdata = store.get(this.name);
+	
+	}
+}
 var g_stock = new Stock();
  g_stock.init();
