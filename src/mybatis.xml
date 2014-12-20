@@ -53,5 +53,6 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<mapper resource="cn/hd/cf/model/SavingdataMapper.xml"/>
 		<mapper resource="cn/hd/cf/model/InitMapper.xml"/>
 		<mapper resource="cn/hd/cf/model/InitdataMapper.xml"/>
+		<mapper resource="cn/hd/cf/model/QuotedataMapper.xml"/>
 																							</mappers>
 </configuration>

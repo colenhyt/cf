@@ -1,11 +1,13 @@
 package cn.hd.cf.service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import cn.hd.base.BaseService;
 import cn.hd.cf.dao.StockdataMapper;
-import cn.hd.cf.model.StockdataExample;
+import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Stockdata;
+import cn.hd.cf.model.StockdataExample;
 import cn.hd.cf.model.StockdataExample.Criteria;
 
 public class StockdataService extends BaseService {
@@ -35,6 +37,18 @@ public class StockdataService extends BaseService {
 		return null;
 	}
 	
+	public Stock findStock(String stockName){
+		Stockdata data = findActive();
+		String jsonStr = null;
+			jsonStr = new String(data.getData());
+		List<Stock> stocks = jsonToBeanList(jsonStr,Stock.class);
+		for (int i=0;i<stocks.size();i++){
+			if (stocks.get(i).getName().equals(stockName))
+				return stocks.get(i);
+		}
+		return null;
+	}
+	
 	public boolean add(Stockdata record)
 	{
 		stockdataMapper.insert(record);
@@ -55,4 +69,6 @@ public class StockdataService extends BaseService {
 		stockdataMapper.updateByPrimaryKey(record);
 		DBCommit();
 	}
+
+	
 }

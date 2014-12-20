@@ -11,7 +11,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 
 import net.sf.json.JSONArray;
 
@@ -22,12 +21,16 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import cn.hd.base.Base;
 import cn.hd.base.BaseService;
-import cn.hd.cf.model.*;
-import cn.hd.cf.service.SignindataService;
+import cn.hd.cf.model.Quotedata;
+import cn.hd.cf.model.Stock;
+import cn.hd.cf.service.QuotedataService;
+import cn.hd.cf.service.StockdataService;
 
 public class DataImportor extends Base{
 	private String cfg_file;
 	private static String CONFIG_PATH_JS = "static/data/";
+	private QuotedataService quotedataService;
+	private StockdataService stockdataService;
 	
 	public static int ROW_INDEX_RECORD = 0;
 	public static int ROW_INDEX_NAME = 2;
@@ -36,6 +39,9 @@ public class DataImportor extends Base{
 	public DataImportor(String _cfg_file)
 	{
 		cfg_file = _cfg_file;
+		quotedataService = new QuotedataService();
+		stockdataService = new StockdataService();
+		
 	}
 	
 	public void importData(String dataName)
@@ -351,16 +357,54 @@ public class DataImportor extends Base{
 		}
 	}
 
+	public void importXls2Quote(){
+	    File fileDes = new File(cfg_file);  
+	    InputStream str;
+		try {
+			str = new FileInputStream(fileDes);
+	        XSSFWorkbook xwb = new XSSFWorkbook(str);  //利用poi读取excel文件流  
+	        Iterator<XSSFSheet> iterator = xwb.iterator();
+	        quotedataService.clear();
+	        while (iterator.hasNext())
+	        {
+	        	XSSFSheet i = (XSSFSheet) iterator.next();
+	        	importQuoteData(i.getSheetName(),0,1);
+	        	
+	        }	
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  		
+	}
+
+	public void importQuoteData(String dataName,int nameIndex,int dataIndex)
+	{
+		Quotedata record = new Quotedata();
+		System.out.println("import quote for :"+dataName+" ....");
+		JSONArray data = getArraydata(dataName,nameIndex,dataIndex,50);
+		Stock stock = stockdataService.findStock(dataName);
+		record.setName(dataName);
+		record.setStockid(stock.getId());
+		record.setData(data.toString().getBytes());
+		quotedataService.add(record);
+		System.out.println("import ("+dataName+") quote success");
+
+	}
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		DataImportor importor = new DataImportor("cfdata.xlsx");
 		String name = "initdata";
-		importor.importData(name);
+		//importor.importData(name);
 		//importor.outputJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);
 //		importor.outputAllJsData();
 		
-//		DataImportor importor2 = new DataImportor("stockdata.xlsx");
-//		importor2.outputXls2Js();
+		DataImportor importor2 = new DataImportor("stockdata.xlsx");
+		//importor2.outputXls2Js();
+		importor2.importXls2Quote();
 		
 	}
 

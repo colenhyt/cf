@@ -27,7 +27,7 @@ public class StockAction extends BaseAction {
 	public String quote(){
 		List<Stock> list = stockMgr.getStocks();
 		JSONArray jsonObject = JSONArray.fromObject(list);
-		System.out.println("found stocks quote:"+jsonObject.toString());
+		//System.out.println("found stocks quote:"+jsonObject.toString());
 		write(jsonObject.toString(),"utf-8");		
 		return null;
 	}
