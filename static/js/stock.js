@@ -26,6 +26,8 @@ Stock.prototype.buildPage = function(page)
 	if (page<0)
 		return
 		
+	this.updateQuotes();
+	
 	var tdata = store.get(this.name);
 	var content = 	"";
 	if (tdata.length<=0){
@@ -41,21 +43,21 @@ Stock.prototype.buildPage = function(page)
 			var item = tdata[i];
 			var pstock = g_player.getPlayerStock(item);
 			if (pstock==null) {
-			    pstock = {profit:0,avgPrice:0};
+			    pstock = {profit:0,avgPrice:0,unit:0};
 			}
 		  content += "<div class='cfpanel' ID='stock_d1' onclick='g_stock.showDetail("+item.id+")'>"
-		     content += "<h2 class='cf_h'>"+item.name+"</h2>"
+		     content += "<h2 class='cf_h'>"+item.name+"("+item.desc+")</h2>"
 			 content += "        <table id='toplist1_tab'>"
 			 content += "           <thead>"
 			 content += "             <tr>"
 			 content += "               <td class='td-c-name'>价格</td>"
 			 content += "               <td class='td-c-value'>"+item.price+"</td>"
-			 content += "               <td class='td-c-name'>收益</td>"
-			 content += "               <td class='td-c-value'>"+pstock.profit+"</td>"
 			 content += "               <td class='td-c-name'>平均价格</td>"
 			 content += "               <td class='td-c-value'>"+pstock.avgPrice+"</td>"
-			 content += "               <td class='td-c-name'>周期</td>"
-			 content += "               <td class='td-c-value'>"+item.period+"</td>"
+			 content += "               <td class='td-c-name'>持有</td>"
+			 content += "               <td class='td-c-value'>"+pstock.unit+"手</td>"
+			 content += "               <td class='td-c-name'>盈亏</td>"
+			 content += "               <td class='td-c-value'>"+pstock.profit+"</td>"
 			content += "              </tr>"
 			content += "            </thead>"
 			content += "          </table>"
@@ -81,7 +83,7 @@ Stock.prototype.showDetail = function(id){
         
 var content =      "        <div><h2 style='margin-top:-5px;margin-bottom:-5px'>"+item.name+"</h2>"
 content += "<img src='static/img/pop_line.png'>"
- content += "<span style='margin-top:10px;margin-bottom:30px;height:180px'> 投保后，在保险期间，可以规避对应的风险，规避经济上的损失</span>"
+ content += "<div style='margin-top:10px;margin-bottom:30px;height:30px'> "+item.desc+"</div>"
 content += "<img src='static/img/pop_line.png'>"
  content +=	"</div>"
 content += "<div id='"+this.graphName +"' style='margin-left:-12px'></div>"
@@ -91,10 +93,8 @@ content += "<div id='"+this.graphName +"' style='margin-left:-12px'></div>"
  content += "             <tr>"
  content += "               <td class='td-c-name'>价格</td>"
  content += "               <td class='td-c-value'>"+item.price+"</td>"
- content += "               <td class='td-c-name'>收益</td>"
- content += "               <td class='td-c-value'>"+item.profit+"</td>"
- content += "               <td class='td-c-name'>周期</td>"
- content += "               <td class='td-c-value'>"+item.period+"</td>"
+ content += "               <td class='td-c-name'>单位</td>"
+ content += "               <td class='td-c-value'>"+item.unit+"</td>"
 content += "              </tr>"
  content += "             <tr>"
  content += "               <td colspan='3' class='td-c-name'><input type='button' class='cf_bt_green' value='加持100' onclick='g_stock.countBuy(-1)'></td>"
@@ -128,6 +128,24 @@ Stock.prototype.countBuy = function(count){
 	currCount += count;
     tag.value = currCount;
     //alert(tag.value);
+}
+
+//取行情:
+Stock.prototype.updateQuotes = function(){
+	var quotes ;
+	try  {
+		var dataobj = $.ajax({type:"post",url:"/cf/stock_quote.do",async:false});
+		if (dataobj!=null&&dataobj.responseText.length>0) {
+			quotes = eval ("(" + dataobj.responseText + ")");
+		}
+	}   catch  (e)   {
+	    document.write(e.name);
+	} 
+	if (quotes!=null){
+		store.set(this.name,quotes);
+		//var tdata = store.get(this.name);
+	
+	}
 }
 
 Stock.prototype.buy = function(id){

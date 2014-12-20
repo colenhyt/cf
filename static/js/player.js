@@ -341,7 +341,7 @@ Player.prototype.prize = function(prizes) {
 }
 
 Player.prototype.getStocks = function() {
-    var stocks = this.data.stock;
+    var stocks = this.stock;
     if (stocks==null)
     	stocks = [];
     var tstocks = {};

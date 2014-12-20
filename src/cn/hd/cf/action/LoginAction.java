@@ -12,12 +12,14 @@ import cn.hd.cf.model.Message;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Signindata;
+import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.InitdataService;
 import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.service.SavingService;
 import cn.hd.cf.service.SavingdataService;
 import cn.hd.cf.service.SignindataService;
+import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.ToplistService;
 import cn.hd.mgr.EventManager;
 import cn.hd.util.MD5;
@@ -27,6 +29,14 @@ public class LoginAction extends BaseAction {
 	private PlayerWithBLOBs player;
 	private PlayerService playerService;
 	private SavingService savingService;
+	private StockService stockService;
+	public StockService getStockService() {
+		return stockService;
+	}
+
+	public void setStockService(StockService stockService) {
+		this.stockService = stockService;
+	}
 	private SavingdataService savingdataService;
 	public SavingdataService getSavingdataService() {
 		return savingdataService;
@@ -72,7 +82,7 @@ public class LoginAction extends BaseAction {
 
 	public LoginAction(){
 		init("playerService","signindataService","toplistService","savingService","initdataService"
-				,"savingdataService");
+				,"stockService","savingdataService");
 		EventManager.getInstance().start();
 	}
 	
@@ -145,6 +155,11 @@ public class LoginAction extends BaseAction {
 		List<Saving> savings = savingService.findByPlayerId(player.getPlayerid());
 		JSONArray  jsonSaving = JSONArray.fromObject(savings);
 		playerBlob.setSaving(jsonSaving.toString());
+//		List<Stock> stocks = stockService.findByPlayerId(player.getPlayerid());
+//		if (stocks.size()>0){
+//			JSONArray  jsonStock = JSONArray.fromObject(stocks);
+//			playerBlob.setStock(jsonStock.toString());			
+//		}
 		
 		//List<Integer> dataIds = findUpdateDataIds(player.getVersions());
 		//取需要更新的模块id
