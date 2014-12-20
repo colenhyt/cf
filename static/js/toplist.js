@@ -147,6 +147,7 @@ Toplist.prototype.syncCallback=function(dataobj){
 }
 	
 Toplist.prototype.syncData = function(){
+	return;
 	try  {
 		$.ajax({type:"post",url:"/cf/toplist_list.do",success:this.syncCallback});
 	}   catch  (e)   {

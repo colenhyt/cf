@@ -23,8 +23,8 @@ Main.prototype.init = function(){
 	    document.write(e.name  +   " :  "   +  dataobj.responseText);
 	}
 	if (retcode==-1){
-		//alert('联网失败，请检查你的网络');
-		//return;
+		alert('联网失败，请检查你的网络');
+		return;
 	}
 	
     var canvas = document.createElement("canvas");

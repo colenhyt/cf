@@ -50,6 +50,17 @@ logerr = function(text){
 	div.innerHTML = text;
 }
 
+obj2ParamStr = function(objName,objProp)
+{
+	var str = "";
+	for (key in objProp){
+		if (str.length>0)
+			str += "&";
+		str += objName+"."+key+"="+objProp[key];
+	}
+	return str;
+}
+
 itemStr = function(items,split){
     var itemDesc = "";
     for (var i=0;i<items.length;i++){

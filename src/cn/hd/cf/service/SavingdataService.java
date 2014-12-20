@@ -1,11 +1,16 @@
 package cn.hd.cf.service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import net.sf.json.JSONArray;
 import cn.hd.base.BaseService;
 import cn.hd.cf.dao.SavingdataMapper;
-import cn.hd.cf.model.SavingdataExample;
+import cn.hd.cf.model.Init;
+import cn.hd.cf.model.Initdata;
+import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Savingdata;
+import cn.hd.cf.model.SavingdataExample;
 import cn.hd.cf.model.SavingdataExample.Criteria;
 
 public class SavingdataService extends BaseService {
@@ -35,6 +40,21 @@ public class SavingdataService extends BaseService {
 		return null;
 	}
 	
+	public Saving findSaving(byte type){
+		try {
+			Savingdata data = findActive();
+			String str = new String(data.getData(),"utf-8");
+			List<Saving> list = jsonToBeanList(str, Saving.class);
+			for (int i=0;i<list.size();i++){
+				if (list.get(i).getType()==type)
+					return list.get(i);
+			}
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}			
+		return null;		
+	}
 	public boolean add(Savingdata record)
 	{
 		savingdataMapper.insert(record);
@@ -49,3 +69,4 @@ public class SavingdataService extends BaseService {
 		DBCommit();
 	}
 }
+

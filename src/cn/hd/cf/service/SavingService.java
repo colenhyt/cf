@@ -54,5 +54,11 @@ public class SavingService extends BaseService {
 		DBCommit();
 		return true;
 	}
-
+	
+	public boolean update(Saving record)
+	{
+		savingMapper.updateByPrimaryKeySelective(record);
+		DBCommit();
+		return true;
+	}
 }

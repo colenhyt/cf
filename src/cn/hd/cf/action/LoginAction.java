@@ -7,13 +7,16 @@ import java.util.List;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import cn.hd.base.BaseAction;
+import cn.hd.cf.model.Init;
 import cn.hd.cf.model.Message;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Signindata;
 import cn.hd.cf.model.Toplist;
+import cn.hd.cf.service.InitdataService;
 import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.service.SavingService;
+import cn.hd.cf.service.SavingdataService;
 import cn.hd.cf.service.SignindataService;
 import cn.hd.cf.service.ToplistService;
 import cn.hd.mgr.EventManager;
@@ -24,6 +27,23 @@ public class LoginAction extends BaseAction {
 	private PlayerWithBLOBs player;
 	private PlayerService playerService;
 	private SavingService savingService;
+	private SavingdataService savingdataService;
+	public SavingdataService getSavingdataService() {
+		return savingdataService;
+	}
+
+	public void setSavingdataService(SavingdataService savingdataService) {
+		this.savingdataService = savingdataService;
+	}
+	private InitdataService initdataService;
+	public InitdataService getInitdataService() {
+		return initdataService;
+	}
+
+	public void setInitdataService(InitdataService initdataService) {
+		this.initdataService = initdataService;
+	}
+
 	public SavingService getSavingService() {
 		return savingService;
 	}
@@ -51,7 +71,8 @@ public class LoginAction extends BaseAction {
 	}
 
 	public LoginAction(){
-		init("playerService","signindataService","toplistService","savingService");
+		init("playerService","signindataService","toplistService","savingService","initdataService"
+				,"savingdataService");
 		EventManager.getInstance().start();
 	}
 	
@@ -64,10 +85,6 @@ public class LoginAction extends BaseAction {
 	}
 	
 	public String register(){
-//		if (player.getPlayername().length()<=0)
-//		{
-//			return null;
-//		}
 		boolean bExist = playerService.have(player.getPlayername());
 		if (bExist)
 		{
@@ -78,18 +95,40 @@ public class LoginAction extends BaseAction {
 			write(obj.toString(),"utf-8");
 			return null;
 		}
-		String ipAddr = getHttpRequest().getRemoteAddr();
 		PlayerWithBLOBs playerBlob = new PlayerWithBLOBs();
+		Date time = new Date(); 
+		
+		//注册奖励:
+		Init init = initdataService.findInit();
+		if (init!=null){
+			playerBlob.setExp(init.getExp());
+		}
+		
+//		String ipAddr = getHttpRequest().getRemoteAddr();
 		playerBlob.setAccountid(player.getAccountid());
 		playerBlob.setPlayername(player.getPlayername());
-		Date time = new Date(); 
 		playerBlob.setCreatetime(time);
 		String pwd = StringUtil.getRandomString(10);
 		playerBlob.setPwd(MD5.MD5(pwd));
 		int ret = playerService.add(playerBlob);
+		
 		if (ret==0){
-			System.out.println("register playerid "+playerBlob.getPlayerid());
+			//活期存款:
+			if (init!=null&&init.getMoney()>0){
+				Saving savingCfg = savingdataService.findSaving((byte)0);
+				Saving saving = new Saving();
+				saving.setName(savingCfg.getName());
+				saving.setPeriod(savingCfg.getPeriod());
+				saving.setRate(savingCfg.getRate());
+				saving.setType(savingCfg.getType());
+				saving.setPlayerid(playerBlob.getPlayerid());
+				saving.setAmount(Float.valueOf(init.getMoney().intValue()));
+				saving.setCreatetime(time);
+				savingService.add(saving);
+			}
+			
 			JSONObject obj = JSONObject.fromObject(playerBlob);
+			System.out.println("register player: "+obj.toString());
 			write(obj.toString(),"utf-8");
 		}
 		return null;
@@ -107,11 +146,11 @@ public class LoginAction extends BaseAction {
 		JSONArray  jsonSaving = JSONArray.fromObject(savings);
 		playerBlob.setSaving(jsonSaving.toString());
 		
-		System.out.println("player "+player.getPlayerid()+" login success");
 		//List<Integer> dataIds = findUpdateDataIds(player.getVersions());
 		//取需要更新的模块id
 		JSONObject obj = JSONObject.fromObject(playerBlob);
 		write(obj.toString(),"utf-8");
+		System.out.println("player("+obj.toString()+") login success");
 		return null;
 	}
 	
@@ -123,11 +162,9 @@ public class LoginAction extends BaseAction {
 			System.out.println("no player found:playerid:"+player.getPlayerid());
 			return null;
 		}
-		System.out.println("player "+player.getPlayerid()+" found");
-		//List<Integer> dataIds = findUpdateDataIds(player.getVersions());
-		//取需要更新的模块id
 		JSONObject obj = JSONObject.fromObject(playerBlob);
 		write(obj.toString(),"utf-8");
+		System.out.println("player("+obj.toString()+") found");
 		return null;
 	}
 	

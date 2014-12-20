@@ -138,11 +138,12 @@ Player.prototype.show = function(){
 Player.prototype.register = function(){
     var createtime = Date.parse(new Date());
      var player = {
-        "accountid":1,"playerid":-1,"playername":"playeraaa14","exp":0,savings:[],
+        "accountid":1,"playerid":-1,"playername":"playeraaa16","exp":0,
 		quest:[],sex:0,createtime:createtime
         };
            
-	var dataobj = $.ajax({url:"/cf/login_register.do?player.accountid="+player.accountid+"&player.playername="+player.playername,async:false});
+    var dataParam = obj2ParamStr("player",player);
+	var dataobj = $.ajax({type:"post",url:"/cf/login_register.do",data:dataParam,async:false});
 	var retcode = 0;
 	try    {
 		if (dataobj!=null&&dataobj.responseText.length>0) {
@@ -166,56 +167,30 @@ Player.prototype.register = function(){
 		return;
 	}
 	
-	//获得初始登陆奖励:
-	var prize = data_initdata[0];
-	player.exp = prize.exp;
-	player.saving = [{type:0,amount:prize.money,createtime:createtime}];
-	
 	store.set(this.name,player);
+	
 	return true;
 }
 
-Player.prototype.find = function(playerid){
-     var serverPlayer;
-	var dataobj = $.ajax({url:"/cf/login_get.do?player.playerid="+playerid,async:false});
+Player.prototype.login = function(isRegister){
+     this.data = store.get(this.name);
+     var player = this.data;
+   	var dataParam = obj2ParamStr("player",player);
+    var serverPlayer;
+	var dataobj = $.ajax({type:"post",url:"/cf/login_login.do",data:dataParam,async:false});
 	try    {
 		if (dataobj!=null&&dataobj.responseText.length>0) {
 			var obj = eval ("(" + dataobj.responseText + ")");
 			if (obj!=null){
 				serverPlayer = obj;
 				if (obj.saving)
-					serverPlayer.saving = eval ("(" + obj.saving + ")");
+					this.saving = eval ("(" + obj.saving + ")");
 				if (obj.quest)
-					serverPlayer.quest = eval ("(" + obj.quest + ")");
+					this.quest = eval ("(" + obj.quest + ")");
 				if (obj.stock)
-					serverPlayer.stock = eval ("(" + obj.stock + ")");
+					this.stock = eval ("(" + obj.stock + ")");
 				if (obj.insure)
-					serverPlayer.insure = eval ("(" + obj.insure + ")");
-			}
-		}
-	}   catch  (e)   {
-	    logerr(e.name  +   " :  "   +  dataobj.responseText);
-	   // return false;
-	}
-	return serverPlayer;
-}
-
-Player.prototype.login = function(isRegister){
-     this.data = store.get(this.name);
-     var player = this.data;
-     var serverPlayer;
-	var dataobj = $.ajax({url:"/cf/login_login.do?player.playerid="+player.playerid+"&player.pwd="+player.pwd,async:false});
-	try    {
-		if (dataobj!=null&&dataobj.responseText.length>0) {
-			var obj = eval ("(" + dataobj.responseText + ")");
-			if (obj!=null){
-				serverPlayer = obj;
-				if (obj.quest)
-					serverPlayer.quest = eval ("(" + obj.quest + ")");
-				if (obj.stock)
-					serverPlayer.stock = eval ("(" + obj.stock + ")");
-				if (obj.insure)
-					serverPlayer.insure = eval ("(" + obj.insure + ")");
+					this.insure = eval ("(" + obj.insure + ")");
 			}
 		}
 	}   catch  (e)   {
@@ -270,7 +245,7 @@ Player.prototype.getTotal = function(data) {
 
 Player.prototype.flushPageview = function() {
     var tag = document.getElementById("tagcash");
-    //tag.innerHTML = this.data.saving[0].amount;	
+    tag.innerHTML = this.saving[0].amount;	
     tag.style.display = "";
     tag = document.getElementById("tagcard");
     tag.innerHTML = this.data.exp;	
@@ -302,8 +277,6 @@ Player.prototype.clone = function(data) {
 	data.playername = pl.playername;
 	data.pwd = pl.pwd;
 	data.exp = pl.exp;
-	if (pl.saving!=null)
-		data.saving = pl.saving.concat();
 	if (pl.quest!=null)
 		data.quest = pl.quest.concat();
 	if (pl.stock!=null)
@@ -315,9 +288,9 @@ Player.prototype.clone = function(data) {
 }
 
 Player.prototype.syncData = function(){
+	return;
 	var data = {};
 	this.clone(data);
-	data.saving = JSON.stringify(data.saving);
 	data.quest = JSON.stringify(data.quest);
 	data.stock = JSON.stringify(data.stock);
 	data.insure = JSON.stringify(data.insure);
@@ -351,10 +324,9 @@ Player.prototype.prize = function(prizes) {
      			v = 0;
 			prop[key] = v;
      	}else if (prizes[i].t==ITEM_TYPE.CASH){
-     		var saving = this.data.saving;
-     		if (saving.length==0){
-		     	var createtime = Date.parse(new Date());
-     			saving.push({type:0,amount:prizes[i].v,createtime:createtime});
+     		var saving = this.saving;
+     		if (saving==null){
+     			g_saving.add(this.data.playerid,0,prizes[i].v);
      		}else {
 	     		for (var i=0;i<saving.length;i++){
 	     			if (saving[i].type==0){
@@ -386,6 +358,31 @@ Player.prototype.getStocks = function() {
  	tstocks[stocks[i].id] = {amount:amount,count:totalCount};
    }
     return tstocks;
+}
+
+Player.prototype.find = function(playerid){
+     var serverPlayer;
+	var dataobj = $.ajax({url:"/cf/login_get.do?player.playerid="+playerid,async:false});
+	try    {
+		if (dataobj!=null&&dataobj.responseText.length>0) {
+			var obj = eval ("(" + dataobj.responseText + ")");
+			if (obj!=null){
+				serverPlayer = obj;
+				if (obj.saving)
+					serverPlayer.saving = eval ("(" + obj.saving + ")");
+				if (obj.quest)
+					serverPlayer.quest = eval ("(" + obj.quest + ")");
+				if (obj.stock)
+					serverPlayer.stock = eval ("(" + obj.stock + ")");
+				if (obj.insure)
+					serverPlayer.insure = eval ("(" + obj.insure + ")");
+			}
+		}
+	}   catch  (e)   {
+	    logerr(e.name  +   " :  "   +  dataobj.responseText);
+	   // return false;
+	}
+	return serverPlayer;
 }
 
 Player.prototype.getPlayerStock = function(stock) {
