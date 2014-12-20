@@ -346,16 +346,14 @@ Player.prototype.getStocks = function() {
     	stocks = [];
     var tstocks = {};
     for (var i=0;i<stocks.length;i++){
-	var items = stocks[i].items;
+	var item = stocks[i];
 	var amount = 0;
 	var totalCount = 0;
-	for (var j=0;j<items.length;j++){
-	    if (items[j].status==0) {
-		amount += items[j].price * items[j].count;
-		totalCount += items[j].count;
-	    }
-	}
- 	tstocks[stocks[i].id] = {amount:amount,count:totalCount};
+    if (item.status==0) {
+	amount += item.amount;
+	totalCount += item.qty;
+    }
+ 	tstocks[item.id] = {amount:amount,count:totalCount};
    }
     return tstocks;
 }

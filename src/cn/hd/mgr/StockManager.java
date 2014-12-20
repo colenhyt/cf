@@ -3,17 +3,16 @@ package cn.hd.mgr;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import net.sf.json.JSONArray;
 import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Quotedata;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Stockdata;
 import cn.hd.cf.service.QuotedataService;
+import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.StockdataService;
 
 public class StockManager {
@@ -123,7 +122,9 @@ public class StockManager {
 //    	String a = "{'id':3,'name':'万科A','desc':'最大房地产股','price':18.7,'unit':100}";
 //    	JSONObject obj = JSONObject.fromObject(a);
     	StockManager stmgr = StockManager.getInstance();
-    	stmgr.update();
+    	//stmgr.update();
+    	StockService stockService = new StockService();
+    	List<Stock> stocks = stockService.findByPlayerId(16);
 
     }
 }

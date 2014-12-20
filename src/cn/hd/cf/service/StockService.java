@@ -50,7 +50,7 @@ public class StockService extends BaseService {
 	
 	public int add(Stock record)
 	{
-		stockMapper.insert(record);
+		stockMapper.insertSelective(record);
 		DBCommit();
 		return 0;
 	}

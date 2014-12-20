@@ -46,7 +46,7 @@ Stock.prototype.buildPage = function(page)
 			    pstock = {profit:0,avgPrice:0,unit:0};
 			}
 		  content += "<div class='cfpanel' ID='stock_d1' onclick='g_stock.showDetail("+item.id+")'>"
-		     content += "<h2 class='cf_h'>"+item.name+"("+item.desc+")</h2>"
+		     content += "<h2 class='cf_h'>"+item.name+"("+item.descs+")</h2>"
 			 content += "        <table id='toplist1_tab'>"
 			 content += "           <thead>"
 			 content += "             <tr>"
@@ -83,7 +83,7 @@ Stock.prototype.showDetail = function(id){
         
 var content =      "        <div><h2 style='margin-top:-5px;margin-bottom:-5px'>"+item.name+"</h2>"
 content += "<img src='static/img/pop_line.png'>"
- content += "<div style='margin-top:10px;margin-bottom:30px;height:30px'> "+item.desc+"</div>"
+ content += "<div style='margin-top:10px;margin-bottom:30px;height:30px'> "+item.descs+"</div>"
 content += "<img src='static/img/pop_line.png'>"
  content +=	"</div>"
 content += "<div id='"+this.graphName +"' style='margin-left:-12px'></div>"
@@ -120,6 +120,7 @@ content += "             </div>"
 }
 
 Stock.prototype.confirmBuy = function(id,qty){
+	qty = 3;
    var item = this.findItem(id);
 	var strDesc = "确定";
 	if (qty>0) {
@@ -155,8 +156,8 @@ Stock.prototype.buy = function(id,qty){
 	    return;
     }
      var jsonDate = Date.parse(new Date());
-    var tstock = {id:item.id,playerid:g_player.data.playerid,createtime:jsonDate
-    	,status:0,price:item.price,qty:qty};
+    var tstock = {stockid:item.id,playerid:g_player.data.playerid,createtime:jsonDate
+    	,status:0,price:item.price,qty:qty,amount:item.price*qty};
 			
 	var dataParam = obj2ParamStr("stock",tstock);
 	var ret = myajax("stock_add",dataParam);

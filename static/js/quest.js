@@ -56,7 +56,7 @@ Quest.prototype.buildPage = function(page)
 			 content += "           <thead>"
 			 content += "             <tr>"
 			 content += "               <td class='td-c-name'>描述</td>"
-			 content += "               <td class='td-c-value'>"+item.desc+"</td>"
+			 content += "               <td class='td-c-value'>"+item.descs+"</td>"
 			 content += "               <td class='td-c-value'><img style='width:78px;height:27px' src='static/img/"+img+"'></td>"
 //			 content += "               <td class='td-c-name'>条件</td>"
 //			 content += "               <td class='td-c-value'>"+item.need+"</td>"
@@ -82,12 +82,12 @@ Quest.prototype.showDetail = function(id){
    if (item==null) return;
 
 var content =      "        <div><h2>"+item.name+"</h2>"
- content += "            <div>"+item.desc+"</div>"
+ content += "            <div>"+item.descs+"</div>"
 // content += "        <table id='toplist1_tab'>"
 // content += "           <thead>"
 //			 content += "             <tr>"
 //			 content += "               <td class='td-c-name'>描述</td>"
-//			 content += "               <td class='td-c-value'>"+item.desc+"</td>"
+//			 content += "               <td class='td-c-value'>"+item.descs+"</td>"
 //			 content += "               <td class='td-c-name'>条件</td>"
 //			 content += "               <td class='td-c-value'>"+item.need+"</td>"
 //			 content += "               <td class='td-c-name'>奖励</td>"

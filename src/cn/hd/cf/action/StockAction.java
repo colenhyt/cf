@@ -1,11 +1,10 @@
 package cn.hd.cf.action;
 
+import java.util.Date;
 import java.util.List;
 
 import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import cn.hd.base.BaseAction;
-import cn.hd.cf.model.Message;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.service.StockService;
 import cn.hd.mgr.EventManager;
@@ -56,6 +55,7 @@ public class StockAction extends BaseAction {
 	
 	
 	public String add(){
+		stock.setCreatetime(new Date());
 		int ret = stockService.add(stock);	
 		writeMsg(ret);
 		return null;

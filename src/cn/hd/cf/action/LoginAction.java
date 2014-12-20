@@ -155,11 +155,11 @@ public class LoginAction extends BaseAction {
 		List<Saving> savings = savingService.findByPlayerId(player.getPlayerid());
 		JSONArray  jsonSaving = JSONArray.fromObject(savings);
 		playerBlob.setSaving(jsonSaving.toString());
-//		List<Stock> stocks = stockService.findByPlayerId(player.getPlayerid());
-//		if (stocks.size()>0){
-//			JSONArray  jsonStock = JSONArray.fromObject(stocks);
-//			playerBlob.setStock(jsonStock.toString());			
-//		}
+		List<Stock> stocks = stockService.findByPlayerId(player.getPlayerid());
+		if (stocks.size()>0){
+			JSONArray  jsonStock = JSONArray.fromObject(stocks);
+			playerBlob.setStock(jsonStock.toString());			
+		}
 		
 		//List<Integer> dataIds = findUpdateDataIds(player.getVersions());
 		//取需要更新的模块id
