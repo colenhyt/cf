@@ -50,6 +50,11 @@ logerr = function(text){
 	div.innerHTML = text;
 }
 
+function ForDight(Dight){  
+    Dight = Math.round(Dight*Math.pow(10,2))/Math.pow(10,2);  
+    return Dight;  
+}
+
 myajax = function(url,dataParam,async){
 	if (async==null)
 		async = false;
@@ -137,7 +142,7 @@ Datamgr.prototype = {
 		var clickCallback = "g_"+this.name+".buildPage";
 		content +=     "        <div width='90%'>"
 		content += "<input type='button' class='cf_bt pagingleft' value='上一页' onclick='"+clickCallback+"("+(currPage-1)+")'/>"
-		content += "<span class='cf_span'>"+(currPage+1)+"/"+pageCount+"</span>"
+		content += "<span class='cf_paging'>"+(currPage+1)+"/"+pageCount+"</span>"
                 var nextClick = ""
                 if (currPage+1<pageCount) {
                   nextClick = " onclick='"+clickCallback+"("+(currPage+1)+")'";
@@ -169,7 +174,7 @@ Datamgr.prototype = {
 	
 	show:function(){
 		this.buildPage(0);
-          $('#'+this.tagname).modal({position:50,show: true});     
+          $('#'+this.tagname).modal({position:Page_Top,show: true});     
 	},
 
     onclick:function(clickX,clickY){

@@ -132,13 +132,13 @@ Player.prototype.show = function(){
     var get = document.getElementById("player_content");
     get.innerHTML = content;
     
-    $('#'+this.tagname).modal({position:50,show: true});       
+    $('#'+this.tagname).modal({position:Page_Top,show: true});       
 }
 
 Player.prototype.register = function(){
     var createtime = Date.parse(new Date());
      var player = {
-        "accountid":1,"playerid":-1,"playername":"playeraaa16","exp":0,
+        "accountid":1,"playerid":-1,"playername":"playeraaa19","exp":0,
 		quest:[],sex:0,createtime:createtime
         };
            
@@ -163,7 +163,7 @@ Player.prototype.register = function(){
 	    return false;
 	}	
 	if (retcode>0){
-		alert('注册失败: '+retcode);
+		g_msg.open('注册失败: '+retcode);
 		return;
 	}
 	
@@ -348,12 +348,12 @@ Player.prototype.getStocks = function() {
     for (var i=0;i<stocks.length;i++){
 	var item = stocks[i];
 	var amount = 0;
-	var totalCount = 0;
+	var totalqty = 0;
     if (item.status==0) {
 	amount += item.amount;
-	totalCount += item.qty;
+	totalqty += item.qty;
     }
- 	tstocks[item.id] = {amount:amount,count:totalCount};
+ 	tstocks[item.id] = {amount:amount,qty:totalqty};
    }
     return tstocks;
 }
@@ -386,13 +386,14 @@ Player.prototype.find = function(playerid){
 Player.prototype.getPlayerStock = function(stock) {
     var profit = 0;
     var avgPrice = 0;
+    var qty = 0;
     var pstock = this.getStocks()[stock.id];
      if (pstock!=null) {
-	profit = pstock["amount"] - pstock["count"]*stock.price;
-	avgPrice = pstock["amount"]/pstock["count"];
-	
+	profit = pstock["amount"] - pstock["qty"]*stock.price;
+	avgPrice = pstock["amount"]/pstock["qty"];
+	qty = pstock.qty;
     }    
-    return {profit:profit,avgPrice:avgPrice};
+    return {profit:profit,avgPrice:avgPrice,qty:qty};
 }
 
 //store.remove("player");

@@ -39,7 +39,7 @@ Signin.prototype.buildPage = function(page)
 }
 
 Signin.prototype.start = function(startDay){
-	//return;
+	return;
 	 
     var signin = this;    
     var vstartDay = startDay + 1;	//
@@ -88,10 +88,10 @@ Signin.prototype.show = function(){
         var img = new Image();
         img.src = imgData.src;
         img.style.marginTop = "20px";
-        img.style.marginLeft = "20px";
+        img.style.marginLeft = "25px";
         img.id = "imgfeeling_"+imgData.id;
         img.sid = imgData.id;
-        img.width = 50;
+        img.width = 99;
         img.onclick = function(){          
             signin.feeling = this.sid;
             this.style.border = "1px red";
@@ -99,17 +99,13 @@ Signin.prototype.show = function(){
         //div.appendChild(img);    
         tagfeel.appendChild(img);       
     }
-    var option = {
-    	position : 50,
-    	show     : true
-	}
-    $('#'+this.tagname).modal(option);       
+    $('#'+this.tagname).modal({position:Page_Top,show:true});       
 }
 
 Signin.prototype.doSignin = function(){
 	if (this.feeling<0)
 	{
-		alert('请选择你今天的心情',MSG.INFO);
+		g_msg.open('请选择你今天的心情');
 		return;
 	}
 	

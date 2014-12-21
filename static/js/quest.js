@@ -25,19 +25,19 @@ Quest.prototype.init = function(duration){
 
 Quest.prototype.buildPage = function(page)
 {
-	var quest = g_player.data.quest;
+	var quest = g_player.quest?g_player.quest:[];
 	
 	var tdata = store.get(this.name);
 	var content = 	"";
 	if (quest.length<=0){
-		  content += "<div class='panel' ID='insure_d1'><div class='panel-body'>no quest item</div>"
+		  content += "<div class='cfpanel' ID='insure_d1'><div class='cfpanel_body'>没有任务</div>"
       content += "</div>"
 	}else {
 		var start = page* this.pageCount;
 		var end = (page+1)* this.pageCount;
 		if (end>quest.length)
 			end = quest.length;	
-		  content += "<div style='height:330px'>"
+		  content += "<div class='cfpanel_body'>"
 		for (var i=start;i< end;i++){
 			var q = quest[i];
 			var item;
@@ -48,7 +48,7 @@ Quest.prototype.buildPage = function(page)
 				}
 			}
 			var img = "notdone.png";
-			if (item.status==QUEST_STATUS.DONE)	
+			if (item!=null&&item.status==QUEST_STATUS.DONE)	
 				img = "done.png";		
 		  	content += "<div class='cfpanel' ID='"+this.pagename+item.id+"' onclick='g_quest.showDetail("+item.id+")'>"
 		     content += "<h2 class='cf_h'>"+item.name+"</h2>"
@@ -126,7 +126,7 @@ Quest.prototype.onAcceptDaily = function(){
 	if (cc>tdata.length)
 		cc = tdata.length;
 	var qkeys = [];
-	var pquest = g_player.data.quest;
+	var pquest = g_player.quest;
 	var jsonCurr = Date.parse(new Date());
 	for (var i=0;i<cc;i++)
 	{
@@ -139,7 +139,7 @@ Quest.prototype.onAcceptDaily = function(){
 }
 
 Quest.prototype.doneQuest = function(quest){
-	var items = g_player.data.quest;
+	var items = g_player.quest?g_player.quest:[];
     for (var i=0;i<items.length;i++){
     	var item = items[i];
 	if (item.id==quest.id) {
@@ -161,7 +161,7 @@ Quest.prototype.onDoneQuest = function(){
 
 
 Quest.prototype.onBuyInsure = function(item){
-	var items = g_player.data.quest;
+	var items = g_player.quest?g_player.quest:[];
     for (var i=0;i<items.length;i++){
 		if (items[i].status==QUEST_STATUS.ACTIVE) {
 	    	var quest = this.findItem(items[i].id);
@@ -174,7 +174,7 @@ Quest.prototype.onBuyInsure = function(item){
 }
 
 Quest.prototype.onBuyStock = function(item){
-	var items = g_player.data.quest;
+	var items = g_player.quest?g_player.quest:[];
     for (var i=0;i<items.length;i++){
 		if (items[i].status==QUEST_STATUS.ACTIVE) {
 	    	var quest = this.findItem(items[i].id);

@@ -38,33 +38,24 @@ Stock.prototype.buildPage = function(page)
 		var end = (page+1)* this.pageCount;
 		if (end>tdata.length)
 			end = tdata.length;
-		  content += "<div style='height:330px'>"
+		  content += "<div class='cfpanel_body'>"
 		for (var i=start;i<end;i++){
 			var item = tdata[i];
 			var pstock = g_player.getPlayerStock(item);
-			if (pstock==null) {
-			    pstock = {profit:0,avgPrice:0,unit:0};
-			}
-		  content += "<div class='cfpanel' ID='stock_d1' onclick='g_stock.showDetail("+item.id+")'>"
-		     content += "<h2 class='cf_h'>"+item.name+"("+item.descs+")</h2>"
-			 content += "        <table id='toplist1_tab'>"
-			 content += "           <thead>"
-			 content += "             <tr>"
-			 content += "               <td class='td-c-name'>价格</td>"
-			 content += "               <td class='td-c-value'>"+item.price+"</td>"
-			 content += "               <td class='td-c-name'>平均价格</td>"
-			 content += "               <td class='td-c-value'>"+pstock.avgPrice+"</td>"
-			 content += "               <td class='td-c-name'>持有</td>"
-			 content += "               <td class='td-c-value'>"+pstock.unit+"手</td>"
-			 content += "               <td class='td-c-name'>盈亏</td>"
-			 content += "               <td class='td-c-value'>"+pstock.profit+"</td>"
-			content += "              </tr>"
-			content += "            </thead>"
-			content += "          </table>"
+			var psColor = "green";
+			if (pstock.profit<0)
+				psColor = "red"
+		     content += "<div class='cfpanel' ID='stock_d1' onclick='g_stock.showDetail("+item.id+")'>"
+		     content += "<span class='cfpanel_title'>"+item.name+"</span>"
+		     content += "<span class='cfpanel_text right'>目前持有<span style='color:yellow'> "+pstock.qty+"</span> 手</span>"
+			 content += "	<div style='height:150px;'>"
+			 content += "<span class='cfpanel_text'>当前价格: ￥"+ForDight(item.price)+"</span>"
+			 content += "<span class='cfpanel_text right'>总盈亏: <span style='color:"+psColor+"'>"+ForDight(pstock.profit)+"</span></span>"
+			content += "     </div>"
       		content += "</div>"
 		}
-			content += "           <div style='margin-top:10px'>  "
-			content += "          股市开放时间为8:00AM-9:00PM"  
+			content += "           <div style='margin-top:10px;font-size:25px;color:pink'>  "
+			content += "          股市开放时间为8:00AM-9:00PM <br>股票价格每10分钟变动一次"  
 			content += "             </div>"
      		content += "</div>"
 		
@@ -81,61 +72,76 @@ Stock.prototype.showDetail = function(id){
    var item = this.findItem(id);
    if (item==null) return;
         
-var content =      "        <div><h2 style='margin-top:-5px;margin-bottom:-5px'>"+item.name+"</h2>"
-content += "<img src='static/img/pop_line.png'>"
- content += "<div style='margin-top:10px;margin-bottom:30px;height:30px'> "+item.descs+"</div>"
-content += "<img src='static/img/pop_line.png'>"
+   var pstock = g_player.getPlayerStock(item);
+   var strPro = "尚未持有";
+   if (pstock){
+	var psColor = "green";
+	if (pstock.profit<0)
+		psColor = "red"   
+   	 strPro = "盈亏:<span style='color:"+psColor+"'>"+ForDight(pstock.profit)+"</span>";
+   }
+var content =      "        <div class='cfpanel_text'><div class='cpgapedetail_h2'>"+item.name
+content += "<span class='cfpanel_text right'>"+strPro+" </span>"
+content += "</div>"
+content += "<img src='static/img/pop_line.png' class='cf_line'>"
+ content += "<div> "+item.descs+"</div>"
+content += "<img src='static/img/pop_line.png' class='cf_line'>"
  content +=	"</div>"
-content += "<div id='"+this.graphName +"' style='margin-left:-12px'></div>"
+content += "<div id='"+this.graphName +"'></div>"
  content += "           <div>  "
  content += "        <table id='toplist1_tab'>"
- content += "           <thead>"
  content += "             <tr>"
- content += "               <td class='td-c-name'>价格</td>"
- content += "               <td class='td-c-value'>"+item.price+"</td>"
- content += "               <td class='td-c-name'>单位</td>"
- content += "               <td class='td-c-value'>"+item.unit+"</td>"
+ content += "               <td>买入价</td>"
+ content += "               <td>"+ForDight(item.price)+"</td>"
+ content += "               <td>单位</td>"
+ content += "               <td>"+item.unit+"</td>"
 content += "              </tr>"
  content += "             <tr>"
- content += "               <td colspan='3' class='td-c-name'><input type='button' class='cf_bt_green' value='减持100' onclick='g_stock.confirmBuy("+item.id+",-1)'></td>"
- content += "               <td colspan='3' class='td-c-name'><input type='button' class='cf_bt_green right' value='加持100' onclick='g_stock.confirmBuy("+item.id+",1)'></td>"
+ content += "               <td>持有:</td>"
+ content += "               <td>"+pstock.qty+" 手</td>"
+ content += "               <td>可买入:</td>"
+ content += "               <td>"+item.unit+"手</td>"
 content += "              </tr>"
  content += "             <tr>"
- content += "               <td colspan='3' style='float:right'><img src='static/img/icon_tip.png' style='width:20px;height:17px'></td>"
- content += "               <td colspan='3' class='cf_font4'>100股=1手</td>"
+ content += "               <td colspan='2'><input type='button' class='cf_bt_green' value='减持100股' onclick='g_stock.confirmBuy("+item.id+",-1)'></td>"
+ content += "               <td colspan='2'><input type='button' class='cf_bt_green right' value='加持100股' onclick='g_stock.confirmBuy("+item.id+",1)'></td>"
 content += "              </tr>"
-content += "            </thead>"
+ content += "             <tr>"
+ content += "               <td colspan='2' style='float:right'><img src='static/img/icon_tip.png' style='width:20px;height:17px'></td>"
+ content += "               <td colspan='2' class='cf_font4'>100股=1手</td>"
+content += "              </tr>"
 content += "          </table>     "
 content += "           </div>  "
-content += "           <div style='margin-top:10px'>  "
+content += "           <div style='align:center'>  "
 content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>      "  
-content += "          <button class='cf_bt' onclick='g_stock.buy("+id+")'>购买</button>"
+//content += "          <button class='cf_bt' onclick='g_stock.buy("+id+")'>购买</button>"
 content += "             </div>"
 	
 	var tag = document.getElementById(this.pagedetailname);
 	tag.innerHTML = content;
         
-    //g_stockdetail.drawQuote(item.name,this.graphName);
+    g_stockdetail.drawQuote(item.name,this.graphName);
 	$('#'+this.tagdetailname).modal({position:0,show: true});  
 }
 
 Stock.prototype.confirmBuy = function(id,qty){
-	qty = 3;
    var item = this.findItem(id);
 	var strDesc = "确定";
+	var strQty = qty;
 	if (qty>0) {
 	    var needCash = item.price * qty;
 	    var cash = g_player.saving[0].amount;
 	    if (cash<needCash){
-		    g_msg.open("你的钱不够");
+		    g_msg.open("你的现金不够，股票购买失败!");
 		    return;
 	    }		
 		strDesc += "加持";
 	}else {
 		strDesc += "减持";
+		strQty = 0 - strQty;
 	}
 		
-	strDesc += "股票"+item.name+qty+"手???";
+	strDesc += " <span style='color:red'>"+strQty+"</span> 手 "+item.name+" ?";
 	g_msg.open(strDesc,"g_stock.buy",id,qty);
 }
 
@@ -145,14 +151,14 @@ Stock.prototype.buy = function(id,qty){
 
     var item = this.findItem(id);
     if (item==null){
-		g_msg.open("找不到该股票: id="+id);
+		g_msg.open("没有该股票: id="+id);
 		return;    
    	}
    	
     var needCash = item.price * qty;
 	var cash = g_player.saving[0].amount;
     if (cash<needCash){
-	    g_msg.open("你的钱不够");
+	    g_msg.open("你的现金不够，股票购买失败!");
 	    return;
     }
      var jsonDate = Date.parse(new Date());
@@ -163,7 +169,7 @@ Stock.prototype.buy = function(id,qty){
 	var ret = myajax("stock_add",dataParam);
 	if (ret==null||ret.code!=0)
 	{
-		g_msg.open("股票购买失败:code="+ret.code);
+		g_msg.open("购买失败:code="+ret.code);
 		return;
 	}
 	
@@ -175,7 +181,7 @@ Stock.prototype.buy = function(id,qty){
     var pdata = {"cash":newcash};
     g_player.updateData(pdata);
     g_quest.onBuyStock(item);
-	g_msg.open("股票购买成功:"+item.name);
+	g_msg.open("成功购买:"+item.name);
     $('#'+this.tagdetailname).modal('hide');
 }
 

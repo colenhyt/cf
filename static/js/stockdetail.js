@@ -23,7 +23,7 @@ Stockdetail.prototype.drawQuote = function(stockName,divName){
 		}
 	}
 	if (stock==null){
-		alert('no stock quote for:'+stockName);
+		log('no stock quote for:'+stockName);
 		return;
 	}
 		
@@ -65,9 +65,9 @@ Stockdetail.prototype.drawQuote = function(stockName,divName){
 				color:'#b4b4b4'
 			},
 			animation:true,
-			offsetx: 5,
-			width : 350,
-			height : 400,
+			offsetx: 15,
+			width : 540,
+			height : 250,
 			border:{
 					enable:false,
 				 },
@@ -78,7 +78,7 @@ Stockdetail.prototype.drawQuote = function(stockName,divName){
 				listeners:{
 					 //tip:提示框对象、name:数据名称、value:数据值、text:当前文本、i:数据点的索引
 					parseText:function(tip,name,value,text,i){
-						return "<span style='color:#005268;font-size:12px;'>"+labels[i]+":00价格约:<br/>"+
+						return "<span style='color:#005268;font-size:15px;'>"+labels[i]+":00价格约:<br/>"+
 						"</span><span style='color:#005268;font-size:20px;'>"+value+"</span>";
 					}
 				}
@@ -95,8 +95,8 @@ Stockdetail.prototype.drawQuote = function(stockName,divName){
 				point_size:1
 			},
 			coordinate:{
-				width:320,
-				height:260,
+				width:480,
+				height:130,
 				striped_factor : 0.18,
 				axis:{
 					color:'#9d987a',
@@ -117,11 +117,11 @@ Stockdetail.prototype.drawQuote = function(stockName,divName){
 					 scale_space:10,
 					 scale_size:2,
 					 scale_enable : false,
-					 label : {color:'#9d987a',font : '微软雅黑',fontsize:11,fontweight:600},
+					 label : {color:'#9d987a',font : '微软雅黑',fontsize:15,fontweight:600},
 					 scale_color:'#9f9f9f'
 				},{
 					 position:'bottom',	
-					 label : {color:'#9d987a',font : '微软雅黑',fontsize:11,fontweight:600},
+					 label : {color:'#9d987a',font : '微软雅黑',fontsize:15,fontweight:600},
 					 scale_enable : false,
 					 labels:labels
 				}]

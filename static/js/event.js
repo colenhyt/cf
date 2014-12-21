@@ -18,42 +18,6 @@ Event.prototype.init = function(){
 	{
 		store.set(this.name,data_eventdata);
 	}  
-    this.buildHTML();	   
-}
-
-Event.prototype.buildHTML = function(){
-        var pagedetail = new PageUtil(this.tagdetailname);
-        var psubclass = "";
-        if (this.name=="insure"||this.name=="event")
-        	psubclass = "small";
-        pclass = "cfpagedetail "+psubclass;
-        content =     "<div class=\"tab-pane in active\" id='quest2'>";
-        content += "<div class='"+pclass+"' id='"+this.pagedetailname+"'>"
-        content += "</div></div>"
-        pagedetail.addContent(content);
-        document.write(pagedetail.toString());  
-}
-
-Event.prototype.showDetail = function(id){
-	var tdata = store.get(this.name);
-   var item = tdata[id];
-   if (item==null) return;
-        
-    this.isTrigger = true;
-    
-var content =      "        <div><h2 style='margin-top:-5px;margin-bottom:-5px;text-align:center'>"+item.name+"</h2>"
-content += "<img src='static/img/pop_line.png'>"
- content += "            <div>"+item.desc+"</div>"
- content +=	"</div>"
-content += "           <div style='margin-top:10px'>  "
-content += "          <button class='cf_bt' onclick='g_event.acceptEvent("+id+")'>确认</button>"
-content += "             </div>"
-	
-	var tag = document.getElementById(this.pagedetailname);
-	tag.innerHTML = content;
-
-	$('#'+this.tagdetailname).modal({position:120,show: true});  
-
 }
 
 Event.prototype.acceptEvent = function(id){
@@ -66,9 +30,10 @@ Event.prototype.acceptEvent = function(id){
 Event.prototype.triggerEvent = function(){
 	var tdata = store.get(this.name);
 	var index = Math.floor(Math.random()*tdata.length);
-	var ee = tdata[index]; 
-	log("event trigger:"+ee.prize.id);
-	this.showDetail(index);
+	var item = tdata[index]; 
+	log("event trigger:"+item.prize.id);
+    this.isTrigger = true;
+	g_msg.open2("意外保险",item.desc,"g_event.acceptEvent",index,1,1);
 }
 
 //

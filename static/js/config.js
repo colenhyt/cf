@@ -6,6 +6,8 @@ var g_dbsize = 200000;
 var g_game;
 var g_db;
 
+var Page_Top = 0;
+
 var Scene_Width = 640;
 var Scene_Height = 1280;
 

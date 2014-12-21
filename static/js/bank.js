@@ -45,7 +45,7 @@ Bank.prototype.showBank = function(playerId){
 
 	this.showPie(data);
 	
-    $('#'+this.tagname).modal({position:50,show:true});       
+    $('#'+this.tagname).modal({position:Page_Top,show:true});       
 }
 
 Bank.prototype.showPie = function(data){

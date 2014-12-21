@@ -1,6 +1,6 @@
 Insure = function(){
     this.name = "insure";
-    this.pageCount = 5;
+    this.pageCount = 2;
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
     this.tagdetailname = this.tagname+"detail";
@@ -28,26 +28,22 @@ Insure.prototype.buildPage = function(page)
 	var tdata = store.get(this.name);
 	var content = 	"";
 	if (tdata.length<=0){
-		  content += "<div class='cfpanel' ID='insure_d1'><div class='panel-body'>没有产品</div>"
+		  content += "<div class='cfpanel' ID='insure_d1'><div class='cfpanel_body'>没有产品</div>"
       content += "</div>"
 	}else {
 		var start = page* this.pageCount;
 		var end = (page+1)* this.pageCount;
 		if (end>tdata.length)
 			end = tdata.length;
-		  content += "<div style='height:330px'>"
+		  content += "<div class='cfpanel_body'>"
 		for (var i=start;i<end;i++){
 			var item = tdata[i];
 		  content += "<div class='cfpanel' ID='insure_d1' onclick='g_insure.showDetail("+item.id+")'>"
-		     content += "<h2 class='cf_h'>"+item.name+"</h2>"
-			 content += "        <table id='toplist1_tab' width='100%'>"
-			 content += "           <thead>"
-			 content += "             <tr>"
-			 content += "               <td>价格:￥"+item.price+"</td>"
-			 content += "               <td class='td_right'>周期:"+item.period+"h</td>"
-			content += "              </tr>"
-			content += "            </thead>"
-			content += "          </table>"
+		     content += "<span class='cfpanel_title'>"+item.name+"</span>"
+			 content += "	<div style='height:150px;'>"
+			 content += "<span class='cfpanel_text'>价格: ￥"+ForDight(item.price)+"</span>"
+			 content += "<span class='cfpanel_text right'>周期:"+item.period+"</span>"
+			content += "     </div>"
       		content += "</div>"
 		}
    		content += "</div>"
@@ -61,6 +57,29 @@ Insure.prototype.buildPage = function(page)
 }
 
 Insure.prototype.showDetail = function(id){    
+	var tdata = store.get(this.name);
+   var item = tdata[id-1];
+   if (item==null) return;
+        
+ var content = "            <div>投保后，在保险期间，可以规避对应的风险，规避经济上的损失</div>"
+ content += "           <div>  "
+ content += "        <table id='toplist1_tab'>"
+ content += "             <tr>"
+ content += "               <td class='td-c-name'>价格</td>"
+ content += "               <td class='td-c-value'>"+item.price+"</td>"
+ content += "               <td class='td-c-name'>收益</td>"
+ content += "               <td class='td-c-value'>"+item.profit+"</td>"
+ content += "               <td class='td-c-name'>周期</td>"
+ content += "               <td class='td-c-value'>"+item.period+"</td>"
+content += "              </tr>"
+content += "          </table>     "
+content += "           </div>  "
+
+    g_msg.open2(item.name,content,"g_insure.",id,0,0,"购买");
+	
+}
+
+Insure.prototype.showDetail_finan = function(id){    
 	var tdata = store.get(this.name);
    var item = tdata[id-1];
    if (item==null) return;
@@ -82,7 +101,7 @@ content += "<img src='static/img/pop_line.png'>"
 content += "              </tr>"
  content += "             <tr>"
  content += "               <td colspan='2' class='td-c-name'><input type='button' class='cf_count' onclick='g_insure.countBuy(-1)'></td>"
- content += "               <td colspan='2' class='td-c-name'><input type='text' id='insure_count' value='1' style='width:80px;text-align:center'></td>"
+ content += "               <td colspan='2' class='td-c-name'><input type='text' id='insure_count' value='1' style='width:150px;text-align:center;height:58px;font-size:32px'></td>"
  content += "               <td colspan='2' class='td-c-name'><input type='button' class='cf_count add' onclick='g_insure.countBuy(1)'></td>"
 content += "              </tr>"
 content += "            </thead>"
@@ -135,3 +154,4 @@ if (id>0)
 
 var g_insure = new Insure();
  g_insure.init();
+ g_insure.show();

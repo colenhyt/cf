@@ -1,26 +1,19 @@
 /* CSS Document */
 img{ max-width:100%;} 
 body {
-  font-size:18px;
+  font-size:36px;
   color:#ffffff;
-}
-.modal-content2{
-  background-color: #ffffff;
-  font-size:18px;
-  color: blue;
-  border-color: blue;
-  border: 3;
 }
 
 td {
-font-size:15px;
+font-size:20px;
   font-weight: bold;
 }
 
 .cf_bt{
   border:none;
-  width:104px;
-  font-size:20px;
+  width:174px;
+  height:64px;
 background:url('../../static/img/bt_yellow.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%; 
@@ -37,8 +30,8 @@ background:url('../../static/img/bt_yellow.png') no-repeat;
 
 .cf_bt_green{
 border:none;
-width:136px;
-height:35px;
+width:227px;
+height:58px;
 color:#ffffff;
  background:url('../../static/img/bt_green_left.png') no-repeat;
 -moz-background-size:100% 100%;  
@@ -50,40 +43,66 @@ color:#ffffff;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
 }
-.cf_span {
+.cf_paging {
   position: relative;
-  margin-left:30px;
-  color:green;
+  margin-left:80px;
+  line-weight:50px;
+  width:300px;
+  text-align:center;
+  color:yellow;
 }
 .cfpage
 {
   position: relative;
-  padding-top:10px;
+  padding-top:5px;
   padding-left:25px;
   outline: none;
   transition:all 0.3s;
-width:580px;
- background:url('../../static/img/pop_big.png') no-repeat;
--moz-background-size:100% 100%;  
+  width:580px;
+  height:654px;
+  background:url('../../static/img/pop_big.png') no-repeat;
+  -moz-background-size:100% 100%;  
     background-size:100% 100%;  
 }
 
 .cfpage.small
 {
 padding-top:20px;
-height:323px;
 }
 
-.cf_h{
+.cfpanel_title{
 color:yellow;
+font-weight:bold;
+}
+
+.cfpanel_text{
+position:relative;
+float:left;
+padding-right:10px;
+line-weight:23px;
+font-size:20px;
+}
+
+.cfpanel_text.right{
+float:right;
+}
+
+.cfmsg_text{
+position:relative;
+text-align:center;
+line-weight:23px;
+font-size:20px;
+height:220px;
 }
 
 .cfpanel
 {
   position: relative;
   padding-left:10px;
-  margin-top:-16px;
-  margin-left:-10px;
+  padding-top:6px;
+  width:534px;
+  height:100px;
+  margin-top:8px;
  background:url('../../static/img/panel_bg.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
@@ -99,12 +118,16 @@ color:yellow;
     background-size:100% 100%;   
 }
 
+.cfpanel_body{
+ height:520px;
+}
+
 .cfpagedetail
 {
   position: relative;
   padding: 20px;
   margin: 0 0 15px;
-  color:#000000;
+color:blue;
  background:url('../../static/img/popd_big.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
@@ -112,9 +135,28 @@ color:yellow;
 
 .cfpagedetail.small
 {
+margin-left:30px;
+margin-top:30px;
+width:516px;
+height:417px;
  background:url('../../static/img/popd_small.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
+}
+
+.cpgapedetail_h2 {
+margin-left:5px;
+margin-top:5px;
+margin-bottom:-5px;
+font-size:35px;
+}
+
+.cfmsg_h2 {
+margin-top:5px;
+}
+
+.cf_line {
+width:530px;
 }
 
 .cf_title_bg {
@@ -122,24 +164,23 @@ float:left;
 margin-left:15px;
 vertical-align: bottom;
 border:none;
+font-size:35px;
 width:268px;
 height:69px;
 color: #ffffff;
-font-size: 20px;
 background:url('../../static/img/title_bg.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
 }
 
 .cf_title_bg.won {
-  margin-top:-39px;
+  margin-top:-69px;
 background:url('../../static/img/title_toplist_won.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
 }
 .cf_title_bg.moff {
-  margin-left:130px;
-  margin-top: -39px;
+  margin-left:225px;
 background:url('../../static/img/title_toplist_moff.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
@@ -151,8 +192,8 @@ background:url('../../static/img/title_toplist_woff.png') no-repeat;
     background-size:100% 100%;  
 }
 .cf_title_bg.mon {
-  margin-top:-39px;
-  margin-left:130px;
+  margin-top:-69px;
+  margin-left:225px;
 background:url('../../static/img/title_toplist_mon.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
@@ -160,7 +201,8 @@ background:url('../../static/img/title_toplist_mon.png') no-repeat;
 .cf_title {
 position:relative;
 float:left;
-margin-top:30px;
+margin-left:25px;
+margin-top:18px;
 width:185px;
 height:41px;
 font-size:28px;
@@ -176,7 +218,6 @@ border:none;
   padding-left: 5px;
   width: 315px;
   height: 40px;
-  font-size: 28px;
   vertical-align:middle;
 background:url('../../static/img/top_title_bg.png') no-repeat;
 -moz-background-size:100% 100%;  
@@ -196,9 +237,8 @@ background:url('../../static/img/zan.png') no-repeat;
 position:relative;
 float:left;
 margin-left:20px;
-margin-top:10px;
-width:48px;
-height:35px;
+width:80px;
+height:58px;
 border:none;
 background:url('../../static/img/bt_minus.png') no-repeat;
 -moz-background-size:100% 100%;  
@@ -228,7 +268,8 @@ background:url('../../static/img/bt_blue.png') no-repeat;
     background-size:100% 100%; 
 }
 .cfpage_content{
-padding-bottom:10px
+margin-top:50px;
+margin-left:20px;
 }
 
 .cf_font2 {
@@ -244,23 +285,16 @@ color:blue;
 margin-top:10px;
 color:red;
 }
-.cf-button {
-  height: 24px;
-  padding: 2px 8px;
-  font-size: 18px;
-  line-height: 1.5;
-  border-radius: 3px;
-}
 
 .cf_signin_feeling{
-margin-left:-5px;
+margin-left:-15px;
 margin-top:20px;
 padding-bottom:20px;
 }
 .cf_signin_feeling2{
 margin-left:-5px;
-width:305px;
-height:136px;
+width:534px;
+height:260px;
 background:url('../../static/img/signin_bg.png') no-repeat;
 filter:"progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale')"; 
 -moz-background-size:100% 100%;  

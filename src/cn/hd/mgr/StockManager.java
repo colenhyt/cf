@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.apache.log4j.Logger;
+
 import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Quotedata;
 import cn.hd.cf.model.Stock;
@@ -16,6 +18,7 @@ import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.StockdataService;
 
 public class StockManager {
+	private static Logger logger = Logger.getLogger(StockManager.class); 
 	private int STOCK_QUOTE_PERIOD = 7;
 	private int STOCK_SAVE_PERIOD = 3600;
 	private StockdataService stockdataService;
@@ -106,7 +109,7 @@ public class StockManager {
 	    		quotedataService.addNewQuote(stock.getId(), ps);
 	    		//System.out.println("股票价格变化: "+stock.getName()+",涨跌幅:"+stock.getPer()+",原价格:"+oldPs+",现价格:"+stock.getPrice());
 	    	}
-		   	System.out.println("stock quote update!");
+		   	logger.info("stock quote update!!!");
 	    }		
 		
 		//数据库保存:
