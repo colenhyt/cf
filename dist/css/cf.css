@@ -296,7 +296,6 @@ margin-left:-5px;
 width:534px;
 height:260px;
 background:url('../../static/img/signin_bg.png') no-repeat;
-filter:"progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale')"; 
 -moz-background-size:100% 100%;  
     background-size:100% 100%; 
 }
@@ -307,6 +306,15 @@ width:3px;
 margin-top:20px;
 padding-bottom:20px;
 }
+
+.cfsignin_feelingimgs{
+padding-top:30px;
+padding-left:20px;
+padding-right:20px;
+width:140px;
+text-align:center;
+}
+
 .td_right {
 position:right;
 }

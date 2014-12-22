@@ -79,26 +79,36 @@ Signin.prototype.show = function(){
 	 	tagfeel.removeChild(childNode);
 	}    
 	
-    for (var i=0;i<feeling_imgs.length;i++)
-    {
-        var imgData = feeling_imgs[i];
-        var div = document.createElement("div");
-        div.id = "divfeeling_"+this.id;
-        var img = new Image();
-        img.src = imgData.src;
-        img.style.marginTop = "20px";
-        img.style.marginLeft = "25px";
-        img.id = "imgfeeling_"+imgData.id;
-        img.sid = imgData.id;
-        img.width = 99;
-        img.onclick = function(){          
-            signin.feeling = this.sid;
-            this.style.border = "1px red";
-        }
-        //div.appendChild(img);    
-        tagfeel.appendChild(img);       
-    }
+	var context = "";
+ 	 context += "        <table style='margin-left:10px;margin-top:5px;'>"
+	 context += "             <tr>"
+	 for (var i=0;i<4;i++){
+	 	var img = feeling_imgs[i];
+	 	var id = i+1;
+        context += "<td class='cfsignin_feelingimgs' id='signin_feeling"+id+"'";
+         context += " onclick='g_signin.clickFeeling("+id+")'>";
+        context += "<img src='"+img.src+"'><br><br>";
+	 	img = feeling_imgs[i+4];
+          context += "<img src='"+img.src+"'>";
+ 		context += "</td>"
+ 	  }
+ 	context += "</tr>"
+ 	context += "</table>     "
+    
+    tagfeel.innerHTML = context;
+    
     $('#'+this.tagname).modal({position:Page_Top,show:true});       
+}
+
+Signin.prototype.clickFeeling = function(feelingId){
+	for (var i=0;i<4;i++){
+		var ftag= document.getElementById("signin_feeling"+(i+1));
+		ftag.style.border = "none";
+	}
+	var ftag = document.getElementById("signin_feeling"+feelingId);
+	ftag.style.border = "2px solid green";
+    g_signin.feeling = feelingId;
+    //this.style.border = "1px red";
 }
 
 Signin.prototype.doSignin = function(){
