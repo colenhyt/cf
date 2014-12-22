@@ -1,7 +1,7 @@
 Insure = function(){
     this.name = "insure";
     this.cname = "保险";
-    this.pageCount = 2;
+    this.pageCount = 4;
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
     this.tagdetailname = this.tagname+"detail";
@@ -39,14 +39,36 @@ Insure.prototype.buildPage = function(page)
 		  content += "<div class='cfpanel_body'>"
 		for (var i=start;i<end;i++){
 			var item = tdata[i];
+			var pitem = g_player.getItemData("insure",item);
+			var buyDesc;
+			if (item.type==1){
+				if (pitem.qty<=0)
+					buyDesc = "尚未购买";
+				else
+					buyDesc = "你已购买 <span style='color:yellow'>"+pitem.qty+"</span> 份";
+			}else {
+				var psColor = "green";
+				if (pitem.profit<0)
+					psColor = "red"
+				if (pitem.qty<=0)
+					buyDesc = "尚未购买";
+				else {
+					buyDesc = "已购买"+pitem.qty+"份,总盈亏:"+pitem.profit;
+				}			
+			}
+			
 		  content += "<div class='cfpanel' ID='insure_d1' onclick='g_insure.showDetail("+item.id+","+item.type+")'>"
 		     content += "<span class='cfpanel_title'>"+item.name+"</span>"
-			 content += "	<div style='height:150px;'>"
+			 content += "<span class='cfpanel_text right'>"+buyDesc+"</span>"
+			 content += "	<div>"
 			 content += "<span class='cfpanel_text'>价格: ￥"+ForDight(item.price)+"</span>"
-			 content += "<span class='cfpanel_text right'>周期:"+item.period+"</span>"
+			 content += "<span class='cfpanel_text right'>期限:"+item.period+"天</span>"
 			content += "     </div>"
       		content += "</div>"
 		}
+			content += "           <div style='margin-top:10px;font-size:25px;color:pink'>  "
+			content += "          保险分为规避风险类产品和理财投资类产品"  
+			content += "             </div>"
    		content += "</div>"
         
         content += this.buildPaging(page,tdata.length);
@@ -69,17 +91,19 @@ Insure.prototype.show_insuredetail = function(id){
    var item = tdata[id-1];
    if (item==null) return;
        
- var content = "            <div>"+item.descs+"</div>"
- content += "           <div>  "
- content += "        <table id='toplist1_tab'>"
- content += "             <tr>"
- content += "               <td class='td-c-name'>价格</td>"
- content += "               <td class='td-c-value'>"+item.price+"</td>"
- content += "               <td class='td-c-name'>周期</td>"
- content += "               <td class='td-c-value'>"+item.period+"</td>"
-content += "              </tr>"
-content += "          </table>     "
-content += "           </div>  "
+	var pitem = g_player.getItemData("insure",item);
+       
+	 var content = "            <div>"+item.descs+"</div>"
+	 content += "           <div>  "
+	 content += "        <table id='toplist1_tab'>"
+	 content += "             <tr>"
+	 content += "               <td class='td-c-name'>价格</td>"
+	 content += "               <td class='td-c-value'>"+item.price+"</td>"
+	 content += "               <td class='td-c-name'>周期</td>"
+	 content += "               <td class='td-c-value'>"+item.period+"</td>"
+	content += "              </tr>"
+	content += "          </table>     "
+	content += "           </div>  "
 
     g_msg.open2(item.name,content,"g_insure.confirmBuy",id,1,0,"购买");
 	
@@ -89,6 +113,11 @@ Insure.prototype.show_finandetail = function(id){
 	var tdata = store.get(this.name);
    var item = tdata[id-1];
    if (item==null) return;
+        
+	var pitem = g_player.getItemData("insure",item);
+	var psColor = "green";
+	if (pitem.profit<0)
+		psColor = "red"
         
  var content = "            <div>"+item.descs+"</div>"
  content += "           <div style='margin-top:10px;margin-bottom:30px;height:150px'>  "
@@ -128,4 +157,3 @@ var tag = document.getElementById('finan_count');
 }
 var g_insure = new Insure();
  g_insure.init();
- g_insure.show();

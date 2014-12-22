@@ -268,6 +268,7 @@ Player.prototype.updateData = function(prop) {
 			this.data[key] = prop[key];
     }
 	this.flushPageview();
+	this.syncData2();
     store.set(this.name,this.data);
 }
 
@@ -282,22 +283,12 @@ Player.prototype.clone = function(data) {
 	data.exp = pl.exp;
 	if (pl.quest!=null)
 		data.quest = pl.quest.concat();
-	if (pl.stock!=null)
-		data.stock = pl.stock.concat();
-	if (pl.insure!=null)
-		data.insure = pl.insure.concat();
-	if (pl.finan!=null)
-		data.finan = pl.finan.concat();
 }
 
-Player.prototype.syncData = function(){
-	return;
+Player.prototype.syncData2 = function(){
 	var data = {};
 	this.clone(data);
 	data.quest = JSON.stringify(data.quest);
-	data.stock = JSON.stringify(data.stock);
-	data.insure = JSON.stringify(data.insure);
-	data.finan = JSON.stringify(data.finan);
 	var updateStr = "player="+JSON.stringify(data);
 	try  {
 		$.ajax({type:"post",url:"/cf/login_update.do",data:updateStr,success:this.syncCallback});
@@ -358,20 +349,6 @@ Player.prototype.getDataMap = function(tname) {
     return tdataMap;
 }
 
-Player.prototype.getStocks = function() {
-    var stocks = this.stock?this.stock:[];
-    var tstocks = {};
-    for (var i=0;i<stocks.length;i++){
-		var item = stocks[i];
-		var amount = 0;
-		var totalqty = 0;
-		amount += item.amount;
-		totalqty += item.qty;
-	 	tstocks[item.id] = {amount:amount,qty:totalqty};
-   }
-    return tstocks;
-}
-
 Player.prototype.getData = function(tname){
 	var tdata;
 	if (tname=="insure"){
@@ -398,6 +375,19 @@ Player.prototype.getItem = function(tname,id){
 		item = g_saving.findItem(id);
 	}
 	return item;
+}
+
+Player.prototype.getItemData = function(tname,item) {
+    var profit = 0;
+    var avgPrice = 0;
+    var qty = 0;
+    var pstock = this.getDataMap(tname)[item.id];
+     if (pstock!=null) {
+		profit = pstock["amount"] - pstock["qty"]*item.price;
+		avgPrice = pstock["amount"]/pstock["qty"];
+		qty = pstock.qty;
+    }    
+    return {profit:profit,avgPrice:avgPrice,qty:qty};
 }
 
 Player.prototype.buyItem = function(tname,id,qty){
@@ -448,7 +438,7 @@ Player.prototype.find = function(playerid){
 				if (obj.saving)
 					serverPlayer.saving = eval ("(" + obj.saving + ")");
 				if (obj.quest)
-					serverPlayer.quest = eval ("(" + obj.quest + ")");
+					serverPlayer.data.quest = eval ("(" + obj.quest + ")");
 				if (obj.stock)
 					serverPlayer.stock = eval ("(" + obj.stock + ")");
 				if (obj.insure)
@@ -462,21 +452,8 @@ Player.prototype.find = function(playerid){
 	return serverPlayer;
 }
 
-Player.prototype.getPlayerStock = function(stock) {
-    var profit = 0;
-    var avgPrice = 0;
-    var qty = 0;
-    var pstock = this.getStocks()[stock.id];
-     if (pstock!=null) {
-	profit = pstock["amount"] - pstock["qty"]*stock.price;
-	avgPrice = pstock["amount"]/pstock["qty"];
-	qty = pstock.qty;
-    }    
-    return {profit:profit,avgPrice:avgPrice,qty:qty};
-}
-
-//store.remove("player");
-//store.remove("playerlog");
+store.remove("player");
+store.remove("playerlog");
 var g_playerlog = new Playerlog()
 g_playerlog.init();
 var g_player = new Player();

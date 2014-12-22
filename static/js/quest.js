@@ -25,12 +25,12 @@ Quest.prototype.init = function(duration){
 
 Quest.prototype.buildPage = function(page)
 {
-	var quest = g_player.quest?g_player.quest:[];
+	var quest = g_player.data.quest;
 	
 	var tdata = store.get(this.name);
 	var content = 	"";
 	if (quest.length<=0){
-		  content += "<div class='cfpanel' ID='insure_d1'><div class='cfpanel_body'>没有任务</div>"
+		  content += "<div class='cfpanel' ID='insure_d1'>>你当前没有任务"
       content += "</div>"
 	}else {
 		var start = page* this.pageCount;
@@ -55,7 +55,7 @@ Quest.prototype.buildPage = function(page)
 			 content += "        <table id='"+this.tagname+"tab'>"
 			 content += "           <thead>"
 			 content += "             <tr>"
-			 content += "               <td class='td-c-name'>描述</td>"
+	//		 content += "               <td class='td-c-name'>描述</td>"
 			 content += "               <td class='td-c-value'>"+item.descs+"</td>"
 			 content += "               <td class='td-c-value'><img style='width:78px;height:27px' src='static/img/"+img+"'></td>"
 //			 content += "               <td class='td-c-name'>条件</td>"

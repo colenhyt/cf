@@ -31,12 +31,10 @@ Help.prototype.buildPage = function(page)
 }
 
 Help.prototype.show = function(){
+	g_msg.open("该模块尚未开放，敬请期待");
+	return;
 	
-     var option = {
-    	position : 50,
-    	show     : true
-	}
-    $('#'+this.tagname).modal(option);       
+    $('#'+this.tagname).modal({position:Page_Top,show: true});       
 }
 
 var g_help = new Help();

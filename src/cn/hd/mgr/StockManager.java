@@ -100,14 +100,14 @@ public class StockManager {
 	    		float ps = stock.getPrice();
 	    		float oldPs = ps;
 	    		//涨:
-	    		if (addOrMinus<60)
+	    		if (addOrMinus<50)
 	    			ps += ps*per;
 	    		else
 	    			ps -= ps*per;
 	    		
 	    		stock.setPrice(ps);
 	    		quotedataService.addNewQuote(stock.getId(), ps);
-	    		System.out.println("股票价格变化: "+stock.getName()+",涨跌幅:"+stock.getPer()+",原价格:"+oldPs+",现价格:"+stock.getPrice());
+	    		//System.out.println("股票价格变化: "+stock.getName()+",涨跌幅:"+stock.getPer()+",原价格:"+oldPs+",现价格:"+stock.getPrice());
 	    	}
 		   	logger.info("stock quote update!!!");
 	    }		

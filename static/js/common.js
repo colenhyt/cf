@@ -227,8 +227,14 @@ Datamgr.prototype = {
 	
 	buy:function(id,qty){
 	    var ret = g_player.buyItem(this.name,id,qty);
-	    if (ret==true)
-	    	$('#'+this.tagdetailname).modal('hide');
+	    if (ret==true){
+	    	//刷新detail 页面:
+	    	this.showDetail(id,true);
+	    	
+	    	//刷新list 页面:
+	    	this.buildPage(0);
+	    	//$('#'+this.tagdetailname).modal('hide');
+	    }
 	},
 }
 

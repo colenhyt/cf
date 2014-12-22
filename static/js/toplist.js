@@ -67,7 +67,7 @@ Toplist.prototype.buildPage = function(page)
 	var content = 	"";
 	  
 	if (tdata.length<=0){
-		  content += "<div class='panel' ID='insure_d1'><div class='panel-body'>没有排名</div>"
+		  content += "<div class='cfpanel' ID='insure_d1'>目前还没有排名数据"
       	  content += "</div>"
 	}else {
 		  var start =0;

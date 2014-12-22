@@ -22,14 +22,13 @@ Signin.prototype.init = function(){
 Signin.prototype.buildPage = function(page)
 {
 	var content = "<div class='cfpage_content'>"
-	content +=	" 今天签到将获得工资:"
-    content +=      "      <span id='signin_gettoday class='cf_font2'>10000元</span><br>"
-    content +=           "  明天签到将获得工资:"
-    content +=            "     <span id='signin_gettomorrow' class='cf_font2'>25000元</span>"
+	content +=	" 今天签到将获得:"
+    content +=      "      <span id='signin_gettoday' class='cf_font2'> </span><br>"
+    content +=           "  明天签到将获得:"
+    content +=            "  <span id='signin_gettomorrow' class='cf_font2'> </span>"
     content +=            "     <div class='cf_font3'>注:连续签到工资将会有提升</div>"
     content +=            " <div class='cf_signin_feeling'> 请选择你今天的心情:"
-    content +=            "     <div id ='signin_feeling' class='cf_signin_feeling2'>signin_feeling</div>  "
-   // content +=       "<input type='button' value='签到' onclick='g_signin.doSignin()'>"
+    content +=            "     <div id ='signin_feeling' class='cf_signin_feeling2'>心情选择</div>  "
      content +=       " </div>"
     content +=            " </div>"
 
@@ -39,7 +38,7 @@ Signin.prototype.buildPage = function(page)
 }
 
 Signin.prototype.start = function(startDay){
-	return;
+	//return;
 	 
     var signin = this;    
     var vstartDay = startDay + 1;	//
@@ -68,10 +67,10 @@ Signin.prototype.show = function(){
 	
     var signin = this;    
     var get = document.getElementById("signin_gettoday");
-   // get.innerHTML = itemStr(this.data,"<br>");
+    get.innerHTML = "<br>"+itemStr(this.data,",");
  
     get = document.getElementById("signin_gettomorrow");
-   // get.innerHTML = itemStr(this.data_to,"<br>");
+    get.innerHTML = "<br>"+itemStr(this.data_to,",");
 
     var tagfeel = document.getElementById("signin_feeling");
     
@@ -105,7 +104,7 @@ Signin.prototype.show = function(){
 Signin.prototype.doSignin = function(){
 	if (this.feeling<0)
 	{
-		g_msg.open('请选择你今天的心情');
+		g_msg.open('亲, 请选择你今天的心情哦');
 		return;
 	}
 	
