@@ -1,5 +1,6 @@
 Saving = function(){
     this.name = "saving";
+    this.cname = "存款";
     this.pageCount = 5;
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";

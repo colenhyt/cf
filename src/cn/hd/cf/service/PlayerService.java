@@ -53,11 +53,17 @@ public class PlayerService extends BaseService {
 		return null;
 	}
 	
-	public int add(PlayerWithBLOBs record)
+	public boolean add(PlayerWithBLOBs record)
 	{
+		try {
 		playerMapper.insertSelective(record);
 		DBCommit();
-		return 0;
+		DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 	public int updateByKey(PlayerWithBLOBs record)

@@ -18,5 +18,14 @@
 		<action name="stock_*" method="{1}" class="cn.hd.cf.action.StockAction">
 		</action>
 	</package>	
-	
+	    
+	<package name="insure" extends="struts-default" namespace="/">
+		<action name="insure_*" method="{1}" class="cn.hd.cf.action.InsureAction">
+		</action>
+	</package>	
+	    
+	<package name="saving" extends="struts-default" namespace="/">
+		<action name="saving_*" method="{1}" class="cn.hd.cf.action.SavingAction">
+		</action>
+	</package>			
 </struts>

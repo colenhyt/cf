@@ -126,7 +126,7 @@ Quest.prototype.onAcceptDaily = function(){
 	if (cc>tdata.length)
 		cc = tdata.length;
 	var qkeys = [];
-	var pquest = g_player.quest;
+	var pquest =  g_player.quest?g_player.quest:[];
 	var jsonCurr = Date.parse(new Date());
 	for (var i=0;i<cc;i++)
 	{

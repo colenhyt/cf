@@ -5,12 +5,14 @@ import java.util.List;
 
 import net.sf.json.JSONArray;
 import cn.hd.base.BaseAction;
+import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
+import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.service.StockService;
 import cn.hd.mgr.EventManager;
 import cn.hd.mgr.StockManager;
 
-public class StockAction extends BaseAction {
+public class StockAction extends SavingAction {
 	private StockManager stockMgr;
 	private StockService stockService;
 	private Stock	stock;
@@ -55,9 +57,26 @@ public class StockAction extends BaseAction {
 	
 	
 	public String add(){
-		stock.setCreatetime(new Date());
-		int ret = stockService.add(stock);	
+		float inAmount = 0 - stock.getAmount();
+		//先扣钱:
+		int ret = super.updateLiveSaving(stock.getPlayerid(), inAmount);
+		if (ret==0){
+			stock.setCreatetime(new Date());
+			boolean add = stockService.add(stock);	
+			if (add==false){
+				//钱放回去:
+				super.updateLiveSaving(stock.getPlayerid(),  stock.getAmount());
+				ret = RetMsg.SQLExecuteError;
+			}
+		}
 		writeMsg(ret);
+		return null;
+	}	
+	
+	
+	public String update()
+	{
+		stockService.update(stock);		
 		return null;
 	}	
 }

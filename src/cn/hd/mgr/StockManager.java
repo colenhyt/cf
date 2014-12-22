@@ -107,7 +107,7 @@ public class StockManager {
 	    		
 	    		stock.setPrice(ps);
 	    		quotedataService.addNewQuote(stock.getId(), ps);
-	    		//System.out.println("股票价格变化: "+stock.getName()+",涨跌幅:"+stock.getPer()+",原价格:"+oldPs+",现价格:"+stock.getPrice());
+	    		System.out.println("股票价格变化: "+stock.getName()+",涨跌幅:"+stock.getPer()+",原价格:"+oldPs+",现价格:"+stock.getPrice());
 	    	}
 		   	logger.info("stock quote update!!!");
 	    }		

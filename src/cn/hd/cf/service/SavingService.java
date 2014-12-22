@@ -38,11 +38,20 @@ public class SavingService extends BaseService {
 		return savingMapper.selectByExample(example);
 	}
 	
+	public Saving findLivingSavingByPlayerId(int playerId)
+	{
+		SavingExample example = new SavingExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
+		List<Saving> savings = savingMapper.selectByExample(example);
+		return savings.get(0);
+	}
+	
 	public boolean updateSavings(List<Saving> savings)
 	{
 		for (int i=0;i<savings.size();i++){
 			Saving record = savings.get(i);
-			savingMapper.updateByPrimaryKey(record);
+			savingMapper.updateByPrimaryKeySelective(record);
 		}
 		DBCommit();
 		return true;
@@ -50,15 +59,25 @@ public class SavingService extends BaseService {
 	
 	public boolean add(Saving record)
 	{
-		savingMapper.insert(record);
-		DBCommit();
+		try {
+			savingMapper.insert(record);
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}	
 		return true;
 	}
 	
 	public boolean update(Saving record)
 	{
-		savingMapper.updateByPrimaryKeySelective(record);
-		DBCommit();
+		try {
+			savingMapper.updateByPrimaryKeySelective(record);
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}				
 		return true;
 	}
 }

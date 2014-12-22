@@ -1,5 +1,6 @@
 Stock = function(){
     this.name = "stock";
+    this.cname = "股票";
     this.pageCount = 4;
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
@@ -45,10 +46,10 @@ Stock.prototype.buildPage = function(page)
 			var psColor = "green";
 			if (pstock.profit<0)
 				psColor = "red"
-		     content += "<div class='cfpanel' ID='stock_d1' onclick='g_stock.showDetail("+item.id+")'>"
+		     content += "<div class='cfpanel' ID='stock_d"+item.id+"' onclick='g_stock.showDetail("+item.id+")'>"
 		     content += "<span class='cfpanel_title'>"+item.name+"</span>"
 		     content += "<span class='cfpanel_text right'>目前持有<span style='color:yellow'> "+pstock.qty+"</span> 手</span>"
-			 content += "	<div style='height:150px;'>"
+			 content += "	<div>"
 			 content += "<span class='cfpanel_text'>当前价格: ￥"+ForDight(item.price)+"</span>"
 			 content += "<span class='cfpanel_text right'>总盈亏: <span style='color:"+psColor+"'>"+ForDight(pstock.profit)+"</span></span>"
 			content += "     </div>"
@@ -68,6 +69,8 @@ Stock.prototype.buildPage = function(page)
 }
 
 Stock.prototype.showDetail = function(id){    
+	var dd = document.getElementById("stock_d"+id);
+	
 	var tdata = store.get(this.name);
    var item = this.findItem(id);
    if (item==null) return;
@@ -121,68 +124,7 @@ content += "             </div>"
 	tag.innerHTML = content;
         
     g_stockdetail.drawQuote(item.name,this.graphName);
-	$('#'+this.tagdetailname).modal({position:0,show: true});  
-}
-
-Stock.prototype.confirmBuy = function(id,qty){
-   var item = this.findItem(id);
-	var strDesc = "确定";
-	var strQty = qty;
-	if (qty>0) {
-	    var needCash = item.price * qty;
-	    var cash = g_player.saving[0].amount;
-	    if (cash<needCash){
-		    g_msg.open("你的现金不够，股票购买失败!");
-		    return;
-	    }		
-		strDesc += "加持";
-	}else {
-		strDesc += "减持";
-		strQty = 0 - strQty;
-	}
-		
-	strDesc += " <span style='color:red'>"+strQty+"</span> 手 "+item.name+" ?";
-	g_msg.open(strDesc,"g_stock.buy",id,qty);
-}
-
-Stock.prototype.buy = function(id,qty){
-
-    if (id<=0)	return;
-
-    var item = this.findItem(id);
-    if (item==null){
-		g_msg.open("没有该股票: id="+id);
-		return;    
-   	}
-   	
-    var needCash = item.price * qty;
-	var cash = g_player.saving[0].amount;
-    if (cash<needCash){
-	    g_msg.open("你的现金不够，股票购买失败!");
-	    return;
-    }
-     var jsonDate = Date.parse(new Date());
-    var tstock = {stockid:item.id,playerid:g_player.data.playerid,createtime:jsonDate
-    	,status:0,price:item.price,qty:qty,amount:item.price*qty};
-			
-	var dataParam = obj2ParamStr("stock",tstock);
-	var ret = myajax("stock_add",dataParam);
-	if (ret==null||ret.code!=0)
-	{
-		g_msg.open("购买失败:code="+ret.code);
-		return;
-	}
-	
-    var pstock = g_player.stock;
-    if (pstock==null)
-	    pstock=[];
-	pstock.push(tstock);
-    var newcash = cash - needCash;
-    var pdata = {"cash":newcash};
-    g_player.updateData(pdata);
-    g_quest.onBuyStock(item);
-	g_msg.open("成功购买:"+item.name);
-    $('#'+this.tagdetailname).modal('hide');
+	$('#'+this.tagdetailname).modal({position:PageDetail_Top,show: true});  
 }
 
 //取行情:
@@ -204,3 +146,4 @@ Stock.prototype.updateQuotes = function(){
 }
 var g_stock = new Stock();
  g_stock.init();
+g_stock.show();

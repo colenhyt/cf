@@ -138,7 +138,7 @@ Player.prototype.show = function(){
 Player.prototype.register = function(){
     var createtime = Date.parse(new Date());
      var player = {
-        "accountid":1,"playerid":-1,"playername":"playeraaa19","exp":0,
+        "accountid":1,"playerid":-1,"playername":"player"+createtime,"exp":0,
 		quest:[],sex:0,createtime:createtime
         };
            
@@ -262,7 +262,10 @@ Player.prototype.flushPageview = function() {
 Player.prototype.updateData = function(prop) {
     var sets =[];
     for (key in prop){
-		this.data[key] = prop[key];
+    	if (key=="cash")
+    		this.saving[0].amount = prop[key];
+    	else
+			this.data[key] = prop[key];
     }
 	this.flushPageview();
     store.set(this.name,this.data);
@@ -340,22 +343,98 @@ Player.prototype.prize = function(prizes) {
      this.updateData(prop);
 }
 
+Player.prototype.getDataMap = function(tname) {
+    var tdata = this.getData(tname);
+    var tdataMap = {};
+    for (var i=0;i<tdata.length;i++){
+		var data = tdata[i];
+		if (tdataMap[data.itemid]==null){
+			tdataMap[data.itemid] = {qty:data.qty,amount:data.amount};
+		}else{
+			tdataMap[data.itemid].qty += data.qty;
+			tdataMap[data.itemid].amount += data.amount;
+		}
+   }
+    return tdataMap;
+}
+
 Player.prototype.getStocks = function() {
-    var stocks = this.stock;
-    if (stocks==null)
-    	stocks = [];
+    var stocks = this.stock?this.stock:[];
     var tstocks = {};
     for (var i=0;i<stocks.length;i++){
-	var item = stocks[i];
-	var amount = 0;
-	var totalqty = 0;
-    if (item.status==0) {
-	amount += item.amount;
-	totalqty += item.qty;
-    }
- 	tstocks[item.id] = {amount:amount,qty:totalqty};
+		var item = stocks[i];
+		var amount = 0;
+		var totalqty = 0;
+		amount += item.amount;
+		totalqty += item.qty;
+	 	tstocks[item.id] = {amount:amount,qty:totalqty};
    }
     return tstocks;
+}
+
+Player.prototype.getData = function(tname){
+	var tdata;
+	if (tname=="insure"){
+		this.insure = this.insure?this.insure:[];
+		tdata = this.insure;
+	}else if (tname=="stock"){
+		this.stock = this.stock?this.stock:[];
+		tdata = this.stock;
+	}else if (tname=="stock"){
+		this.saving = this.saving?this.saving:[];
+		tdata = this.saving;
+	}
+	return tdata;
+}
+
+Player.prototype.getItem = function(tname,id){
+	var tdata = this.getData(tname);
+	var item;
+	if (tname=="insure"){
+		item = g_insure.findItem(id);
+	}else if (tname=="stock"){
+		item = g_stock.findItem(id);
+	}else if (tname=="stock"){
+		item = g_saving.findItem(id);
+	}
+	return item;
+}
+
+Player.prototype.buyItem = function(tname,id,qty){
+	if (id<=0||qty<=0) return false;
+	
+	var tdata = this.getData(tname);
+	var item = this.getItem(tname,id)
+		
+	if (item==null) return false;
+	
+	var cash = this.saving[0].amount;
+	var amount = item.price* qty;
+	if (cash<amount){
+		 g_msg.open('你的钱不够');
+		return;
+	}
+	var tgoods = {itemid:item.id,playerid:this.data.playerid,
+			qty:qty,price:item.price,amount:amount,
+			createtime:Date.parse(new Date())};
+			
+	var dataParam = obj2ParamStr(tname,tgoods);
+	var ret = myajax(tname+"_add",dataParam);
+	if (ret==null||ret.code!=0)
+	{
+		g_msg.open("购买失败:name"+tname+"code="+ret.code);
+		return;
+	}
+	
+	tdata.push(tgoods);
+				
+	cash -= amount;
+	var pupdate = {"cash":cash};
+	this.updateData(pupdate);
+	g_quest.onBuyInsure(item);
+	g_msg.open("成功购买:"+item.name);
+	return true;
+		
 }
 
 Player.prototype.find = function(playerid){

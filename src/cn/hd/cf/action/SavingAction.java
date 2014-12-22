@@ -1,12 +1,13 @@
 package cn.hd.cf.action;
 
-import net.sf.json.JSONObject;
+import java.util.List;
+
 import cn.hd.base.BaseAction;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.service.SavingService;
 
 public class SavingAction extends BaseAction {
-	private Saving		saving;
+	public Saving		saving;
 	private SavingService savingService;
 	
 	public SavingService getSavingService() {
@@ -21,9 +22,28 @@ public class SavingAction extends BaseAction {
 	
 	public String update()
 	{
-		savingService.update(saving);		
+		boolean update = savingService.update(saving);	
+		if (update==false){
+			super.writeMsg(RetMsg.SQLExecuteError);
+		}
 		return null;
 	}
+	
+	public int updateLiveSaving(int playerId,float amount)
+	{
+		Saving saving2 = savingService.findLivingSavingByPlayerId(playerId);
+		if (saving2!=null){
+			float newAmount = saving2.getAmount()+amount;
+			if (newAmount<0)
+				return RetMsg.MoneyNotEnough;
+			
+			saving2.setAmount(saving2.getAmount()+amount);
+			savingService.update(saving2);		
+			return RetMsg.OK;
+		}else {
+			return RetMsg.NoSavingData;
+		}
+	}	
 	
 	public void setSavingService(SavingService savingService) {
 		this.savingService = savingService;

@@ -48,11 +48,16 @@ public class StockService extends BaseService {
 		return true;
 	}
 	
-	public int add(Stock record)
+	public boolean add(Stock record)
 	{
-		stockMapper.insertSelective(record);
-		DBCommit();
-		return 0;
+		try {
+			stockMapper.insertSelective(record);
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}		
+		return true;
 	}
 	
 	public boolean update(Stock record)

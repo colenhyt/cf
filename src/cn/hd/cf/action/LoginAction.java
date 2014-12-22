@@ -8,6 +8,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import cn.hd.base.BaseAction;
 import cn.hd.cf.model.Init;
+import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Message;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
@@ -15,6 +16,7 @@ import cn.hd.cf.model.Signindata;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.InitdataService;
+import cn.hd.cf.service.InsureService;
 import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.service.SavingService;
 import cn.hd.cf.service.SavingdataService;
@@ -29,6 +31,14 @@ public class LoginAction extends BaseAction {
 	private PlayerWithBLOBs player;
 	private PlayerService playerService;
 	private SavingService savingService;
+	private InsureService insureService;
+	public InsureService getInsureService() {
+		return insureService;
+	}
+
+	public void setInsureService(InsureService insureService) {
+		this.insureService = insureService;
+	}
 	private StockService stockService;
 	public StockService getStockService() {
 		return stockService;
@@ -82,7 +92,7 @@ public class LoginAction extends BaseAction {
 
 	public LoginAction(){
 		init("playerService","signindataService","toplistService","savingService","initdataService"
-				,"stockService","savingdataService");
+				,"insureService","stockService","savingdataService");
 		EventManager.getInstance().start();
 	}
 	
@@ -120,27 +130,28 @@ public class LoginAction extends BaseAction {
 		playerBlob.setCreatetime(time);
 		String pwd = StringUtil.getRandomString(10);
 		playerBlob.setPwd(MD5.MD5(pwd));
-		int ret = playerService.add(playerBlob);
-		
-		if (ret==0){
-			//活期存款:
-			if (init!=null&&init.getMoney()>0){
-				Saving savingCfg = savingdataService.findSaving((byte)0);
-				Saving saving = new Saving();
-				saving.setName(savingCfg.getName());
-				saving.setPeriod(savingCfg.getPeriod());
-				saving.setRate(savingCfg.getRate());
-				saving.setType(savingCfg.getType());
-				saving.setPlayerid(playerBlob.getPlayerid());
-				saving.setAmount(Float.valueOf(init.getMoney().intValue()));
-				saving.setCreatetime(time);
-				savingService.add(saving);
-			}
-			
-			JSONObject obj = JSONObject.fromObject(playerBlob);
-			System.out.println("register player: "+obj.toString());
-			write(obj.toString(),"utf-8");
+		boolean ret = playerService.add(playerBlob);
+		if (ret==false){
+			super.writeMsg(RetMsg.SQLExecuteError);
+			return null;
 		}
+		//活期存款:
+		if (init!=null&&init.getMoney()>0){
+			Saving savingCfg = savingdataService.findSaving((byte)0);
+			Saving saving = new Saving();
+			saving.setName(savingCfg.getName());
+			saving.setPeriod(savingCfg.getPeriod());
+			saving.setRate(savingCfg.getRate());
+			saving.setType(savingCfg.getType());
+			saving.setPlayerid(playerBlob.getPlayerid());
+			saving.setAmount(Float.valueOf(init.getMoney().intValue()));
+			saving.setCreatetime(time);
+			savingService.add(saving);
+		}
+		
+		JSONObject obj = JSONObject.fromObject(playerBlob);
+		System.out.println("register player: "+obj.toString());
+		write(obj.toString(),"utf-8");
 		return null;
 	}
 	
@@ -156,16 +167,17 @@ public class LoginAction extends BaseAction {
 		JSONArray  jsonSaving = JSONArray.fromObject(savings);
 		playerBlob.setSaving(jsonSaving.toString());
 		List<Stock> stocks = stockService.findByPlayerId(player.getPlayerid());
-		if (stocks.size()>0){
-			JSONArray  jsonStock = JSONArray.fromObject(stocks);
-			playerBlob.setStock(jsonStock.toString());			
-		}
+		JSONArray  jsonStock = JSONArray.fromObject(stocks);
+		playerBlob.setStock(jsonStock.toString());			
+		List<Insure> insures = insureService.findByPlayerId(player.getPlayerid());
+		jsonStock = JSONArray.fromObject(insures);
+		playerBlob.setInsure(jsonStock.toString());			
 		
 		//List<Integer> dataIds = findUpdateDataIds(player.getVersions());
 		//取需要更新的模块id
 		JSONObject obj = JSONObject.fromObject(playerBlob);
 		write(obj.toString(),"utf-8");
-		System.out.println("player("+obj.toString()+") login success");
+		System.out.println("player("+player.getPlayername()+") login success");
 		return null;
 	}
 	

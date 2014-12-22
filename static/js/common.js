@@ -192,6 +192,44 @@ Datamgr.prototype = {
 		}
 		return item;
 	},	
+	
+	confirmBuy:function(id,qty){  
+		if (qty==0){
+		    g_msg.open2(this.cname+"购买","购买份数不能为零!");
+		    return;
+		}
+		var strDesc = "确定";
+		var qtyStr = qty;
+		if (this.name=="stock"){
+			if (qty>0){
+				strDesc += "加持";
+			}else {
+				strDesc += "减持";
+				qtyStr = 0 - qtyStr;
+			}
+		}else
+			strDesc += "购买";
+			
+	   var item = this.findItem(id);
+	   if (qty>0){
+		    var needCash = item.price * qty;
+		    var cash = g_player.saving[0].amount;
+		    if (cash<needCash){
+			    g_msg.open("你的现金不够，购买失败!");
+			    return;
+		    }		
+	    }
+			
+		strDesc += " <span style='color:red'>"+qtyStr+"</span> 份 "+item.name+" 产品?";
+		var doPath = "g_"+this.name+".buy";
+		g_msg.open2(item.name+" "+this.cname,strDesc,doPath,id,qty);
+	},
+	
+	buy:function(id,qty){
+	    var ret = g_player.buyItem(this.name,id,qty);
+	    if (ret==true)
+	    	$('#'+this.tagdetailname).modal('hide');
+	},
 }
 
 Datamgr.prototype.constructor = Datamgr;

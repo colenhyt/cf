@@ -7,6 +7,7 @@ var g_game;
 var g_db;
 
 var Page_Top = 0;
+var PageDetail_Top = 0;
 
 var Scene_Width = 640;
 var Scene_Height = 1280;
