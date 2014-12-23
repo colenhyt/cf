@@ -56,13 +56,16 @@ public class QuotedataService extends BaseService {
 	}
 	
 	public void addNewQuote(int stockId,float newPrice){
-		Map<Integer,Quotedata> quoteM = getQuoteMap();
-		Quotedata quotedata = quoteM.get(Integer.valueOf(stockId));
-		String jsonString = new String(quotedata.getData());
-		JSONArray arrayStrings = JSONArray.fromObject(jsonString);
-		if (arrayStrings.size()>0){		
-			
-		}
+//		Map<Integer,Quotedata> quoteM = getQuoteMap();
+//		Quotedata quotedata = quoteM.get(Integer.valueOf(stockId));
+//		if (quotedata!=null){
+//			String jsonString = new String(quotedata.getData());
+//			JSONArray arrayStrings = JSONArray.fromObject(jsonString);
+//			if (arrayStrings.size()>0){		
+//				
+//			}			
+//		}
+
 	}
 	
 	public boolean add(Quotedata record)

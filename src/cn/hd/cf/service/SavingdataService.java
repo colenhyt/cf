@@ -40,13 +40,13 @@ public class SavingdataService extends BaseService {
 		return null;
 	}
 	
-	public Saving findSaving(byte type){
+	public Saving findSaving(int id){
 		try {
 			Savingdata data = findActive();
 			String str = new String(data.getData(),"utf-8");
 			List<Saving> list = jsonToBeanList(str, Saving.class);
 			for (int i=0;i<list.size();i++){
-				if (list.get(i).getType()==type)
+				if (list.get(i).getId()==id)
 					return list.get(i);
 			}
 		} catch (UnsupportedEncodingException e) {

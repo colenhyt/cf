@@ -28,21 +28,21 @@ Saving.prototype.showDetail = function(id){
         
     var dftAmount = 1000;
     var dftProfit = dftAmount * (1+item.rate/100);
-	var content =      "        <div style='margin: auto;text-align:center;'>"
+	var content =      "        <div style='margin-top:-10px;text-align:center;'>"
  content += "        <div class='cpgapedetail_h2'>"+item.name+"存款"
 	content += "<span class='cfpanel_text right'>存款 </span></div>"
-	content += "<img src='static/img/pop_line.png'>"
+	content += "<img src='static/img/pop_line.png' class='cf_line'>"
  content += "           <div style='margin-top:10px;margin-bottom:10px;height:150px'>  "
  content += "        <table id='toplist1_tab'>"
  content += "           <thead>"
  content += "             <tr>"
  content += "               <td>利率: </td>"
- content += "               <td colspan='3' style='text-align:left'>"+item.rate+"</td>"
+ content += "               <td colspan='3' style='text-align:left'>"+item.rate+"%</td>"
 content += "              </tr>"
  content += "             <tr>"
  content += "               <td>存入:</td>"
  content += "               <td><input type='button' class='cf_count' onclick='g_saving.countBuy("+item.id+",-1000)'></td>"
- content += "               <td><input type='text' id='saving_count' value='1000' style='width:220px;text-align:center;height:58px;font-size:32px'></td>"
+ content += "               <td><input type='text' id='saving_amount' value='1000' style='width:220px;text-align:center;height:58px;font-size:32px'></td>"
  content += "               <td><input type='button' class='cf_count add' onclick='g_saving.countBuy("+item.id+",1000)'></td>"
 content += "              </tr>"
 content += "             <tr>"
@@ -65,7 +65,7 @@ content += "          </table>     "
 }
 
 Saving.prototype.countBuy = function(id,count){
-    var tag = document.getElementById('saving_count');
+    var tag = document.getElementById('saving_amount');
     var currCount = parseInt(tag.value);
     if (currCount+count<=0) {
 	currCount = 1;
@@ -83,7 +83,18 @@ Saving.prototype.countBuy = function(id,count){
 }
 
 Saving.prototype.buy = function(id){
-alert(id);
+   var item = this.findItem(id);
+   if (item==null) return;
+   
+    var tag = document.getElementById('saving_amount');
+    var amount = parseInt(tag.value);
+	var ret = g_player.buyItem(this.name,id,1,amount);
+    if (ret==true){
+    	//刷新list 页面:
+    	g_bank.buildPage(0);
+    	//$('#'+this.tagdetailname).modal('hide');
+    }    
+
 }
 
 Saving.prototype.add = function(playerid,id,amount) {

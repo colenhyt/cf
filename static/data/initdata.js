@@ -1,3 +1,3 @@
 var data_initdata=[
-{"money":2000,"exp":2000},
+{"level":1,"money":200000,"exp":2000},
 ]

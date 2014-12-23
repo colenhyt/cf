@@ -38,6 +38,22 @@ public class StockService extends BaseService {
 		return stockMapper.selectByExample(example);
 	}
 	
+	public boolean removeStock(int playerId,int stockId,int qty)
+	{
+		StockExample example = new StockExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
+		criteria.andQtyEqualTo(qty);
+		criteria.andItemidEqualTo(stockId);
+		List<Stock> list = stockMapper.selectByExample(example);
+		System.out.println("dfad:"+qty);
+		if (list.size()>0){
+			stockMapper.deleteByPrimaryKey(list.get(0).getId());
+			return true;
+		}
+		return false;
+	}
+	
 	public boolean updateStocks(List<Stock> stocks)
 	{
 		for (int i=0;i<stocks.size();i++){

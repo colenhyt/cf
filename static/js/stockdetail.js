@@ -71,7 +71,7 @@ Stockdetail.prototype.drawQuote = function(stockName,divName){
 			border:{
 					enable:false,
 				 },
-			background_color: "#275864",
+			background_color: "#D9E7EA",
 			tip:{
 				enable:true,
 				shadow:true,
@@ -85,7 +85,7 @@ Stockdetail.prototype.drawQuote = function(stockName,divName){
 			},
 			crosshair:{
 				enable:true,
-				line_color:'#ec4646'
+				line_color:'#311212'
 			},			
 			sub_option : {
 				smooth : false,
@@ -99,7 +99,7 @@ Stockdetail.prototype.drawQuote = function(stockName,divName){
 				height:130,
 				striped_factor : 0.18,
 				axis:{
-					color:'#9d987a',
+					color:'#311212',
 					width:[0,0,1,1]
 				},
 				gridHStyle:{
@@ -117,11 +117,11 @@ Stockdetail.prototype.drawQuote = function(stockName,divName){
 					 scale_space:10,
 					 scale_size:2,
 					 scale_enable : false,
-					 label : {color:'#9d987a',font : '微软雅黑',fontsize:15,fontweight:600},
+					 label : {color:'#311212',font : '微软雅黑',fontsize:15,fontweight:600},
 					 scale_color:'#9f9f9f'
 				},{
 					 position:'bottom',	
-					 label : {color:'#9d987a',font : '微软雅黑',fontsize:15,fontweight:600},
+					 label : {color:'#311212',font : '微软雅黑',fontsize:15,fontweight:600},
 					 scale_enable : false,
 					 labels:labels
 				}]

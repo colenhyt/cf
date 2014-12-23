@@ -189,7 +189,7 @@ Datamgr.prototype = {
 				lastPanel.style.background = "url('static/img/panel_bg.png') no-repeat";
 		}
 		var dd = document.getElementById(tname+id);
-		dd.style.background = Panel_ClickColor;  
+		dd.style.background = "url('static/img/panel_click.png') no-repeat";  
 		this.lastClickId = id;  
     },
     
@@ -212,12 +212,37 @@ Datamgr.prototype = {
 				qty = tag.value;
 		}
 		if (qty==0){
-		    g_msg.open2(this.cname+"购买","购买份数不能为零!");
+		    g_msg.open2(this.cname+"购买","数量不能为零!");
 		    return;
 		}
+			
+	   var item = this.findItem(id);
+	   
+	   if (qty>0){
+		    var needCash = item.price * qty;
+		    var cash = g_player.saving[0].amount;
+		    if (cash<needCash){
+			    g_msg.open("你的现金不够，购买失败!");
+			    return;
+		    }		
+	    }else {
+	    	if (this.name=="stock"){
+			   var pitem = g_player.getItemData(this.name,item);
+			   if (pitem.qty<(0-qty)){
+			   		g_msg.open("持有数量少于你抛售数量!");	
+			   		return;
+			   }
+	    	}else {
+	    		return;
+	    	}
+	    	
+	    }
+
+		var strUnit = "份";
 		var strDesc = "确定";
 		var qtyStr = qty;
 		if (this.name=="stock"){
+			strUnit = "股";
 			if (qty>0){
 				strDesc += "加持";
 			}else {
@@ -227,17 +252,7 @@ Datamgr.prototype = {
 		}else
 			strDesc += "购买";
 			
-	   var item = this.findItem(id);
-	   if (qty>0){
-		    var needCash = item.price * qty;
-		    var cash = g_player.saving[0].amount;
-		    if (cash<needCash){
-			    g_msg.open("你的现金不够，购买失败!");
-			    return;
-		    }		
-	    }
-			
-		strDesc += " <span style='color:red'>"+qtyStr+"</span> 份 "+item.name+" 产品?";
+		strDesc += " <span style='color:red'>"+qtyStr+"</span> "+strUnit+""+item.name+"产品?";
 		var doPath = "g_"+this.name+".buy";
 		g_msg.open2(item.name+" "+this.cname,strDesc,doPath,id,qty);
 	},
@@ -246,7 +261,10 @@ Datamgr.prototype = {
 	    var ret = g_player.buyItem(this.name,id,qty);
 	    if (ret==true){
 	    	//刷新detail 页面:
-	    	this.showDetail(id,true);
+	    	if (this.name=='insure')
+	    		this.closeDetail();
+	    	else
+	    		this.showDetail(id,true);
 	    	
 	    	//刷新list 页面:
 	    	this.buildPage(0);

@@ -48,7 +48,7 @@ Stock.prototype.buildPage = function(page)
 				psColor = "red"
 		     content += "<div class='cfpanel' ID='"+this.name+"_d"+item.id+"' onclick='g_stock.showDetail("+item.id+")'>"
 		     content += "<span class='cfpanel_title'>"+item.name+"</span>"
-		     content += "<span class='cfpanel_text right'>目前持有<span style='color:yellow'> "+pitem.qty+"</span> 手</span>"
+		     content += "<span class='cfpanel_text right'>目前持有<span style='color:yellow'> "+pitem.qty/100+"</span> 手</span>"
 			 content += "	<div>"
 			 content += "<span class='cfpanel_text'>当前价格: ￥"+ForDight(item.price)+"</span>"
 			 content += "<span class='cfpanel_text right'>总盈亏: <span style='color:"+psColor+"'>"+ForDight(pitem.profit)+"</span></span>"
@@ -84,6 +84,8 @@ Stock.prototype.showDetail = function(id,isflush){
    	 strPro = "盈亏:<span style='color:"+psColor+"'>"+ForDight(pitem.profit)+"</span>";
    }
    
+    var amount = g_player.saving[0].amount;
+    var canBuyQty = parseInt(amount/(item.price*100));
 	var content =      "        <div class='cfpanel_text'><div class='cpgapedetail_h2'>"+item.name
 	content += "<span class='cfpanel_text right'>"+strPro+" </span>"
 	content += "</div>"
@@ -98,17 +100,17 @@ Stock.prototype.showDetail = function(id,isflush){
 	 content += "               <td>买入价</td>"
 	 content += "               <td>"+ForDight(item.price)+"</td>"
 	 content += "               <td>单位</td>"
-	 content += "               <td>"+item.unit+"</td>"
+	 content += "               <td>"+item.unit+"股/手</td>"
 	content += "              </tr>"
 	 content += "             <tr>"
 	 content += "               <td>持有:</td>"
-	 content += "               <td>"+pitem.qty+" 手</td>"
+	 content += "               <td>"+pitem.qty/100+" 手</td>"
 	 content += "               <td>可买入:</td>"
-	 content += "               <td>"+item.unit+"手</td>"
+	 content += "               <td>"+canBuyQty+"手</td>"
 	content += "              </tr>"
 	 content += "             <tr>"
-	 content += "               <td colspan='2'><input type='button' class='cf_bt_green' value='减持100股' onclick='g_stock.confirmBuy("+item.id+",-1)'></td>"
-	 content += "               <td colspan='2'><input type='button' class='cf_bt_green right' value='加持100股' onclick='g_stock.confirmBuy("+item.id+",1)'></td>"
+	 content += "               <td colspan='2'><input type='button' class='cf_bt_green' value='减持100股' onclick='g_stock.confirmBuy("+item.id+",-100)'></td>"
+	 content += "               <td colspan='2'><input type='button' class='cf_bt_green right' value='加持100股' onclick='g_stock.confirmBuy("+item.id+",100)'></td>"
 	content += "              </tr>"
 	 content += "             <tr>"
 	 content += "               <td colspan='2' style='float:right'><img src='static/img/icon_tip.png' style='width:20px;height:17px'></td>"

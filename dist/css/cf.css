@@ -6,7 +6,7 @@ body {
 }
 
 td {
-font-size:20px;
+font-size:28px;
   font-weight: bold;
 }
 
@@ -92,7 +92,7 @@ height:234px;
   outline: none;
   transition:all 0.3s;
   width:580px;
-  height:654px;
+  height:684px;
   background:url('../../static/img/pop_big.png') no-repeat;
   -moz-background-size:100% 100%;  
     background-size:100% 100%;  
@@ -113,7 +113,7 @@ position:relative;
 float:left;
 padding-right:10px;
 line-weight:23px;
-font-size:20px;
+font-size:28px;
 }
 
 .cfpanel_text.right{
@@ -124,7 +124,7 @@ float:right;
 position:relative;
 text-align:center;
 line-weight:23px;
-font-size:20px;
+font-size:28px;
 height:220px;
 }
 
@@ -186,12 +186,44 @@ margin-bottom:-5px;
 font-size:35px;
 }
 
+.cfprop {
+width:190px;
+height:64px;
+padding-left:43px;
+color:#000000;
+}
+.cfprop.p1 {
+background:url('../../static/img/prop_bg1.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
+.cfprop.p2 {
+background:url('../../static/img/prop_bg2.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
+.cfprop.p3 {
+background:url('../../static/img/prop_bg3.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
+.cfprop.p4 {
+background:url('../../static/img/prop_bg4.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
+.cfprop.p5 {
+background:url('../../static/img/prop_bg5.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
 .cfmsg_h2 {
-margin-top:5px;
+margin-top:-5px;
 }
 
 .cf_line {
 width:530px;
+height:2px;
 }
 
 .cf_title_bg {

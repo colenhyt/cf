@@ -69,18 +69,20 @@ Bank.prototype.showSaving = function(playerId,page){
 		return;
 	}
 	
-	var data = g_player.getTotal(player);
-	var total = data.saving;
+	var data = g_player.getTotal(g_player);
+	var total = data.saving+data.saving2;
 	
+	var sdata = store.get(g_saving.name);
+	var rate = sdata[0].rate;
 	var content = "<div class='cfpanel bank'>"
 	content +=	"<div> 活期存款: <span style='color:yellow'> ¥"+data.saving+"</span></div>"
-	content +=	"<div> 定期存款: <span style='color:yellow'> ¥"+data.saving+"</span></div>"
+	content +=	"<div> 定期存款: <span style='color:yellow'> ¥"+data.saving2+"</span></div>"
 	content +=	"<div> 存款总额: <span style='color:yellow'> ¥"+total+"</span></div>"
     content +=            " </div>"
     content +=	"</div>"
-    content +=            " <div class='cf-bank-feeling'> <span>每天</span> 8:00AM~9:00PM"
-    content +=            "     <div>每小时结算利息<div>  "
-    content +=            "     <div><span>当前利率:</span><div>  "
+    content +=            " <div class='cf-bank-feeling'>"
+    content +=            "     <div>每2小时结算利息<div>  "
+    content +=            "     <div><span>当前活期利率: "+rate+"% </span><div>  "
     content +=       " </div>"
     content +=            " </div>"
 
@@ -98,20 +100,21 @@ Bank.prototype.showSaving2 = function(playerId,page){
 		  content += "<div class='cfpanel' ID='stock_d1'><div class='panel-body'>没有存款产品</div>"
       content += "</div>"
 	}else {
-		var start = page* this.pageCount;
+		var start = page* this.pageCount+1;
 		var end = (page+1)* this.pageCount;
 		if (end>tdata.length)
 			end = tdata.length;
 		  content += "<div class='cfpanel_body'>"
 		for (var i=start;i<end;i++){
 			var item = tdata[i];
-			var pitem = g_player.getItemData("saving",item);
+			var pitem = g_player.getItemData(g_saving.name,item);
+			pitem.profit = 0;
 			var psColor = "red";
 		     content += "<div class='cfpanel' ID='"+this.name+"_d"+item.id+"' onclick='g_bank.showDetail("+item.id+")'>"
 		     content += "<span class='cfpanel_title'>"+item.name+"</span>"
 		     content += "<span class='cfpanel_text right'>存款  <span style='color:yellow'> "+pitem.amount+"</span> 元</span>"
 			 content += "	<div>"
-			 content += "<span class='cfpanel_text'>利率: ￥"+ForDight(item.rate)+"</span>"
+			 content += "<span class='cfpanel_text'>利率: "+ForDight(item.rate)+"%</span>"
 			 content += "<span class='cfpanel_text right'>已获得利息: <span style='color:"+psColor+"'>"+ForDight(pitem.profit)+"</span> 元</span>"
 			content += "     </div>"
       		content += "</div>"

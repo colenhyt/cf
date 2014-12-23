@@ -88,15 +88,12 @@ Insure.prototype.clickDetail = function(id,type){
 }
 
 Insure.prototype.showDetail = function(title,desc,okCallback,cbParam1,cbParam2,cbParam3,confmText){
-	var content =      "        <div style='margin: auto;text-align:center;'>"
+	var content =      "        <div style='margin-top:-10px;text-align:center;'>"
 	if (confmText==null)
 		confmText = "确认";
 	content += "<div class='cfmsg_h2'>"+title+"</div>"
 	content += "<img src='static/img/pop_line.png'>"
 	content += "            <div class='cfmsg_text'>"+desc+"</div>"
-	if (okCallback==null){
-		content += "          <button class='cf_bt' data-dismiss='modal'>确认</button>"	
-	}else {
 		content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>"
 		if (cbParam1==null)
 			cbParam1 = "1";
@@ -105,12 +102,15 @@ Insure.prototype.showDetail = function(title,desc,okCallback,cbParam1,cbParam2,c
 		if (cbParam3==null)
 			cbParam3 = "1";
 		content += "          <button class='cf_bt' onclick='"+okCallback+"("+cbParam1+","+cbParam2+","+cbParam3+")'>"+confmText+"</button>"
-	}
 		content += "             </div>"
 		var tag = document.getElementById(this.pagedetailname);
 		tag.innerHTML = content;
 		
-	$('#'+this.tagdetailname).modal({position:120,show: true});  
+	$('#'+this.tagdetailname).modal({position:PageDetail_Top,show: true});  
+}
+
+Insure.prototype.closeDetail = function(id){ 
+	$('#'+this.tagdetailname).modal('hide');  
 }
 
 Insure.prototype.show_insuredetail = function(id){    
@@ -124,10 +124,10 @@ Insure.prototype.show_insuredetail = function(id){
 	 content += "           <div>  "
 	 content += "        <table id='toplist1_tab'>"
 	 content += "             <tr>"
-	 content += "               <td class='td-c-name'>价格</td>"
-	 content += "               <td class='td-c-value'>"+item.price+"</td>"
-	 content += "               <td class='td-c-name'>周期</td>"
-	 content += "               <td class='td-c-value'>"+item.period+"</td>"
+	 content += "               <td class='td-c-name'>价格: </td>"
+	 content += "               <td class='td-c-value'>￥"+item.price+"</td>"
+	 content += "               <td class='td-c-name'> 周期: </td>"
+	 content += "               <td class='td-c-value'>"+item.period+"天</td>"
 	content += "              </tr>"
 	content += "          </table>     "
 	content += "           </div>  "
@@ -151,12 +151,12 @@ Insure.prototype.show_finandetail = function(id){
  content += "        <table id='toplist1_tab'>"
  content += "           <thead>"
  content += "             <tr>"
- content += "               <td class='td-c-name'>价格</td>"
- content += "               <td class='td-c-value'>"+item.price+"</td>"
- content += "               <td class='td-c-name'>收益</td>"
+ content += "               <td class='td-c-name'>价格:</td>"
+ content += "               <td class='td-c-value'>￥ "+item.price+"</td>"
+ content += "               <td class='td-c-name'> 收益</td>"
  content += "               <td class='td-c-value'>"+item.profit+"</td>"
- content += "               <td class='td-c-name'>周期</td>"
- content += "               <td class='td-c-value'>"+item.period+"</td>"
+ content += "               <td class='td-c-name'> 周期</td>"
+ content += "               <td class='td-c-value'>"+item.period+"天</td>"
 content += "              </tr>"
  content += "             <tr>"
  content += "               <td colspan='2' class='td-c-name'><input type='button' class='cf_count' onclick='g_insure.countBuy(-1)'></td>"

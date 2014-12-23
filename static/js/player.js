@@ -111,17 +111,17 @@ Player.prototype.buildPage = function(){
     content += " </div>"
     
 	var data = g_player.getTotal(this);
-	var total = data.saving+data.insure+data.stock;
+	var total = ForDight(data.saving+data.insure+data.stock);
     
-	content += "<div>"
+	content += "<div style='margin-top:10px;margin-left:-10px'>"
 	content += "<table>"
 	content += " <tr>"
-	content += "  <td width='240px'>"
-	content +=	"银行存款:<span>¥0</span><br>"
-	content +=	"投资股票:<span>¥"+data.stock+"</span><br>"
-	content +=	"投资保险:<span>¥"+data.insure+"</span><br>"
-	content +=	"活期存款:<span>¥"+data.saving+"</span><br>"
-	content +=	"总资产值:<span>¥"+total+"</span></div>"
+	content += "  <td style='font-size:20px;width:200px;vertical-align:top;'>"
+	content +=	"<div class='cfprop p1'>定期存款<br>"+data.saving2+"</div>"
+	content +=	"<div class='cfprop p2'>投资股票<br>"+data.stock+"</div>"
+	content +=	"<div class='cfprop p3'>投资保险<br>"+data.insure+"</div>"
+	content +=	"<div class='cfprop p4'>活期存款<br>"+data.saving+"</div>"
+	content +=	"<div class='cfprop p5'>总资产值<br>"+total+"</div>"
 	content += "</td>"
 	content += "   <td>"
 	content += "<div id='"+this.graphName+"' style='margin-left:-10px'></div>"
@@ -139,8 +139,9 @@ Player.prototype.buildPage = function(){
 
 Player.prototype.showPie = function(data,divName){
 	var data = [
-	        	{name : '存款',value : data.saving,color:'#9d4a4a'},
-	        	{name : '保险',value : data.insure,color:'#97b3bc'},
+	        	{name : '活期存款',value : data.saving,color:'#9d4a4a'},
+	        	{name : '定期存款',value : data.saving2,color:'#97b3bc'},
+	        	{name : '保险',value : data.insure,color:'#9d4a33'},
 	        	{name : '股票',value : data.stock,color:'#5d7f97'},
         	];
 	
@@ -161,16 +162,20 @@ Player.prototype.showPie = function(data,divName){
 		background_color: "#275868",
 		showpercent:true,
 		decimalsnum:2,
-		width : 300,
-		height : 300,
+		width : 350,
+		height : 400,
 		radius:140
 	}).draw();	
 }
 
 Player.prototype.getTotal = function(data) {
 	var saving = 0;
-	for (var i=0;i<data.saving.length;i++){
-		saving += data.saving[i].amount;
+	if (data.saving.length>0)
+		saving = data.saving[0].amount;
+		
+	var saving2 = 0;
+	for (var i=1;i<data.saving.length;i++){
+		saving2 += data.saving[i].amount;
 	}
 	var insure = 0;
 	for (var i=0;i<data.insure.length;i++){
@@ -180,12 +185,12 @@ Player.prototype.getTotal = function(data) {
 	for (var i=0;i<data.stock.length;i++){
 		stock += data.stock[i].amount;
 	}
-	return {saving:saving,insure:insure,stock:stock};
+	return {saving2:ForDight(saving2),saving:ForDight(saving),insure:ForDight(insure),stock:ForDight(stock)};
 }
 
 Player.prototype.flushPageview = function() {
     var tag = document.getElementById("tagcash");
-    tag.innerHTML = this.saving[0].amount;	
+    tag.innerHTML = ForDight(this.saving[0].amount);	
     tag.style.display = "";
     tag = document.getElementById("tagcard");
     tag.innerHTML = this.data.exp;	
@@ -311,7 +316,7 @@ Player.prototype.getItem = function(tname,id){
 		item = g_insure.findItem(id);
 	}else if (tname=="stock"){
 		item = g_stock.findItem(id);
-	}else if (tname=="stock"){
+	}else if (tname=="saving"){
 		item = g_saving.findItem(id);
 	}
 	return item;
@@ -332,13 +337,14 @@ Player.prototype.getItemData = function(tname,item) {
     return {profit:profit,avgPrice:avgPrice,qty:qty,amount:amount};
 }
 
-Player.prototype.buyItem = function(tname,id,qty){
-	if (id<=0||qty<=0) return false;
+Player.prototype.buyItem = function(tname,id,qty,amount2){
+	if (id<=0||qty==0) return false;
 	
 	var tdata = this.getData(tname);
 	var item = this.getItem(tname,id)
 		
 	if (item==null) return false;
+	
 	
 	var cash = this.saving[0].amount;
 	var amount = item.price* qty;
@@ -346,6 +352,9 @@ Player.prototype.buyItem = function(tname,id,qty){
 		 g_msg.open('你的钱不够');
 		return;
 	}
+	if (amount2!=null)
+		amount = amount2;
+		
 	var tgoods = {itemid:item.id,playerid:this.data.playerid,
 			qty:qty,price:item.price,amount:amount,
 			createtime:Date.parse(new Date())};
@@ -354,7 +363,7 @@ Player.prototype.buyItem = function(tname,id,qty){
 	var ret = myajax(tname+"_add",dataParam);
 	if (ret==null||ret.code!=0)
 	{
-		g_msg.open("购买失败:name"+tname+"code="+ret.code);
+		g_msg.open("购买失败:"+ERR_MSG[ret.code]);
 		return;
 	}
 	
@@ -364,7 +373,11 @@ Player.prototype.buyItem = function(tname,id,qty){
 	var pupdate = {"cash":cash};
 	this.updateData(pupdate);
 	g_quest.onBuyItem(tname,item,qty);
-	g_msg.open("成功购买:"+item.name);
+	if (qty>0)
+		g_msg.open("成功购买:"+item.name);
+	else
+		g_msg.open("成功抛售:"+item.name);
+		
 	return true;
 		
 }

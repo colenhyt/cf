@@ -57,13 +57,23 @@ public class StockAction extends SavingAction {
 	
 	
 	public String add(){
+		if (stock.getQty()==0){
+			return null;
+		}
 		float inAmount = 0 - stock.getAmount();
 		//先扣钱:
 		int ret = super.updateLiveSaving(stock.getPlayerid(), inAmount);
 		if (ret==0){
-			stock.setCreatetime(new Date());
-			boolean add = stockService.add(stock);	
-			if (add==false){
+			boolean exec = false;	
+			if (stock.getQty()>0){
+				stock.setCreatetime(new Date());
+				exec = stockService.add(stock);	
+			}else {
+				System.out.println("抛售股票");
+				int qq = (0 - stock.getQty());
+				exec = stockService.removeStock(stock.getPlayerid(), stock.getItemid(), qq);
+			}
+			if (exec==false){
 				//钱放回去:
 				super.updateLiveSaving(stock.getPlayerid(),  stock.getAmount());
 				ret = RetMsg.MSG_SQLExecuteError;

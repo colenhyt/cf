@@ -1,13 +1,32 @@
 package cn.hd.cf.action;
 
+import java.util.Date;
 import java.util.List;
 
 import cn.hd.base.BaseAction;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.service.SavingService;
+import cn.hd.cf.service.SavingdataService;
 
 public class SavingAction extends BaseAction {
 	public Saving		saving;
+	private SavingdataService savingdataService;
+	public SavingdataService getSavingdataService() {
+		return savingdataService;
+	}
+
+	public void setSavingdataService(SavingdataService savingdataService) {
+		this.savingdataService = savingdataService;
+	}
+
+	public Saving getSaving() {
+		return saving;
+	}
+
+	public void setSaving(Saving saving) {
+		this.saving = saving;
+	}
+
 	private SavingService savingService;
 	
 	public SavingService getSavingService() {
@@ -16,7 +35,28 @@ public class SavingAction extends BaseAction {
 
 	public String add()
 	{
-		savingService.add(saving);		
+		if (saving.getItemid()==1){
+			return null;
+		}
+		float inAmount = 0 - saving.getAmount();
+		//先扣钱:
+		int ret = updateLiveSaving(saving.getPlayerid(), inAmount);
+		if (ret!=RetMsg.MSG_OK){
+			super.writeMsg(ret);
+			return null;
+		}
+		Saving savingCfg = savingdataService.findSaving(saving.getItemid());
+		saving.setCreatetime(new Date());
+		saving.setRate(savingCfg.getRate());
+		saving.setType(savingCfg.getType());
+		saving.setPeriod(savingCfg.getPeriod());
+		boolean exec = savingService.add(saving);		
+		if (exec==false){
+			updateLiveSaving(saving.getPlayerid(),  saving.getAmount());
+			super.writeMsg(RetMsg.MSG_SQLExecuteError);
+		}else
+			super.writeMsg(RetMsg.MSG_OK);
+			
 		return null;
 	}
 	
@@ -50,7 +90,7 @@ public class SavingAction extends BaseAction {
 	}
 
 	public SavingAction(){
-		init("savingService");
+		init("savingService","savingdataService");
 	}
 	
 }

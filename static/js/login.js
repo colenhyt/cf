@@ -179,8 +179,8 @@ Login.prototype.login = function(){
 					g_player.data.quest = eval ("(" + obj.quest + ")");
 				if (obj.saving)
 					g_player.saving = eval ("(" + obj.saving + ")");
-				if (g_player.stock)
-					this.stock = eval ("(" + obj.stock + ")");
+				if (obj.stock)
+					g_player.stock = eval ("(" + obj.stock + ")");
 				if (obj.insure)
 					g_player.insure = eval ("(" + obj.insure + ")");
 			}

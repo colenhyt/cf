@@ -137,11 +137,12 @@ public class LoginAction extends BaseAction {
 		}
 		//活期存款:
 		if (init!=null&&init.getMoney()>0){
-			Saving savingCfg = savingdataService.findSaving((byte)0);
+			Saving savingCfg = savingdataService.findSaving(1);
 			Saving saving = new Saving();
 			saving.setName(savingCfg.getName());
 			saving.setPeriod(savingCfg.getPeriod());
 			saving.setRate(savingCfg.getRate());
+			saving.setItemid(1);
 			saving.setType(savingCfg.getType());
 			saving.setPlayerid(playerBlob.getPlayerid());
 			saving.setAmount(Float.valueOf(init.getMoney().intValue()));

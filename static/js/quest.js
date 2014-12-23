@@ -39,16 +39,16 @@ Quest.prototype.buildPage = function(page)
 			end = quest.length;	
 		  content += "<div class='cfpanel_body'>"
 		for (var i=start;i< end;i++){
-			var q = quest[i];
+			var pitem = quest[i];
 			var item;
 			for (var j=0;j<tdata.length;j++){
-				if (tdata[j].id==q.id){
+				if (tdata[j].id==pitem.id){
 					item = tdata[j];
 					break;
 				}
 			}
 			var img = "notdone.png";
-			if (item!=null&&item.status==QUEST_STATUS.DONE)	
+			if (item!=null&&pitem.status==QUEST_STATUS.DONE)	
 				img = "done.png";		
 		  	content += "<div class='cfpanel' ID='"+this.name+"_d"+item.id+"' onclick='g_quest.showDetail("+item.id+")'>"
 		     content += "<h2 class='cf_h'>"+item.name+"</h2>"
@@ -56,8 +56,8 @@ Quest.prototype.buildPage = function(page)
 			 content += "           <thead>"
 			 content += "             <tr>"
 	//		 content += "               <td class='td-c-name'>描述</td>"
-			 content += "               <td class='td-c-value'>"+item.descs+"</td>"
-			 content += "               <td class='td-c-value'><img style='width:78px;height:27px' src='static/img/"+img+"'></td>"
+			 content += "               <td style='width:450px'>"+item.descs.substring(0,15)+"</td>"
+			 content += "               <td style='text-align:right'><img style='width:78px;height:27px;' src='static/img/"+img+"'></td>"
 //			 content += "               <td class='td-c-name'>条件</td>"
 //			 content += "               <td class='td-c-value'>"+item.need+"</td>"
 //			 content += "               <td class='td-c-name'>奖励</td>"
@@ -79,6 +79,7 @@ Quest.prototype.buildPage = function(page)
 Quest.prototype.showDetail = function(id){  
  	this.onPanelClick(id);
  	
+ 	return;
 	var tdata = store.get(this.name);
    var item = this.findItem(id);
    if (item==null) return;
