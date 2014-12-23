@@ -1,6 +1,7 @@
 // JavaScript Document
 Bank = function(){
 	this.name = "bank"
+    this.pageCount = 4;
 	this.tagname = "my"+this.name
     this.pagename = this.tagname+"page";
    this.pageheader = this.tagname+"header";
@@ -9,6 +10,12 @@ Bank = function(){
 Bank.prototype = new Datamgr();
 
 Bank.prototype.init = function(){
+ store.remove(this.name)
+	var tdata = store.get(this.name);
+	if (tdata==null)
+	{
+		store.set(this.name,data_savingdata);
+	} 
 	this.buildHTML2();
 }
 
@@ -49,14 +56,14 @@ Bank.prototype.showBank = function(playerId,page){
 	tagHeader.innerHTML = header;
 	
 	if (page==0){
-		this.showSaving(playerId);
+		this.showSaving(playerId,page);
 	}else
-		this.showSaving2(playerId);
+		this.showSaving2(playerId,page);
 
     $('#'+this.tagname).modal({position:Page_Top,show:true});       
 }
 
-Bank.prototype.showSaving = function(playerId){
+Bank.prototype.showSaving = function(playerId,page){
 	var player = g_player.find(playerId);
 	if (player==null){
 		return;
@@ -82,32 +89,46 @@ Bank.prototype.showSaving = function(playerId){
 
 }
 
-Bank.prototype.showSaving2 = function(playerId){
-	var player = g_player.find(playerId);
-	if (player==null){
-		return;
+Bank.prototype.showSaving2 = function(playerId,page){
+	page = 0;
+	
+	var tdata = store.get(this.name);
+	var content = 	"";
+	if (tdata.length<=0){
+		  content += "<div class='cfpanel' ID='stock_d1'><div class='panel-body'>没有存款产品</div>"
+      content += "</div>"
+	}else {
+		var start = page* this.pageCount;
+		var end = (page+1)* this.pageCount;
+		if (end>tdata.length)
+			end = tdata.length;
+		  content += "<div class='cfpanel_body'>"
+		for (var i=start;i<end;i++){
+			var item = tdata[i];
+			var pitem = g_player.getItemData("saving",item);
+			var psColor = "red";
+		     content += "<div class='cfpanel' ID='"+this.name+"_d"+item.id+"' onclick='g_bank.showDetail("+item.id+")'>"
+		     content += "<span class='cfpanel_title'>"+item.name+"</span>"
+		     content += "<span class='cfpanel_text right'>存款  <span style='color:yellow'> "+pitem.amount+"</span> 元</span>"
+			 content += "	<div>"
+			 content += "<span class='cfpanel_text'>利率: ￥"+ForDight(item.rate)+"</span>"
+			 content += "<span class='cfpanel_text right'>已获得利息: <span style='color:"+psColor+"'>"+ForDight(pitem.profit)+"</span> 元</span>"
+			content += "     </div>"
+      		content += "</div>"
+		}
+     		content += "</div>"
+		
+        content += this.buildPaging(page,tdata.length);
 	}
 	
-	var data = g_player.getTotal(player);
-	var total = data.saving+data.insure+data.stock;
-	
-	var content = "<div class='cfpanel bank'>"
-	content +=	"<div> 存款:<span>¥"+data.saving+"</span></div>"
-	content +=	"<div> 股票价值:<span>¥"+data.stock+"</span></div>"
-	content +=	"<div> 保险价值:<span>¥"+data.insure+"</span></div>"
-	content +=	"<div> 总资产值:<span>¥"+total+"</span></div>"
-	content +=	"<div> <img src='static/img/icon_toplist.png'>当前排名:<span>3</span></div>"
-    content +=            " </div>"
-    content +=	"</div>"
-    content +=            " <div class='cf-bank-feeling'> <span>每天</span> 8:00AM~9:00PM"
-    content +=            "     <div>每小时结算利息<div>  "
-    content +=            "     <div><span>当前利率:</span><div>  "
-    content +=       " </div>"
-    content +=            " </div>"
-
 	var tag = document.getElementById(this.pagename);
-	tag.innerHTML = content;	
+	tag.innerHTML = content;
+     
+}
 
+Bank.prototype.showDetail = function(id){
+	this.onPanelClick(id);
+	g_saving.showDetail(id);
 }
 
 var g_bank = new Bank();

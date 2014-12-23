@@ -297,7 +297,7 @@ Player.prototype.getData = function(tname){
 	}else if (tname=="stock"){
 		this.stock = this.stock?this.stock:[];
 		tdata = this.stock;
-	}else if (tname=="stock"){
+	}else if (tname=="saving"){
 		this.saving = this.saving?this.saving:[];
 		tdata = this.saving;
 	}
@@ -321,13 +321,15 @@ Player.prototype.getItemData = function(tname,item) {
     var profit = 0;
     var avgPrice = 0;
     var qty = 0;
-    var pstock = this.getDataMap(tname)[item.id];
-     if (pstock!=null) {
-		profit = pstock["amount"] - pstock["qty"]*item.price;
-		avgPrice = pstock["amount"]/pstock["qty"];
-		qty = pstock.qty;
+    var amount = 0;
+    var pitem = this.getDataMap(tname)[item.id];
+     if (pitem!=null) {
+		profit = pitem["amount"] - pitem["qty"]*item.price;
+		avgPrice = pitem["amount"]/pitem["qty"];
+		amount = pitem.amount;
+		qty = pitem.qty;
     }    
-    return {profit:profit,avgPrice:avgPrice,qty:qty};
+    return {profit:profit,avgPrice:avgPrice,qty:qty,amount:amount};
 }
 
 Player.prototype.buyItem = function(tname,id,qty){

@@ -21,84 +21,50 @@ Saving.prototype.init = function(){
     this.buildHTML();
 }
 
-Saving.prototype.buildPage = function(page)
-{
-	if (page<0)
-		return
-		
-	var tdata = store.get(this.name);
-	var content = 	"";
-	if (tdata.length<=0){
-		  content += "<div class='cfpanel' ID='saving_d1'><div class='panel-body'>没有产品</div>"
-      content += "</div>"
-	}else {
-		var start = page* this.pageCount;
-		var end = (page+1)* this.pageCount;
-		if (end>tdata.length)
-			end = tdata.length;
-		  content += "<div style='height:330px'>"
-		for (var i=start;i<end;i++){
-			var item = tdata[i];
-		  content += "<div class='cfpanel' ID='saving_d1' onclick='g_saving.showDetail("+item.id+")'>"
-		     content += "<h2 class='cf_h'>"+item.name+"</h2>"
-			 content += "        <table id='toplist1_tab' width='100%'>"
-			 content += "           <thead>"
-			 content += "             <tr>"
-			 content += "               <td>利率:￥"+item.rate+"</td>"
-			 content += "               <td class='td_right'>周期:"+item.period+"h</td>"
-			content += "              </tr>"
-			content += "            </thead>"
-			content += "          </table>"
-      		content += "</div>"
-		}
-   		content += "</div>"
-        
-        content += this.buildPaging(page,tdata.length);
-	}
-     
-	var tag = document.getElementById(this.pagename);
-	tag.innerHTML = content;
-	
-}
-
 Saving.prototype.showDetail = function(id){    
 	var tdata = store.get(this.name);
-   var item = tdata[id-1];
+   var item = this.findItem(id);
    if (item==null) return;
         
-var content =      "        <div><h2 style='margin-top:-5px;margin-bottom:-5px;text-align:center'>"+item.name+"</h2>"
-content += "<img src='static/img/pop_line.png'>"
- content += "            <div>购买保险</div>"
- content +=	"</div>"
- content += "           <div style='margin-top:10px;margin-bottom:30px;height:150px'>  "
+    var dftAmount = 1000;
+    var dftProfit = dftAmount * (1+item.rate/100);
+	var content =      "        <div style='margin: auto;text-align:center;'>"
+ content += "        <div class='cpgapedetail_h2'>"+item.name+"存款"
+	content += "<span class='cfpanel_text right'>存款 </span></div>"
+	content += "<img src='static/img/pop_line.png'>"
+ content += "           <div style='margin-top:10px;margin-bottom:10px;height:150px'>  "
  content += "        <table id='toplist1_tab'>"
  content += "           <thead>"
  content += "             <tr>"
- content += "               <td class='td-c-name'>利率</td>"
- content += "               <td class='td-c-value'>"+item.rate+"</td>"
- content += "               <td class='td-c-name'>周期</td>"
- content += "               <td class='td-c-value'>"+item.period+"</td>"
+ content += "               <td>利率: </td>"
+ content += "               <td colspan='3' class='td-c-value'>"+item.rate+"</td>"
 content += "              </tr>"
  content += "             <tr>"
- content += "               <td colspan='2' class='td-c-name'><input type='button' class='cf_count' onclick='g_saving.countBuy(-1)'></td>"
- content += "               <td colspan='2' class='td-c-name'><input type='text' id='saving_count' value='1' style='width:80px;text-align:center'></td>"
- content += "               <td colspan='2' class='td-c-name'><input type='button' class='cf_count add' onclick='g_saving.countBuy(1)'></td>"
+ content += "               <td>存入:</td>"
+ content += "               <td><input type='button' class='cf_count' onclick='g_saving.countBuy("+item.id+",-1000)'></td>"
+ content += "               <td><input type='text' id='saving_count' value='1000' style='width:150px;text-align:center;height:58px;font-size:32px'></td>"
+ content += "               <td><input type='button' class='cf_count add' onclick='g_saving.countBuy("+item.id+",1000)'></td>"
+content += "              </tr>"
+content += "             <tr>"
+ content += "               <td>预计利息:</td>"
+ content += "               <td colspan='3' class='td-c-value'><span id='savingprofit'>"+dftProfit+"</span></td>"
 content += "              </tr>"
 content += "            </thead>"
 content += "          </table>     "
-content += "           </div>  "
-content += "           <div style='margin-top:10px'>  "
-content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>      "  
-content += "          <button class='cf_bt' onclick='g_stock.buy("+id+")'>购买</button>"
-content += "             </div>"
+		content += "             </div>"
+	content += "           <div style='align:center'>  "
+	content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>      "  
+	content += "          <button class='cf_bt' onclick='g_saving.buy("+id+")'>确认</button>"
+	content += "             </div>"
+
 	
 	var tag = document.getElementById(this.pagedetailname);
 	tag.innerHTML = content;
         
-	$('#'+this.tagdetailname).modal('show');
+	$('#'+this.tagdetailname).modal({position:PageDetail_Top,show: true});
 }
 
-Saving.prototype.countBuy = function(count){
+Saving.prototype.countBuy = function(id,count){
     var tag = document.getElementById('saving_count');
     var currCount = parseInt(tag.value);
     if (currCount+count<=0) {
@@ -106,30 +72,18 @@ Saving.prototype.countBuy = function(count){
     }else
 	currCount += count;
     tag.value = currCount;
+    
+	var tdata = store.get(this.name);
+   var item = this.findItem(id);
+   if (item==null) return;
+    
+    var tag2 = document.getElementById('savingprofit');
+    tag2.innerHTML = tag.value * (1+item.rate/100);
     //alert(tag.value);
 }
 
 Saving.prototype.buy = function(id){
-if (id>0)
-{
-	var item = this.findItem(id);
-	if (item!=null){
-		if (g_player.data.cash<item.price){
-			alert('你的钱不够');
-			return;
-		}
-		var psaving = g_player.data.saving;
-		if (psaving==null)
-			psaving=[];
-		var jsonCurr = Date.parse(new Date());
-		psaving.push({id:item.id,accept:jsonCurr,status:0});
-		var cash = g_player.data.cash - item.price;
-		var pdata = {"saving":psaving,"cash":cash};
-		g_player.updateData(pdata);
-		g_quest.onBuySaving(item);
-	}
-}
-  $('#mysaving_detail').modal('hide');
+alert(id);
 }
 
 Saving.prototype.add = function(playerid,id,amount) {
