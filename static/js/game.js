@@ -50,6 +50,7 @@ Map.prototype.init = function(width,height){
 		var clickY = event.clientY - pos.y;
 //		clickX = clickX/0.6;
 //		clickY = clickY/0.6-20;
+		var mapImgs = map.m_imgs;
 		for (var i=0 ; i<mapImgs.length;i++ )
         {
             var image = mapImgs[i];
@@ -119,7 +120,6 @@ Map.prototype.enter = function(){
 	var map = this;
 	this.m_imgs.sort(this.sortImg);
 	var mapImgs = this.m_imgs;
-	var mapImg;
 
     for (var i=0 ; i<mapImgs.length; i++)
     {
@@ -129,10 +129,6 @@ Map.prototype.enter = function(){
             map.draw();
         };	       
         mapImgs[i].img = img;
-        if (mapImgs[i].name=="map"){
-        	mapImg = mapImgs[i];
-        }
-        
         if (mapImgs[i].hasDiv==true){
             var div = document.createElement("DIV");
             div.id = "tag"+mapImgs[i].name;
@@ -153,7 +149,6 @@ Map.prototype.enter = function(){
             document.body.appendChild(div);	          
         }        
     }
-    return mapImg;
 }
 
 Map.prototype.addImg = function(img)
@@ -180,6 +175,15 @@ Map.prototype.removeImg = function(img)
 	}
 }
 
+Map.prototype.findImg = function(imgName)
+{
+	for (var i=0;i<this.m_imgs.length;i++)
+	{
+		if (this.m_imgs[i].name==imgName){
+			return this.m_imgs[i];
+		}
+	}
+}
 Map.prototype.sortImg = function(img1,img2){
 	if (img1.zindex==null)
 		img1.zindex = 1;
@@ -214,6 +218,8 @@ Map.prototype.onclick = function(obj,clickX,clickY){
     var clickObj = g_game.sys[obj.name];
     if (clickObj!=null)
         clickObj.onclick(clickX,clickY);
+    else
+    	g_login.onImgClick(obj);
 }
 
 Scene = function(canvas){
@@ -224,15 +230,11 @@ Scene = function(canvas){
 		
 }
 
-Scene.prototype.enter = function(){
-	this.m_map.init(this.m_width,this.m_height);
-}
-
 Scene.prototype.init = function(canvas,width,height){
 	this.m_width = width;
 	this.m_height = height;
 	this.m_map = new Map(12,canvas);
-	this.enter();
+	this.m_map.init(this.m_width,this.m_height);
 }
 
 Scene.prototype.draw = function(){

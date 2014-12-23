@@ -71,7 +71,7 @@ Stockdetail.prototype.drawQuote = function(stockName,divName){
 			border:{
 					enable:false,
 				 },
-			background_color: "#eeeeee",
+			background_color: "#275864",
 			tip:{
 				enable:true,
 				shadow:true,

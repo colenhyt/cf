@@ -66,7 +66,7 @@ public class StockAction extends SavingAction {
 			if (add==false){
 				//钱放回去:
 				super.updateLiveSaving(stock.getPlayerid(),  stock.getAmount());
-				ret = RetMsg.SQLExecuteError;
+				ret = RetMsg.MSG_SQLExecuteError;
 			}
 		}
 		writeMsg(ret);

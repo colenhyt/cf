@@ -24,7 +24,7 @@ public class SavingAction extends BaseAction {
 	{
 		boolean update = savingService.update(saving);	
 		if (update==false){
-			super.writeMsg(RetMsg.SQLExecuteError);
+			super.writeMsg(RetMsg.MSG_SQLExecuteError);
 		}
 		return null;
 	}
@@ -35,13 +35,13 @@ public class SavingAction extends BaseAction {
 		if (saving2!=null){
 			float newAmount = saving2.getAmount()+amount;
 			if (newAmount<0)
-				return RetMsg.MoneyNotEnough;
+				return RetMsg.MSG_MoneyNotEnough;
 			
 			saving2.setAmount(saving2.getAmount()+amount);
 			savingService.update(saving2);		
-			return RetMsg.OK;
+			return RetMsg.MSG_OK;
 		}else {
-			return RetMsg.NoSavingData;
+			return RetMsg.MSG_NoSavingData;
 		}
 	}	
 	

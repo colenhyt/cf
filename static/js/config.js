@@ -11,6 +11,8 @@ var PageDetail_Top = 0;
 
 var Panel_ClickColor = "#123123";
 
+var Login_InputDft = "昵称:点击输入你的昵称";
+
 var Scene_Width = 640;
 var Scene_Height = 1280;
 
@@ -20,6 +22,14 @@ var game_screen = {
 
 var login_imgs = [
 	{name:"map",src:"static/img/login_bg.png",x:0,y:0,zindex:0},
+	{name:"choseboy",src:"static/img/player_head_bg.png",x:150,y:140,zindex:0},
+	{name:"chosegirl",src:"static/img/player_head_bg.png",x:400,y:140,zindex:0},
+	{name:"choseboy",src:"static/img/icon_boy.png",x:150,y:140,zindex:0},
+	{name:"chosegirl",src:"static/img/icon_girl.png",x:400,y:140,zindex:0},
+	{name:"wchoseboy",src:"static/img/bt_boy.png",x:130,y:270,zindex:0},
+	{name:"wchosegirl",src:"static/img/bt_girl.png",x:390,y:270,zindex:0},
+	{name:"inputnick",src:"static/img/nick_input.png",x:130,y:280,zindex:0},
+	{name:"btstart",src:"static/img/bt_start.png",x:180,y:30,zindex:0},
 ]
 
 var game_imgs = [
@@ -27,14 +37,14 @@ var game_imgs = [
 	{name:"cash_back",src:"static/img/icon_back.png",x:150,y:15,abs:true},
 	{name:"card_back",src:"static/img/icon_back.png",x:340,y:15,abs:true},
 	{name:"player",src:"static/img/icon_head.png",x:0,y:0,abs:true,hasDiv:true,divX:25,divY:115},
-	{name:"cash",src:"static/img/icon_cash.png",x:135,y:5,abs:true,hasDiv:true,divX:205,divY:25,zindex:5},
-	{name:"card",src:"static/img/icon_card.png",x:328,y:5,abs:true,hasDiv:true,divX:390,divY:25,zindex:5},
-	{name:"quest",src:"static/img/icon_mail.png",x:550,y:15,abs:true,hasDiv:true},
-	{name:"toplist",src:"static/img/icon_toplist.png",x:550,y:100},
+	{name:"quest",src:"static/img/icon_quest.png",x:550,y:0,abs:true,hasDiv:true},
+	{name:"toplist",src:"static/img/icon_toplist.png",x:550,y:120},
 	{name:"help",src:"static/img/icon_help.png",x:127,y:190,},
 	{name:"stock",src:"static/img/icon_stock.png",x:375,y:260,},
 	{name:"bank",src:"static/img/icon_bank.png",x:72,y:420,},
 	{name:"insure",src:"static/img/icon_insure.png",x:377,y:575,},
+	{name:"cash",src:"static/img/icon_cash.png",x:135,y:5,abs:true,hasDiv:true,divX:205,divY:25,zindex:5},
+	{name:"card",src:"static/img/icon_card.png",x:328,y:5,abs:true,hasDiv:true,divX:390,divY:25,zindex:5},
 	{name:"level",src:"static/img/icon_level.png",x:0,y:0,abs:true,hasDiv:true,divX:15,divY:8,zindex:20},
 ];
 
@@ -84,3 +94,17 @@ var ITEM_NAME = {
 
 var EVENT_TYPE = [
 ];
+
+var MSG_OK = 0;
+var MSG_SQLExecuteError = 1;
+var MSG_MoneyNotEnough = 2;
+var MSG_NoThisStock = 3;
+var MSG_NoSavingData = 4;
+var MSG_PlayerNameIsExist = 5;
+
+var ERR_MSG ={};
+ERR_MSG[MSG_SQLExecuteError] = "sql出错";
+ERR_MSG[MSG_MoneyNotEnough] = "你的钱不够";
+ERR_MSG[MSG_NoThisStock] = "这个股票不存在";
+ERR_MSG[MSG_NoSavingData] = "没有该存款";
+ERR_MSG[MSG_PlayerNameIsExist] = "这个昵称已经被使用";

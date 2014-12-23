@@ -52,6 +52,12 @@ color:#ffffff;
   text-align:center;
   color:yellow;
 }
+
+.cflogin_input {
+width:375px;
+background:none;
+}
+
 .cfpage
 {
   position: relative;

@@ -33,7 +33,7 @@ public class InsureAction extends SavingAction {
 			if (add==false){
 				//钱放回去:
 				super.updateLiveSaving(insure.getPlayerid(),  insure.getAmount());
-				ret = RetMsg.SQLExecuteError;
+				ret = RetMsg.MSG_SQLExecuteError;
 			}
 		}
 		writeMsg(ret);

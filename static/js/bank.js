@@ -64,6 +64,7 @@ Bank.prototype.showPie = function(data){
 		legend : {
 			enable : true
 		},
+		background_color: "#275864",
 		showpercent:true,
 		decimalsnum:2,
 		width : 400,

@@ -15,28 +15,121 @@ Login.prototype.init = function(){
     var isRe = false;
     var ret = true;
     this.draw();
-//	var tdata = store.get(g_player.name);
-//	if (tdata==null)
-//	{
-//		ret = this.register();
-//		isRe = true;
-//	}   
-//	if (ret==true) 
-//     this.login(isRe); 
 }
 
 Login.prototype.draw = function()
 {
-    g_game.addImg(login_imgs[0]);
-	
-	
+	var tdata = store.get(g_player.name);
+	for (var i=0;i<login_imgs.length;i++){
+		var img = login_imgs[i];
+   	 	g_game.addImg(img);
+	   	 if (img.name=="inputnick"){
+		    var div = document.createElement("div");
+		    div.id = "inputnickdiv";
+		    var nickName = tdata?tdata.playername:Login_InputDft;
+		    var input = "<input type='text' id='inputnick' value='"+nickName+"' class='cflogin_input' onfocus='g_login.clearInput()'>";
+		    div.innerHTML = input;
+		    div.style.position = "absolute";
+		    div.style.left = (img.x+10) + "px";
+		    div.style.top =  (img.y+13) + "px";
+		    document.body.appendChild(div);   
+		    	 
+	   	 }else if (img.name=="btstart"){
+		    var div = document.createElement("div");
+		    div.id = "errmsg";
+		    div.style.position = "absolute";
+		    div.style.left = (img.x-30) + "px";
+		    div.style.top =  (img.y+30) + "px";
+		    document.body.appendChild(div);   	 
+		  }
+   	}
+   	if (tdata!=null){
+   		this.drawChoseBorder(tdata.sex,100,100);
+   	}
+}
+
+Login.prototype.clearInput = function()
+{
+	var tag = document.getElementById("inputnick");
+	tag.value = "";
+}
+
+Login.prototype.drawChoseBorder = function(sex)
+{
+	this.sex = sex;
+		
+	var img;
+	for (var i=0;i<login_imgs.length;i++){
+		if (sex==0){
+			if (login_imgs[i].name=="choseboy"){
+				img = login_imgs[i];
+				break;
+			}
+		}else if (login_imgs[i].name=="chosegirl"){
+				img = login_imgs[i];
+				break;
+		}
+	}
+	var img22 = {name:"choseBorder",src:"static/img/bt_head_chose.png",x:img.x-24,y:img.y-24};
+	var img = g_game.m_scene.m_map.findImg(img22.name);
+	if (img){
+		img.x = img22.x;
+		img.y = img22.y;
+		g_game.m_scene.m_map.draw();
+	}else {
+		g_game.addImg(img22);
+	}
+}
+
+Login.prototype.msg = function(msg)
+{
+	var tag = document.getElementById("errmsg");
+	tag.innerHTML = msg;
+}
+
+Login.prototype.onImgClick = function(image)
+{
+	var tdata = store.get(g_player.name);
+	if (image.name=="chosegirl"||image.name=="choseboy"){
+		if (tdata!=null)
+			return;
+		
+		var sex = 0;
+		if (image.name=="chosegirl") sex = 1;
+		
+		this.drawChoseBorder(sex);
+		
+	}else if (image.name=="btstart"){
+		if (this.sex==null){
+			this.msg("选择你的性别");
+			return;
+		}
+		var tag = document.getElementById("inputnick");
+		if (tag.value==null||tag.value==""||tag.value==Login_InputDft){
+			this.msg("输入你的昵称");
+			return;		
+		}
+		var canLogin = true;
+		if (tdata==null)
+			canLogin = this.register();
+		if (canLogin){
+			var tagerm = document.getElementById("inputnickdiv");
+			document.body.removeChild(tagerm);
+			tagerm = document.getElementById("errmsg");
+			document.body.removeChild(tagerm);
+			this.login();
+		}
+	}
 }
 
 Login.prototype.register = function(){
     var createtime = Date.parse(new Date());
+	var tag = document.getElementById("inputnick");
+	var ppname = "player"+createtime;
+	ppname = tag.value;
      var player = {
-        "accountid":1,"playerid":-1,"playername":"player"+createtime,"exp":0,
-		quest:[],sex:0,createtime:createtime
+        "accountid":1,"playerid":-1,"playername":ppname,"exp":0,
+		quest:[],sex:this.sex,createtime:createtime
         };
            
     var dataParam = obj2ParamStr("player",player);
@@ -60,8 +153,8 @@ Login.prototype.register = function(){
 	    return false;
 	}	
 	if (retcode>0){
-		g_msg.open('注册失败: '+retcode);
-		return;
+		this.msg('注册失败: '+ERR_MSG[retcode]);
+		return false;
 	}
 	
 	store.set(g_player.name,player);
@@ -69,7 +162,10 @@ Login.prototype.register = function(){
 	return true;
 }
 
-Login.prototype.login = function(isRegister){
+Login.prototype.login = function(){
+	//进入场景:
+	g_game.m_scene.m_map.enter();
+	
      var player = store.get(g_player.name);
      g_player.data = player;
    	var dataParam = obj2ParamStr("player",player);
@@ -95,9 +191,7 @@ Login.prototype.login = function(isRegister){
 	}	
 	  
     //head img:
-    var head_img = head_imgs[0];
-    if (head_imgs.length>player.sex)
-        head_img = head_imgs[player.sex];
+    var head_img = head_imgs[player.sex];
     head_img.name = g_player.name;
     g_game.addImg(head_img);
     

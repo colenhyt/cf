@@ -110,7 +110,7 @@ public class LoginAction extends BaseAction {
 		{
 			System.out.println("account exist :name:"+player.getPlayername());
 			Message msg = new Message();
-			msg.setCode(1);		//重名
+			msg.setCode(RetMsg.MSG_PlayerNameIsExist);		//重名
 			JSONObject obj = JSONObject.fromObject(msg);
 			write(obj.toString(),"utf-8");
 			return null;
@@ -132,7 +132,7 @@ public class LoginAction extends BaseAction {
 		playerBlob.setPwd(MD5.MD5(pwd));
 		boolean ret = playerService.add(playerBlob);
 		if (ret==false){
-			super.writeMsg(RetMsg.SQLExecuteError);
+			super.writeMsg(RetMsg.MSG_SQLExecuteError);
 			return null;
 		}
 		//活期存款:
