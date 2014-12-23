@@ -58,6 +58,32 @@ width:375px;
 background:none;
 }
 
+.cfplayer_head_bg{
+width:120px;
+height:120px;
+vertical-align: bottom;
+  background:url('../../static/img/player_head_bg.png') no-repeat;
+  -moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
+
+.cfplayer_panel_text{
+padding-left:30px;
+font-size:28px;
+}
+
+.cfplayer_panel {
+margin-left:-10px;
+margin-top:10px;
+padding-left:20px;
+padding-top:5px;
+width:549px;
+height:234px;
+  background:url('../../static/img/player_panel_bg.png') no-repeat;
+  -moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
+
 .cfpage
 {
   position: relative;
@@ -116,10 +142,12 @@ height:220px;
 }
 
 .cfpanel.bank{
-  margin-top:3px;
+  margin-top:20px;
   margin-bottom: 10px;
-  width:310px;
-  height:260px;
+  padding-left:20px;
+  padding-top:20px;
+  width:534px;
+  height:348px;
   background:url('../../static/img/bank_bg.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;   
@@ -179,6 +207,33 @@ background:url('../../static/img/title_bg.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
 }
+
+.cf_title_bg.savingon {
+  margin-top:-69px;
+background:url('../../static/img/title_saving_on.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
+.cf_title_bg.saving2off {
+  margin-left:225px;
+background:url('../../static/img/title_saving2_off.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
+.cf_title_bg.savingoff {
+background:url('../../static/img/title_saving_off.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
+
+.cf_title_bg.saving2on {
+  margin-top:-69px;
+  margin-left:225px;
+background:url('../../static/img/title_saving2_on.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
+
 
 .cf_title_bg.won {
   margin-top:-69px;

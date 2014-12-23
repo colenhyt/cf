@@ -68,9 +68,13 @@ Player = function(){
     this.count = 0;
     this.syncDuration = 5;
     this.data = {};
+    this.stock = [];
+    this.insure = [];
+    this.saving = [];
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
     this.pageheader = this.tagname+"header";
+    this.graphName = this.name+"graph";
 }
 
 Player.prototype = new Datamgr();
@@ -82,50 +86,85 @@ Player.prototype.init = function(){
 	this.data = store.get(this.name);
 }
 
-Player.prototype.buildHTML = function()
-{
-		var page = new PageUtil(this.tagname);
-            page.addHeader("<button type='button' class='close' data-dismiss='modal'><img src='static/img/close.png' class='cf_title_close top'></button>");
-	var header = "<ul id='"+this.id+"Tab' class='nav nav-tabs'>"
-            header += "<div id='"+this.pageheader+"'></div>"
-           header += "</ul>"	
-	page.addHeader(header);
-	
-	var content = "<div id='player_content' class='cfpage small'></div>"
-	page.addContent(content);
-	document.write(page.toString());
-	
-}
-
-Player.prototype.show = function(){
-        var   header = "<button class='cf_title_bg'>个人等级</button>"       	
-	var tagHeader = document.getElementById(this.pageheader);
-	tagHeader.innerHTML = header;
-	
+Player.prototype.buildPage = function(){
 	var texp = store.get("exp");
 	var lv = g_title.getLevel();
-	var content = "<div class='cf-signin-prize'>"
+	var content = "<div class='cfplayer_panel'>"
 	content += "<table>"
 	content += " <tr>"
 	content += "  <td width='100'>"
+	content += " <div class='cfplayer_head_bg'>"
     content += "<img src='"+head_imgs[this.data.sex].src+"'/>"
+    content += " </div>"
 	content += "</td>"
 	content += "   <td>"
-    content += "等级:"+lv+"<br>"	
-    content += "经验:"+g_title.getData(lv).exp+"/"+this.data.exp	
+    content +=            " <div class='cfplayer_panel_text'> "
+    content += "昵            称: <span style='color:yellow'>"+this.data.playername+"</span><br>"	
+    content += "当前等级: <span style='color:yellow'>"+lv+"</span> "+g_title.getData(lv).name+"<br>"	
+    content += "下一等级: <span style='color:yellow'>"+(lv+1)+"</span> "+g_title.getData(lv+1).name+"<br>"
+    content += "经            验: <span style='color:yellow'>"+g_title.getData(lv).exp+"</span>/"+this.data.exp	+"<br>"
+    content += "当周排名: <span style='color:yellow'>1</span><br>"	
+    content +=            " </div>"
 	content += "</td>"
 	content += " </tr>"
 	content += "</table>"
     content += " </div>"
-    content +=            " <div class='cf-signin-feeling'> "
-    content += "当前等级称号:"+g_title.getData(lv).name+"<br>"
-    content += "下个等级称号:"+g_title.getData(lv+1).name+"<br>"
-    content +=            " </div>"
     
-    var get = document.getElementById("player_content");
+	var data = g_player.getTotal(this);
+	var total = data.saving+data.insure+data.stock;
+    
+	content += "<div>"
+	content += "<table>"
+	content += " <tr>"
+	content += "  <td width='240px'>"
+	content +=	"银行存款:<span>¥0</span><br>"
+	content +=	"投资股票:<span>¥"+data.stock+"</span><br>"
+	content +=	"投资保险:<span>¥"+data.insure+"</span><br>"
+	content +=	"活期存款:<span>¥"+data.saving+"</span><br>"
+	content +=	"总资产值:<span>¥"+total+"</span></div>"
+	content += "</td>"
+	content += "   <td>"
+	content += "<div id='"+this.graphName+"' style='margin-left:-10px'></div>"
+	content += "</td>"
+	content += " </tr>"
+	content += "</table>"
+    content +=  " </div>"
+    
+    var get = document.getElementById(this.pagename);
     get.innerHTML = content;
     
-    $('#'+this.tagname).modal({position:Page_Top,show: true});       
+	this.showPie(data,this.graphName);
+}
+
+
+Player.prototype.showPie = function(data,divName){
+	var data = [
+	        	{name : '存款',value : data.saving,color:'#9d4a4a'},
+	        	{name : '保险',value : data.insure,color:'#97b3bc'},
+	        	{name : '股票',value : data.stock,color:'#5d7f97'},
+        	];
+	
+	new iChart.Pie2D({
+		render : divName,
+		data: data,
+		title : {
+			text:"资产分布",
+			fontsize:25,
+			color:'#ffffff'
+		},
+		legend : {
+			enable : true
+		},
+		border:{
+				enable:false,
+			 },		
+		background_color: "#275868",
+		showpercent:true,
+		decimalsnum:2,
+		width : 300,
+		height : 300,
+		radius:140
+	}).draw();	
 }
 
 Player.prototype.getTotal = function(data) {
