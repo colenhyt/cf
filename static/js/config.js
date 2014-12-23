@@ -6,12 +6,12 @@ var g_dbsize = 200000;
 var g_game;
 var g_db;
 
-var Page_Top = 0;
-var PageDetail_Top = 0;
+var Page_Top = 80;
+var PageDetail_Top = 100;
 
 var Panel_ClickColor = "#123123";
 
-var Login_InputDft = "昵称:点击输入你的昵称";
+var Login_InputDft = "输入你的昵称";
 
 var Scene_Width = 640;
 var Scene_Height = 1280;
@@ -22,14 +22,14 @@ var game_screen = {
 
 var login_imgs = [
 	{name:"map",src:"static/img/login_bg.png",x:0,y:0,zindex:0},
-	{name:"choseboy",src:"static/img/player_head_bg.png",x:150,y:140,zindex:0},
-	{name:"chosegirl",src:"static/img/player_head_bg.png",x:400,y:140,zindex:0},
-	{name:"choseboy",src:"static/img/icon_boy.png",x:150,y:140,zindex:0},
-	{name:"chosegirl",src:"static/img/icon_girl.png",x:400,y:140,zindex:0},
-	{name:"wchoseboy",src:"static/img/bt_boy.png",x:130,y:270,zindex:0},
-	{name:"wchosegirl",src:"static/img/bt_girl.png",x:390,y:270,zindex:0},
-	{name:"inputnick",src:"static/img/nick_input.png",x:130,y:280,zindex:0},
-	{name:"btstart",src:"static/img/bt_start.png",x:180,y:30,zindex:0},
+	{name:"inputnick",src:"static/img/nick_input.png",x:130,y:400,zindex:0},
+	{name:"choseboy",src:"static/img/player_head_bg.png",x:150,y:550,zindex:0},
+	{name:"chosegirl",src:"static/img/player_head_bg.png",x:400,y:550,zindex:0},
+	{name:"choseboy",src:"static/img/icon_boy.png",x:150,y:550,zindex:0},
+	{name:"chosegirl",src:"static/img/icon_girl.png",x:400,y:550,zindex:0},
+	{name:"wchoseboy",src:"static/img/bt_boy.png",x:130,y:680,zindex:0},
+	{name:"wchosegirl",src:"static/img/bt_girl.png",x:390,y:680,zindex:0},
+	{name:"btstart",src:"static/img/bt_start.png",x:180,y:780,zindex:0},
 ]
 
 var game_imgs = [

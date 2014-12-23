@@ -88,7 +88,7 @@ Insure.prototype.clickDetail = function(id,type){
 }
 
 Insure.prototype.showDetail = function(title,desc,okCallback,cbParam1,cbParam2,cbParam3,confmText){
-	var content =      "        <div style='margin-top:-10px;text-align:center;'>"
+	var content =      "        <div style='margin-top:-10px;text-align:center'>"
 	if (confmText==null)
 		confmText = "确认";
 	content += "<div class='cfmsg_h2'>"+title+"</div>"

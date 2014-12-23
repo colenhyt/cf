@@ -116,7 +116,7 @@ Datamgr.prototype = {
         
         var pagedetail = new PageUtil(this.tagdetailname);
         var psubclass = "";
-        if (this.name=="insure"||this.name=="event")
+        if (this.name=="insure"||this.name=="event"||this.name=="saving")
         	psubclass = "small";
         pclass = "cfpagedetail "+psubclass;
         content =     "<div class=\"tab-pane in active\" id='quest2'>";

@@ -27,22 +27,23 @@ Login.prototype.draw = function()
 		    var div = document.createElement("div");
 		    div.id = "inputnickdiv";
 		    var nickName = tdata?tdata.playername:Login_InputDft;
+		    var title = "<span>昵称:</span>"
 		    var input = "<input type='text' id='inputnick' value='"+nickName+"' class='cflogin_input' onfocus='g_login.clearInput()'>";
-		    div.innerHTML = input;
+		    div.innerHTML = title+input;
 		    div.style.position = "absolute";
 		    div.style.left = (img.x+10) + "px";
 		    div.style.top =  (img.y+13) + "px";
 		    document.body.appendChild(div);   
 		    	 
-	   	 }else if (img.name=="btstart"){
+	   	 }
+   	}
 		    var div = document.createElement("div");
 		    div.id = "errmsg";
 		    div.style.position = "absolute";
-		    div.style.left = (img.x-30) + "px";
-		    div.style.top =  (img.y+30) + "px";
-		    document.body.appendChild(div);   	 
-		  }
-   	}
+		    div.style.color = "black";
+		    div.style.left = "210px";
+		    div.style.top =  "490px";
+		    document.body.appendChild(div);     	
    	if (tdata!=null){
    		this.drawChoseBorder(tdata.sex,100,100);
    	}
@@ -51,7 +52,8 @@ Login.prototype.draw = function()
 Login.prototype.clearInput = function()
 {
 	var tag = document.getElementById("inputnick");
-	tag.value = "";
+	if (tag.value==Login_InputDft)
+		tag.value = "";
 }
 
 Login.prototype.drawChoseBorder = function(sex)
@@ -100,14 +102,14 @@ Login.prototype.onImgClick = function(image)
 		this.drawChoseBorder(sex);
 		
 	}else if (image.name=="btstart"){
-		if (this.sex==null){
-			this.msg("选择你的性别");
-			return;
-		}
 		var tag = document.getElementById("inputnick");
 		if (tag.value==null||tag.value==""||tag.value==Login_InputDft){
 			this.msg("输入你的昵称");
 			return;		
+		}
+		if (this.sex==null){
+			this.msg("选择你的性别");
+			return;
 		}
 		var canLogin = true;
 		if (tdata==null)

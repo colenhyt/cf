@@ -105,10 +105,12 @@ Stockdetail.prototype.drawQuote = function(stockName,divName){
 				gridHStyle:{
 					solid:false,
 					size:2,
+					color:'#c0c0c0',
 				},
 				gridVStyle:{
 					solid:false,
 					size:2,
+					color:'#c0c0c0',
 				},
 				scale:[{
 					 position:'left',	

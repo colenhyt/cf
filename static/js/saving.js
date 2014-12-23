@@ -27,36 +27,34 @@ Saving.prototype.showDetail = function(id){
    if (item==null) return;
         
     var dftAmount = 1000;
-    var dftProfit = dftAmount * (1+item.rate/100);
+    var dftProfit = ForDight(dftAmount * (item.rate/100));
 	var content =      "        <div style='margin-top:-10px;text-align:center;'>"
  content += "        <div class='cpgapedetail_h2'>"+item.name+"存款"
 	content += "<span class='cfpanel_text right'>存款 </span></div>"
 	content += "<img src='static/img/pop_line.png' class='cf_line'>"
- content += "           <div style='margin-top:10px;margin-bottom:10px;height:150px'>  "
+ content += "           <div class='cfmsg_text saving'>  "
  content += "        <table id='toplist1_tab'>"
  content += "           <thead>"
  content += "             <tr>"
- content += "               <td>利率: </td>"
+ content += "               <td width='80px'>利率: </td>"
  content += "               <td colspan='3' style='text-align:left'>"+item.rate+"%</td>"
 content += "              </tr>"
  content += "             <tr>"
  content += "               <td>存入:</td>"
  content += "               <td><input type='button' class='cf_count' onclick='g_saving.countBuy("+item.id+",-1000)'></td>"
- content += "               <td><input type='text' id='saving_amount' value='1000' style='width:220px;text-align:center;height:58px;font-size:32px'></td>"
+ content += "               <td><input type='text' id='saving_amount' value='1000' style='width:160px;text-align:center;height:58px;font-size:30px'></td>"
  content += "               <td><input type='button' class='cf_count add' onclick='g_saving.countBuy("+item.id+",1000)'></td>"
 content += "              </tr>"
 content += "             <tr>"
- content += "               <td>预计利息:</td>"
+ content += "               <td>利息:</td>"
  content += "               <td colspan='3' style='text-align:left'><span id='savingprofit'>"+dftProfit+"</span></td>"
 content += "              </tr>"
 content += "            </thead>"
 content += "          </table>     "
 		content += "             </div>"
-	content += "           <div style='align:center'>  "
 	content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>      "  
 	content += "          <button class='cf_bt' onclick='g_saving.buy("+id+")'>确认</button>"
-	content += "             </div>"
-
+content += "             </div>"
 	
 	var tag = document.getElementById(this.pagedetailname);
 	tag.innerHTML = content;
@@ -78,7 +76,7 @@ Saving.prototype.countBuy = function(id,count){
    if (item==null) return;
     
     var tag2 = document.getElementById('savingprofit');
-    tag2.innerHTML = tag.value * (1+item.rate/100);
+    tag2.innerHTML = ForDight(tag.value * (item.rate/100));
     //alert(tag.value);
 }
 

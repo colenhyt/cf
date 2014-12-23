@@ -54,7 +54,9 @@ color:#ffffff;
 }
 
 .cflogin_input {
-width:375px;
+width:285px;
+border:none;
+color:blue;
 background:none;
 }
 
@@ -91,7 +93,7 @@ height:234px;
   padding-left:25px;
   outline: none;
   transition:all 0.3s;
-  width:580px;
+  width:585px;
   height:684px;
   background:url('../../static/img/pop_big.png') no-repeat;
   -moz-background-size:100% 100%;  
@@ -125,7 +127,11 @@ position:relative;
 text-align:center;
 line-weight:23px;
 font-size:28px;
-height:220px;
+height:280px;
+}
+
+.cfmsg_text.saving{
+height:280px;
 }
 
 .cfpanel
@@ -173,7 +179,7 @@ color:blue;
 margin-left:30px;
 margin-top:30px;
 width:516px;
-height:417px;
+height:457px;
  background:url('../../static/img/popd_small.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
