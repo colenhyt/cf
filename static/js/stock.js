@@ -46,7 +46,7 @@ Stock.prototype.buildPage = function(page)
 			var psColor = "green";
 			if (pitem.profit<0)
 				psColor = "red"
-		     content += "<div class='cfpanel' ID='stock_d"+item.id+"' onclick='g_stock.showDetail("+item.id+")'>"
+		     content += "<div class='cfpanel' ID='"+this.name+"_d"+item.id+"' onclick='g_stock.showDetail("+item.id+")'>"
 		     content += "<span class='cfpanel_title'>"+item.name+"</span>"
 		     content += "<span class='cfpanel_text right'>目前持有<span style='color:yellow'> "+pitem.qty+"</span> 手</span>"
 			 content += "	<div>"
@@ -69,7 +69,7 @@ Stock.prototype.buildPage = function(page)
 }
 
 Stock.prototype.showDetail = function(id,isflush){    
-	var dd = document.getElementById("stock_d"+id);
+	this.onPanelClick(id);
 	
 	var tdata = store.get(this.name);
    var item = this.findItem(id);

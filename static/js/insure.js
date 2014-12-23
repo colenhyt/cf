@@ -57,7 +57,7 @@ Insure.prototype.buildPage = function(page)
 				}			
 			}
 			
-		  content += "<div class='cfpanel' ID='insure_d1' onclick='g_insure.showDetail("+item.id+","+item.type+")'>"
+		  content += "<div class='cfpanel' ID='"+this.name+"_d"+item.id+"' onclick='g_insure.clickDetail("+item.id+","+item.type+")'>"
 		     content += "<span class='cfpanel_title'>"+item.name+"</span>"
 			 content += "<span class='cfpanel_text right'>"+buyDesc+"</span>"
 			 content += "	<div>"
@@ -79,11 +79,38 @@ Insure.prototype.buildPage = function(page)
 	
 }
 
-Insure.prototype.showDetail = function(id,type){  
+Insure.prototype.clickDetail = function(id,type){  
+ 	this.onPanelClick(id);
    if (type==1)
    	g_insure.show_insuredetail(id)
    else
    	g_insure.show_finandetail(id)
+}
+
+Insure.prototype.showDetail = function(title,desc,okCallback,cbParam1,cbParam2,cbParam3,confmText){
+	var content =      "        <div style='margin: auto;text-align:center;'>"
+	if (confmText==null)
+		confmText = "确认";
+	content += "<div class='cfmsg_h2'>"+title+"</div>"
+	content += "<img src='static/img/pop_line.png'>"
+	content += "            <div class='cfmsg_text'>"+desc+"</div>"
+	if (okCallback==null){
+		content += "          <button class='cf_bt' data-dismiss='modal'>确认</button>"	
+	}else {
+		content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>"
+		if (cbParam1==null)
+			cbParam1 = "1";
+		if (cbParam2==null)
+			cbParam2 = "1";
+		if (cbParam3==null)
+			cbParam3 = "1";
+		content += "          <button class='cf_bt' onclick='"+okCallback+"("+cbParam1+","+cbParam2+","+cbParam3+")'>"+confmText+"</button>"
+	}
+		content += "             </div>"
+		var tag = document.getElementById(this.pagedetailname);
+		tag.innerHTML = content;
+		
+	$('#'+this.tagdetailname).modal({position:120,show: true});  
 }
 
 Insure.prototype.show_insuredetail = function(id){    
@@ -105,7 +132,7 @@ Insure.prototype.show_insuredetail = function(id){
 	content += "          </table>     "
 	content += "           </div>  "
 
-    g_msg.open2(item.name,content,"g_insure.confirmBuy",id,1,0,"购买");
+    this.showDetail(item.name,content,"g_insure.confirmBuy",id,1,0,"购买");
 	
 }
 
@@ -140,10 +167,7 @@ content += "            </thead>"
 content += "          </table>     "
 content += "           </div>  "
 	
-	var tag = document.getElementById(this.pagedetailname);
-	tag.innerHTML = content;
-        
-    g_msg.open2(item.name,content,"g_insure.confirmBuy",id,0,0,"购买");
+    this.showDetail(item.name,content,"g_insure.confirmBuy",id,0,0,"购买");
 }
 
 Insure.prototype.countBuy = function(count) {

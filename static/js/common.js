@@ -181,6 +181,18 @@ Datamgr.prototype = {
 	     this.show();
     },    
     
+    onPanelClick:function(id){
+     	var tname = this.name+"_d";
+		if (this.lastClickId!=null){
+			var lastPanel = document.getElementById(tname+this.lastClickId);
+			if (lastPanel!=null)
+				lastPanel.style.background = "url('static/img/panel_bg.png') no-repeat";
+		}
+		var dd = document.getElementById(tname+id);
+		dd.style.background = Panel_ClickColor;  
+		this.lastClickId = id;  
+    },
+    
 	findItem:function(id){
 		var tdata = store.get(this.name);
 		var item;
@@ -194,6 +206,11 @@ Datamgr.prototype = {
 	},	
 	
 	confirmBuy:function(id,qty){  
+		if (this.name=="insure"&&qty==0){
+			var tag = document.getElementById('finan_count');
+			if (tag!=null)
+				qty = tag.value;
+		}
 		if (qty==0){
 		    g_msg.open2(this.cname+"购买","购买份数不能为零!");
 		    return;

@@ -9,50 +9,13 @@ Map = function(mapId,canvas){
 	this.m_imgs = [];
 }
 
-Map.prototype.init = function(width,height,mapFile){
+Map.prototype.init = function(width,height){
 	this.m_width = width;
 	this.m_height = height;
-	this.m_mapFile = mapFile;
-    this.m_imgs = game_imgs;
 	var map = this;
 	var canvas = this.m_canvas;
 	var pos = this.m_pos;
-	var mapImg;
-	this.m_imgs.sort(this.sortImg);
-	var mapImgs = this.m_imgs;
-
-    for (var i=0 ; i<mapImgs.length; i++)
-    {
-        var img = new Image();
-        img.src = mapImgs[i].src;
-        img.onload=function(){
-            map.draw();
-        };	       
-        mapImgs[i].img = img;
-        if (mapImgs[i].name=="map"){
-            mapImg = img;
-        }
-        
-        if (mapImgs[i].hasDiv==true){
-            var div = document.createElement("DIV");
-            div.id = "tag"+mapImgs[i].name;
-            div.style.color = "#ffffff";
-            div.style.font = "bold 18px arial,serif";
-            div.style.position = "absolute";
-            div.style.display = "none";
-            if (mapImgs[i].divX>0)
-                div.style.left = mapImgs[i].divX+"px";
-            else 
-                div.style.left = mapImgs[i].x + "px";
-            
-            if (mapImgs[i].divY>0) 
-                div.style.top = mapImgs[i].divY+"px";
-            else
-                div.style.top = mapImgs[i].y + "px";
-            //div.style = "position:absolute;left:100px,top:300px"; 
-            document.body.appendChild(div);	          
-        }        
-    }
+	var mapImg = game_imgs[0];
 
 	windowToCanvas = function(x,y){
 		var bbox = canvas.getBoundingClientRect();
@@ -151,6 +114,48 @@ Map.prototype.init = function(width,height,mapFile){
 	};
 }
 
+Map.prototype.enter = function(){
+    this.m_imgs = game_imgs;
+	var map = this;
+	this.m_imgs.sort(this.sortImg);
+	var mapImgs = this.m_imgs;
+	var mapImg;
+
+    for (var i=0 ; i<mapImgs.length; i++)
+    {
+        var img = new Image();
+        img.src = mapImgs[i].src;
+        img.onload=function(){
+            map.draw();
+        };	       
+        mapImgs[i].img = img;
+        if (mapImgs[i].name=="map"){
+        	mapImg = mapImgs[i];
+        }
+        
+        if (mapImgs[i].hasDiv==true){
+            var div = document.createElement("DIV");
+            div.id = "tag"+mapImgs[i].name;
+            div.style.color = "#ffffff";
+            div.style.font = "bold 18px arial,serif";
+            div.style.position = "absolute";
+            div.style.display = "none";
+            if (mapImgs[i].divX>0)
+                div.style.left = mapImgs[i].divX+"px";
+            else 
+                div.style.left = mapImgs[i].x + "px";
+            
+            if (mapImgs[i].divY>0) 
+                div.style.top = mapImgs[i].divY+"px";
+            else
+                div.style.top = mapImgs[i].y + "px";
+            //div.style = "position:absolute;left:100px,top:300px"; 
+            document.body.appendChild(div);	          
+        }        
+    }
+    return mapImg;
+}
+
 Map.prototype.addImg = function(img)
 {
     var map = this;
@@ -219,11 +224,15 @@ Scene = function(canvas){
 		
 }
 
+Scene.prototype.enter = function(){
+	this.m_map.init(this.m_width,this.m_height);
+}
+
 Scene.prototype.init = function(canvas,width,height){
 	this.m_width = width;
 	this.m_height = height;
 	this.m_map = new Map(12,canvas);
-	this.m_map.init(width,height,"static/img/map.jpg");
+	this.enter();
 }
 
 Scene.prototype.draw = function(){
@@ -252,7 +261,7 @@ Game.prototype.init = function(canvas){
 	
 	this.m_scene = new Scene();
 	var scene = this.m_scene;
-	scene.init(canvas,640,960);
+	scene.init(canvas,Scene_Width,Scene_Height);
 	
 	var game = this;
 	
@@ -271,8 +280,9 @@ Game.prototype.init = function(canvas){
 	this.register(g_stock);
 	this.register(g_bank);
 	this.register(g_help);
+	this.register(g_login);
 	
-	g_player.init();
+	g_login.init();
 	
 }
 

@@ -9,12 +9,18 @@ var g_db;
 var Page_Top = 0;
 var PageDetail_Top = 0;
 
+var Panel_ClickColor = "#123123";
+
 var Scene_Width = 640;
 var Scene_Height = 1280;
 
 var game_screen = {
 	swidth:window.screen.width/Scene_Width,sheight:window.screen.height/Scene_Height
 }
+
+var login_imgs = [
+	{name:"map",src:"static/img/login_bg.png",x:0,y:0,zindex:0},
+]
 
 var game_imgs = [
 	{name:"map",src:"static/img/map.png",x:0,y:0,zindex:0},
@@ -33,7 +39,7 @@ var game_imgs = [
 ];
 
 var head_imgs = [
-	{name:"man",src:"static/img/icon_girl.png",x:0,y:0,abs:true,hasDiv:true,divX:160,divY:10,zindex:10},
+	{name:"man",src:"static/img/icon_boy.png",x:0,y:0,abs:true,hasDiv:true,divX:160,divY:10,zindex:10},
 	{name:"women",src:"static/img/icon_girl.png",x:0,y:0,abs:true,hasDiv:true,divX:160,divY:10,zindex:10},
 ]
 
@@ -61,7 +67,7 @@ var feeling_imgs = [
 ]
 
 var QUEST_TYPE = {
-	BUY_INSURE:0,BUY_STOCK:1,
+	BUY_INSURE:0,BUY_STOCK:1,SELL_STOCK:2,
 }
 
 var QUEST_STATUS = {

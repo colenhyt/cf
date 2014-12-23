@@ -79,14 +79,7 @@ Player.prototype.init = function(){
     var isRe = false;
     var ret = true;
     this.buildHTML();
-	var tdata = store.get(this.name);
-	if (tdata==null)
-	{
-		ret = this.register();
-		isRe = true;
-	}   
-	if (ret==true) 
-     this.login(isRe); 
+	this.data = store.get(this.name);
 }
 
 Player.prototype.buildHTML = function()
@@ -421,7 +414,7 @@ Player.prototype.buyItem = function(tname,id,qty){
 	cash -= amount;
 	var pupdate = {"cash":cash};
 	this.updateData(pupdate);
-	g_quest.onBuyInsure(item);
+	g_quest.onBuyItem(tname,item,qty);
 	g_msg.open("成功购买:"+item.name);
 	return true;
 		
@@ -457,3 +450,4 @@ store.remove("playerlog");
 var g_playerlog = new Playerlog()
 g_playerlog.init();
 var g_player = new Player();
+g_player.init();

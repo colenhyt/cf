@@ -50,7 +50,7 @@ Quest.prototype.buildPage = function(page)
 			var img = "notdone.png";
 			if (item!=null&&item.status==QUEST_STATUS.DONE)	
 				img = "done.png";		
-		  	content += "<div class='cfpanel' ID='"+this.pagename+item.id+"' onclick='g_quest.showDetail("+item.id+")'>"
+		  	content += "<div class='cfpanel' ID='"+this.name+"_d"+item.id+"' onclick='g_quest.showDetail("+item.id+")'>"
 		     content += "<h2 class='cf_h'>"+item.name+"</h2>"
 			 content += "        <table id='"+this.tagname+"tab'>"
 			 content += "           <thead>"
@@ -77,8 +77,10 @@ Quest.prototype.buildPage = function(page)
 }
 
 Quest.prototype.showDetail = function(id){  
+ 	this.onPanelClick(id);
+ 	
 	var tdata = store.get(this.name);
-   var item = tdata[id-1];
+   var item = this.findItem(id);
    if (item==null) return;
 
 var content =      "        <div><h2>"+item.name+"</h2>"
@@ -95,8 +97,9 @@ var content =      "        <div><h2>"+item.name+"</h2>"
 //			content += "              </tr>"
 //content += "            </thead>"
 //content += "          </table>     "
-content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>      "  
-content += "          <button class='cf_bt' onclick='g_quest.acceptQuest("+id+")'>接收</button>"
+//content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>      "  
+//content += "          <button class='cf_bt' onclick='g_quest.acceptQuest("+id+")'>接收</button>"
+content += "          <button class='cf_bt' data-dismiss='modal'>确认</button>"
 content += "             </div>"
 content += "           </div>  "
 
@@ -126,7 +129,7 @@ Quest.prototype.onAcceptDaily = function(){
 	if (cc>tdata.length)
 		cc = tdata.length;
 	var qkeys = [];
-	var pquest =  g_player.quest?g_player.quest:[];
+	var pquest =  g_player.data.quest
 	var jsonCurr = Date.parse(new Date());
 	for (var i=0;i<cc;i++)
 	{
@@ -139,7 +142,7 @@ Quest.prototype.onAcceptDaily = function(){
 }
 
 Quest.prototype.doneQuest = function(quest){
-	var items = g_player.quest?g_player.quest:[];
+	var items = g_player.data.quest
     for (var i=0;i<items.length;i++){
     	var item = items[i];
 	if (item.id==quest.id) {
@@ -160,27 +163,23 @@ Quest.prototype.onDoneQuest = function(){
 }
 
 
-Quest.prototype.onBuyInsure = function(item){
-	var items = g_player.quest?g_player.quest:[];
+Quest.prototype.onBuyItem = function(tname,item,qty){
+	var type;
+	if (tname=="insure")
+		type = QUEST_TYPE.BUY_INSURE;
+	else if (tname=="stock"){
+		if (qty>0)
+			type = QUEST_TYPE.BUY_STOCK;
+		else if (qty<0)
+			type = QUEST_TYPE.SELL_STOCK;
+	}
+	var items = g_player.data.quest
     for (var i=0;i<items.length;i++){
 		if (items[i].status==QUEST_STATUS.ACTIVE) {
 	    	var quest = this.findItem(items[i].id);
-		    if (quest.type==QUEST_TYPE.BUY_INSURE){
-			this.doneQuest(quest);
-			break;
-		    }
-		}
-    }
-}
-
-Quest.prototype.onBuyStock = function(item){
-	var items = g_player.quest?g_player.quest:[];
-    for (var i=0;i<items.length;i++){
-		if (items[i].status==QUEST_STATUS.ACTIVE) {
-	    	var quest = this.findItem(items[i].id);
-		    if (quest.type==QUEST_TYPE.BUY_STOCK){
-			this.doneQuest(quest);
-			break;
+		    if (quest.type==type){
+				this.doneQuest(quest);
+				break;
 		    }
 		}
     }
