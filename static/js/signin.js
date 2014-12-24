@@ -107,23 +107,15 @@ Signin.prototype.clickFeeling = function(feelingId){
 	}
 	var ftag = document.getElementById("signin_feeling"+feelingId);
 	ftag.style.border = "2px solid green";
-    g_signin.feeling = feelingId;
     //this.style.border = "1px red";
-}
-
-Signin.prototype.doSignin = function(){
-	if (this.feeling<0)
-	{
-		g_msg.open('亲, 请选择你今天的心情哦');
-		return;
-	}
-	
+    
     g_player.prize(this.data);
     
-    g_playerlog.updateSignin(this.feeling);
+    g_playerlog.updateSignin(feelingId);
     
-    $('#'+this.tagname).modal('hide');     
+    $('#'+this.tagname).modal('hide');      
 }
+
 
 var g_signin = new Signin();
 g_signin.init();

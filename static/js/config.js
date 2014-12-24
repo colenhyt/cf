@@ -29,7 +29,7 @@ var login_imgs = [
 	{name:"chosegirl",src:"static/img/icon_girl.png",x:400,y:550,zindex:0},
 	{name:"wchoseboy",src:"static/img/bt_boy.png",x:130,y:680,zindex:0},
 	{name:"wchosegirl",src:"static/img/bt_girl.png",x:390,y:680,zindex:0},
-	{name:"btstart",src:"static/img/bt_start.png",x:180,y:780,zindex:0},
+	{name:"btstart",src:"static/img/bt_start.png",x:180,y:80,zindex:0},
 ]
 
 var game_imgs = [

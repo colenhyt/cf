@@ -2,6 +2,7 @@ Stock = function(){
     this.name = "stock";
     this.cname = "股票";
     this.pageCount = 4;
+    this.currPage = 0;
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
     this.tagdetailname = this.tagname+"detail";
@@ -43,9 +44,9 @@ Stock.prototype.buildPage = function(page)
 		for (var i=start;i<end;i++){
 			var item = tdata[i];
 			var pitem = g_player.getItemData("stock",item);
-			var psColor = "green";
+			var psColor = "red";
 			if (pitem.profit<0)
-				psColor = "red"
+				psColor = "green"
 		     content += "<div class='cfpanel' ID='"+this.name+"_d"+item.id+"' onclick='g_stock.showDetail("+item.id+")'>"
 		     content += "<span class='cfpanel_title'>"+item.name+"</span>"
 		     content += "<span class='cfpanel_text right'>目前持有<span style='color:yellow'> "+pitem.qty/100+"</span> 手</span>"
@@ -60,6 +61,7 @@ Stock.prototype.buildPage = function(page)
 			content += "             </div>"
      		content += "</div>"
 		
+		this.currPage = page;
         content += this.buildPaging(page,tdata.length);
 	}
      
@@ -78,9 +80,9 @@ Stock.prototype.showDetail = function(id,isflush){
    var pitem = g_player.getItemData("stock",item);
    var strPro = "尚未持有";
    if (pitem){
-	var psColor = "green";
+	var psColor = "red";
 	if (pitem.profit<0)
-		psColor = "red"   
+		psColor = "green"   
    	 strPro = "盈亏:<span style='color:"+psColor+"'>"+ForDight(pitem.profit)+"</span>";
    }
    

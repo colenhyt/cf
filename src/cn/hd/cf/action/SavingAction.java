@@ -39,18 +39,28 @@ public class SavingAction extends BaseAction {
 			return null;
 		}
 		float inAmount = 0 - saving.getAmount();
-		//先扣钱:
+		//先设活期:
 		int ret = updateLiveSaving(saving.getPlayerid(), inAmount);
 		if (ret!=RetMsg.MSG_OK){
 			super.writeMsg(ret);
 			return null;
 		}
-		Saving savingCfg = savingdataService.findSaving(saving.getItemid());
-		saving.setCreatetime(new Date());
-		saving.setRate(savingCfg.getRate());
-		saving.setType(savingCfg.getType());
-		saving.setPeriod(savingCfg.getPeriod());
-		boolean exec = savingService.add(saving);		
+		
+		boolean exec = false;
+		//取钱:
+		if (saving.getAmount()<0){
+			System.out.println("fdaff remove");
+			exec = savingService.remove(saving.getPlayerid(),saving.getItemid());	
+		}else {
+			Saving savingCfg = savingdataService.findSaving(saving.getItemid());
+			saving.setName(savingCfg.getName());
+			saving.setCreatetime(new Date());
+			saving.setRate(savingCfg.getRate());
+			saving.setType(savingCfg.getType());
+			saving.setPeriod(savingCfg.getPeriod());
+			exec = savingService.add(saving);		
+		}
+		
 		if (exec==false){
 			updateLiveSaving(saving.getPlayerid(),  saving.getAmount());
 			super.writeMsg(RetMsg.MSG_SQLExecuteError);

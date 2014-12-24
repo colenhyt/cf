@@ -2,6 +2,7 @@ Insure = function(){
     this.name = "insure";
     this.cname = "保险";
     this.pageCount = 4;
+    this.currPage = 0;
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
     this.tagdetailname = this.tagname+"detail";
@@ -71,6 +72,7 @@ Insure.prototype.buildPage = function(page)
 			content += "             </div>"
    		content += "</div>"
         
+		this.currPage = page;
         content += this.buildPaging(page,tdata.length);
 	}
      

@@ -1,4 +1,4 @@
-var data_eventdata_feq = 30;
+var data_eventdata_feq = 1;
 
 var data_eventdata=[
 {"name":"彩票中奖","desc":"彩票中一等奖","type":1,"prize":"[{t:1,v:200},{t:0,v:300}]"},

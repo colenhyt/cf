@@ -41,7 +41,7 @@ Login.prototype.draw = function()
 		    div.id = "errmsg";
 		    div.style.position = "absolute";
 		    div.style.color = "black";
-		    div.style.left = "210px";
+		    div.style.left = "130px";
 		    div.style.top =  "490px";
 		    document.body.appendChild(div);     	
    	if (tdata!=null){

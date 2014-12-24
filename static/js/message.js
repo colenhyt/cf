@@ -29,6 +29,11 @@ Msg.prototype.buildHTML = function()
         document.write(pagedetail.toString());  
 }
 
+Msg.prototype.tip = function(desc)
+{
+	alert(desc);
+}
+
 Msg.prototype.open2 = function(title,desc,okCallback,cbParam1,cbParam2,cbParam3,confmText)
 {
 	var content =      "        <div style='margin: auto;text-align:center;'>"

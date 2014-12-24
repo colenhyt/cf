@@ -2,6 +2,7 @@
 Bank = function(){
 	this.name = "bank"
     this.pageCount = 4;
+    this.currPage = 0;
 	this.tagname = "my"+this.name
     this.pagename = this.tagname+"page";
    this.pageheader = this.tagname+"header";
@@ -37,6 +38,7 @@ Bank.prototype.buildHTML2 = function()
 
 Bank.prototype.buildPage = function(page){
 	var playerId = g_player.data.playerid;
+	this.currPage = page;
 	this.showBank(playerId,page);
 }
 

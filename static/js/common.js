@@ -50,7 +50,7 @@ logerr = function(text){
 	div.innerHTML = text;
 }
 
-function ForDight(Dight){  
+ForDight = function(Dight){  
     Dight = Math.round(Dight*Math.pow(10,2))/Math.pow(10,2);  
     return Dight;  
 }
@@ -108,6 +108,8 @@ Datamgr.prototype = {
             pclass += "small";
          }else if (this.name=="bank") {
             pclass += "bank"
+         }else if (this.name=="player") {
+            pclass += "player"
          }
         content += "<div class='"+pclass+"' id='"+this.pagename+"'>"
         content += "</div></div>"
@@ -159,8 +161,6 @@ Datamgr.prototype = {
     },
     
     onClickHead:function(){
-        if (this.name=='signin')
-        	g_signin.doSignin(); 
     },    
     
     update:function(){
@@ -171,6 +171,13 @@ Datamgr.prototype = {
 	        this.syncData();
 	    }
     },    
+	
+	hide:function(pagename){
+		if (pagename==null)
+		$('#'+this.tagname).modal('hide');  
+		else
+		$('#'+pagename).modal('hide');  
+	},
 	
 	show:function(){
 		this.buildPage(0);
@@ -238,28 +245,20 @@ Datamgr.prototype = {
 	    	
 	    }
 
-		var strUnit = "份";
-		var strDesc = "确定";
-		var qtyStr = qty;
-		if (this.name=="stock"){
-			strUnit = "股";
-			if (qty>0){
-				strDesc += "加持";
-			}else {
-				strDesc += "减持";
-				qtyStr = 0 - qtyStr;
-			}
-		}else
-			strDesc += "购买";
-			
-		strDesc += " <span style='color:red'>"+qtyStr+"</span> "+strUnit+""+item.name+"产品?";
-		var doPath = "g_"+this.name+".buy";
-		g_msg.open2(item.name+" "+this.cname,strDesc,doPath,id,qty);
+		this.buy(id,qty);
+		return;
 	},
 	
 	buy:function(id,qty){
 	    var ret = g_player.buyItem(this.name,id,qty);
-	    if (ret==true){
+	    if (ret.ret==true){
+	    	var item = ret.item;
+	    	//tip:
+			if (qty>0)
+				g_msg.tip("购买<span style='color:red'>"+item.name+"</span>成功,金额:"+item.amount);
+			else
+				g_msg.tip("抛售<span style='color:red'>"+item.name+"</span>成功,金额:"+(0-item.amount));
+			    	
 	    	//刷新detail 页面:
 	    	if (this.name=='insure')
 	    		this.closeDetail();
@@ -267,7 +266,7 @@ Datamgr.prototype = {
 	    		this.showDetail(id,true);
 	    	
 	    	//刷新list 页面:
-	    	this.buildPage(0);
+	    	this.buildPage(this.currPage);
 	    	//$('#'+this.tagdetailname).modal('hide');
 	    }
 	},

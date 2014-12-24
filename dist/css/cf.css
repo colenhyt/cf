@@ -94,12 +94,16 @@ height:234px;
   outline: none;
   transition:all 0.3s;
   width:585px;
-  height:684px;
+  height:637px;
   background:url('../../static/img/pop_big.png') no-repeat;
   -moz-background-size:100% 100%;  
     background-size:100% 100%;  
 }
 
+.cfpage.player
+{
+  height:684px;
+}
 .cfpage.small
 {
 padding-top:20px;
@@ -190,6 +194,9 @@ margin-left:5px;
 margin-top:5px;
 margin-bottom:-5px;
 font-size:35px;
+}
+.cpgapedetail_h2.left{
+float:left
 }
 
 .cfprop {

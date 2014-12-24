@@ -69,6 +69,22 @@ public class SavingService extends BaseService {
 		return true;
 	}
 	
+	public boolean remove(int playerid,int itemid)
+	{
+		try {
+			SavingExample example = new SavingExample();
+			Criteria criteria = example.createCriteria();
+			criteria.andPlayeridEqualTo(playerid);
+			criteria.andItemidEqualTo(itemid);
+			savingMapper.deleteByExample(example);
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}	
+		return true;
+	}	
+	
 	public boolean update(Saving record)
 	{
 		try {

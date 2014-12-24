@@ -6,7 +6,7 @@ Event = function(){
     this.pagedetailname = this.tagdetailname+"page";
     this.tick = 0;
     if (data_eventdata_feq==null||data_eventdata_feq==0)
-    	data_eventdata_feq = 30;
+    	data_eventdata_feq = 2;
     this.duration = data_eventdata_feq * 60;
 }
 

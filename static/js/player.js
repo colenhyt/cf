@@ -139,32 +139,53 @@ Player.prototype.buildPage = function(){
 
 Player.prototype.showPie = function(data,divName){
 	var data = [
-	        	{name : '活期存款',value : data.saving,color:'#9d4a4a'},
-	        	{name : '定期存款',value : data.saving2,color:'#97b3bc'},
-	        	{name : '保险',value : data.insure,color:'#9d4a33'},
-	        	{name : '股票',value : data.stock,color:'#5d7f97'},
+	        	{name : '定期',value : data.saving2,color:'#00ae57'},
+	        	{name : '股票',value : data.stock,color:'#51d344'},
+	        	{name : '保险',value : data.insure,color:'#ff4400'},
+ 	        	{name : '活期',value : data.saving,color:'#2894B8'},
         	];
 	
-	new iChart.Pie2D({
+	new iChart.Pie3D({
 		render : divName,
 		data: data,
 		title : {
 			text:"资产分布",
-			fontsize:25,
+			fontsize:30,
+			offsety:30,
 			color:'#ffffff'
 		},
-		legend : {
-			enable : true
-		},
+		sub_option:{
+					mini_label_threshold_angle : 0,//迷你label的阀值,单位:角度
+					mini_label:{//迷你label配置项
+						fontsize:10,
+						fontweight:600,
+						color : '#000000'
+					},
+					label : {
+						background_color:null,
+						sign:false,//设置禁用label的小图标
+						padding:'0 1',
+						border:{
+							enable:false,
+							color:'#666666'
+						},
+						fontsize:10,
+						fontweight:600,
+						color : '#000000'
+					},
+				},		
 		border:{
 				enable:false,
 			 },		
+		padding: 5,
 		background_color: "#275868",
 		showpercent:true,
+		animation:true,
 		decimalsnum:2,
 		width : 350,
 		height : 400,
-		radius:140
+		radius:140,
+		offset_angle:12,
 	}).draw();	
 }
 
@@ -355,7 +376,9 @@ Player.prototype.buyItem = function(tname,id,qty,amount2){
 	if (amount2!=null)
 		amount = amount2;
 		
-	var tgoods = {itemid:item.id,playerid:this.data.playerid,
+	amount = ForDight(amount);
+		
+	var tgoods = {itemid:item.id,playerid:this.data.playerid,name:item.name,
 			qty:qty,price:item.price,amount:amount,
 			createtime:Date.parse(new Date())};
 			
@@ -363,8 +386,8 @@ Player.prototype.buyItem = function(tname,id,qty,amount2){
 	var ret = myajax(tname+"_add",dataParam);
 	if (ret==null||ret.code!=0)
 	{
-		g_msg.open("购买失败:"+ERR_MSG[ret.code]);
-		return;
+		g_msg.open("操作失败:"+ERR_MSG[ret.code]);
+		return {ret:false};
 	}
 	
 	tdata.push(tgoods);
@@ -373,12 +396,9 @@ Player.prototype.buyItem = function(tname,id,qty,amount2){
 	var pupdate = {"cash":cash};
 	this.updateData(pupdate);
 	g_quest.onBuyItem(tname,item,qty);
-	if (qty>0)
-		g_msg.open("成功购买:"+item.name);
-	else
-		g_msg.open("成功抛售:"+item.name);
+	
 		
-	return true;
+	return {ret:true,item:tgoods};
 		
 }
 
@@ -407,8 +427,8 @@ Player.prototype.find = function(playerid){
 	return serverPlayer;
 }
 
-store.remove("player");
-store.remove("playerlog");
+//store.remove("player");
+//store.remove("playerlog");
 var g_playerlog = new Playerlog()
 g_playerlog.init();
 var g_player = new Player();
