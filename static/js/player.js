@@ -113,10 +113,10 @@ Player.prototype.buildPage = function(){
 	var data = g_player.getTotal(this);
 	var total = ForDight(data.saving+data.insure+data.stock);
     
-	content += "<div style='margin-top:10px;margin-left:-10px'>"
+	content += "<div style='margin-left:-10px;margin-top:30px'>"
 	content += "<table>"
 	content += " <tr>"
-	content += "  <td style='font-size:20px;width:200px;vertical-align:top;'>"
+	content += "  <td style='font-size:20px;width:200px;vertical-align:top'>"
 	content +=	"<div class='cfprop p1'>定期存款<br>"+data.saving2+"</div>"
 	content +=	"<div class='cfprop p2'>投资股票<br>"+data.stock+"</div>"
 	content +=	"<div class='cfprop p3'>投资保险<br>"+data.insure+"</div>"
@@ -124,7 +124,7 @@ Player.prototype.buildPage = function(){
 	content +=	"<div class='cfprop p5'>总资产值<br>"+total+"</div>"
 	content += "</td>"
 	content += "   <td>"
-	content += "<div id='"+this.graphName+"' style='margin-left:-10px'></div>"
+	content += "<div id='"+this.graphName+"' style='margin-left:-10px;margin-top:-30px'></div>"
 	content += "</td>"
 	content += " </tr>"
 	content += "</table>"
@@ -350,7 +350,14 @@ Player.prototype.getItemData = function(tname,item) {
     var amount = 0;
     var pitem = this.getDataMap(tname)[item.id];
      if (pitem!=null) {
-		profit = pitem["amount"] - pitem["qty"]*item.price;
+     	var quote = g_stock.findLastQuote(item.id);
+     	var ps = 0;
+     	if (tname==g_stock.name){
+     		if (quote!=null) 
+     			ps = quote.price;
+     	}else
+     		ps = item.price;
+		profit = pitem["amount"] - pitem["qty"]*ps;
 		avgPrice = pitem["amount"]/pitem["qty"];
 		amount = pitem.amount;
 		qty = pitem.qty;

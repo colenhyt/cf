@@ -1,15 +1,17 @@
 package cn.hd.cf.action;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import net.sf.json.JSONArray;
-import cn.hd.base.BaseAction;
-import cn.hd.cf.model.Saving;
+import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Stock;
-import cn.hd.cf.service.PlayerService;
+import cn.hd.cf.model.Stockdata;
 import cn.hd.cf.service.StockService;
 import cn.hd.mgr.EventManager;
+import cn.hd.mgr.PlayerManager;
 import cn.hd.mgr.StockManager;
 
 public class StockAction extends SavingAction {
@@ -40,21 +42,34 @@ public class StockAction extends SavingAction {
 	}
 	
 	public String list(){
-		List<Stock> list = stockMgr.getStocks();
-		JSONArray jsonObject = JSONArray.fromObject(list);
-		System.out.println("found stocks:"+jsonObject.toString());
+		List<Stockdata> list = stockMgr.getStockDatas();
+		List<Stockdata> list2 = new ArrayList<Stockdata>();
+		for (int i=0;i<list.size();i++){
+			Stockdata data = list.get(i);
+			Stockdata data2 = new Stockdata();
+			data2.setDescs(data.getDescs());
+			data2.setName(data.getName());
+			data2.setId(data.getId());
+			data2.setType(data.getType());
+			LinkedList<Quote> lquotes = StockManager.getInstance().getQuotes(data.getId());
+			JSONArray jsonquotes = JSONArray.fromObject(lquotes);
+			data2.setJsonquotes(jsonquotes.toString());
+			list2.add(data2);
+			System.out.println(data.getName()+"发现行情: "+jsonquotes.toString().length());
+		}
+		JSONArray jsonObject = JSONArray.fromObject(list2);
+		System.out.println("found stocks:"+jsonObject.toString().length());
 		write(jsonObject.toString(),"utf-8");
 		return null;
 	}
 	
-	public String quote(){
-		List<Stock> list = stockMgr.getStocks();
+	public String lastquote(){
+		List<Quote> list = stockMgr.getLastQuotes(-1);
 		JSONArray jsonObject = JSONArray.fromObject(list);
 		//System.out.println("found stocks quote:"+jsonObject.toString());
 		write(jsonObject.toString(),"utf-8");		
 		return null;
-	}
-	
+	}	
 	
 	public String add(){
 		if (stock.getQty()==0){

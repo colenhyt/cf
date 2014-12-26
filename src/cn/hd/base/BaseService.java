@@ -1,10 +1,10 @@
 package cn.hd.base;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -111,5 +111,26 @@ public class BaseService extends Base{
         }
         return jsonArray.toString();
     }   	
+	
+	
+    /**  
+     * 把java对象队列转成json 字符串  
+     *
+     * @param jsonString  
+     * @param beanClass  
+     * @return  
+     */
+	public <T> String beanQueueToJson(Queue<T> queue, Class<T> beanClass) {
+        JSONArray jsonArray = new JSONArray();
+        JSONObject jsonObject;
+        T bean;
+ 
+        while (queue.size()>0){
+        	bean = queue.poll();
+           jsonObject = JSONObject.fromObject(bean);
+           jsonArray.add(jsonObject); 
+        }
+        return jsonArray.toString();
+    } 	
 	
 }

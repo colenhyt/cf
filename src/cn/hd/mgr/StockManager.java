@@ -1,33 +1,30 @@
 package cn.hd.mgr;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import net.sf.json.JSONArray;
+
 import org.apache.log4j.Logger;
 
 import cn.hd.cf.model.Quote;
-import cn.hd.cf.model.Quotedata;
-import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Stockdata;
-import cn.hd.cf.service.QuotedataService;
-import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.StockdataService;
 
 public class StockManager {
 	private static Logger logger = Logger.getLogger(StockManager.class); 
-	private int STOCK_QUOTE_PERIOD = 7;
-	private int STOCK_SAVE_PERIOD = 3600;
+	private int STOCK_QUOTE_PERIOD = 5;
+	private int STOCK_SAVE_PERIOD = 5;
 	private StockdataService stockdataService;
-	private QuotedataService quotedataService;
-	private Map<Integer,Quotedata> quoteMap;
+	private Map<Integer,LinkedList<Quote>> quoteMap;
 	private int tick = 0;
-	private List<Stock> stocks;
-	private Stockdata stockData;
-	private List<Quote>	quotes;
+	private List<Stockdata> stockData;
     private static StockManager uniqueInstance = null;  
 	
     public static StockManager getInstance() {  
@@ -40,94 +37,103 @@ public class StockManager {
     public StockManager(){
 		stockdataService = new StockdataService();
 		stockData = stockdataService.findActive();
-		quotedataService = new QuotedataService();
-		List<Quotedata> quotedata = quotedataService.findQuotes();
-		quotes = new ArrayList<Quote>();
-		quoteMap = quotedataService.getQuoteMap();
-		
-		String jsonStr = null;
-		try {
-			jsonStr = new String(stockData.getData(),"utf-8");
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		STOCK_QUOTE_PERIOD = stockData.getFreq();
-		stocks = stockdataService.jsonToBeanList(jsonStr,Stock.class);
-		
-//		//设置行情价格:
-//		for (int i=0;i<stocks.size();i++){
-//			Stock  stock = stocks.get(i);
-//			Quotedata currQuotes = quoteMap.get(stock.getId());
-//			String jsonString = new String(currQuotes.getData());
-//			JSONArray arrayStrings = JSONArray.fromObject(jsonString);
-//			if (arrayStrings.size()>0){
-//				String str = arrayStrings.getString(arrayStrings.size()-1);
-//				JSONArray arrayValues = JSONArray.fromObject(str);
-//				Quote quote = new Quote();
-//				quote.setStockid(stock.getId());
-//				quote.setDate(arrayValues.getString(0));
-//				quote.setOpenprice(Float.valueOf((float)arrayValues.getDouble(1)));
-//				quote.setUpprice(Float.valueOf((float)arrayValues.getDouble(2)));
-//				quote.setPrice(Float.valueOf((float)arrayValues.getDouble(3)));
-//				quote.setLowprice(Float.valueOf((float)arrayValues.getDouble(4)));
-//				quote.setQty(arrayValues.getInt(5));
-//				stock.setPrice(quote.getPrice());
-//				System.out.println("股票 "+stock.getName()+"获取最新行情价格: "+stock.getPrice());
-//			}
-//		}
+		quoteMap = new HashMap<Integer,LinkedList<Quote>>();
+	   	for (int i=0;i<stockData.size();i++){
+    		Stockdata  stock = stockData.get(i);
+    		STOCK_QUOTE_PERIOD = stock.getFreq();
+	    		String json = new String(stock.getQuotes());
+	    		JSONArray array = JSONArray.fromObject(json);
+	    		List<Quote> quotes = JSONArray.toList(array, Quote.class);
+	    		if (quotes.size()==0) continue;
+	    		LinkedList<Quote> qquotes = new LinkedList<Quote>();
+	    		for(int j=0;j<quotes.size();j++){
+	    			quotes.get(j).setStockid(stock.getId());
+	    			qquotes.offer(quotes.get(j));
+	    		}
+	    		quoteMap.put(stock.getId(), qquotes);
+	    		
+	    }		
+				
      }
   
-    public List<Stock> getStocks(){
-    	return stocks;
+    public List<Stockdata> getStockDatas(){
+    	return stockData;
     }
     
-    public List<Quote> getQuotes(){
+    public LinkedList<Quote> getQuotes(int stockid){
+    	return quoteMap.get(stockid);
+    }
+    
+    public List<Quote> getLastQuotes(int stockid){
+    	List<Quote> quotes = new ArrayList<Quote>();
+    	if (stockid>=0){
+    		LinkedList<Quote> q = quoteMap.get(stockid);
+    		quotes.add(q.peekLast());
+  		
+    	}else {
+    	Iterator<Integer> iter = quoteMap.keySet().iterator();
+    	while (iter.hasNext()){
+    		LinkedList<Quote> q = quoteMap.get(iter.next());
+    		quotes.add(q.peekLast());
+    	}
+    	}
     	return quotes;
     }
     
     public void update(){
     	tick ++;
-		//stock price update:
-		if (tick%STOCK_QUOTE_PERIOD==0)
-		{
-			Random r = new Random();
-		   	for (int i=0;i<stocks.size();i++){
-	    		Stock stock = stocks.get(i);
-	    		float r2 = (float)r.nextInt(stock.getPer().intValue());
-	    		float per = r2/100;
-	    		int addOrMinus = r.nextInt(100);
-	    		float ps = stock.getPrice();
-	    		float oldPs = ps;
-	    		//涨:
-	    		if (addOrMinus<50)
-	    			ps += ps*per;
-	    		else
-	    			ps -= ps*per;
-	    		
-	    		stock.setPrice(ps);
-	    		quotedataService.addNewQuote(stock.getId(), ps);
-	    		System.out.println("股票价格变化: "+stock.getName()+",涨跌幅:"+stock.getPer()+",原价格:"+oldPs+",现价格:"+stock.getPrice());
-	    	}
-		   	logger.info("stock quote update!!!");
-	    }		
-		
-		//数据库保存:
-		if (tick%STOCK_SAVE_PERIOD==0){
-			String jsonString = stockdataService.beanListToJson(stocks,Stock.class);
-			stockData.setData(jsonString.getBytes());
-			stockData.setCreatetime(new Date());
-			stockdataService.updateByKey(stockData);
+ 		//stock price update:
+		if (tick%STOCK_QUOTE_PERIOD==0){
+			for (int i=0;i<stockData.size();i++){
+	    		Stockdata  stock = stockData.get(i);
+	 			LinkedList<Quote> lquote = quoteMap.get(stock.getId());
+	 			if (lquote==null||lquote.size()==0) continue;
+	 			Random r = new Random();
+	 			
+		    		float r2 = (float)r.nextInt(stock.getPer().intValue());
+		    		float per = r2/100;
+		    		int addOrMinus = r.nextInt(100);
+		    		Quote quote = lquote.peekLast();
+		    		float ps = quote.getPrice();
+		    		//涨:
+		    		if (addOrMinus<50)
+		    			ps += ps*per;
+		    		else
+		    			ps -= ps*per;
+		    		
+		    		lquote.poll();
+		    		Quote newq = new Quote();
+		    		newq.setPrice(ps);
+		    		newq.setStockid(stock.getId());
+		    		newq.setLowprice(quote.getLowprice());
+		    		newq.setQty(quote.getQty());
+		    		newq.setUpprice(quote.getUpprice());
+		    		lquote.offer(newq);
+		    		System.out.println("股票价格变化: "+stock.getName()+",涨跌幅:"+stock.getPer()+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
+		    }	
 		}
+		    	
+		if (tick%STOCK_SAVE_PERIOD==0){
+			for (int i=0;i<stockData.size();i++){
+	    		Stockdata  stock = stockData.get(i);
+	 			LinkedList<Quote> lquote = quoteMap.get(stock.getId());
+	 			if (lquote==null||lquote.size()==0) continue;
+	 			stock.setCreatetime(new Date());
+	 			stock.setJsonquotes("");
+	 			//stock.setQuotes(stockdataService.beanQueueToJson(lquote, Quote.class).getBytes());
+	    		//stockdataService.updateByKey(stock);
+			}
+		}		
+		//数据库保存:
+
 	}
     
     public static void main(String[] args) {
 //    	String a = "{'id':3,'name':'万科A','desc':'最大房地产股','price':18.7,'unit':100}";
 //    	JSONObject obj = JSONObject.fromObject(a);
     	StockManager stmgr = StockManager.getInstance();
-    	//stmgr.update();
-    	StockService stockService = new StockService();
-    	List<Stock> stocks = stockService.findByPlayerId(16);
+    	stmgr.update();
+
 
     }
 }

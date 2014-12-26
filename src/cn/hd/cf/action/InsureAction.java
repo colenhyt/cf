@@ -5,6 +5,7 @@ import java.util.Date;
 import cn.hd.base.BaseAction;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.service.InsureService;
+import cn.hd.mgr.PlayerManager;
 
 public class InsureAction extends SavingAction {
 	private Insure		insure;

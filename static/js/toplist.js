@@ -73,34 +73,30 @@ Toplist.prototype.buildPage = function(page)
 		  var start =0;
 		  var end = tdata.length;
                   
-                content += "<div class='cf_top_header'>";
- 			 content += "        <table id='toplist1_tab' style='width:100%'>"
-			 content += "           <thead>"
+                content += "<div class='cf_top'>";
+ 			 content += "        <table id='toplist1_tab' class='cf_top_header'>"
 			 content += "             <tr>"
-			 content += "               <td class='td-c-value'>姓名</td>"
-			 content += "               <td class='td-c-value'>资产</td>"
-			 content += "               <td class='td-c-value'>"+desc+"</td>"
-			 content += "               <td class='td-c-value'>赞</td>"
+			 content += "               <td class='cftoplist_td'>姓名</td>"
+			 content += "               <td class='cftoplist_td'>资产</td>"
+			 content += "               <td class='cftoplist_td'>"+desc+"</td>"
+			 content += "               <td class='cftoplist_td'>赞</td>"
 			content += "              </tr>"
-			content += "            </thead>"
 			content += "          </table>"
-                content += "</div>";
+			 content += "        <table id='toplist1_tab'>"
 		for (var i=start;i<end;i++){
 			var item = tdata[i];
-		     content += "<div>"
-			 content += "        <table id='toplist1_tab' style='width:100%'>"
 			 content += "             <tr>"
-			 content += "               <td class='td-c-value'><div onclick='g_bank.showBank("+item.playerid+")'>"+item.playername+"</div></td>"
-			 content += "               <td class='td-c-value'>"+item.money+"</td>"
-			 content += "               <td class='td-c-value'>"+(i+1)+"</td>"
-			 content += "               <td class='td-c-value'><input type='button' class='cf_top_zan' onclick='g_toplist.zan("+page+","+item.playerid+")'>*<span id='zan_"+item.playerid+"'>"+item.zan+"</span></td>"
+			 content += "               <td class='cftoplist_td'><div onclick='g_bank.showBank("+item.playerid+")'>"+item.playername.substring(0,8)+"</div></td>"
+			 content += "               <td class='cftoplist_td'>"+item.money+"</td>"
+			 content += "               <td class='cftoplist_td'>"+(i+1)+"</td>"
+			 content += "               <td class='cftoplist_td'><input type='button' class='cf_top_zan' onclick='g_toplist.zan("+page+","+item.playerid+")'>*<span id='zan_"+item.playerid+"'>"+item.zan+"</span></td>"
 			content += "              </tr>"
 			 content += "             <tr>"
 			 content += "               <td colspan='4'><img src='static/img/top_line.png'></td>"
 			content += "              </tr>"
-			content += "          </table>"
-      		content += "</div>"
 		}
+			content += "          </table>"
+                content += "</div>";
 
 	}
      
@@ -133,26 +129,42 @@ Toplist.prototype.zan = function(page,playerId)
 	}    
 }
 
-Toplist.prototype.updateData = function(data){
-	store.set(this.tagtab1,data);
+Toplist.prototype.updateData = function(type,data){
+	if (type==0)
+		store.set(this.tagtab1,data);
+	else
+		store.set(this.tagtab2,data);
 }
 
 Toplist.prototype.syncCallback=function(dataobj){
 	try    {
 			var obj = eval ("(" + dataobj + ")");
-			g_toplist.updateData(obj);
+			g_toplist.updateData(0,obj);
 	}   catch  (e)   {
 	    document.write(e.name  +   " :  "   +  dataobj);
 	}   
 }
-	
+
+Toplist.prototype.syncCallback2=function(dataobj){
+	try    {
+			var obj = eval ("(" + dataobj + ")");
+			g_toplist.updateData(1,obj);
+	}   catch  (e)   {
+	    document.write(e.name  +   " :  "   +  dataobj);
+	}   
+}	
+
 Toplist.prototype.syncData = function(){
-	return;
 	try  {
-		$.ajax({type:"post",url:"/cf/toplist_list.do",success:this.syncCallback});
+		$.ajax({type:"post",url:"/cf/toplist_weeklist.do",success:this.syncCallback});
 	}   catch  (e)   {
 	    logerr(e.name);
 	}   
+	try  {
+		$.ajax({type:"post",url:"/cf/toplist_monthlist.do",success:this.syncCallback2});
+	}   catch  (e)   {
+	    logerr(e.name);
+	} 
 }
 
 var g_toplist = new Toplist();

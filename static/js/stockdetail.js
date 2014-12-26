@@ -15,27 +15,53 @@ Stockdetail.prototype.init = function(){
 }
 
 Stockdetail.prototype.drawQuote = function(stockName,divName){
-	var stock;
-	for (var i=0;i<data_quotedata.length;i++){
-		if (data_quotedata[i].name==stockName){
-			stock = data_quotedata[i];
+	var item;
+	var sdata = store.get(g_stock.name);
+	for (var i=0;i<sdata.length;i++){
+		if (sdata[i].name==stockName){
+			item = sdata[i];
 			break;
 		}
 	}
-	if (stock==null){
+	if (item==null){
 		log('no stock quote for:'+stockName);
+		return;
+	}
+	
+	var quotes = g_stock.findQuotes(item.id);
+	if (quotes==null){
+		alert('no stock quote for:'+stockName);
 		return;
 	}
 		
 	var time = new Date();
-	var stockHead = {currPs:123.66,dir:0,per:5.5,currTime:time,status:1};
-	var titleText = stock.name+","+stockHead.currPs+":"+stockHead.dir+":("+stockHead.per+")";
+	var currPs = quotes[quotes.length-1].price;
+	var stockHead = {currPs:currPs,dir:0,per:item.per,currTime:item.createtime,status:1};
+	var titleText = item.name+","+stockHead.currPs+":"+stockHead.dir+":("+stockHead.per+")";
 	var subTitleText = stockHead.currTime+":s"+stockHead.status+"(北京时间)"
+	var upps = 0;
+	var lowps = 0;
 		var flow = [];
-		for(var i=0;i<stock.quote.length;i++){
-			flow.push(stock.quote[i][2]);
+		for(var i=0;i<quotes.length;i++){
+			var ps = quotes[i].price;
+			if (upps==0)
+				upps = ps;
+			else if (ps>upps)
+				upps = ps;
+			if (lowps==0)
+				lowps = ps;
+			else if (ps<lowps)
+				lowps = ps;
+			flow.push(ps);
 		}
-		
+		var diff = upps - lowps;
+		var unit = diff/quotes.length;
+		unit *= 3;
+		if (lowps>unit)
+			lowps -= unit;
+		lowps = parseInt(lowps);
+		upps += unit;
+		upps = parseInt(upps);
 		var data = [
 		         	{
 		         		name : 'PV',
@@ -45,7 +71,6 @@ Stockdetail.prototype.drawQuote = function(stockName,divName){
 		         	}
 		         ];
         
-        var prices = [10,20,30,40,50];
 		var labels = ["9:30","10:30","11:30","13:00","14:00","15:00"];
 		
 		var chart = new iChart.LineBasic2D({
@@ -67,7 +92,7 @@ Stockdetail.prototype.drawQuote = function(stockName,divName){
 			animation:true,
 			offsetx: 15,
 			width : 540,
-			height : 250,
+			height : 420,
 			border:{
 					enable:false,
 				 },
@@ -96,7 +121,7 @@ Stockdetail.prototype.drawQuote = function(stockName,divName){
 			},
 			coordinate:{
 				width:480,
-				height:130,
+				height:280,
 				striped_factor : 0.18,
 				axis:{
 					color:'#311212',
@@ -114,9 +139,9 @@ Stockdetail.prototype.drawQuote = function(stockName,divName){
 				},
 				scale:[{
 					 position:'left',	
-					 start_scale:0,
-					 end_scale:50,
-					 scale_space:10,
+					 start_scale:lowps,
+					 end_scale:upps,
+					 scale_space:2,
 					 scale_size:2,
 					 scale_enable : false,
 					 label : {color:'#311212',font : '微软雅黑',fontsize:15,fontweight:600},

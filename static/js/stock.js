@@ -1,5 +1,6 @@
 Stock = function(){
     this.name = "stock";
+    this.quotename = "quote";
     this.cname = "股票";
     this.pageCount = 4;
     this.currPage = 0;
@@ -15,11 +16,6 @@ Stock.prototype = new Datamgr();
 
 Stock.prototype.init = function(){
  store.remove(this.name)
-	var tdata = store.get(this.name);
-	if (tdata==null)
-	{
-		store.set(this.name,data_stockdata);
-	}     
     this.buildHTML();
 }
 
@@ -28,7 +24,17 @@ Stock.prototype.buildPage = function(page)
 	if (page<0)
 		return
 		
-	this.updateQuotes();
+	var stockdata;
+	try  {
+		var dataobj = $.ajax({type:"post",url:"/cf/stock_list.do",async:false});
+		if (dataobj!=null&&dataobj.responseText.length>0) {
+			stockdata = eval ("(" + dataobj.responseText + ")");
+		}
+	}   catch  (e)   {
+	    document.write(e.name);
+	} 
+	this.load(stockdata);
+		
 	
 	var tdata = store.get(this.name);
 	var content = 	"";
@@ -44,6 +50,10 @@ Stock.prototype.buildPage = function(page)
 		for (var i=start;i<end;i++){
 			var item = tdata[i];
 			var pitem = g_player.getItemData("stock",item);
+			var quote = this.findLastQuote(item.id);
+			var ps = 0;
+			if (quote!=null)
+				ps = quote.price;
 			var psColor = "red";
 			if (pitem.profit<0)
 				psColor = "green"
@@ -51,7 +61,7 @@ Stock.prototype.buildPage = function(page)
 		     content += "<span class='cfpanel_title'>"+item.name+"</span>"
 		     content += "<span class='cfpanel_text right'>目前持有<span style='color:yellow'> "+pitem.qty/100+"</span> 手</span>"
 			 content += "	<div>"
-			 content += "<span class='cfpanel_text'>当前价格: ￥"+ForDight(item.price)+"</span>"
+			 content += "<span class='cfpanel_text'>当前价格: ￥"+ForDight(ps)+"</span>"
 			 content += "<span class='cfpanel_text right'>总盈亏: <span style='color:"+psColor+"'>"+ForDight(pitem.profit)+"</span></span>"
 			content += "     </div>"
       		content += "</div>"
@@ -86,8 +96,17 @@ Stock.prototype.showDetail = function(id,isflush){
    	 strPro = "盈亏:<span style='color:"+psColor+"'>"+ForDight(pitem.profit)+"</span>";
    }
    
+	var quote = this.findLastQuote(item.id);
+	var ps = 0;
+	if (quote==null) {
+		ps = 1;
+		//g_msg.tip("没有当前股票行情"+item.name);
+	}else {
+		ps = quote.price;
+	}
+   
     var amount = g_player.saving[0].amount;
-    var canBuyQty = parseInt(amount/(item.price*100));
+    var canBuyQty = parseInt(amount/(ps*100));
 	var content =      "        <div class='cfpanel_text'><div class='cpgapedetail_h2'>"+item.name
 	content += "<span class='cfpanel_text right'>"+strPro+" </span>"
 	content += "</div>"
@@ -100,9 +119,9 @@ Stock.prototype.showDetail = function(id,isflush){
 	 content += "        <table id='toplist1_tab'>"
 	 content += "             <tr>"
 	 content += "               <td>买入价</td>"
-	 content += "               <td>"+ForDight(item.price)+"</td>"
+	 content += "               <td>"+ForDight(ps)+"</td>"
 	 content += "               <td>单位</td>"
-	 content += "               <td>"+item.unit+"股/手</td>"
+	 content += "               <td>100 股/手</td>"
 	content += "              </tr>"
 	 content += "             <tr>"
 	 content += "               <td>持有:</td>"
@@ -134,11 +153,39 @@ Stock.prototype.showDetail = function(id,isflush){
 		$('#'+this.tagdetailname).modal({position:PageDetail_Top,show: true});  
 }
 
+Stock.prototype.load = function(data)
+{
+	store.set(this.name,data);
+	var qdata = {};
+	for (var i=0;i<data.length;i++){
+		qdata[data[i].id] = eval ("(" + data[i].jsonquotes + ")");
+	}
+	store.set(this.quotename,qdata);
+}
+
+Stock.prototype.findLastQuote = function(stockid)
+{
+	var qdata = store.get(this.quotename);
+	var quotes = qdata[stockid];
+	if (quotes!=null)
+		return quotes[quotes.length-1];
+	else
+		return {price:0};
+}
+
+Stock.prototype.findQuotes = function(stockid)
+{
+	var qdata = store.get(this.quotename);
+	var quote = qdata[stockid];
+	return quote;
+}
+
 //取行情:
-Stock.prototype.updateQuotes = function(){
-	var quotes ;
+Stock.prototype.syncData = function(){
+
+	var lastquotes ;
 	try  {
-		var dataobj = $.ajax({type:"post",url:"/cf/stock_quote.do",async:false});
+		var dataobj = $.ajax({type:"post",url:"/cf/stock_quotes.do",async:false});
 		if (dataobj!=null&&dataobj.responseText.length>0) {
 			quotes = eval ("(" + dataobj.responseText + ")");
 		}
@@ -146,9 +193,14 @@ Stock.prototype.updateQuotes = function(){
 	    document.write(e.name);
 	} 
 	if (quotes!=null){
-		store.set(this.name,quotes);
-		//var tdata = store.get(this.name);
-	
+		var qdata = store.get(this.quotename);
+		for (var i=0;i<lastquotes.size;i++){
+			var quotes = qdata[lastquotes[i].stockid];
+			if (quotes!=null){
+				quotes.shift();
+				quotes.push(lastquotes[i]);
+			}
+		}
 	}
 }
 var g_stock = new Stock();

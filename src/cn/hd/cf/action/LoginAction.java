@@ -24,6 +24,7 @@ import cn.hd.cf.service.SignindataService;
 import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.ToplistService;
 import cn.hd.mgr.EventManager;
+import cn.hd.mgr.PlayerManager;
 import cn.hd.util.MD5;
 import cn.hd.util.StringUtil;
 
@@ -206,33 +207,10 @@ public class LoginAction extends BaseAction {
 			System.out.println("no player found:playerid:"+player.getPlayerid());
 			return null;
 		}
-		int ret = playerService.updateByKey(playerBlob);
-		JSONArray jsonSaving = JSONArray.fromObject(playerBlob.getSaving());
+		boolean ret = playerService.updateByKey(playerBlob);
 		
-		Toplist toplist = toplistService.findByPlayerId(playerBlob.getPlayerid());
-		if (toplist==null){
-			toplist = toplistService.findByLessMoney(0);
-			int topCount = toplistService.findCount();
-			if (toplist!=null||topCount<10){
-				Toplist newtop = new Toplist();
-				newtop.setPlayerid(playerBlob.getPlayerid());
-				newtop.setPlayername(playerBlob.getPlayername());
-				newtop.setMoney(Float.valueOf(0));
-				newtop.setZan(0);
-				toplistService.add(newtop);				
-			}
-//			if (toplist!=null&&topCount>10){
-//				toplistService.remove(toplist.getId());
-//			}
-		}else {
-			float topMoney = toplist.getMoney().floatValue();
-			if (0>topMoney){
-				toplist.setMoney(Float.valueOf(0));
-				toplistService.updateByKey(toplist);
-			}
-		}
 		//System.out.println("update player("+playerBlob.getPlayername()+"):ret: "+ret);
-		writeMsg(ret);
+		writeMsg(RetMsg.MSG_OK);
 		return null;
 	}
 	

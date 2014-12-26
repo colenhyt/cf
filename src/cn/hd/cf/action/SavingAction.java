@@ -7,6 +7,7 @@ import cn.hd.base.BaseAction;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.service.SavingService;
 import cn.hd.cf.service.SavingdataService;
+import cn.hd.mgr.PlayerManager;
 
 public class SavingAction extends BaseAction {
 	public Saving		saving;
@@ -64,9 +65,9 @@ public class SavingAction extends BaseAction {
 		if (exec==false){
 			updateLiveSaving(saving.getPlayerid(),  saving.getAmount());
 			super.writeMsg(RetMsg.MSG_SQLExecuteError);
-		}else
+		}else {
 			super.writeMsg(RetMsg.MSG_OK);
-			
+		}
 		return null;
 	}
 	

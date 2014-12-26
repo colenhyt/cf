@@ -185,6 +185,8 @@ Login.prototype.login = function(){
 					g_player.stock = eval ("(" + obj.stock + ")");
 				if (obj.insure)
 					g_player.insure = eval ("(" + obj.insure + ")");
+				if (obj.stockdata)
+					g_stock.load(eval ("(" + obj.stockdata + ")"));
 			}
 		}
 	}   catch  (e)   {

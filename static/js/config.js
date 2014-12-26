@@ -9,6 +9,8 @@ var g_db;
 var Page_Top = 80;
 var PageDetail_Top = 100;
 
+var TimeUnit = 60000;
+
 var Panel_ClickColor = "#123123";
 
 var Login_InputDft = "输入你的昵称";

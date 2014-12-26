@@ -53,6 +53,13 @@ public class PlayerService extends BaseService {
 		return null;
 	}
 	
+	public List<PlayerWithBLOBs> findTopMoneyPlayer(int count){
+		PlayerExample example = new PlayerExample();
+		example.setOrderByClause("money desc");
+		List<PlayerWithBLOBs> players = playerMapper.selectByExampleWithBLOBs(example);
+		return players;
+	}
+	
 	public boolean add(PlayerWithBLOBs record)
 	{
 		try {
@@ -66,11 +73,11 @@ public class PlayerService extends BaseService {
 		return true;
 	}
 	
-	public int updateByKey(PlayerWithBLOBs record)
+	public boolean updateByKey(PlayerWithBLOBs record)
 	{
-		playerMapper.updateByPrimaryKeyWithBLOBs(record);
+		playerMapper.updateByPrimaryKeySelective(record);
 		DBCommit();
-		return 0;
+		return true;
 	}
 	
 	public boolean have(String playerName){

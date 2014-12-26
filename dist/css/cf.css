@@ -320,11 +320,17 @@ border:none;
     background-size:100% 100%;  
 }
 
+.cf_top {
+  margin-left: -15px;
+  margin-top:10px;
+  padding-left: 10px;
+  width: 560px;
+}
+
 .cf_top_header{
-  margin-left: -10px;
-  padding-left: 5px;
-  width: 315px;
-  height: 40px;
+ padding-left:10px;
+  width: 550px;
+  height: 50px;
   vertical-align:middle;
 background:url('../../static/img/top_title_bg.png') no-repeat;
 -moz-background-size:100% 100%;  
@@ -414,6 +420,9 @@ margin-top:20px;
 padding-bottom:20px;
 }
 
+.cftoplist_td {
+font-size:30px;
+}
 .cfsignin_feelingimgs{
 padding-top:30px;
 padding-left:20px;

@@ -1,9 +1,12 @@
 package cn.hd.cf.service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import cn.hd.base.BaseService;
 import cn.hd.cf.dao.ToplistMapper;
+import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.model.ToplistExample;
 import cn.hd.cf.model.ToplistExample.Criteria;
@@ -41,8 +44,10 @@ public class ToplistService extends BaseService {
 		return null;
 	}	
 	
-	public int findCount(){
+	public int findCount(int type){
 		ToplistExample example=new ToplistExample();
+		Criteria criteria=example.createCriteria();		
+		criteria.andTypeEqualTo(type);
 		return toplistMapper.countByExample(example);
 	}	
 	
@@ -50,6 +55,39 @@ public class ToplistService extends BaseService {
 		toplistMapper.insert(record);
 		DBCommit();
 		return 0;
+	}
+	
+	public boolean updateData(PlayerWithBLOBs playerBlob,float money){
+		int tt = 0;
+		Toplist toplist = findByPlayerId(playerBlob.getPlayerid());
+		if (toplist==null){
+			toplist = findByLessMoney(money);
+			int topCount = findCount(tt);
+			if (toplist!=null||topCount<10)
+			{
+				Toplist newtop = new Toplist();
+				newtop.setPlayerid(playerBlob.getPlayerid());
+				newtop.setPlayername(playerBlob.getPlayername());
+				newtop.setCreatetime(new Date());
+				newtop.setMoney(money);
+				newtop.setType(tt);
+				newtop.setZan(0);
+				add(newtop);				
+				System.out.println("增加排行榜记录: "+newtop.getPlayername()+":"+newtop.getMoney());
+			}
+			if (toplist!=null&&topCount>=10){
+				remove(toplist.getId());
+			}
+		}else {
+			float topMoney = toplist.getMoney().floatValue();
+			if ((money-topMoney)>0.01){
+				toplist.setMoney(money);
+				toplist.setCreatetime(new Date());
+				updateByKey(toplist);
+				System.out.println("更新排行榜财富: "+toplist.getPlayername()+":"+topMoney+","+toplist.getMoney());
+			}
+		}
+		return true;
 	}
 	
 	public int remove(int id){
@@ -72,7 +110,7 @@ public class ToplistService extends BaseService {
 	}
 	
 	public ToplistService(){
-		initMapper("ToplistMapper");
+		initMapper("toplistMapper");
 	}
 	
 	public ToplistMapper getToplistMapper() {
