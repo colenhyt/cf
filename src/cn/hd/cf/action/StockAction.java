@@ -37,7 +37,6 @@ public class StockAction extends SavingAction {
 
 	public StockAction(){
 		init("stockService");
-		EventManager.getInstance().start();
 		stockMgr = StockManager.getInstance();
 	}
 	
@@ -83,9 +82,10 @@ public class StockAction extends SavingAction {
 			if (stock.getQty()>0){
 				stock.setCreatetime(new Date());
 				exec = stockService.add(stock);	
+				System.out.println("购买股票:"+stock.getItemid()+",qty="+stock.getQty());
 			}else {
-				System.out.println("抛售股票");
 				int qq = (0 - stock.getQty());
+				System.out.println("抛售股票:"+stock.getItemid()+",qty="+qq);
 				exec = stockService.removeStock(stock.getPlayerid(), stock.getItemid(), qq);
 			}
 			if (exec==false){

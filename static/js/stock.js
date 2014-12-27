@@ -17,13 +17,7 @@ Stock.prototype = new Datamgr();
 Stock.prototype.init = function(){
  store.remove(this.name)
     this.buildHTML();
-}
-
-Stock.prototype.buildPage = function(page)
-{
-	if (page<0)
-		return
-		
+    
 	var stockdata;
 	try  {
 		var dataobj = $.ajax({type:"post",url:"/cf/stock_list.do",async:false});
@@ -31,11 +25,16 @@ Stock.prototype.buildPage = function(page)
 			stockdata = eval ("(" + dataobj.responseText + ")");
 		}
 	}   catch  (e)   {
-	    document.write(e.name);
+	    logerr(e.name);
+	    return;
 	} 
-	this.load(stockdata);
+	this.load(stockdata);    
+}
+
+Stock.prototype.buildPage = function(page)
+{
+	if (page<0)	return
 		
-	
 	var tdata = store.get(this.name);
 	var content = 	"";
 	if (tdata.length<=0){

@@ -46,9 +46,9 @@ public class StockService extends BaseService {
 		criteria.andQtyEqualTo(qty);
 		criteria.andItemidEqualTo(stockId);
 		List<Stock> list = stockMapper.selectByExample(example);
-		System.out.println("dfad:"+qty);
 		if (list.size()>0){
 			stockMapper.deleteByPrimaryKey(list.get(0).getId());
+			DBCommit();
 			return true;
 		}
 		return false;

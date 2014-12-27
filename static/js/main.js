@@ -31,6 +31,9 @@ Main.prototype.init = function(){
     canvas.width = Scene_Width;
     canvas.height = Scene_Height;
     document.body.appendChild(canvas);
+    
+    g_msg.tip("aaaaa");
+    g_msg.tip("fdafda");
 	g_game = new Game();
 	g_game.init(canvas);
 }

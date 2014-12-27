@@ -375,7 +375,13 @@ Player.prototype.buyItem = function(tname,id,qty,amount2){
 	
 	
 	var cash = this.saving[0].amount;
-	var amount = item.price* qty;
+	var ps = 0;
+	if (tname==g_stock.name){
+		var quote = g_stock.findLastQuote(id); 
+		ps =  quote.price;
+	}else
+		ps = item.price;
+	var amount = ps * qty;
 	if (cash<amount){
 		 g_msg.open('你的钱不够');
 		return;

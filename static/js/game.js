@@ -278,7 +278,6 @@ Game.prototype.init = function(canvas){
 	this.register(g_quest);
 	this.register(g_player);
 	this.register(g_toplist);
-	this.register(g_event);
 	this.register(g_stock);
 	this.register(g_bank);
 	this.register(g_help);

@@ -50,10 +50,11 @@ public class SavingAction extends BaseAction {
 		boolean exec = false;
 		//取钱:
 		if (saving.getAmount()<0){
-			System.out.println("fdaff remove");
+			System.out.println("取钱:"+saving.getPlayerid()+":itemid="+saving.getItemid());
 			exec = savingService.remove(saving.getPlayerid(),saving.getItemid());	
 		}else {
 			Saving savingCfg = savingdataService.findSaving(saving.getItemid());
+			System.out.println("存钱:"+saving.getPlayerid()+":itemid="+saving.getItemid());
 			saving.setName(savingCfg.getName());
 			saving.setCreatetime(new Date());
 			saving.setRate(savingCfg.getRate());

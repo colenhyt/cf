@@ -12,6 +12,8 @@ Toplist = function(){
 Toplist.prototype = new Datamgr();
 
 Toplist.prototype.init = function(){
+store.remove(this.tagtab1);
+store.remove(this.tagtab2);
 	var tdata = store.get(this.tagtab1);
 	if (tdata==null)
 	{
@@ -22,6 +24,7 @@ Toplist.prototype.init = function(){
 	{
 		store.set(this.tagtab2,[]);
 	} 
+	this.syncData2();
 	this.buildHTML2();
 }
 
@@ -76,8 +79,8 @@ Toplist.prototype.buildPage = function(page)
                 content += "<div class='cf_top'>";
  			 content += "        <table id='toplist1_tab' class='cf_top_header'>"
 			 content += "             <tr>"
-			 content += "               <td class='cftoplist_td'>姓名</td>"
-			 content += "               <td class='cftoplist_td'>资产</td>"
+			 content += "               <td width='180px'>姓名</td>"
+			 content += "               <td width='160px'>资产</td>"
 			 content += "               <td class='cftoplist_td'>"+desc+"</td>"
 			 content += "               <td class='cftoplist_td'>赞</td>"
 			content += "              </tr>"
@@ -108,63 +111,52 @@ Toplist.prototype.zan = function(page,playerId)
 {
     var zanTag = document.getElementById('zan_'+playerId);
     var zanCount = parseInt(zanTag.innerHTML)+1;
-    zanTag.innerHTML = zanCount;
+	try  {
+		var data = "toplist.playerid="+playerId+"&toplist.zan="+zanCount;
+		$.ajax({type:"post",url:"/cf/toplist_zan.do",data:data});
+	}   catch  (e)   {
+	    document.write(e.name);
+	}   
+	
     var dbName = this.tagtab1;
     if (page==1) {
         dbName = this.tagtab2;
     }
     var tdata = store.get(dbName);
     for (var i=0;i<tdata.length;i++){
-        if (tdata[i].id==playerId) {
+        if (tdata[i].playerid==playerId) {
             tdata[i].zan = zanCount;
              break;
         }
     }
     store.set(dbName,tdata);
-	try  {
-		var data = "toplist.playerid="+playerId+"&toplist.zan="+zanCount;
-		$.ajax({type:"post",url:"/cf/toplist_zan.do",data:data});
-	}   catch  (e)   {
-	    document.write(e.name);
-	}    
+	zanTag.innerHTML = zanCount;
+	 
 }
 
-Toplist.prototype.updateData = function(type,data){
-	if (type==0)
-		store.set(this.tagtab1,data);
-	else
-		store.set(this.tagtab2,data);
+Toplist.prototype.updateData = function(data){
+	if (data.length>0){
+		store.set(this.tagtab1,data[0]);
+		store.set(this.tagtab2,data[1]);
+	}
 }
 
 Toplist.prototype.syncCallback=function(dataobj){
 	try    {
-			var obj = eval ("(" + dataobj + ")");
-			g_toplist.updateData(0,obj);
+		var obj = eval ("(" + dataobj + ")");
+		g_toplist.updateData(obj);
 	}   catch  (e)   {
-	    document.write(e.name  +   " :  "   +  dataobj);
+	    logerr(e.name  +   " :  "   +  dataobj);
 	}   
+	
 }
 
-Toplist.prototype.syncCallback2=function(dataobj){
-	try    {
-			var obj = eval ("(" + dataobj + ")");
-			g_toplist.updateData(1,obj);
-	}   catch  (e)   {
-	    document.write(e.name  +   " :  "   +  dataobj);
-	}   
-}	
-
-Toplist.prototype.syncData = function(){
+Toplist.prototype.syncData2 = function(){
 	try  {
-		$.ajax({type:"post",url:"/cf/toplist_weeklist.do",success:this.syncCallback});
+		$.ajax({type:"post",url:"/cf/toplist_list.do",success:this.syncCallback});
 	}   catch  (e)   {
 	    logerr(e.name);
 	}   
-	try  {
-		$.ajax({type:"post",url:"/cf/toplist_monthlist.do",success:this.syncCallback2});
-	}   catch  (e)   {
-	    logerr(e.name);
-	} 
 }
 
 var g_toplist = new Toplist();

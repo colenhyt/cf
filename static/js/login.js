@@ -4,6 +4,7 @@ Login = function(){
     this.count = 0;
     this.syncDuration = 5;
     this.data = {};
+    this.isLogin = false;
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
        this.pageheader = this.tagname+"header";
@@ -218,6 +219,10 @@ Login.prototype.login = function(){
 	{
 		g_signin.start(0);
 	}
+	
+	g_event.triggerEvent();
+	//g_game.register(g_event);
+	
    return true;
 }
 

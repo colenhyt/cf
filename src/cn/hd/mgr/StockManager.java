@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Stockdata;
 import cn.hd.cf.service.StockdataService;
+import cn.hd.cf.service.ToplistService;
 
 public class StockManager {
 	private static Logger logger = Logger.getLogger(StockManager.class); 
@@ -131,8 +132,10 @@ public class StockManager {
     public static void main(String[] args) {
 //    	String a = "{'id':3,'name':'万科A','desc':'最大房地产股','price':18.7,'unit':100}";
 //    	JSONObject obj = JSONObject.fromObject(a);
-    	StockManager stmgr = StockManager.getInstance();
-    	stmgr.update();
+    	//StockManager stmgr = StockManager.getInstance();
+    	//stmgr.update();
+    	ToplistService toplist = new ToplistService();
+    	toplist.findByType(1);
 
 
     }

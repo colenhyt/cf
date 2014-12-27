@@ -1,37 +1,28 @@
 package cn.hd.cf.action;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.json.JSONArray;
 import cn.hd.base.BaseAction;
-import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Toplist;
-import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.service.ToplistService;
 
 public class ToplistAction extends BaseAction {
 	private Toplist toplist;
 	private ToplistService toplistService;
-	private PlayerService playerService;
-	public PlayerService getPlayerService() {
-		return playerService;
-	}
-
-	public void setPlayerService(PlayerService playerService) {
-		this.playerService = playerService;
-	}
-
 
 	public ToplistAction(){
-		init("toplistService","playerService");
+		init("toplistService");
 	}
 	
-	public String weeklist(){
+	public String list(){
 		int count = 10;
-		List<Toplist> tt = toplistService.findByType(0);
-		//System.out.println("get list :"+tt.size());
-		JSONArray jsonObject = JSONArray.fromObject(tt);
+		List<Toplist> weeklist = toplistService.findByType(0);
+		List<Toplist> monthlist = toplistService.findByType(1);
+	//System.out.println("get list :"+tt.size());
+		JSONArray jsonObject = new JSONArray();
+		jsonObject.add(weeklist);
+		jsonObject.add(monthlist);
 		
 		write(jsonObject.toString(),"utf-8");
 		return null;
@@ -47,15 +38,12 @@ public class ToplistAction extends BaseAction {
 	}
 	
 	public String zan(){
-//		Toplist toplist2 = toplistService.findByPlayerId(toplist.getPlayerid());
-//		System.out.println("toplist zan: playerid="+toplist.getPlayerid()+",zan="+toplist.getZan());
-//		if (toplist2!=null){
-//			toplist2.setZan(toplist.getZan());
-//			toplistService.updateByKey(toplist2);
-//		}
-		PlayerWithBLOBs player = playerService.findByPlayerId(toplist.getPlayerid());
-		player.setZan(player.getZan()+1);
-		playerService.updateByKey(player);
+		Toplist toplist2 = toplistService.findByPlayerId(toplist.getPlayerid());
+		System.out.println("toplist zan: playerid="+toplist.getPlayerid()+",zan="+toplist.getZan());
+		if (toplist2!=null){
+			toplist2.setZan(toplist.getZan());
+			toplistService.updateByKey(toplist2);
+		}
 		return null;
 	}
 	

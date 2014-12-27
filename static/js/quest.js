@@ -148,7 +148,7 @@ Quest.prototype.doneQuest = function(quest){
     	var item = items[i];
 	if (item.id==quest.id) {
 		if (item.status==QUEST_STATUS.DONE){
-			alert('该任务已被完成');
+			g_msg.tip('该任务已被完成');
 			break;
 		}
 		items[i].status = QUEST_STATUS.DONE;

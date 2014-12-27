@@ -8,13 +8,17 @@ var MSG = {
 }
 
 Msg = function(){
-	this.name ="msg"
+	this.name ="msg";
+	this.tipname ="msgtip";
+	this.tips = [];
     this.tagname = "my"+this.name;
+    this.tipTop = "300px";
     this.pagename = this.tagname+"page";
 }
 
 Msg.prototype.init = function()
 {
+
 	this.buildHTML();
 }
 
@@ -29,9 +33,34 @@ Msg.prototype.buildHTML = function()
         document.write(pagedetail.toString());  
 }
 
+function MsgTipCallback(){
+	//alert('msgtipCallback');
+	var tipid = g_msg.tips.shift();
+	if (tipid!=null){
+		var tag = document.getElementById(tipid);
+		document.body.removeChild(tag);
+		//alert('remove'+tipid);
+	}
+}
+
 Msg.prototype.tip = function(desc)
 {
-	alert(desc);
+	var tag = document.createElement("DIV");
+	tag.id = "tip"+Date.parse(new Date());
+	tag.style.position = "absolute";
+	tag.style.left = "60px";
+	tag.style.top = this.tipTop;
+	tag.style.width = "500px";
+	tag.style.display = "none";
+	tag.style.color = "yellow";
+	tag.style.textAlign = "center";
+	tag.style.border = "1px solid pink";
+	tag.innerHTML = desc;
+	tag.style.zIndex = 2000;
+    document.body.appendChild(tag);
+	//this.tips.push(tag.id);
+
+	//$('#'+tag.id).animate({marginTop:-200, opacity:'show'},1200,MsgTipCallback).fadeOut(2000);
 }
 
 Msg.prototype.open2 = function(title,desc,okCallback,cbParam1,cbParam2,cbParam3,confmText)
