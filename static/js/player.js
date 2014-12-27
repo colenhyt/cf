@@ -206,7 +206,7 @@ Player.prototype.getTotal = function(data) {
 	for (var i=0;i<data.stock.length;i++){
 		stock += data.stock[i].amount;
 	}
-	return {saving2:ForDight(saving2),saving:ForDight(saving),insure:ForDight(insure),stock:ForDight(stock)};
+	return {saving:ForDight(saving),saving2:ForDight(saving2),insure:ForDight(insure),stock:ForDight(stock)};
 }
 
 Player.prototype.flushPageview = function() {
@@ -216,7 +216,7 @@ Player.prototype.flushPageview = function() {
     tag = document.getElementById("tagcard");
     tag.innerHTML = this.data.exp;	
     tag.style.display = "";
-    tag = document.getElementById("tagplayer");
+    tag = document.getElementById("tagplayerinfo");
 	var lv = g_title.getLevel();
     tag.innerHTML = g_title.getData(lv).name;	
     tag.style.display = "";
@@ -416,13 +416,13 @@ Player.prototype.buyItem = function(tname,id,qty,amount2){
 }
 
 Player.prototype.find = function(playerid){
-     var serverPlayer;
+     var serverPlayer = {};
 	var dataobj = $.ajax({url:"/cf/login_get.do?player.playerid="+playerid,async:false});
 	try    {
 		if (dataobj!=null&&dataobj.responseText.length>0) {
 			var obj = eval ("(" + dataobj.responseText + ")");
 			if (obj!=null){
-				serverPlayer = obj;
+				serverPlayer.data = obj;
 				if (obj.saving)
 					serverPlayer.saving = eval ("(" + obj.saving + ")");
 				if (obj.quest)

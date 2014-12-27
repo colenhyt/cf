@@ -89,7 +89,7 @@ Toplist.prototype.buildPage = function(page)
 		for (var i=start;i<end;i++){
 			var item = tdata[i];
 			 content += "             <tr>"
-			 content += "               <td class='cftoplist_td'><div onclick='g_bank.showBank("+item.playerid+")'>"+item.playername.substring(0,8)+"</div></td>"
+			 content += "               <td class='cftoplist_td'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.playername.substring(0,8)+"</div></td>"
 			 content += "               <td class='cftoplist_td'>"+item.money+"</td>"
 			 content += "               <td class='cftoplist_td'>"+(i+1)+"</td>"
 			 content += "               <td class='cftoplist_td'><input type='button' class='cf_top_zan' onclick='g_toplist.zan("+page+","+item.playerid+")'>*<span id='zan_"+item.playerid+"'>"+item.zan+"</span></td>"

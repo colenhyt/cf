@@ -220,8 +220,8 @@ Login.prototype.login = function(){
 		g_signin.start(0);
 	}
 	
-	g_event.triggerEvent();
-	//g_game.register(g_event);
+	//g_event.triggerEvent();
+	g_game.register(g_event);
 	
    return true;
 }

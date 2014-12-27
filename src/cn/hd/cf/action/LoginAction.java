@@ -157,6 +157,25 @@ public class LoginAction extends BaseAction {
 		return null;
 	}
 	
+	public String getPlayerJsonData(PlayerWithBLOBs playerBlob)
+	{
+		List<Saving> savings = savingService.findByPlayerId(playerBlob.getPlayerid());
+		JSONArray  jsonSaving = JSONArray.fromObject(savings);
+		playerBlob.setSaving(jsonSaving.toString());
+		List<Stock> stocks = stockService.findByPlayerId(playerBlob.getPlayerid());
+		JSONArray  jsonStock = JSONArray.fromObject(stocks);
+		playerBlob.setStock(jsonStock.toString());			
+		List<Insure> insures = insureService.findByPlayerId(playerBlob.getPlayerid());
+		jsonStock = JSONArray.fromObject(insures);
+		playerBlob.setInsure(jsonStock.toString());			
+		
+		//List<Integer> dataIds = findUpdateDataIds(player.getVersions());
+		//取需要更新的模块id
+		JSONObject obj = JSONObject.fromObject(playerBlob);	
+		
+		return obj.toString();
+	}
+	
 	public String login()
 	{
 		PlayerWithBLOBs playerBlob = playerService.find(player.getPlayerid(),player.getPwd());
@@ -165,20 +184,9 @@ public class LoginAction extends BaseAction {
 			System.out.println("no player found:playerid:"+player.getPlayerid());
 			return null;
 		}
-		List<Saving> savings = savingService.findByPlayerId(player.getPlayerid());
-		JSONArray  jsonSaving = JSONArray.fromObject(savings);
-		playerBlob.setSaving(jsonSaving.toString());
-		List<Stock> stocks = stockService.findByPlayerId(player.getPlayerid());
-		JSONArray  jsonStock = JSONArray.fromObject(stocks);
-		playerBlob.setStock(jsonStock.toString());			
-		List<Insure> insures = insureService.findByPlayerId(player.getPlayerid());
-		jsonStock = JSONArray.fromObject(insures);
-		playerBlob.setInsure(jsonStock.toString());			
+		String pdata = getPlayerJsonData(playerBlob);
+		write(pdata,"utf-8");
 		
-		//List<Integer> dataIds = findUpdateDataIds(player.getVersions());
-		//取需要更新的模块id
-		JSONObject obj = JSONObject.fromObject(playerBlob);
-		write(obj.toString(),"utf-8");
 		System.out.println("player("+player.getPlayername()+") login success");
 		return null;
 	}
@@ -191,9 +199,9 @@ public class LoginAction extends BaseAction {
 			System.out.println("no player found:playerid:"+player.getPlayerid());
 			return null;
 		}
-		JSONObject obj = JSONObject.fromObject(playerBlob);
-		write(obj.toString(),"utf-8");
-		System.out.println("player("+obj.toString()+") found");
+		String pdata = getPlayerJsonData(playerBlob);
+		write(pdata,"utf-8");
+		System.out.println("player("+pdata+") found");
 		return null;
 	}
 	

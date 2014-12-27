@@ -276,7 +276,7 @@ Game.prototype.init = function(canvas){
 	this.register(g_insure);
 	this.register(g_title);
 	this.register(g_quest);
-	this.register(g_player);
+	this.register(g_playerinfo);
 	this.register(g_toplist);
 	this.register(g_stock);
 	this.register(g_bank);

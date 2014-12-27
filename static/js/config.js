@@ -38,7 +38,7 @@ var game_imgs = [
 	{name:"map",src:"static/img/map.png",x:0,y:0,zindex:0},
 	{name:"cash_back",src:"static/img/icon_back.png",x:150,y:15,abs:true},
 	{name:"card_back",src:"static/img/icon_back.png",x:340,y:15,abs:true},
-	{name:"player",src:"static/img/icon_head.png",x:0,y:0,abs:true,hasDiv:true,divX:25,divY:115},
+	{name:"playerinfo",src:"static/img/icon_head.png",x:0,y:0,abs:true,hasDiv:true,divX:25,divY:115},
 	{name:"quest",src:"static/img/icon_quest.png",x:550,y:0,abs:true,hasDiv:true},
 	{name:"toplist",src:"static/img/icon_toplist.png",x:550,y:120},
 	{name:"help",src:"static/img/icon_help.png",x:127,y:190,},
