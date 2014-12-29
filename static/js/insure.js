@@ -42,7 +42,7 @@ Insure.prototype.buildPage = function(page)
 			var item = tdata[i];
 			var pitem = g_player.getItemData("insure",item);
 			var buyDesc;
-			if (item.type==1){
+			if (item.type==0){
 				if (pitem.qty<=0)
 					buyDesc = "尚未购买";
 				else

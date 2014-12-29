@@ -71,12 +71,12 @@ public class StockManager {
     		LinkedList<Quote> q = quoteMap.get(stockid);
     		quotes.add(q.peekLast());
   		
-    	}else {
-    	Iterator<Integer> iter = quoteMap.keySet().iterator();
-    	while (iter.hasNext()){
-    		LinkedList<Quote> q = quoteMap.get(iter.next());
-    		quotes.add(q.peekLast());
-    	}
+    	}else {		//all last quotes
+	    	Iterator<Integer> iter = quoteMap.keySet().iterator();
+	    	while (iter.hasNext()){
+	    		LinkedList<Quote> q = quoteMap.get(iter.next());
+	    		quotes.add(q.peekLast());
+	    	}
     	}
     	return quotes;
     }

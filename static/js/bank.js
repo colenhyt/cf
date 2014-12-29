@@ -1,7 +1,7 @@
 // JavaScript Document
 Bank = function(){
 	this.name = "bank"
-    this.pageCount = 4;
+    this.pageCount = 5;
     this.currPage = 0;
 	this.tagname = "my"+this.name
     this.pagename = this.tagname+"page";
@@ -37,40 +37,36 @@ Bank.prototype.buildHTML2 = function()
 }
 
 Bank.prototype.buildPage = function(page){
-	var playerId = g_player.data.playerid;
 	this.currPage = page;
-	this.showBank(playerId,page);
+	this.showBank(-1,true);
 }
 
-Bank.prototype.showBank = function(playerId,page){
+Bank.prototype.showBank = function(page,pop){
 	
     var   header ="";
     var desc = "";
-	if (page==0) {
-            header += "<button class='cf_title_bg saving2off' onclick='g_bank.buildPage(1)'></button>"
+	if (page==-1) {
+            header += "<button class='cf_title_bg saving2off' onclick='g_bank.showBank(0)'></button>"
             header += "<button class='cf_title_bg savingon'></button>"
 	}
-	else if (page==1){
-           header += "<button class='cf_title_bg savingoff' onclick='g_bank.buildPage(0)'></button>"
+	else{
+           header += "<button class='cf_title_bg savingoff' onclick='g_bank.showBank(-1)'></button>"
             header += "<button class='cf_title_bg saving2on'></button>"
         }        	
 	var tagHeader = document.getElementById(this.pageheader);
 	tagHeader.innerHTML = header;
 	
-	if (page==0){
-		this.showSaving(playerId,page);
+	if (page==-1){
+		this.showSaving();
 	}else
-		this.showSaving2(playerId,page);
+		this.showSaving2(page);
 
-    $('#'+this.tagname).modal({position:Page_Top,show:true});       
+	if (pop)
+    	$('#'+this.tagname).modal({position:Page_Top,show:true});       
 }
 
-Bank.prototype.showSaving = function(playerId,page){
-	var player = g_player.find(playerId);
-	if (player==null){
-		return;
-	}
-	
+Bank.prototype.showSaving = function(){
+	var player = g_player;
 	var data = g_player.getTotal(g_player);
 	var total = data.saving+data.saving2;
 	
@@ -93,9 +89,7 @@ Bank.prototype.showSaving = function(playerId,page){
 
 }
 
-Bank.prototype.showSaving2 = function(playerId,page){
-	page = 0;
-	
+Bank.prototype.showSaving2 = function(page){
 	var tdata = store.get(this.name);
 	var content = 	"";
 	if (tdata.length<=0){
@@ -103,7 +97,7 @@ Bank.prototype.showSaving2 = function(playerId,page){
       content += "</div>"
 	}else {
 		var start = page* this.pageCount+1;
-		var end = (page+1)* this.pageCount;
+		var end = (page+1)* this.pageCount+1;
 		if (end>tdata.length)
 			end = tdata.length;
 		  content += "<div class='cfpanel_body'>"
@@ -122,7 +116,7 @@ Bank.prototype.showSaving2 = function(playerId,page){
 		}
      		content += "</div>"
 		
-        content += this.buildPaging(page,tdata.length);
+        content += this.buildPaging(page,tdata.length-1,"g_bank.showBank");
 	}
 	
 	var tag = document.getElementById(this.pagename);

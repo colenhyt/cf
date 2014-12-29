@@ -35,18 +35,32 @@ Msg.prototype.buildHTML = function()
 
 function MsgTipCallback(){
 	//alert('msgtipCallback');
-	var tipid = g_msg.tips.shift();
-	if (tipid!=null){
-		var tag = document.getElementById(tipid);
-		document.body.removeChild(tag);
-		//alert('remove'+tipid);
+	var desc = g_msg.tips.shift();
+	if (desc!=null){
+		g_msg.poptip(desc);
 	}
 }
 
 Msg.prototype.tip = function(desc)
 {
-	var tag = document.createElement("DIV");
-	tag.id = "tip"+Date.parse(new Date());
+	var tag = document.getElementById(this.tipname);
+	if (tag==null ){
+	    this.poptip(desc);
+    }else {
+		this.tips.push(desc);
+		if (this.tips.length==1)
+		    this.poptip(desc);
+	}
+}
+
+Msg.prototype.poptip = function(desc)
+{
+	var tag = document.getElementById(this.tipname);
+	if (tag ){
+		document.body.removeChild(tag);
+	}
+	tag = document.createElement("DIV");
+	tag.id = this.tipname;
 	tag.style.position = "absolute";
 	tag.style.left = "60px";
 	tag.style.top = this.tipTop;
@@ -55,12 +69,13 @@ Msg.prototype.tip = function(desc)
 	tag.style.color = "yellow";
 	tag.style.textAlign = "center";
 	tag.style.border = "1px solid pink";
-	tag.innerHTML = desc;
 	tag.style.zIndex = 2000;
+	tag.innerHTML = desc;
     document.body.appendChild(tag);
-	//this.tips.push(tag.id);
-
-	//$('#'+tag.id).animate({marginTop:-200, opacity:'show'},1200,MsgTipCallback).fadeOut(2000);
+    
+	this.tips.shift();
+    
+	$('#'+this.tipname).animate({marginTop:-200, opacity:'show'},2000,MsgTipCallback).fadeOut(1000);
 }
 
 Msg.prototype.open2 = function(title,desc,okCallback,cbParam1,cbParam2,cbParam3,confmText)

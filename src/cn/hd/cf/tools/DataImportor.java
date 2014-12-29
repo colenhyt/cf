@@ -301,6 +301,8 @@ public class DataImportor extends Base{
 	                System.out.print("   ");    
 	            }else{  
 	            //判断单元格的数据类型  
+	            	if (row1.getCell(j)==null) continue;
+	            	
 	            	record += "\""+row1.getCell(j).getStringCellValue()+"\":";
 	            switch (cell.getCellType()) {    
 	                case XSSFCell.CELL_TYPE_STRING: // 字符串    
@@ -397,10 +399,10 @@ public class DataImportor extends Base{
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		DataImportor importor = new DataImportor("cfdata.xlsx");
-		String name = "eventdata";
+		String name = "insuredata";
 		importor.importData(name);
 		importor.outputJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);
-//		importor.outputAllJsData();
+
 		
 		
 	}

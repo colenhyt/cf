@@ -95,7 +95,7 @@ public class LoginAction extends BaseAction {
 	public LoginAction(){
 		init("playerService","signindataService","toplistService","savingService","initdataService"
 				,"insureService","stockService","savingdataService");
-		//EventManager.getInstance().start();
+		EventManager.getInstance().start();
 	}
 	
 	public String connect(){

@@ -4,8 +4,8 @@ import java.util.List;
 
 import cn.hd.base.BaseService;
 import cn.hd.cf.dao.StockMapper;
-import cn.hd.cf.model.StockExample;
 import cn.hd.cf.model.Stock;
+import cn.hd.cf.model.StockExample;
 import cn.hd.cf.model.StockExample.Criteria;
 
 public class StockService extends BaseService {
@@ -78,8 +78,13 @@ public class StockService extends BaseService {
 	
 	public boolean update(Stock record)
 	{
-		stockMapper.updateByPrimaryKeySelective(record);
-		DBCommit();
+		try {
+			stockMapper.updateByPrimaryKeySelective(record);
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}			
 		return true;
 	}
 }

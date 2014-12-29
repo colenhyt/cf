@@ -79,11 +79,16 @@ public class InsureService extends BaseService {
 	
 	public boolean updateInsures(List<Insure> insures)
 	{
-		for (int i=0;i<insures.size();i++){
-			Insure record = insures.get(i);
-			insureMapper.updateByPrimaryKeySelective(record);
-		}
-		DBCommit();
+		try {
+			for (int i=0;i<insures.size();i++){
+				Insure record = insures.get(i);
+				insureMapper.updateByPrimaryKeySelective(record);
+			}
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}		
 		return true;
 	}
 	

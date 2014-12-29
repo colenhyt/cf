@@ -36,7 +36,7 @@ Datamgr.prototype = {
 	},
 
 
-	buildPaging:function(currPage,itemCount)
+	buildPaging:function(currPage,itemCount,onClick)
 	{
 		var content = ""
 		var pageCount = parseInt(itemCount/this.pageCount);
@@ -48,6 +48,8 @@ Datamgr.prototype = {
 			return content;
 			
 		var clickCallback = "g_"+this.name+".buildPage";
+		if (onClick)
+		 clickCallback = onClick;
 		content +=     "        <div width='90%'>"
 		content += "<input type='button' class='cf_bt pagingleft' value='上一页' onclick='"+clickCallback+"("+(currPage-1)+")'/>"
 		content += "<span class='cf_paging'>"+(currPage+1)+"/"+pageCount+"</span>"

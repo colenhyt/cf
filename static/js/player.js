@@ -259,6 +259,8 @@ Player.prototype.getItemData = function(tname,item) {
      		ps = item.price;
 			profit = pitem["amount"] - pitem["qty"]*ps;
      	}
+     	if (!profit)
+     		profit = 0;
 		avgPrice = pitem["amount"]/pitem["qty"];
 		amount = pitem.amount;
 		qty = pitem.qty;

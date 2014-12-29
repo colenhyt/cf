@@ -88,11 +88,16 @@ public class SavingService extends BaseService {
 	
 	public boolean updateSavings(List<Saving> savings)
 	{
-		for (int i=0;i<savings.size();i++){
-			Saving record = savings.get(i);
-			savingMapper.updateByPrimaryKeySelective(record);
-		}
-		DBCommit();
+		try {
+			for (int i=0;i<savings.size();i++){
+				Saving record = savings.get(i);
+				savingMapper.updateByPrimaryKeySelective(record);
+			}
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}			
 		return true;
 	}
 	

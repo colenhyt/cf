@@ -33,6 +33,8 @@ Title.prototype.getData = function(lv){
 	var id = -1;
 	var item;
 	var tdata = store.get(this.name);
+	if (lv>tdata.length)
+		lv = tdata.length-1;
 	for (var i=0;i<tdata.length;i++){
 		if (tdata[i].level==lv){
 			item = tdata[i];

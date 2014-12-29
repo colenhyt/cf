@@ -62,11 +62,20 @@ public class StockAction extends SavingAction {
 		return null;
 	}
 	
-	public String lastquote(){
-		List<Quote> list = stockMgr.getLastQuotes(-1);
-		JSONArray jsonObject = JSONArray.fromObject(list);
-		//System.out.println("found stocks quote:"+jsonObject.toString());
+	public String quotes(){
+		LinkedList<Quote> lquotes = StockManager.getInstance().getQuotes(stock.getId());
+		JSONArray jsonObject = JSONArray.fromObject(lquotes);
 		write(jsonObject.toString(),"utf-8");		
+		System.out.println(stock.getId()+" found stocks quote:"+jsonObject.toString().length());
+		return null;
+	}
+	
+	public String lastquote(){
+		int stockid = stock.getId();
+		List<Quote> list = stockMgr.getLastQuotes(stockid);
+		JSONArray jsonObject = JSONArray.fromObject(list);
+		write(jsonObject.toString(),"utf-8");		
+		//System.out.println("found stocks quote:"+jsonObject.toString());
 		return null;
 	}	
 	

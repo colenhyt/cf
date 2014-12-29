@@ -34,16 +34,41 @@ Event.prototype.triggerEvent = function(){
 	if (item.type==1){
 		content = this.badEvent(item);
 	}else {
-		var pp = eval ("(" + item.prize + ")");
-		g_player.prize(pp);
-		content = "<div>"
-		content += "<img src='static/img/icon_good.png'>"
-		content += "</div>"
-		content += "<br><div>"
-		content += item.descs
-		content += "</div>"
+		content = this.goodEvent(item);
 	}
-	g_msg.open2("意外保险",content);
+	
+	if (content.length>0)
+		g_msg.open2(item.name,content);
+}
+
+Event.prototype.goodEvent = function(item){
+	var found;
+	var insures = g_player.insure;
+	if (insures.length>0){		
+	for (var i=0;i<insures.length;i++){
+		if (insures[i].itemid == item.itemid){
+			found = true;
+			break;
+		}
+	}
+	}
+	var content = ""
+	if (found==true)
+	{
+			var pp = eval ("(" + item.prize + ")");
+			g_player.prize(pp);
+			desc = item.descs;
+			var targetInsure = g_insure.findItem(item.itemid);
+			var iname = targetInsure?targetInsure.name:"";
+			content = "<div>"
+			content += "<img src='static/img/icon_good.png'>"
+			content += "</div>"
+			content += "<div>"
+			content += item.descs
+			content += "</div>"
+	}
+	
+	return content;
 }
 
 Event.prototype.badEvent = function(item){
@@ -61,7 +86,7 @@ Event.prototype.badEvent = function(item){
 		}
 	}
 	}
-	if (found!=true)
+	if (!found)
 	{
 			var pp = eval ("(" + item.prize + ")");
 			g_player.prize(pp);

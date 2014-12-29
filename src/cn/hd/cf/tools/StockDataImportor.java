@@ -190,7 +190,7 @@ public class StockDataImportor extends Base{
 	}
 
 	public List<Stockdata>  findStocks(){
-		String listName = "股票列表";
+		String listName = "stockdata";
 		JSONArray data = getJsondata(listName,ROW_INDEX_NAME,ROW_INDEX_DATA);
 		List<Stockdata> stocks  = JSONArray.toList(data, Stockdata.class);
 		return stocks;
@@ -198,7 +198,7 @@ public class StockDataImportor extends Base{
 	public void importStockdata(){
 		stockdataService.clear();
 		List<Stockdata> stocks = findStocks();
-		Float freq = getRowData("股票列表",2);
+		Float freq = getRowData("stockdata",2);
 		Integer ifreq = Integer.valueOf(freq.intValue());
 		for (int i=0;i<stocks.size();i++){
 			Stockdata stock = stocks.get(i);
@@ -218,6 +218,10 @@ public class StockDataImportor extends Base{
 	public static void main(String[] args) {	
 		StockDataImportor importor2 = new StockDataImportor("stockdata.xlsx");
 		importor2.importStockdata();
+		
+		DataImportor importor3 = new DataImportor("stockdata.xlsx");
+		String name = "stockdata";
+		importor3.outputJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);		
 		
 	}
 

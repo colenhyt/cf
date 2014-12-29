@@ -16,24 +16,60 @@ Stock.prototype = new Datamgr();
 
 Stock.prototype.init = function(){
  store.remove(this.name)
+ 	var tdata = store.get(this.name);
+	if (tdata==null)
+	{
+		store.set(this.name,data_stockdata);
+	}
     this.buildHTML();
     
-	var stockdata;
+//	var stockdata;
+//	try  {
+//		var dataobj = $.ajax({type:"post",url:"/cf/stock_list.do",async:false});
+//		if (dataobj!=null&&dataobj.responseText.length>0) {
+//			stockdata = eval ("(" + dataobj.responseText + ")");
+//		}
+//	}   catch  (e)   {
+//	    logerr(e.name);
+//	    return;
+//	} 
+//	this.load(stockdata);    
+}
+
+Stock.prototype.load = function(data)
+{
+	store.set(this.name,data);
+	var qdata = {};
+	for (var i=0;i<data.length;i++){
+		qdata[data[i].id] = eval ("(" + data[i].jsonquotes + ")");
+	}
+	store.set(this.quotename,qdata);
+}
+
+Stock.prototype.loadQuotes = function(stockid)
+{
+	var squotes;
 	try  {
-		var dataobj = $.ajax({type:"post",url:"/cf/stock_list.do",async:false});
+		var dataobj = $.ajax({type:"post",url:"/cf/stock_quotes.do",data:"stock.id="+stockid,async:false});
 		if (dataobj!=null&&dataobj.responseText.length>0) {
-			stockdata = eval ("(" + dataobj.responseText + ")");
+			squotes = eval ("(" + dataobj.responseText + ")");
 		}
 	}   catch  (e)   {
 	    logerr(e.name);
 	    return;
 	} 
-	this.load(stockdata);    
+	var qdata = store.get(this.quotename);
+	if (qdata==null){
+		qdata = {};
+	}
+	
+	qdata[stockid] = squotes;
+	store.set(this.quotename,qdata);
 }
 
 Stock.prototype.findStockIds = function()
 {
-	var countNeed = 7;
+	var countNeed = 15;
 	
 	var tdata = store.get(this.name);
 	var data = [];
@@ -67,6 +103,7 @@ Stock.prototype.buildPage = function(page)
 		for (var i=start;i<end;i++){
 			var item = this.findItem(ritems[i]);
 			var pitem = g_player.getItemData("stock",item);
+			this.loadQuotes(item.id);
 			var quote = this.findLastQuote(item.id);
 			var ps = 0;
 			if (quote!=null)
@@ -170,16 +207,6 @@ Stock.prototype.showDetail = function(id,isflush){
 		$('#'+this.tagdetailname).modal({position:PageDetail_Top,show: true});  
 }
 
-Stock.prototype.load = function(data)
-{
-	store.set(this.name,data);
-	var qdata = {};
-	for (var i=0;i<data.length;i++){
-		qdata[data[i].id] = eval ("(" + data[i].jsonquotes + ")");
-	}
-	store.set(this.quotename,qdata);
-}
-
 Stock.prototype.findLastQuote = function(stockid)
 {
 	var qdata = store.get(this.quotename);
@@ -197,12 +224,12 @@ Stock.prototype.findQuotes = function(stockid)
 	return quote;
 }
 
-//取行情:
-Stock.prototype.syncData = function(){
+//取行情:未調用
+Stock.prototype.syncData33 = function(){
 
 	var lastquotes ;
 	try  {
-		var dataobj = $.ajax({type:"post",url:"/cf/stock_quotes.do",async:false});
+		var dataobj = $.ajax({type:"post",url:"/cf/stock_lastquote.do",async:false});
 		if (dataobj!=null&&dataobj.responseText.length>0) {
 			quotes = eval ("(" + dataobj.responseText + ")");
 		}
@@ -220,5 +247,6 @@ Stock.prototype.syncData = function(){
 		}
 	}
 }
+
 var g_stock = new Stock();
  g_stock.init();
