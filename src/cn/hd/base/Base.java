@@ -93,23 +93,18 @@ public class Base {
 
 	/**
 	 * 获得两个时间相差天数
-	 * @param e
+	 * @param type:0:分钟，1:小时,2:天
 	 */	
-	public long findDayMargin(Date d1,Date d2){
-		Calendar c = Calendar.getInstance(); 
-	
-		c.setTime(d1); 
-		c.set(Calendar.MINUTE, 0); 
-		c.set(Calendar.SECOND, 0); 
-		c.set(Calendar.MILLISECOND, 0); 
-		long l1 = c.getTimeInMillis(); 
+	public long findDayMargin(long l1,long l2,int type){
+		int t = 1000;
+		if (type==0)	//minute
+			t *= 60;
+		else if (type==1)	//hour
+			t *= 60*60;
+		else if (type==2)	//day
+			t *= 60*60*24;
 		
-		c.setTime(d2); 
-		c.set(Calendar.MINUTE, 0); 
-		c.set(Calendar.SECOND, 0); 
-		c.set(Calendar.MILLISECOND, 0); 
-		long l2 = c.getTimeInMillis(); 
-	
-		return (l2 - l1) / (1000 * 60 * 60 * 24);
+		System.out.println("时间相差: "+l2+","+l1+","+t);
+		return (l2 - l1) / t;
 	}
 }

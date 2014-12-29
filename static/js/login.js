@@ -202,7 +202,7 @@ Login.prototype.login = function(){
 	for (var i=0;i<g_player.saving.length;i++){
 		var profit = g_player.saving[i].profit;
 		if (profit>0){
-			g_msg.tip("获得收益:"+profit);
+			g_msg.tip("获得收益:"+ForDight(profit));
 		}
 		//g_player.saving[i].interest = 0;
 	}
@@ -230,6 +230,8 @@ Login.prototype.login = function(){
 	if (dlog[1]==true)
 	{
 		g_signin.start(0);
+	}else {
+		g_insure.onEnter();
 	}
 	
    return true;

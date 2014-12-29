@@ -22,6 +22,34 @@ Insure.prototype.init = function(){
     this.buildHTML();
 }
 
+Insure.prototype.onEnter = function(){
+	//
+	var pitem = g_player.getData(this.name);
+	if (pitem==null||pitem.length==0){
+		g_msg.open("你还没有购买任何保险，风险较高");
+	}
+}
+
+Insure.prototype.findIds = function()
+{
+	var tdata = store.get(this.name);
+	var otherdata = [];
+	var ids = [];
+	for (var i=0;i<tdata.length;i++){
+		var pitem = g_player.getItemData(this.name,tdata[i]);
+		if (pitem.qty>0)
+			ids.push(tdata[i].id);
+		else {
+			otherdata.push(tdata[i].id);
+		}
+	}
+	
+	for (var i=0;i<otherdata.length;i++){
+		ids.push(otherdata[i]);
+	}
+	return ids;
+}
+
 Insure.prototype.buildPage = function(page)
 {
 	if (page<0)
@@ -35,11 +63,12 @@ Insure.prototype.buildPage = function(page)
 	}else {
 		var start = page* this.pageCount;
 		var end = (page+1)* this.pageCount;
-		if (end>tdata.length)
-			end = tdata.length;
+		var sids = this.findIds();
+		if (end>sids.length)
+			end = sids.length;
 		  content += "<div class='cfpanel_body'>"
 		for (var i=start;i<end;i++){
-			var item = tdata[i];
+			var item = this.findItem(sids[i]);
 			var pitem = g_player.getItemData("insure",item);
 			var buyDesc;
 			if (item.type==0){

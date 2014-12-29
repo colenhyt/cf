@@ -48,7 +48,11 @@ public class SavingService extends BaseService {
 			lastLogin = new Date();
 	
 		Date d2 = new Date();
-		long diffdd = super.findDayMargin(lastLogin,d2);
+        Calendar c = Calendar.getInstance(); 
+        c.setTime(lastLogin);
+        Calendar c2 = Calendar.getInstance(); 
+        c2.setTime(d2);
+        long diffdd = super.findDayMargin(c.getTimeInMillis(),c2.getTimeInMillis(),1);
 		
 		System.out.println("相差天数: "+diffdd);
 		List<Saving> savings = this.findByPlayerId(playerId);

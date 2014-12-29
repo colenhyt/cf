@@ -178,19 +178,22 @@ color:blue;
     background-size:100% 100%;  
 }
 
-.cfmsg_tip{
-position:absolute;
-width:500px; 
-height:50px; 
-color:yellow; 
-display:none;
-text-align:center;
-top:300px;
-left:60px;
-z-index:2000;
-font-weight:bold;
-border:1px solid pink;
+.cfstock_qtime0{
+position:relative;
+width:530px;
+height:32px; 
+background: green; 
+border:1px solid black;
 }
+
+.cfstock_qtime{
+position:relative;
+height:30px; 
+font-size:20px;
+background: yellow; 
+text-align:center;
+}
+
 .cfpagedetail.small
 {
 margin-left:30px;

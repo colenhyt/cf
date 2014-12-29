@@ -22,18 +22,7 @@ Stock.prototype.init = function(){
 		store.set(this.name,data_stockdata);
 	}
     this.buildHTML();
-    
-//	var stockdata;
-//	try  {
-//		var dataobj = $.ajax({type:"post",url:"/cf/stock_list.do",async:false});
-//		if (dataobj!=null&&dataobj.responseText.length>0) {
-//			stockdata = eval ("(" + dataobj.responseText + ")");
-//		}
-//	}   catch  (e)   {
-//	    logerr(e.name);
-//	    return;
-//	} 
-//	this.load(stockdata);    
+      
 }
 
 Stock.prototype.load = function(data)
@@ -44,6 +33,21 @@ Stock.prototype.load = function(data)
 		qdata[data[i].id] = eval ("(" + data[i].jsonquotes + ")");
 	}
 	store.set(this.quotename,qdata);
+}
+
+Stock.prototype.loadNextQuoteTime = function()
+{
+	var quatetime;
+	try  {
+		var dataobj = $.ajax({type:"post",url:"/cf/stock_nextquotetime.do",async:false});
+		if (dataobj!=null&&dataobj.responseText.length>0) {
+			quatetime = parseFloat(dataobj.responseText);
+		}
+	}   catch  (e)   {
+	    logerr(e.name);
+	    return;
+	} 
+	return quatetime;
 }
 
 Stock.prototype.loadQuotes = function(stockid)
@@ -84,6 +88,22 @@ Stock.prototype.findStockIds = function()
 	return randomItems(data,ids,countNeed);
 }
 
+Stock.prototype.show = function(){
+	if (g_player.data.openstock!=1){
+		g_msg.open2("证券开户","您需要开通证券账户才能投资股票，请点击'确认'按钮开通","g_stock.confirmOpen");
+	}else {
+		this.buildPage(0);
+        $('#'+this.tagname).modal({position:Page_Top,show: true});     
+	}
+}
+
+Stock.prototype.confirmOpen = function(){
+	g_player.updateData({openstock:1});
+	g_msg.hide();
+	g_msg.tip("证券账户已开通");
+	this.show();
+}
+
 Stock.prototype.buildPage = function(page)
 {
 	if (page<0)	return
@@ -102,8 +122,8 @@ Stock.prototype.buildPage = function(page)
 		  content += "<div class='cfpanel_body'>"
 		for (var i=start;i<end;i++){
 			var item = this.findItem(ritems[i]);
-			var pitem = g_player.getItemData("stock",item);
 			this.loadQuotes(item.id);
+			var pitem = g_player.getItemData("stock",item);
 			var quote = this.findLastQuote(item.id);
 			var ps = 0;
 			if (quote!=null)
@@ -121,16 +141,22 @@ Stock.prototype.buildPage = function(page)
       		content += "</div>"
 		}
 			content += "           <div style='margin-top:10px;font-size:25px;color:pink'>  "
-			content += "          股市开放时间为8:00AM-9:00PM <br>股票价格每10分钟变动一次"  
+			content += "          股市开市为8:00AM-9:00PM,下次股价变动:"  
 			content += "             </div>"
+			content += "    <div class='cfstock_qtime0'><p id='stock_qtime' class='cfstock_qtime'></p></div>"  
      		content += "</div>"
 		
+		 
 		this.currPage = page;
         content += this.buildPaging(page,ritems.length);
 	}
      
 	var tag = document.getElementById(this.pagename);
 	tag.innerHTML = content;
+	
+	var tt = this.loadNextQuoteTime();
+	var mp = 580*tt+"px";
+	$("#stock_qtime").animate({marginRight:mp});
 	
 }
 

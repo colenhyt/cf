@@ -1,6 +1,7 @@
 package cn.hd.mgr;
 
 public class EventManager extends java.util.TimerTask{
+	public static int TICK_PERIOD = 3000;
     private static EventManager uniqueInstance = null;  
 	private Boolean isStart;
 	
@@ -22,7 +23,7 @@ public class EventManager extends java.util.TimerTask{
 		isStart = true;
 		
 		java.util.Timer timer = new java.util.Timer(true);  
-		timer.schedule(this, 3000,3000);   		
+		timer.schedule(this, TICK_PERIOD,TICK_PERIOD);   		
 	}
 
 	@Override

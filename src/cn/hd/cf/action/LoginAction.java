@@ -231,7 +231,7 @@ public class LoginAction extends BaseAction {
 		}
 		boolean ret = playerService.updateByKey(playerBlob);
 		
-		System.out.println("update player("+playerBlob.getPlayername()+"):ret: "+ret);
+		System.out.println("update player("+ppObj.toString()+"):ret: "+ret);
 		writeMsg(RetMsg.MSG_OK);
 		return null;
 	}

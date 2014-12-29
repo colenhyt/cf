@@ -70,6 +70,15 @@ public class StockAction extends SavingAction {
 		return null;
 	}
 	
+	public String nextquotetime(){
+		long margin = StockManager.getInstance().getMarginSec();
+		float fmargin = (float)margin/(float)StockManager.getInstance().STOCK_QUOTE_PERIOD;
+		String tt = String.valueOf(fmargin);
+		write(tt,"utf-8");		
+		System.out.println(margin+"上次行情过去时间比例:"+fmargin);
+		return null;
+	}
+	
 	public String lastquote(){
 		int stockid = stock.getId();
 		List<Quote> list = stockMgr.getLastQuotes(stockid);

@@ -20,9 +20,10 @@ import cn.hd.cf.service.ToplistService;
 
 public class StockManager {
 	private static Logger logger = Logger.getLogger(StockManager.class); 
-	private int STOCK_QUOTE_PERIOD = 5;
+	public int STOCK_QUOTE_PERIOD = 5;
 	private int STOCK_SAVE_PERIOD = 5;
 	private StockdataService stockdataService;
+	private long lastQuoteTime;
 	private Map<Integer,LinkedList<Quote>> quoteMap;
 	private int tick = 0;
 	private List<Stockdata> stockData;
@@ -36,12 +37,15 @@ public class StockManager {
      } 
     
     public StockManager(){
+		lastQuoteTime = System.currentTimeMillis();
 		stockdataService = new StockdataService();
 		stockData = stockdataService.findActive();
 		quoteMap = new HashMap<Integer,LinkedList<Quote>>();
 	   	for (int i=0;i<stockData.size();i++){
     		Stockdata  stock = stockData.get(i);
-    		STOCK_QUOTE_PERIOD = stock.getFreq();
+    		int fre = stock.getFreq();
+    		STOCK_QUOTE_PERIOD = fre*60*1000/EventManager.TICK_PERIOD;
+//    		STOCK_QUOTE_PERIOD = 5;
 	    		String json = new String(stock.getQuotes());
 	    		JSONArray array = JSONArray.fromObject(json);
 	    		List<Quote> quotes = JSONArray.toList(array, Quote.class);
@@ -61,6 +65,12 @@ public class StockManager {
     	return stockData;
     }
     
+    public long getMarginSec(){
+    	long curr = System.currentTimeMillis();
+		long diffdd = stockdataService.findDayMargin(lastQuoteTime,curr,-1);
+		return diffdd;
+    }
+        
     public LinkedList<Quote> getQuotes(int stockid){
     	return quoteMap.get(stockid);
     }
@@ -85,6 +95,8 @@ public class StockManager {
     	tick ++;
  		//stock price update:
 		if (tick%STOCK_QUOTE_PERIOD==0){
+			lastQuoteTime = System.currentTimeMillis();
+			System.out.println("条款时间:"+STOCK_QUOTE_PERIOD);
 			for (int i=0;i<stockData.size();i++){
 	    		Stockdata  stock = stockData.get(i);
 	 			LinkedList<Quote> lquote = quoteMap.get(stock.getId());
@@ -132,10 +144,12 @@ public class StockManager {
     public static void main(String[] args) {
 //    	String a = "{'id':3,'name':'万科A','desc':'最大房地产股','price':18.7,'unit':100}";
 //    	JSONObject obj = JSONObject.fromObject(a);
-    	//StockManager stmgr = StockManager.getInstance();
-    	//stmgr.update();
-    	ToplistService toplist = new ToplistService();
-    	toplist.findByType(1);
+    	StockManager stmgr = StockManager.getInstance();
+    	stmgr.update();
+    	long e = stmgr.getMarginSec();
+    	int a = 10;
+//    	ToplistService toplist = new ToplistService();
+//    	toplist.findByType(1);
 
 
     }

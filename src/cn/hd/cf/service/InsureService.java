@@ -1,14 +1,14 @@
 package cn.hd.cf.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import cn.hd.base.BaseService;
 import cn.hd.cf.dao.InsureMapper;
-import cn.hd.cf.model.InsureExample;
 import cn.hd.cf.model.Insure;
-import cn.hd.cf.model.Saving;
+import cn.hd.cf.model.InsureExample;
 import cn.hd.cf.model.InsureExample.Criteria;
 
 public class InsureService extends BaseService {
@@ -46,8 +46,11 @@ public class InsureService extends BaseService {
 		if (lastLogin==null)
 			lastLogin = new Date();
 	
+        Calendar c = Calendar.getInstance(); 
+		c.setTime(lastLogin);
 		Date d2 = new Date();
-		long diffdd = super.findDayMargin(lastLogin,d2);
+		long l2 =  System.currentTimeMillis();
+		long diffdd = super.findDayMargin(c.getTimeInMillis(),l2,1);
 		
 		System.out.println("保险相差天数: "+diffdd);
 		List<Insure> insures = this.findByPlayerId(playerId);

@@ -16,6 +16,8 @@ Msg = function(){
     this.pagename = this.tagname+"page";
 }
 
+Msg.prototype = new Datamgr();
+
 Msg.prototype.init = function()
 {
 
@@ -78,6 +80,7 @@ Msg.prototype.poptip = function(desc)
 	$('#'+this.tipname).animate({marginTop:-200, opacity:'show'},2000,MsgTipCallback).fadeOut(1000);
 }
 
+//title自定义：
 Msg.prototype.open2 = function(title,desc,okCallback,cbParam1,cbParam2,cbParam3,confmText)
 {
 	var content =      "        <div style='margin: auto;text-align:center;'>"

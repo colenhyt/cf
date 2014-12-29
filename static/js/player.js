@@ -137,6 +137,7 @@ Player.prototype.clone = function(data) {
 	data.playerid = pl.playerid;
 	data.accountid = pl.accountid;
 	data.sex = pl.sex;
+	data.openstock = pl.openstock;
 	data.createtime = pl.createtime;
 	data.playername = pl.playername;
 	data.pwd = pl.pwd;

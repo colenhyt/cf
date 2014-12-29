@@ -113,7 +113,9 @@ Signin.prototype.clickFeeling = function(feelingId){
     
     g_playerlog.updateSignin(feelingId);
     
-    $('#'+this.tagname).modal('hide');      
+    $('#'+this.tagname).modal('hide'); 
+    
+    g_insure.onEnter();     
 }
 
 
