@@ -50,9 +50,17 @@ Stock.prototype.loadNextQuoteTime = function()
 	return quatetime;
 }
 
-Stock.prototype.loadQuotes = function(stockid)
+Stock.prototype.loadQuotes = function(stockid,fromServer)
 {
-	var squotes;
+	var qdata = store.get(this.quotename);
+	if (qdata==null){
+		qdata = {};
+	}
+	
+	var squotes = qdata[stockid];
+	if (squotes!=null&&fromServer!=true){
+		return;
+	}
 	try  {
 		var dataobj = $.ajax({type:"post",url:"/cf/stock_quotes.do",data:"stock.id="+stockid,async:false});
 		if (dataobj!=null&&dataobj.responseText.length>0) {
@@ -62,11 +70,6 @@ Stock.prototype.loadQuotes = function(stockid)
 	    logerr(e.name);
 	    return;
 	} 
-	var qdata = store.get(this.quotename);
-	if (qdata==null){
-		qdata = {};
-	}
-	
 	qdata[stockid] = squotes;
 	store.set(this.quotename,qdata);
 }
@@ -114,6 +117,10 @@ Stock.prototype.buildPage = function(page)
 		  content += "<div class='cfpanel' ID='stock_d1'><div class='panel-body'>没有产品</div>"
       content += "</div>"
 	}else {
+		var tt = this.loadNextQuoteTime();
+		var loadFromServer = false;
+		if (tt>0.95)
+			loadFromServer = true;
 		var start = page* this.pageCount;
 		var end = (page+1)* this.pageCount;
 		var ritems = this.findStockIds();
@@ -122,7 +129,7 @@ Stock.prototype.buildPage = function(page)
 		  content += "<div class='cfpanel_body'>"
 		for (var i=start;i<end;i++){
 			var item = this.findItem(ritems[i]);
-			this.loadQuotes(item.id);
+			this.loadQuotes(item.id,loadFromServer);
 			var pitem = g_player.getItemData("stock",item);
 			var quote = this.findLastQuote(item.id);
 			var ps = 0;
@@ -154,8 +161,10 @@ Stock.prototype.buildPage = function(page)
 	var tag = document.getElementById(this.pagename);
 	tag.innerHTML = content;
 	
-	var tt = this.loadNextQuoteTime();
-	var mp = 580*tt+"px";
+	var mp = 530*tt;
+	if (mp>500)
+		mp = 500;
+	mp += "px";
 	$("#stock_qtime").animate({marginRight:mp});
 	
 }
@@ -180,7 +189,7 @@ Stock.prototype.showDetail = function(id,isflush){
 	var ps = 0;
 	if (quote==null) {
 		ps = 1;
-		//g_msg.tip("没有当前股票行情"+item.name);
+		g_msg.tip("当前股票没有行情"+item.name);
 	}else {
 		ps = quote.price;
 	}
