@@ -33,7 +33,7 @@ Login.prototype.draw = function()
 		    div.innerHTML = title+input;
 		    div.style.position = "absolute";
 		    div.style.left = (img.x+10) + "px";
-		    div.style.top =  (img.y+13) + "px";
+		    div.style.top =  (img.y+10) + "px";
 		    document.body.appendChild(div);   
 		    	 
 	   	 }
@@ -171,13 +171,15 @@ Login.prototype.login = function(){
 	
      var player = store.get(g_player.name);
      g_player.data = player;
-   	var dataParam = obj2ParamStr("player",player);
+     var ppobj = {playerid:player.playerid,pwd:player.pwd,playername:player.playername}
+   	var dataParam = obj2ParamStr("player",ppobj);
     var serverPlayer;
 	var dataobj = $.ajax({type:"post",url:"/cf/login_login.do",data:dataParam,async:false});
 	try    {
 		if (dataobj!=null&&dataobj.responseText.length>0) {
 			var obj = eval ("(" + dataobj.responseText + ")");
-			if (obj!=null){
+			if (obj!=null&&obj.playerid!=null){
+				g_player.data = obj;
 				if (obj.quest)
 					g_player.data.quest = eval ("(" + obj.quest + ")");
 				if (obj.saving)
@@ -188,13 +190,23 @@ Login.prototype.login = function(){
 					g_player.insure = eval ("(" + obj.insure + ")");
 				if (obj.stockdata)
 					g_stock.load(eval ("(" + obj.stockdata + ")"));
+			}else {
+				logerr("数据错误: "+obj);
 			}
 		}
 	}   catch  (e)   {
 	    logerr(e.name  +   " :  "   +  dataobj.responseText);
-	   // return false;
+	   return false;
 	}	
-	  
+	
+	for (var i=0;i<g_player.saving.length;i++){
+		var profit = g_player.saving[i].profit;
+		if (profit>0){
+			g_msg.tip("获得收益:"+profit);
+		}
+		//g_player.saving[i].interest = 0;
+	}
+	
     //head img:
     var head_img = head_imgs[player.sex];
     head_img.name = g_player.name;
@@ -219,9 +231,6 @@ Login.prototype.login = function(){
 	{
 		g_signin.start(0);
 	}
-	
-	//g_event.triggerEvent();
-	g_game.register(g_event);
 	
    return true;
 }

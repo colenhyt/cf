@@ -75,8 +75,13 @@ public class PlayerService extends BaseService {
 	
 	public boolean updateByKey(PlayerWithBLOBs record)
 	{
-		playerMapper.updateByPrimaryKeySelective(record);
-		DBCommit();
+		try {
+			playerMapper.updateByPrimaryKeySelective(record);
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}
 		return true;
 	}
 	

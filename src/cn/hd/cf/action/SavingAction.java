@@ -74,10 +74,13 @@ public class SavingAction extends BaseAction {
 	
 	public String update()
 	{
+		saving.setUpdatetime(new Date());
 		boolean update = savingService.update(saving);	
+		System.out.println("存款更新:"+saving.getId()+";value="+saving.getAmount());
 		if (update==false){
 			super.writeMsg(RetMsg.MSG_SQLExecuteError);
-		}
+		}else
+			super.writeMsg(RetMsg.MSG_OK);
 		return null;
 	}
 	

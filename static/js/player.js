@@ -80,113 +80,7 @@ Player = function(){
 Player.prototype = new Datamgr();
 
 Player.prototype.init = function(){
-    var isRe = false;
-    var ret = true;
-    this.buildHTML();
 	this.data = store.get(this.name);
-}
-
-Player.prototype.buildPage = function(){
-	var texp = store.get("exp");
-	var lv = g_title.getLevel();
-	var content = "<div class='cfplayer_panel'>"
-	content += "<table>"
-	content += " <tr>"
-	content += "  <td width='100'>"
-	content += " <div class='cfplayer_head_bg'>"
-    content += "<img src='"+head_imgs[this.data.sex].src+"'/>"
-    content += " </div>"
-	content += "</td>"
-	content += "   <td>"
-    content +=            " <div class='cfplayer_panel_text'> "
-    content += "昵            称: <span style='color:yellow'>"+this.data.playername+"</span><br>"	
-    content += "当前等级: <span style='color:yellow'>"+lv+"</span> "+g_title.getData(lv).name+"<br>"	
-    content += "下一等级: <span style='color:yellow'>"+(lv+1)+"</span> "+g_title.getData(lv+1).name+"<br>"
-    content += "经            验: <span style='color:yellow'>"+g_title.getData(lv).exp+"</span>/"+this.data.exp	+"<br>"
-    content += "当周排名: <span style='color:yellow'>1</span><br>"	
-    content +=            " </div>"
-	content += "</td>"
-	content += " </tr>"
-	content += "</table>"
-    content += " </div>"
-    
-	var data = g_player.getTotal(this);
-	var total = ForDight(data.saving+data.insure+data.stock);
-    
-	content += "<div style='margin-left:-10px;margin-top:30px'>"
-	content += "<table>"
-	content += " <tr>"
-	content += "  <td style='font-size:20px;width:200px;vertical-align:top'>"
-	content +=	"<div class='cfprop p1'>定期存款<br>"+data.saving2+"</div>"
-	content +=	"<div class='cfprop p2'>投资股票<br>"+data.stock+"</div>"
-	content +=	"<div class='cfprop p3'>投资保险<br>"+data.insure+"</div>"
-	content +=	"<div class='cfprop p4'>活期存款<br>"+data.saving+"</div>"
-	content +=	"<div class='cfprop p5'>总资产值<br>"+total+"</div>"
-	content += "</td>"
-	content += "   <td>"
-	content += "<div id='"+this.graphName+"' style='margin-left:-10px;margin-top:-30px'></div>"
-	content += "</td>"
-	content += " </tr>"
-	content += "</table>"
-    content +=  " </div>"
-    
-    var get = document.getElementById(this.pagename);
-    get.innerHTML = content;
-    
-	this.showPie(data,this.graphName);
-}
-
-
-Player.prototype.showPie = function(data,divName){
-	var data = [
-	        	{name : '定期',value : data.saving2,color:'#00ae57'},
-	        	{name : '股票',value : data.stock,color:'#51d344'},
-	        	{name : '保险',value : data.insure,color:'#ff4400'},
- 	        	{name : '活期',value : data.saving,color:'#2894B8'},
-        	];
-	
-	new iChart.Pie3D({
-		render : divName,
-		data: data,
-		title : {
-			text:"资产分布",
-			fontsize:30,
-			offsety:30,
-			color:'#ffffff'
-		},
-		sub_option:{
-					mini_label_threshold_angle : 0,//迷你label的阀值,单位:角度
-					mini_label:{//迷你label配置项
-						fontsize:10,
-						fontweight:600,
-						color : '#000000'
-					},
-					label : {
-						background_color:null,
-						sign:false,//设置禁用label的小图标
-						padding:'0 1',
-						border:{
-							enable:false,
-							color:'#666666'
-						},
-						fontsize:10,
-						fontweight:600,
-						color : '#000000'
-					},
-				},		
-		border:{
-				enable:false,
-			 },		
-		padding: 5,
-		background_color: "#275868",
-		showpercent:true,
-		animation:true,
-		decimalsnum:2,
-		width : 350,
-		height : 400,
-		radius:140,
-		offset_angle:12,
-	}).draw();	
 }
 
 Player.prototype.getTotal = function(data) {
@@ -210,11 +104,11 @@ Player.prototype.getTotal = function(data) {
 }
 
 Player.prototype.flushPageview = function() {
-    var tag = document.getElementById("tagcash");
-    tag.innerHTML = ForDight(this.saving[0].amount);	
+    var tag = document.getElementById("tagsaving");
+    tag.innerHTML = "存款: " +ForDight(this.saving[0].amount);	
     tag.style.display = "";
-    tag = document.getElementById("tagcard");
-    tag.innerHTML = this.data.exp;	
+    tag = document.getElementById("tagweektop");
+    tag.innerHTML = "周排名: "+this.data.weektop;	
     tag.style.display = "";
     tag = document.getElementById("tagplayerinfo");
 	var lv = g_title.getLevel();
@@ -256,6 +150,7 @@ Player.prototype.syncData2 = function(){
 	this.clone(data);
 	data.quest = JSON.stringify(data.quest);
 	var updateStr = "player="+JSON.stringify(data);
+	//alert("任务同步到服务器:"+data.quest);
 	try  {
 		$.ajax({type:"post",url:"/cf/login_update.do",data:updateStr,success:this.syncCallback});
 	}   catch  (e)   {
@@ -274,6 +169,7 @@ Player.prototype.syncCallback=function(dataobj){
 
 Player.prototype.prize = function(prizes) {
 	var prop = {};
+ 	var cashUpdate = false;
      for (var i=0;i< prizes.length;i++)
      {
      	var key = "";
@@ -284,19 +180,19 @@ Player.prototype.prize = function(prizes) {
      			v = 0;
 			prop[key] = v;
      	}else if (prizes[i].t==ITEM_TYPE.CASH){
-     		var saving = this.saving;
-     		if (saving==null){
-     			g_saving.add(this.data.playerid,0,prizes[i].v);
-     		}else {
-	     		for (var i=0;i<saving.length;i++){
-	     			if (saving[i].type==0){
-	     				saving[i].amount += prizes[i].v;
-	     				break;
-	     			}
-	     		}
-     		}
+     		this.saving[0].amount += prizes[i].v;
+     		cashUpdate = true;
      	}
-     }  
+     }
+     if (cashUpdate==true){
+ 		try  {
+			var obj = {id:this.saving[0].id,amount:this.saving[0].amount};
+			var updateStr = obj2ParamStr("saving",obj);
+			$.ajax({type:"post",url:"/cf/saving_update.do",data:updateStr,success:this.syncCallback});
+		}   catch  (e)   {
+	   	 logerr(e.name);
+		}     	
+     }
      this.updateData(prop);
 }
 
@@ -306,10 +202,11 @@ Player.prototype.getDataMap = function(tname) {
     for (var i=0;i<tdata.length;i++){
 		var data = tdata[i];
 		if (tdataMap[data.itemid]==null){
-			tdataMap[data.itemid] = {qty:data.qty,amount:data.amount};
+			tdataMap[data.itemid] = {qty:data.qty,amount:data.amount,profit:data.profit};
 		}else{
 			tdataMap[data.itemid].qty += data.qty;
 			tdataMap[data.itemid].amount += data.amount;
+			tdataMap[data.itemid].profit += data.profit;
 		}
    }
     return tdataMap;
@@ -355,9 +252,13 @@ Player.prototype.getItemData = function(tname,item) {
      	if (tname==g_stock.name){
      		if (quote!=null) 
      			ps = quote.price;
-     	}else
+			profit = pitem["amount"] - pitem["qty"]*ps;
+     	}else if (tname==g_saving.name){
+     		profit = pitem.profit;
+     	}else {
      		ps = item.price;
-		profit = pitem["amount"] - pitem["qty"]*ps;
+			profit = pitem["amount"] - pitem["qty"]*ps;
+     	}
 		avgPrice = pitem["amount"]/pitem["qty"];
 		amount = pitem.amount;
 		qty = pitem.qty;

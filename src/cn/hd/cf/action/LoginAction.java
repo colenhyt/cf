@@ -1,6 +1,7 @@
 package cn.hd.cf.action;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -159,22 +160,26 @@ public class LoginAction extends BaseAction {
 	
 	public String getPlayerJsonData(PlayerWithBLOBs playerBlob)
 	{
-		List<Saving> savings = savingService.findByPlayerId(playerBlob.getPlayerid());
+		List<Saving> savings = savingService.findUpdatedSavings(playerBlob.getPlayerid(),playerBlob.getLastlogin());
 		JSONArray  jsonSaving = JSONArray.fromObject(savings);
 		playerBlob.setSaving(jsonSaving.toString());
 		List<Stock> stocks = stockService.findByPlayerId(playerBlob.getPlayerid());
 		JSONArray  jsonStock = JSONArray.fromObject(stocks);
 		playerBlob.setStock(jsonStock.toString());			
-		List<Insure> insures = insureService.findByPlayerId(playerBlob.getPlayerid());
+		List<Insure> insures = insureService.findUpdatedSavings(playerBlob.getPlayerid(),playerBlob.getLastlogin());
 		jsonStock = JSONArray.fromObject(insures);
 		playerBlob.setInsure(jsonStock.toString());			
-		
+		int top = toplistService.findCountByGreaterMoney(0,playerBlob.getPlayerid());
+		playerBlob.setWeektop(top);
+		top = toplistService.findCountByGreaterMoney(1,playerBlob.getPlayerid());
+		playerBlob.setMonthtop(top);
 		//List<Integer> dataIds = findUpdateDataIds(player.getVersions());
 		//取需要更新的模块id
 		JSONObject obj = JSONObject.fromObject(playerBlob);	
 		
 		return obj.toString();
 	}
+	
 	
 	public String login()
 	{
@@ -184,7 +189,16 @@ public class LoginAction extends BaseAction {
 			System.out.println("no player found:playerid:"+player.getPlayerid());
 			return null;
 		}
+	
+	
 		String pdata = getPlayerJsonData(playerBlob);
+		
+	
+		PlayerWithBLOBs p2 = new PlayerWithBLOBs();
+		p2.setPlayerid(player.getPlayerid());
+		p2.setLastlogin(new Date());
+		playerService.updateByKey(p2);
+			
 		write(pdata,"utf-8");
 		
 		System.out.println("player("+player.getPlayername()+") login success");
@@ -217,7 +231,7 @@ public class LoginAction extends BaseAction {
 		}
 		boolean ret = playerService.updateByKey(playerBlob);
 		
-		//System.out.println("update player("+playerBlob.getPlayername()+"):ret: "+ret);
+		System.out.println("update player("+playerBlob.getPlayername()+"):ret: "+ret);
 		writeMsg(RetMsg.MSG_OK);
 		return null;
 	}

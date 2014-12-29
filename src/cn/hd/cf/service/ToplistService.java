@@ -17,6 +17,7 @@ public class ToplistService extends BaseService {
 		ToplistExample example=new ToplistExample();
 		Criteria criteria=example.createCriteria();		
 		criteria.andTypeEqualTo(Integer.valueOf(type));
+		example.setOrderByClause("money desc");
 		List<Toplist> list = toplistMapper.selectByExample(example);
 		return list;
 	}
@@ -50,6 +51,20 @@ public class ToplistService extends BaseService {
 		return toplistMapper.countByExample(example);
 	}	
 	
+	public int findCountByGreaterMoney(int type, int playerid){
+		ToplistExample example=new ToplistExample();
+		Criteria criteria=example.createCriteria();		
+		criteria.andTypeEqualTo(type);
+		float fMoney = 0;
+		Toplist top = findByPlayerId(playerid);
+		if (top!=null)
+			fMoney = top.getMoney();
+		criteria.andMoneyGreaterThan(fMoney);
+		int cc = toplistMapper.countByExample(example);
+		System.out.println("zhaodao :"+fMoney+":"+cc);
+		return cc;
+	}	
+	
 	public int add(Toplist record){
 		toplistMapper.insert(record);
 		DBCommit();
@@ -62,7 +77,7 @@ public class ToplistService extends BaseService {
 		if (toplist==null){
 			toplist = findByLessMoney(money);
 			int topCount = findCount(tt);
-			if (toplist!=null||topCount<10)
+//			if (toplist!=null||topCount<10)
 			{
 				Toplist newtop = new Toplist();
 				newtop.setPlayerid(playerBlob.getPlayerid());
@@ -74,9 +89,9 @@ public class ToplistService extends BaseService {
 				add(newtop);				
 				System.out.println("增加排行榜记录: "+newtop.getPlayername()+":"+newtop.getMoney());
 			}
-			if (toplist!=null&&topCount>=10){
-				remove(toplist.getId());
-			}
+//			if (toplist!=null&&topCount>=10){
+//				remove(toplist.getId());
+//			}
 		}else {
 			float topMoney = toplist.getMoney().floatValue();
 			if ((money-topMoney)>0.01){

@@ -75,11 +75,13 @@ Toplist.prototype.buildPage = function(page)
 	}else {
 		  var start =0;
 		  var end = tdata.length;
+		  if (end>6)
+		  	end = 6;
                   
                 content += "<div class='cf_top'>";
  			 content += "        <table id='toplist1_tab' class='cf_top_header'>"
 			 content += "             <tr>"
-			 content += "               <td width='180px'>姓名</td>"
+			 content += "               <td width='200px'>姓名</td>"
 			 content += "               <td width='160px'>资产</td>"
 			 content += "               <td class='cftoplist_td'>"+desc+"</td>"
 			 content += "               <td class='cftoplist_td'>赞</td>"
@@ -89,7 +91,7 @@ Toplist.prototype.buildPage = function(page)
 		for (var i=start;i<end;i++){
 			var item = tdata[i];
 			 content += "             <tr>"
-			 content += "               <td class='cftoplist_td'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.playername.substring(0,8)+"</div></td>"
+			 content += "               <td class='cftoplist_td'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.playername.substring(0,10)+"</div></td>"
 			 content += "               <td class='cftoplist_td'>"+item.money+"</td>"
 			 content += "               <td class='cftoplist_td'>"+(i+1)+"</td>"
 			 content += "               <td class='cftoplist_td'><input type='button' class='cf_top_zan' onclick='g_toplist.zan("+page+","+item.playerid+")'>*<span id='zan_"+item.playerid+"'>"+item.zan+"</span></td>"

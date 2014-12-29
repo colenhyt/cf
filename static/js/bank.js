@@ -110,7 +110,6 @@ Bank.prototype.showSaving2 = function(playerId,page){
 		for (var i=start;i<end;i++){
 			var item = tdata[i];
 			var pitem = g_player.getItemData(g_saving.name,item);
-			pitem.profit = 0;
 			var psColor = "red";
 		     content += "<div class='cfpanel' ID='"+this.name+"_d"+item.id+"' onclick='g_bank.showDetail("+item.id+")'>"
 		     content += "<span class='cfpanel_title'>"+item.name+"</span>"

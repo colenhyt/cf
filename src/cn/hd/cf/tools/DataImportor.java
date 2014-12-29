@@ -397,14 +397,11 @@ public class DataImportor extends Base{
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		DataImportor importor = new DataImportor("cfdata.xlsx");
-		String name = "initdata";
+		String name = "eventdata";
 		importor.importData(name);
 		importor.outputJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);
 //		importor.outputAllJsData();
 		
-		DataImportor importor2 = new DataImportor("stockdata.xlsx");
-		//importor2.outputXls2Js();
-		//importor2.importXls2Quote();
 		
 	}
 

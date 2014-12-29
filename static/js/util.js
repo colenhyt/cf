@@ -97,3 +97,36 @@ computeUnit = function(startDate,endDate){
 	var mills = Date.parse(endDate) - Date.parse(startDate);
 	return parseInt(mills/TimeUnit);
 }
+
+randomItems = function(items,existItems,count){
+	var ritems = [];
+	if (items==null||items.length<=0||count<=0) return ritems;
+	
+	if (items.length<count)
+		count = items.length;
+		
+	var data = items.concat();
+	if (existItems!=null&&existItems.length>0){
+		if (existItems.length>=count)
+			return existItems;
+			
+		for (var i=0;i<existItems.length;i++){
+			ritems.push(existItems[i]);
+			for (var j=0;j<data.length;j++){
+				if (data[j]==existItems[i]){
+					data.splice(j,1);
+					break;
+				}
+			}
+		}	
+		count -= existItems.length;
+	}
+	
+	for (var i=0;i<count;i++){
+		var index = Math.floor(Math.random()*data.length);
+		ritems.push(data[index]);
+		data.splice(index,1);
+	}
+	
+	return ritems;
+}

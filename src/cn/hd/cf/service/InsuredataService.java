@@ -1,11 +1,13 @@
 package cn.hd.cf.service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import cn.hd.base.BaseService;
 import cn.hd.cf.dao.InsuredataMapper;
-import cn.hd.cf.model.InsuredataExample;
+import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Insuredata;
+import cn.hd.cf.model.InsuredataExample;
 import cn.hd.cf.model.InsuredataExample.Criteria;
 
 public class InsuredataService extends BaseService {
@@ -40,6 +42,23 @@ public class InsuredataService extends BaseService {
 		insuredataMapper.insert(record);
 		DBCommit();
 		return true;
+	}
+	
+	public Insure findInsure(int id)
+	{
+		try {
+			Insuredata data = findActive();
+			String str = new String(data.getData(),"utf-8");
+			List<Insure> list = jsonToBeanList(str, Insure.class);
+			for (int i=0;i<list.size();i++){
+				if (list.get(i).getId()==id)
+					return list.get(i);
+			}
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}			
+		return null;		
 	}
 	
 	public void resetInacvtive(Insuredata record)

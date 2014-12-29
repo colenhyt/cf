@@ -2,6 +2,8 @@ package cn.hd.base;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Calendar;
+import java.util.Date;
 
 import cn.hd.util.MybatisSessionFactory;
 
@@ -87,5 +89,27 @@ public class Base {
 	 */
 	public void DBProException(Exception e) {
 		MybatisSessionFactory.proException(e);
+	}
+
+	/**
+	 * 获得两个时间相差天数
+	 * @param e
+	 */	
+	public long findDayMargin(Date d1,Date d2){
+		Calendar c = Calendar.getInstance(); 
+	
+		c.setTime(d1); 
+		c.set(Calendar.MINUTE, 0); 
+		c.set(Calendar.SECOND, 0); 
+		c.set(Calendar.MILLISECOND, 0); 
+		long l1 = c.getTimeInMillis(); 
+		
+		c.setTime(d2); 
+		c.set(Calendar.MINUTE, 0); 
+		c.set(Calendar.SECOND, 0); 
+		c.set(Calendar.MILLISECOND, 0); 
+		long l2 = c.getTimeInMillis(); 
+	
+		return (l2 - l1) / (1000 * 60 * 60 * 24);
 	}
 }

@@ -2,10 +2,9 @@ package cn.hd.cf.action;
 
 import java.util.Date;
 
-import cn.hd.base.BaseAction;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.service.InsureService;
-import cn.hd.mgr.PlayerManager;
+import cn.hd.cf.service.InsuredataService;
 
 public class InsureAction extends SavingAction {
 	private Insure		insure;
@@ -18,7 +17,16 @@ public class InsureAction extends SavingAction {
 	}
 
 	private InsureService insureService;
+	private InsuredataService insuredataService;
 	
+	public InsuredataService getInsuredataService() {
+		return insuredataService;
+	}
+
+	public void setInsuredataService(InsuredataService insuredataService) {
+		this.insuredataService = insuredataService;
+	}
+
 	public InsureService getInsureService() {
 		return insureService;
 	}
@@ -30,6 +38,10 @@ public class InsureAction extends SavingAction {
 		int ret = super.updateLiveSaving(insure.getPlayerid(), inAmount);
 		if (ret==0){
 			insure.setCreatetime(new Date());
+			insure.setUpdatetime(new Date());
+			Insure incfg = insuredataService.findInsure(insure.getItemid());
+			insure.setPeriod(incfg.getPeriod());
+			insure.setType(incfg.getType());
 			boolean add = insureService.add(insure);	
 			if (add==false){
 				//钱放回去:
@@ -52,7 +64,7 @@ public class InsureAction extends SavingAction {
 	}
 
 	public InsureAction(){
-		init("insureService");
+		init("insureService","insuredataService");
 	}
 	
 }

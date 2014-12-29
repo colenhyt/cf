@@ -32,6 +32,13 @@ Main.prototype.init = function(){
     canvas.height = Scene_Height;
     document.body.appendChild(canvas);
     
+    var data = [1,2,3,4,5,6,7,8,9];
+    var exis = [7,5,4];
+   var ritems = randomItems(data,exis,15);
+//  	for (var i=0;i<ritems.length;i++){
+//		alert(ritems[i]);
+//	}   
+
     g_msg.tip("aaaaa");
     g_msg.tip("fdafda");
 	g_game = new Game();

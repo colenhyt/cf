@@ -31,10 +31,27 @@ Stock.prototype.init = function(){
 	this.load(stockdata);    
 }
 
+Stock.prototype.findStockIds = function()
+{
+	var countNeed = 7;
+	
+	var tdata = store.get(this.name);
+	var data = [];
+	var ids = [];
+	for (var i=0;i<tdata.length;i++){
+		data.push(tdata[i].id);
+		var pitem = g_player.getItemData(this.name,tdata[i]);
+		if (pitem.qty>0)
+			ids.push(tdata[i].id);
+	}
+	
+	return randomItems(data,ids,countNeed);
+}
+
 Stock.prototype.buildPage = function(page)
 {
 	if (page<0)	return
-		
+	
 	var tdata = store.get(this.name);
 	var content = 	"";
 	if (tdata.length<=0){
@@ -43,11 +60,12 @@ Stock.prototype.buildPage = function(page)
 	}else {
 		var start = page* this.pageCount;
 		var end = (page+1)* this.pageCount;
-		if (end>tdata.length)
-			end = tdata.length;
+		var ritems = this.findStockIds();
+		if (end>ritems.length)
+			end = ritems.length;
 		  content += "<div class='cfpanel_body'>"
 		for (var i=start;i<end;i++){
-			var item = tdata[i];
+			var item = this.findItem(ritems[i]);
 			var pitem = g_player.getItemData("stock",item);
 			var quote = this.findLastQuote(item.id);
 			var ps = 0;
@@ -71,7 +89,7 @@ Stock.prototype.buildPage = function(page)
      		content += "</div>"
 		
 		this.currPage = page;
-        content += this.buildPaging(page,tdata.length);
+        content += this.buildPaging(page,ritems.length);
 	}
      
 	var tag = document.getElementById(this.pagename);
