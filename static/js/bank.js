@@ -105,7 +105,7 @@ Bank.prototype.showSaving2 = function(page){
 			var item = tdata[i];
 			var pitem = g_player.getItemData(g_saving.name,item);
 			var psColor = "red";
-		     content += "<div class='cfpanel' ID='"+this.name+"_d"+item.id+"' onclick='g_bank.showDetail("+item.id+")'>"
+		     content += "<div class='cfpanel bank2' ID='"+this.name+"_d"+item.id+"' onclick='g_bank.showDetail("+item.id+")'>"
 		     content += "<span class='cfpanel_title'>"+item.name+"</span>"
 		     content += "<span class='cfpanel_text right'>存款  <span style='color:yellow'> "+pitem.amount+"</span> 元</span>"
 			 content += "	<div>"

@@ -1,6 +1,8 @@
 
 Toplist = function(){
     this.name = "toplist";
+     this.pageCount = 5;
+    this.currPage = 0;
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
    this.pageheader = this.tagname+"header";
@@ -46,22 +48,28 @@ Toplist.prototype.buildHTML2 = function()
 
 Toplist.prototype.buildPage = function(page)
 {
+	this.currPage = page;
+	this.showToplist(0,0);
+}
+
+Toplist.prototype.showToplist = function(type,page)
+{
 	if (page<0)
 		return
 		
 	var tdata;
         var   header ="";
         var desc = "";
-	if (page==0) {
+	if (type==0) {
 	    tdata = store.get(this.tagtab1);
             desc = "本周排名";
-            header += "<button class='cf_title_bg moff' onclick='g_toplist.buildPage(1)'></button>"
+            header += "<button class='cf_title_bg moff' onclick='g_toplist.showToplist(1,0)'></button>"
             header += "<button class='cf_title_bg won'></button>"
 	}
-	else if (page==1){
+	else if (type==1){
 		tdata = store.get(this.tagtab2);
             desc = "本月排名";
-           header += "<button class='cf_title_bg woff' onclick='g_toplist.buildPage(0)'></button>"
+           header += "<button class='cf_title_bg woff' onclick='g_toplist.showToplist(0,0)'></button>"
             header += "<button class='cf_title_bg mon'></button>"
         }        	
 	var tagHeader = document.getElementById(this.pageheader);
@@ -73,28 +81,28 @@ Toplist.prototype.buildPage = function(page)
 		  content += "<div class='cfpanel' ID='insure_d1'>目前还没有排名数据"
       	  content += "</div>"
 	}else {
-		  var start =0;
-		  var end = tdata.length;
-		  if (end>6)
-		  	end = 6;
+		var start = page* this.pageCount;
+		var end = (page+1)* this.pageCount;
+		if (end>tdata.length)
+			end = tdata.length;
                   
                 content += "<div class='cf_top'>";
  			 content += "        <table id='toplist1_tab' class='cf_top_header'>"
 			 content += "             <tr>"
-			 content += "               <td width='200px'>姓名</td>"
-			 content += "               <td width='160px'>资产</td>"
+			 content += "               <td width='160px' style='text-align:center'>姓名</td>"
+			 content += "               <td width='160px' style='text-align:center'>资产</td>"
 			 content += "               <td class='cftoplist_td'>"+desc+"</td>"
-			 content += "               <td class='cftoplist_td'>赞</td>"
+			 content += "               <td width='60px'>赞</td>"
 			content += "              </tr>"
 			content += "          </table>"
 			 content += "        <table id='toplist1_tab'>"
 		for (var i=start;i<end;i++){
 			var item = tdata[i];
 			 content += "             <tr>"
-			 content += "               <td class='cftoplist_td'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.playername.substring(0,10)+"</div></td>"
-			 content += "               <td class='cftoplist_td'>"+item.money+"</td>"
-			 content += "               <td class='cftoplist_td'>"+(i+1)+"</td>"
-			 content += "               <td class='cftoplist_td'><input type='button' class='cf_top_zan' onclick='g_toplist.zan("+page+","+item.playerid+")'>*<span id='zan_"+item.playerid+"'>"+item.zan+"</span></td>"
+			 content += "               <td width='160px' style='text-align:center'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.playername.substring(0,8)+"</div></td>"
+			 content += "               <td width='160px'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.money+"</div></td>"
+			 content += "               <td style='text-align:center;width:120px'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+(i+1)+"</div></td>"
+			 content += "               <td style='margin-left:10px;width:60px'><div onclick='g_toplist.zan("+page+","+item.playerid+")'<input type='button' class='cf_top_zan'/><span style='padding-left:30px'>*<span id='zan_"+item.playerid+"'>"+item.zan+"</span></span></div></td>"
 			content += "              </tr>"
 			 content += "             <tr>"
 			 content += "               <td colspan='4'><img src='static/img/top_line.png'></td>"
@@ -103,6 +111,8 @@ Toplist.prototype.buildPage = function(page)
 			content += "          </table>"
                 content += "</div>";
 
+		this.currPage = page;
+        content += this.buildPaging(page,tdata.length,"g_toplist.showToplist",type);
 	}
      
 	var tag = document.getElementById(this.pagename);

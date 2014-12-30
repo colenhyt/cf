@@ -102,7 +102,7 @@ height:234px;
 
 .cfpage.player
 {
-  height:684px;
+  height:704px;
 }
 .cfpage.small
 {
@@ -151,6 +151,9 @@ height:280px;
     background-size:100% 100%;  
 }
 
+.cfpanel.bank2{
+	margin-bottom:20px;
+}
 .cfpanel.bank{
   margin-top:20px;
   margin-bottom: 10px;
@@ -341,6 +344,7 @@ border:none;
   margin-top:10px;
   padding-left: 10px;
   width: 560px;
+  height:520px;
 }
 
 .cf_top_header{

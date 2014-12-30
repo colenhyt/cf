@@ -239,7 +239,7 @@ Stock.prototype.showDetail = function(id,isflush){
     g_stockdetail.drawQuote(item.name,this.graphName);
         
     if (isflush==null)
-		$('#'+this.tagdetailname).modal({position:PageDetail_Top,show: true});  
+		$('#'+this.tagdetailname).modal({position:30,show: true});  
 }
 
 Stock.prototype.findLastQuote = function(stockid)

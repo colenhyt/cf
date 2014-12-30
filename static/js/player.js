@@ -106,16 +106,20 @@ Player.prototype.getTotal = function(data) {
 Player.prototype.flushPageview = function() {
     var tag = document.getElementById("tagsaving");
     tag.innerHTML = "存款: " +ForDight(this.saving[0].amount);	
+    tag.style.fontSize = "23px";
     tag.style.display = "";
     tag = document.getElementById("tagweektop");
     tag.innerHTML = "周排名: "+this.data.weektop;	
+    tag.style.fontSize = "23px";
     tag.style.display = "";
     tag = document.getElementById("tagplayerinfo");
 	var lv = g_title.getLevel();
     tag.innerHTML = g_title.getData(lv).name;	
+    tag.style.fontSize = "20px";
     tag.style.display = "";
     tag = document.getElementById("taglevel");
     tag.innerHTML = lv;	
+    tag.style.fontSize = "26px";
     tag.style.display = "";
 }
 
@@ -248,9 +252,9 @@ Player.prototype.getItemData = function(tname,item) {
     var amount = 0;
     var pitem = this.getDataMap(tname)[item.id];
      if (pitem!=null) {
-     	var quote = g_stock.findLastQuote(item.id);
-     	var ps = 0;
+      	var ps = 0;
      	if (tname==g_stock.name){
+ 	    	var quote = g_stock.findLastQuote(item.id);
      		if (quote!=null) 
      			ps = quote.price;
 			profit = pitem["amount"] - pitem["qty"]*ps;
@@ -287,7 +291,7 @@ Player.prototype.buyItem = function(tname,id,qty,amount2){
 		ps = item.price;
 	var amount = ps * qty;
 	if (cash<amount){
-		 g_msg.open('你的钱不够');
+		 g_msg.tip('你的钱不够');
 		return;
 	}
 	if (amount2!=null)
@@ -303,7 +307,7 @@ Player.prototype.buyItem = function(tname,id,qty,amount2){
 	var ret = myajax(tname+"_add",dataParam);
 	if (ret==null||ret.code!=0)
 	{
-		g_msg.open("操作失败:"+ERR_MSG[ret.code]);
+		g_msg.tip("操作失败:"+ERR_MSG[ret.code]);
 		return {ret:false};
 	}
 	

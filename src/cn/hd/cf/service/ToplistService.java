@@ -1,5 +1,7 @@
 package cn.hd.cf.service;
 
+import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +19,25 @@ public class ToplistService extends BaseService {
 		ToplistExample example=new ToplistExample();
 		Criteria criteria=example.createCriteria();		
 		criteria.andTypeEqualTo(Integer.valueOf(type));
+		//取当月:
+		if (type==1){
+			Date d1 = new Date();
+		      Calendar c2 = Calendar. getInstance();
+		      c2.set(d1.getYear(), d1.getMonth(), 1);
+		      int firstMonthDay = c2.get(Calendar.DAY_OF_YEAR);
+		      Calendar cl = Calendar. getInstance();
+		      cl.setTime(d1);
+		      int startWeek = firstMonthDay/7;
+		      if (firstMonthDay%7!=0)
+		    	  startWeek++;
+		      int currDay = cl.get(Calendar.DAY_OF_YEAR);
+		      int endWeek = currDay/7;
+		      if (currDay%7!=0)
+		    	  endWeek++;
+		      criteria.andWeekGreaterThanOrEqualTo(startWeek);
+		      criteria.andWeekLessThanOrEqualTo(endWeek);
+				System.out.println(type+"取得记录数:"+startWeek+",end:"+endWeek);
+		}
 		example.setOrderByClause("money desc");
 		List<Toplist> list = toplistMapper.selectByExample(example);
 		return list;
@@ -33,10 +54,26 @@ public class ToplistService extends BaseService {
 		return null;
 	}
 	
-	public Toplist findByLessMoney(float fMoney){
+	public Toplist findByPlayerIdAndTypeAndWeek(int playerId,int type,int week){
 		ToplistExample example=new ToplistExample();
 		Criteria criteria=example.createCriteria();		
-		criteria.andMoneyLessThan(fMoney);
+		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
+		if (type>=0)
+			criteria.andTypeEqualTo(type);
+		if (week>0)
+			criteria.andWeekEqualTo(week);
+		List<Toplist> list = toplistMapper.selectByExample(example);
+		if (list.size()>0)
+			return list.get(0);
+		return null;
+	}	
+	
+	public Toplist findByLessMoney(double fMoney,int week){
+		ToplistExample example=new ToplistExample();
+		Criteria criteria=example.createCriteria();		
+		criteria.andMoneyLessThan(BigDecimal.valueOf(fMoney));
+		if (week>0)
+			criteria.andWeekEqualTo(week);
 		List<Toplist> list = toplistMapper.selectByExample(example);
 		if (list.size()>0)
 			return list.get(0);
@@ -44,10 +81,12 @@ public class ToplistService extends BaseService {
 		return null;
 	}	
 	
-	public int findCount(int type){
+	public int findCount(int type,int week){
 		ToplistExample example=new ToplistExample();
 		Criteria criteria=example.createCriteria();		
 		criteria.andTypeEqualTo(type);
+		if (week>0)
+			criteria.andWeekEqualTo(week);
 		return toplistMapper.countByExample(example);
 	}	
 	
@@ -55,7 +94,7 @@ public class ToplistService extends BaseService {
 		ToplistExample example=new ToplistExample();
 		Criteria criteria=example.createCriteria();		
 		criteria.andTypeEqualTo(type);
-		float fMoney = 0;
+		BigDecimal fMoney = BigDecimal.valueOf(0);
 		Toplist top = findByPlayerId(playerid);
 		if (top!=null)
 			fMoney = top.getMoney();
@@ -71,36 +110,46 @@ public class ToplistService extends BaseService {
 		return 0;
 	}
 	
-	public boolean updateData(PlayerWithBLOBs playerBlob,float money){
-		int tt = 0;
-		Toplist toplist = findByPlayerId(playerBlob.getPlayerid());
+	private boolean updateOneData(PlayerWithBLOBs playerBlob,double money,int type,int week,int keepCount){
+		Toplist toplist = findByPlayerIdAndTypeAndWeek(playerBlob.getPlayerid(),type,week);
 		if (toplist==null){
-			toplist = findByLessMoney(money);
-			int topCount = findCount(tt);
-//			if (toplist!=null||topCount<10)
+			toplist = findByLessMoney(money,week);
+			int topCount = findCount(type,week);
+			if (toplist!=null||(keepCount>0&&topCount<keepCount))
 			{
 				Toplist newtop = new Toplist();
 				newtop.setPlayerid(playerBlob.getPlayerid());
 				newtop.setPlayername(playerBlob.getPlayername());
 				newtop.setCreatetime(new Date());
-				newtop.setMoney(money);
-				newtop.setType(tt);
+				newtop.setMoney(BigDecimal.valueOf(money));
+				newtop.setType(type);
+				newtop.setWeek(week);
 				newtop.setZan(0);
 				add(newtop);				
 				System.out.println("增加排行榜记录: "+newtop.getPlayername()+":"+newtop.getMoney());
 			}
-//			if (toplist!=null&&topCount>=10){
-//				remove(toplist.getId());
-//			}
+			if (keepCount>0&&toplist!=null&&topCount>=keepCount){
+				remove(toplist.getId());
+			}
 		}else {
-			float topMoney = toplist.getMoney().floatValue();
+			double topMoney = toplist.getMoney().doubleValue();
 			if ((money-topMoney)>0.01){
-				toplist.setMoney(money);
-				toplist.setCreatetime(new Date());
+				toplist.setMoney(BigDecimal.valueOf(money));
+				toplist.setUpdatetime(new Date());
 				updateByKey(toplist);
 				System.out.println("更新排行榜财富: "+toplist.getPlayername()+":"+topMoney+","+toplist.getMoney());
 			}
 		}
+		return true;		
+	}
+	
+	public boolean updateData(PlayerWithBLOBs playerBlob,double money,int currWeek){
+		//当前排行:
+		this.updateOneData(playerBlob, money, 0, -1,-1);
+
+		//当周排名:
+		this.updateOneData(playerBlob, money, 1, currWeek,10);
+	
 		return true;
 	}
 	

@@ -37,15 +37,15 @@ var login_imgs = [
 var game_imgs = [
 	{name:"map",src:"static/img/map.png",x:0,y:0,zindex:0},
 	{name:"playerinfo",src:"static/img/icon_head.png",x:0,y:0,abs:true,hasDiv:true,divX:35,divY:115},
-	{name:"quest",src:"static/img/icon_quest.png",x:550,y:0,abs:true,hasDiv:true},
-	{name:"toplist",src:"static/img/icon_toplist.png",x:550,y:120},
+	{name:"quest",src:"static/img/icon_quest.png",x:555,y:0,abs:true,hasDiv:true},
+	{name:"toplist",src:"static/img/icon_toplist.png",x:555,y:120},
 	{name:"help",src:"static/img/icon_help.png",x:127,y:190,},
 	{name:"stock",src:"static/img/icon_stock.png",x:375,y:260,},
 	{name:"bank",src:"static/img/icon_bank.png",x:72,y:420,},
 	{name:"insure",src:"static/img/icon_insure.png",x:377,y:575,},
-	{name:"saving",src:"static/img/icon_saving.png",x:150,y:15,abs:true,hasDiv:true,divX:165,divY:25,zindex:5},
-	{name:"weektop",src:"static/img/icon_weektop.png",x:360,y:15,abs:true,hasDiv:true,divX:380,divY:25,zindex:5},
-	{name:"level",src:"static/img/icon_level.png",x:-5,y:103,abs:true,hasDiv:true,divX:10,divY:115,zindex:20},
+	{name:"saving",src:"static/img/icon_saving.png",x:150,y:15,abs:true,hasDiv:true,divX:160,divY:23,zindex:5},
+	{name:"weektop",src:"static/img/icon_weektop.png",x:365,y:15,abs:true,hasDiv:true,divX:385,divY:23,zindex:5},
+	{name:"level",src:"static/img/icon_level.png",x:-5,y:103,abs:true,hasDiv:true,divX:10,divY:112,zindex:20},
 ];
 
 var head_imgs = [

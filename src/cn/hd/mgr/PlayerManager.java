@@ -1,10 +1,9 @@
 package cn.hd.mgr;
 
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Map;
 
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.PlayerWithBLOBs;
@@ -19,8 +18,7 @@ import cn.hd.cf.service.ToplistService;
 
 public class PlayerManager {
 	public static int DAY_SECOND = 24;
-	private int STOCK_UPDATE_PERIOD = 1;
-	private int STOCK_SAVE_PERIOD = 3600;
+	private int WEEK_UPDATE_PERIOD = 20*60;
 	private SavingService savingService;
 	private StockService stockService;
 	private ToplistService toplistService;
@@ -45,13 +43,24 @@ public class PlayerManager {
     	toplistService = new ToplistService();
      }
   
-    public void updateMoney(){
-    	List<PlayerWithBLOBs> all = playerService.findAll();
-    	for (int i=0;i<all.size();i++){
+    public void updateToplist(){
+		Date d1 = new Date();
+	      Calendar cl = Calendar. getInstance();
+	      cl.setTime(d1);
+	      
+	      System.out.println("更新排行榜财富和数据");
+	      
+	      int dayOfYear = cl.get(Calendar.DAY_OF_YEAR);
+	      int currWeek = dayOfYear/7;
+	      if (dayOfYear%7!=0)
+	    	  currWeek++;    	
+	      //更新最新的财富值:
+	      List<PlayerWithBLOBs> all = playerService.findAll();
+	      for (int i=0;i<all.size();i++){
     		PlayerWithBLOBs pp = all.get(i);
     		float money = this.calculatePlayerMoney(pp);
     		pp.setMoney(money);
-    		toplistService.updateData(pp,money);
+    		toplistService.updateData(pp,money,currWeek);
     	}
     }
     
@@ -78,13 +87,16 @@ public class PlayerManager {
     }
     public void update(){
     	tick ++;
-    	updateMoney();
+    	if (tick%WEEK_UPDATE_PERIOD==0){
+    		updateToplist();
+    	}
 	}
     
     public static void main(String[] args) {
     	PlayerManager stmgr = PlayerManager.getInstance();
-    	stmgr.updateMoney();
-
+    	stmgr.updateToplist();
+    	ToplistService toplistService = new ToplistService();
+    	//int b = toplistService.findCountByGreaterMoney(0,199);
     	int a = 10;
     }
 }

@@ -12,7 +12,6 @@ Msg = function(){
 	this.tipname ="msgtip";
 	this.tips = [];
     this.tagname = "my"+this.name;
-    this.tipTop = "300px";
     this.pagename = this.tagname+"page";
 }
 
@@ -65,7 +64,7 @@ Msg.prototype.poptip = function(desc)
 	tag.id = this.tipname;
 	tag.style.position = "absolute";
 	tag.style.left = "60px";
-	tag.style.top = this.tipTop;
+	tag.style.top = "350px";
 	tag.style.width = "500px";
 	tag.style.display = "none";
 	tag.style.color = "yellow";
@@ -77,7 +76,7 @@ Msg.prototype.poptip = function(desc)
     
 	this.tips.shift();
     
-	$('#'+this.tipname).animate({marginTop:-200, opacity:'show'},2000,MsgTipCallback).fadeOut(1000);
+	$('#'+this.tipname).animate({marginTop:-250, opacity:'show'},2500,MsgTipCallback).fadeOut(1500);
 }
 
 //title自定义：

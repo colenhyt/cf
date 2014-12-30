@@ -14,7 +14,7 @@ Datamgr.prototype = {
             pclass += "small";
          }else if (this.name=="bank") {
             pclass += "bank"
-         }else if (this.name=="player") {
+         }else if (this.name=="playerinfo") {
             pclass += "player"
          }
         content += "<div class='"+pclass+"' id='"+this.pagename+"'>"
@@ -36,7 +36,7 @@ Datamgr.prototype = {
 	},
 
 
-	buildPaging:function(currPage,itemCount,onClick)
+	buildPaging:function(currPage,itemCount,onClick,type)
 	{
 		var content = ""
 		var pageCount = parseInt(itemCount/this.pageCount);
@@ -51,12 +51,19 @@ Datamgr.prototype = {
 		if (onClick)
 		 clickCallback = onClick;
 		content +=     "        <div width='90%'>"
-		content += "<input type='button' class='cf_bt pagingleft' value='上一页' onclick='"+clickCallback+"("+(currPage-1)+")'/>"
+		if (type==null)
+		content += "<input type='button' class='cf_bt pagingleft' value='上一页' onclick='"+clickCallback+"("+(currPage-1)+")'/>";
+		else
+		content += "<input type='button' class='cf_bt pagingleft' value='上一页' onclick='"+clickCallback+"("+type+","+(currPage-1)+")'/>";
+		
 		content += "<span class='cf_paging'>"+(currPage+1)+"/"+pageCount+"</span>"
-                var nextClick = ""
-                if (currPage+1<pageCount) {
+        var nextClick = ""
+        if (currPage+1<pageCount) {
+ 			if (type==null)
                   nextClick = " onclick='"+clickCallback+"("+(currPage+1)+")'";
-                }
+ 			else
+                  nextClick = " onclick='"+clickCallback+"("+type+","+(currPage+1)+")'";
+        }
 		content += "<input type='button' class='cf_bt pagingright' "+nextClick+" value='下一页'/>"
 		content += "           </div>  "
 		return content;
@@ -127,7 +134,7 @@ Datamgr.prototype = {
 				qty = tag.value;
 		}
 		if (qty==0){
-		    g_msg.open2(this.cname+"购买","数量不能为零!");
+		    g_msg.tip(this.cname+"购买","数量不能为零!");
 		    return;
 		}
 			
@@ -137,14 +144,14 @@ Datamgr.prototype = {
 		    var needCash = item.price * qty;
 		    var cash = g_player.saving[0].amount;
 		    if (cash<needCash){
-			    g_msg.open("你的现金不够，购买失败!");
+			    g_msg.tip("你的现金不够，购买失败!");
 			    return;
 		    }		
 	    }else {
 	    	if (this.name=="stock"){
 			   var pitem = g_player.getItemData(this.name,item);
 			   if (pitem.qty<(0-qty)){
-			   		g_msg.open("持有数量少于你抛售数量!");	
+			   		g_msg.tip("持有数量少于你抛售数量!");	
 			   		return;
 			   }
 	    	}else {

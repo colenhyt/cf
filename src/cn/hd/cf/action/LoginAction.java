@@ -170,7 +170,7 @@ public class LoginAction extends BaseAction {
 		jsonStock = JSONArray.fromObject(insures);
 		playerBlob.setInsure(jsonStock.toString());			
 		int top = toplistService.findCountByGreaterMoney(0,playerBlob.getPlayerid());
-		playerBlob.setWeektop(top);
+		playerBlob.setWeektop(top+1);
 		top = toplistService.findCountByGreaterMoney(1,playerBlob.getPlayerid());
 		playerBlob.setMonthtop(top);
 		//List<Integer> dataIds = findUpdateDataIds(player.getVersions());
