@@ -136,7 +136,7 @@ Stock.prototype.buildPage = function(page)
 			if (quote!=null)
 				ps = quote.price;
 			var psColor = "red";
-			if (pitem.profit<0)
+			if (pitem.profit<=0)
 				psColor = "green"
 		     content += "<div class='cfpanel' ID='"+this.name+"_d"+item.id+"' onclick='g_stock.showDetail("+item.id+")'>"
 		     content += "<span class='cfpanel_title'>"+item.name+"</span>"

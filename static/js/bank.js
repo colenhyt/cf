@@ -107,7 +107,7 @@ Bank.prototype.showSaving2 = function(page){
 			var psColor = "red";
 		     content += "<div class='cfpanel bank2' ID='"+this.name+"_d"+item.id+"' onclick='g_bank.showDetail("+item.id+")'>"
 		     content += "<span class='cfpanel_title'>"+item.name+"</span>"
-		     content += "<span class='cfpanel_text right'>存款  <span style='color:yellow'> "+pitem.amount+"</span> 元</span>"
+		     content += "<span class='cfpanel_text right'>存款  <span style='color:yellow'> "+ForDight(pitem.amount)+"</span> 元</span>"
 			 content += "	<div>"
 			 content += "<span class='cfpanel_text'>利率: "+ForDight(item.rate)+"%</span>"
 			 content += "<span class='cfpanel_text right'>已获得利息: <span style='color:"+psColor+"'>"+ForDight(pitem.profit)+"</span> 元</span>"
