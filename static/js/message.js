@@ -76,7 +76,7 @@ Msg.prototype.poptip = function(desc)
     
 	this.tips.shift();
     
-	$('#'+this.tipname).animate({marginTop:-250, opacity:'show'},2500,MsgTipCallback).fadeOut(1500);
+	$('#'+this.tipname).animate({marginTop:-320, opacity:'show'},2500,MsgTipCallback).fadeOut(1500);
 }
 
 //title自定义：
