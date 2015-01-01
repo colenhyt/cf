@@ -1,12 +1,34 @@
 /* CSS Document */
 img{ max-width:100%;} 
 body {
-  font-size:36px;
+  font:100%;
   color:#ffffff;
 }
 
+.cflogin_input_div {
+font-size:3em;
+position:absolute;
+left:140px;
+top:410px;
+}
+
+.cflogin_tip {
+position:absolute;
+font-size:3em;
+left:130px;
+top:490px;
+color:black;
+}
+
+.cflogin_input {
+width:285px;
+border:none;
+color:blue;
+background:none;
+}
+
 td {
-font-size:28px;
+ font-size:28px;
   font-weight: bold;
 }
 
@@ -24,19 +46,16 @@ font-size:20px;
 .cfpage_text.saving{
 left:160px;
 top:23px;
-z-index:5;
 }
 
 .cfpage_text.weektop{
 left:385px;
 top:23px;
-z-index:5;
 }
 
 .cfpage_text.level{
 left:10px;
 top:112px;
-z-index:20;
 }
 
 .cf_bt{
@@ -82,32 +101,15 @@ color:#ffffff;
   color:yellow;
 }
 
-.cflogin_input_div {
-position:absolute;
-left:140px;
-top:410px;
-}
-
-.cflogin_tip {
-position:absolute;
-left:130px;
-top:490px;
-color:black;
-}
-
-.cflogin_input {
-width:285px;
-border:none;
-color:blue;
-background:none;
-}
-
 .cfsaving_div {
-margin-top:-10px;text-align:center;
+margin-top:-10px;
+text-align:center;
 }
 
 .cfsaving_stext {
-float:right;color:green;font-size:30px;
+float:right;
+color:green;
+font-size:30px;
 }
 
 .cfsaving_stext.out {
