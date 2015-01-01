@@ -95,8 +95,15 @@ Datamgr.prototype = {
 	},
 	
 	show:function(){
+		var myDate = new Date();
+		var ss = myDate.getSeconds(); 
+		var ms = myDate.getMilliseconds();	
 		this.buildPage(0);
-          $('#'+this.tagname).modal({position:Page_Top,show: true});     
+          $('#'+this.tagname).modal({position:Page_Top,show: true}); 
+        var myDate22 = new Date();
+		var ss2 = myDate22.getSeconds(); 
+		var ms2 = myDate22.getMilliseconds();
+		g_msg.tip("s: "+(ss2-ss)+",ms: "+(ms2-ms));    
 	},
 
     onclick:function(clickX,clickY){

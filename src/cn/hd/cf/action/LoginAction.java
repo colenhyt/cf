@@ -1,9 +1,12 @@
 package cn.hd.cf.action;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import com.alibaba.fastjson.JSON;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -15,7 +18,6 @@ import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Signindata;
 import cn.hd.cf.model.Stock;
-import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.InitdataService;
 import cn.hd.cf.service.InsureService;
 import cn.hd.cf.service.PlayerService;
@@ -25,7 +27,6 @@ import cn.hd.cf.service.SignindataService;
 import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.ToplistService;
 import cn.hd.mgr.EventManager;
-import cn.hd.mgr.PlayerManager;
 import cn.hd.util.MD5;
 import cn.hd.util.StringUtil;
 
@@ -163,11 +164,10 @@ public class LoginAction extends BaseAction {
 		List<Saving> savings = savingService.findUpdatedSavings(playerBlob.getPlayerid(),playerBlob.getLastlogin());
 		JSONArray  jsonSaving = JSONArray.fromObject(savings);
 		playerBlob.setSaving(jsonSaving.toString());
-		List<Stock> stocks = stockService.findByPlayerId(playerBlob.getPlayerid());
-		JSONArray  jsonStock = JSONArray.fromObject(stocks);
-		playerBlob.setStock(jsonStock.toString());			
+		Map<Integer,List<Stock>> stocks = stockService.findMapByPlayerId(playerBlob.getPlayerid());
+		playerBlob.setStock(JSON.toJSONString(stocks));			
 		List<Insure> insures = insureService.findUpdatedSavings(playerBlob.getPlayerid(),playerBlob.getLastlogin());
-		jsonStock = JSONArray.fromObject(insures);
+		JSONArray jsonStock = JSONArray.fromObject(insures);
 		playerBlob.setInsure(jsonStock.toString());			
 		int top = toplistService.findCountByGreaterMoney(0,playerBlob.getPlayerid());
 		playerBlob.setWeektop(top+1);

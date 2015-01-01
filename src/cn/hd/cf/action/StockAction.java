@@ -74,7 +74,7 @@ public class StockAction extends SavingAction {
 		long margin = StockManager.getInstance().getMarginSec();
 		long m2 = StockManager.getInstance().STOCK_QUOTE_PERIOD;
 		float fmargin = (float)margin/(float)m2;
-		String tt = String.valueOf(fmargin);
+		String tt = String.valueOf(margin);
 		write(tt,"utf-8");		
 		System.out.println(margin+"上次行情过去时间比例:"+fmargin);
 		return null;

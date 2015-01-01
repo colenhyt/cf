@@ -1,6 +1,9 @@
 package cn.hd.cf.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.hd.base.BaseService;
 import cn.hd.cf.dao.StockMapper;
@@ -38,6 +41,23 @@ public class StockService extends BaseService {
 		return stockMapper.selectByExample(example);
 	}
 	
+	public Map<Integer,List<Stock>> findMapByPlayerId(int playerId)
+	{
+		StockExample example = new StockExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
+		List<Stock> ss = stockMapper.selectByExample(example);
+		Map<Integer,List<Stock>> smap = new HashMap<Integer,List<Stock>>();
+		for (int i=0;i<ss.size();i++){
+			List<Stock> list = smap.get(ss.get(i).getItemid());
+			if (list==null){
+				list = new ArrayList<Stock>();
+				smap.put(ss.get(i).getItemid(), list);
+			}
+			list.add(ss.get(i));
+		}
+		return smap;
+	}	
 	public boolean removeStock(int playerId,int stockId,int qty)
 	{
 		StockExample example = new StockExample();

@@ -66,10 +66,12 @@ Msg.prototype.poptip = function(desc)
 	tag.style.left = "60px";
 	tag.style.top = "350px";
 	tag.style.width = "500px";
+	tag.style.height = "90px";
 	tag.style.display = "none";
 	tag.style.color = "yellow";
 	tag.style.textAlign = "center";
 	tag.style.border = "1px solid pink";
+	tag.style.cssText += "background-color:blue";
 	tag.style.zIndex = 2000;
 	tag.innerHTML = desc;
     document.body.appendChild(tag);

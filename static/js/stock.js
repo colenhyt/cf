@@ -41,7 +41,7 @@ Stock.prototype.loadNextQuoteTime = function()
 	try  {
 		var dataobj = $.ajax({type:"post",url:"/cf/stock_nextquotetime.do",async:false});
 		if (dataobj!=null&&dataobj.responseText.length>0) {
-			quatetime = parseFloat(dataobj.responseText);
+			quatetime = parseInt(dataobj.responseText);
 		}
 	}   catch  (e)   {
 	    logerr(e.name);
@@ -95,8 +95,15 @@ Stock.prototype.show = function(){
 	if (g_player.data.openstock!=1){
 		g_msg.open2("证券开户","您需要开通证券账户才能投资股票，请点击'确认'按钮开通","g_stock.confirmOpen");
 	}else {
+		var myDate = new Date();
+		var ss = myDate.getSeconds(); 
+		var ms = myDate.getMilliseconds();		
 		this.buildPage(0);
-        $('#'+this.tagname).modal({position:Page_Top,show: true});     
+        $('#'+this.tagname).modal({position:Page_Top,show: true});    
+        var myDate22 = new Date();
+		var ss2 = myDate22.getSeconds(); 
+		var ms2 = myDate22.getMilliseconds();
+		g_msg.tip("s: "+(ss2-ss)+",ms: "+(ms2-ms));    
 	}
 }
 
@@ -109,6 +116,8 @@ Stock.prototype.confirmOpen = function(){
 
 Stock.prototype.buildPage = function(page)
 {
+		var ritems = this.findStockIds();
+	return;
 	if (page<0)	return
 	
 	var tdata = store.get(this.name);
@@ -118,23 +127,22 @@ Stock.prototype.buildPage = function(page)
       content += "</div>"
 	}else {
 		var tt = this.loadNextQuoteTime();
+		tt /= 60;
 		var loadFromServer = false;
-		if (tt>0.95)
-			loadFromServer = true;
 		var start = page* this.pageCount;
 		var end = (page+1)* this.pageCount;
-		var ritems = this.findStockIds();
 		if (end>ritems.length)
 			end = ritems.length;
 		  content += "<div class='cfpanel_body'>"
 		for (var i=start;i<end;i++){
 			var item = this.findItem(ritems[i]);
-			this.loadQuotes(item.id,loadFromServer);
-			var pitem = g_player.getItemData("stock",item);
-			var quote = this.findLastQuote(item.id);
+			//this.loadQuotes(item.id,loadFromServer);	//120ms
+			//var pitem = g_player.getItemData("stock",item);
+			//var quote = this.findLastQuote(item.id);		//50ms
+			var pitem = {qty:0,profit:0}		//other:70ms
 			var ps = 0;
-			if (quote!=null)
-				ps = quote.price;
+			//if (quote!=null)
+//				ps = quote.price;
 			var psColor = "red";
 			if (pitem.profit<=0)
 				psColor = "green"
@@ -148,9 +156,8 @@ Stock.prototype.buildPage = function(page)
       		content += "</div>"
 		}
 			content += "           <div style='margin-top:10px;font-size:25px;color:pink'>  "
-			content += "          股市开市为8:00AM-9:00PM,下次股价变动:"  
+			content += "          股市开市为8:00AM-9:00PM<br>下次股价变动: "+tt+"分钟"  
 			content += "             </div>"
-			content += "    <div class='cfstock_qtime0'><p id='stock_qtime' class='cfstock_qtime'></p></div>"  
      		content += "</div>"
 		
 		 
@@ -160,12 +167,6 @@ Stock.prototype.buildPage = function(page)
      
 	var tag = document.getElementById(this.pagename);
 	tag.innerHTML = content;
-	
-	var mp = 530*tt;
-	if (mp>500)
-		mp = 500;
-	mp += "px";
-	$("#stock_qtime").animate({marginRight:mp});
 	
 }
 
@@ -219,8 +220,8 @@ Stock.prototype.showDetail = function(id,isflush){
 	 content += "               <td>"+canBuyQty+"手</td>"
 	content += "              </tr>"
 	 content += "             <tr>"
-	 content += "               <td colspan='2'><input type='button' class='cf_bt_green' value='减持100股' onclick='g_stock.confirmBuy("+item.id+",-100)'></td>"
-	 content += "               <td colspan='2'><input type='button' class='cf_bt_green right' value='加持100股' onclick='g_stock.confirmBuy("+item.id+",100)'></td>"
+	 content += "               <td colspan='2'><input type='button' class='cf_bt_green' value='减持100股' onclick='g_stock.countBuy("+item.id+",-100)'></td>"
+	 content += "               <td colspan='2'><input type='button' class='cf_bt_green right' value='加持100股' onclick='g_stock.countBuy("+item.id+",100)'></td>"
 	content += "              </tr>"
 	 content += "             <tr>"
 	 content += "               <td colspan='2' style='float:right;height:30px'></td>"
@@ -230,7 +231,7 @@ Stock.prototype.showDetail = function(id,isflush){
 	content += "           </div>  "
 	content += "           <div style='align:center'>  "
 	content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>退出</button>      "  
-	//content += "          <button class='cf_bt' onclick='g_stock.buy("+id+")'>购买</button>"
+	content += "          <button class='cf_bt' onclick='g_stock.doBuy()'>确定</button>"
 	content += "             </div>"
 	
 	var tag = document.getElementById(this.pagedetailname);
@@ -242,6 +243,25 @@ Stock.prototype.showDetail = function(id,isflush){
 		$('#'+this.tagdetailname).modal({position:30,show: true});  
 }
 
+Stock.prototype.countBuy = function(stockid,count)
+{
+	this.waitStockid = stockid;
+	if (this.waitCount==null)
+		this.waitCount = 0;
+	this.waitCount += count;
+}
+
+Stock.prototype.doBuy = function()
+{
+	if (this.waitCount==null||this.waitCount==0){
+		g_msg.tip("请减持或者增持");
+		return;
+	}
+	//alert(this.waitCount);
+	this.confirmBuy(this.waitStockid,this.waitCount);
+	this.waitCount = 0;
+}
+
 Stock.prototype.findLastQuote = function(stockid)
 {
 	var qdata = store.get(this.quotename);
@@ -251,6 +271,7 @@ Stock.prototype.findLastQuote = function(stockid)
 	else
 		return {price:0};
 }
+
 
 Stock.prototype.findQuotes = function(stockid)
 {

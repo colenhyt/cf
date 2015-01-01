@@ -97,6 +97,5 @@ public class PlayerManager {
     	stmgr.updateToplist();
     	ToplistService toplistService = new ToplistService();
     	//int b = toplistService.findCountByGreaterMoney(0,199);
-    	int a = 10;
     }
 }

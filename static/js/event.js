@@ -29,14 +29,14 @@ Event.prototype.triggerEvent = function(){
 	var item = tdata[index]; 
 	log("event trigger:"+item.prize.id);
 	
-	this.isTrigger = true;
+	//this.isTrigger = true;
 	var content;
 	if (item.type==1){
 		content = this.badEvent(item);
 	}else {
 		content = this.goodEvent(item);
 	}
-	
+	alert(content);
 	if (content.length>0)
 		g_msg.open2(item.name,content);
 }
@@ -53,10 +53,10 @@ Event.prototype.goodEvent = function(item){
 	}
 	}
 	var content = ""
-	if (found==true)
+	//if (found==true)
 	{
-			var pp = eval ("(" + item.prize + ")");
-			g_player.prize(pp);
+			//var pp = eval ("(" + item.prize + ")");
+			//g_player.prize(pp);
 			desc = item.descs;
 			var targetInsure = g_insure.findItem(item.itemid);
 			var iname = targetInsure?targetInsure.name:"";
@@ -86,10 +86,10 @@ Event.prototype.badEvent = function(item){
 		}
 	}
 	}
-	if (!found)
+	//if (!found)
 	{
-			var pp = eval ("(" + item.prize + ")");
-			g_player.prize(pp);
+			//var pp = eval ("(" + item.prize + ")");
+			//g_player.prize(pp);
 			desc = item.descs;
 			var targetInsure = g_insure.findItem(item.itemid);
 			var iname = targetInsure?targetInsure.name:"";
@@ -107,8 +107,9 @@ Event.prototype.badEvent = function(item){
 //
 Event.prototype.update = function(){
 	this.tick++;
-	if (this.tick%this.duration==0){
-		if (this.isTrigger!=true)
+	//if (this.tick%this.duration==0)
+	{
+		//if (this.isTrigger!=true)
 		this.triggerEvent();
 	}
 }

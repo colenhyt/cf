@@ -97,9 +97,9 @@ Player.prototype.getTotal = function(data) {
 		insure += data.insure[i].amount;
 	}
 	var stock = 0;
-	for (var i=0;i<data.stock.length;i++){
-		stock += data.stock[i].amount;
-	}
+//	for (var i=0;i<data.stock.length;i++){
+//		stock += data.stock[i].amount;
+//	}
 	return {saving:ForDight(saving),saving2:ForDight(saving2),insure:ForDight(insure),stock:ForDight(stock)};
 }
 

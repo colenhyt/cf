@@ -13,10 +13,13 @@ import net.sf.json.JSONArray;
 
 import org.apache.log4j.Logger;
 
+import com.alibaba.fastjson.JSON;
+
 import cn.hd.cf.model.Quote;
+import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Stockdata;
+import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.StockdataService;
-import cn.hd.cf.service.ToplistService;
 
 public class StockManager {
 	private static Logger logger = Logger.getLogger(StockManager.class); 
@@ -150,7 +153,9 @@ public class StockManager {
     	int a = 10;
 //    	ToplistService toplist = new ToplistService();
 //    	toplist.findByType(1);
-
-
+    	StockService stockService= new StockService();
+    	Map<Integer,List<Stock>> stocks = stockService.findMapByPlayerId(221);
+    	String jsonss = JSON.toJSONString(stocks);
+    	System.out.println(jsonss);
     }
 }

@@ -55,6 +55,12 @@ ForDight = function(Dight){
     return Dight;  
 }
 
+cfeval = function(jsonStr){  
+	if (jsonStr==null)
+		return null;
+    return eval ("(" + jsonStr + ")");
+}
+
 myajax = function(url,dataParam,async){
 	if (async==null)
 		async = false;

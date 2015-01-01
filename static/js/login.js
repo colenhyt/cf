@@ -140,7 +140,7 @@ Login.prototype.register = function(){
 	var retcode = 0;
 	try    {
 		if (dataobj!=null&&dataobj.responseText.length>0) {
-			var obj = eval ("(" + dataobj.responseText + ")");
+			var obj = cfeval(dataobj.responseText);
 			if (obj!=null){
 			//error:
 				if (obj.code!=null){
@@ -166,10 +166,15 @@ Login.prototype.register = function(){
 }
 
 Login.prototype.login = function(){
+     var player = store.get(g_player.name);
+     if (player==null){
+     	alert("本地数据缺失，登录失败");
+     	return;
+     }
+     
 	//进入场景:
 	g_game.m_scene.m_map.enter();
 	
-     var player = store.get(g_player.name);
      g_player.data = player;
      var ppobj = {playerid:player.playerid,pwd:player.pwd,playername:player.playername}
    	var dataParam = obj2ParamStr("player",ppobj);
@@ -177,19 +182,13 @@ Login.prototype.login = function(){
 	var dataobj = $.ajax({type:"post",url:"/cf/login_login.do",data:dataParam,async:false});
 	try    {
 		if (dataobj!=null&&dataobj.responseText.length>0) {
-			var obj = eval ("(" + dataobj.responseText + ")");
+			var obj = cfeval(dataobj.responseText);
 			if (obj!=null&&obj.playerid!=null){
 				g_player.data = obj;
-				if (obj.quest)
-					g_player.data.quest = eval ("(" + obj.quest + ")");
-				if (obj.saving)
-					g_player.saving = eval ("(" + obj.saving + ")");
-				if (obj.stock)
-					g_player.stock = eval ("(" + obj.stock + ")");
-				if (obj.insure)
-					g_player.insure = eval ("(" + obj.insure + ")");
-				if (obj.stockdata)
-					g_stock.load(eval ("(" + obj.stockdata + ")"));
+				g_player.data.quest = cfeval(obj.quest);
+				g_player.saving = cfeval(obj.saving);
+				g_player.stock = cfeval(obj.stock);
+				g_player.insure = cfeval(obj.insure);
 			}else {
 				logerr("数据错误: "+obj);
 			}
