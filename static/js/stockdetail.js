@@ -14,23 +14,17 @@ Stockdetail.prototype.init = function(){
 	//this.buildHTML();
 }
 
-Stockdetail.prototype.drawQuote = function(stockName,divName){
-	var item;
+Stockdetail.prototype.drawQuote = function(itemid,divName){
 	var sdata = store.get(g_stock.name);
-	for (var i=0;i<sdata.length;i++){
-		if (sdata[i].name==stockName){
-			item = sdata[i];
-			break;
-		}
-	}
+	var item = sdata[itemid];
 	if (item==null){
-		log('no stock quote for:'+stockName);
+		log('no stock quote for:'+itemid);
 		return;
 	}
 	
-	var quotes = g_stock.findQuotes(item.id);
+	var quotes = g_stock.findQuotes(itemid);
 	if (quotes==null){
-		alert('no stock quote for:'+stockName);
+		alert('no stock quote for:'+itemid);
 		return;
 	}
 		

@@ -3,7 +3,9 @@ package cn.hd.cf.service;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.hd.base.BaseService;
 import cn.hd.cf.dao.SavingMapper;
@@ -42,7 +44,7 @@ public class SavingService extends BaseService {
 	}
 	
 	//
-	public List<Saving> findUpdatedSavings(int playerId,Date lastLogin)
+	public Map<Integer,Saving> findUpdatedSavings(int playerId,Date lastLogin)
 	{
 		if (lastLogin==null)
 			lastLogin = new Date();
@@ -58,6 +60,7 @@ public class SavingService extends BaseService {
 		List<Saving> savings = this.findByPlayerId(playerId);
 		List<Saving> updateSavings = new ArrayList<Saving>();
 		
+		Map<Integer,Saving>	 mdata = new HashMap<Integer,Saving>();
 		for (int i=0;i<savings.size();i++){
 			Saving saving = savings.get(i);
 			Saving usaving = new Saving();
@@ -69,16 +72,14 @@ public class SavingService extends BaseService {
 				saving.setUpdatetime(d2);
 				update(saving);
 			}
-			usaving.setPlayerid(saving.getPlayerid());
 			usaving.setAmount(saving.getAmount());
-			usaving.setRate(saving.getRate());
 			usaving.setQty(saving.getQty());
-			usaving.setItemid(saving.getItemid());
 			usaving.setProfit(inter);
 			System.out.println("得到利息: "+inter);
 			updateSavings.add(usaving);
+			mdata.put(saving.getItemid(), usaving);
 		}
-		return updateSavings;
+		return mdata;
 	}
 	
 	public Saving findLivingSavingByPlayerId(int playerId)

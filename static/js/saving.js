@@ -23,17 +23,17 @@ Saving.prototype.init = function(){
 
 Saving.prototype.showDetail = function(id){    
 	var tdata = store.get(this.name);
-   var item = this.findItem(id);
+   var item = tdata[id];
    if (item==null) return;
         
-    var pitem = g_player.getItemData(this.name,item);
+    var pitem = g_player.getSavingItem(id);
     var content;
     if (pitem.amount>0){
     	//取款:
-    	content = this.outContent(item,pitem.amount);
+    	content = this.outContent(id,item,pitem.amount);
     }else {
     	//存款:
-    	content = this.inContent(item);
+    	content = this.inContent(id,item);
     }
 	
 	var tag = document.getElementById(this.pagedetailname);
@@ -42,7 +42,7 @@ Saving.prototype.showDetail = function(id){
 	$('#'+this.tagdetailname).modal({position:PageDetail_Top,show: true});
 }
 
-Saving.prototype.inContent = function(item){
+Saving.prototype.inContent = function(id,item){
     var dftAmount = 1000;
     var dftProfit = ForDight(dftAmount * (item.rate/100));
 	var content =      "        <div style='margin-top:-10px;text-align:center;'>"
@@ -56,9 +56,9 @@ Saving.prototype.inContent = function(item){
 content += "              </tr>"
  content += "             <tr>"
  content += "               <td>存入:</td>"
- content += "               <td><input type='button' class='cf_count' onclick='g_saving.countBuy("+item.id+",-1000)'></td>"
+ content += "               <td><input type='button' class='cf_count' onclick='g_saving.countBuy("+id+",-1000)'></td>"
  content += "               <td><input type='text' id='saving_amount' onBlur='' value='1000' style='width:160px;text-align:center;height:58px;font-size:30px'></td>"
- content += "               <td><input type='button' class='cf_count add' onclick='g_saving.countBuy("+item.id+",1000)'></td>"
+ content += "               <td><input type='button' class='cf_count add' onclick='g_saving.countBuy("+id+",1000)'></td>"
 content += "              </tr>"
 content += "             <tr>"
  content += "               <td colspan='4'>预计利息: ￥<span id='savingprofit'>"+dftProfit+"</span></td>"
@@ -66,13 +66,13 @@ content += "              </tr>"
 content += "          </table>     "
 		content += "             </div>"
 	content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>      "  
-	content += "          <button class='cf_bt' onclick='g_saving.buy("+item.id+")'>确认</button>"
+	content += "          <button class='cf_bt' onclick='g_saving.buy("+id+")'>确认</button>"
 content += "             </div>"
  
  	return content;
 }
 
-Saving.prototype.outContent = function(item,amount){
+Saving.prototype.outContent = function(id,item,amount){
    var dftProfit = ForDight(amount * (item.rate/100));
 	var content =      "        <div style='margin-top:-10px;text-align:center;'>"
  content += "        <div><span class='cpgapedetail_h2 left'>"+item.name+"取款</span>"
@@ -95,7 +95,7 @@ content += "              </tr>"
 content += "          </table>     "
 		content += "             </div>"
 	content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>      "  
-	content += "          <button class='cf_bt' onclick='g_saving.buy("+item.id+")'>取出</button>"
+	content += "          <button class='cf_bt' onclick='g_saving.buy("+id+")'>取出</button>"
 content += "             </div>"
  	return content;
  	
@@ -120,10 +120,10 @@ Saving.prototype.countBuy = function(id,count){
 }
 
 Saving.prototype.buy = function(id){
-   var item = this.findItem(id);
+   var item = store.get(this.name)[id];
    if (item==null) return;
    
-   var pitem = g_player.getItemData(this.name,item);
+   var pitem = g_player.getSavingItem(id);
    
     var amount = 0;
    //存钱:

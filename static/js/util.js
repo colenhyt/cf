@@ -61,6 +61,14 @@ cfeval = function(jsonStr){
     return eval ("(" + jsonStr + ")");
 }
 
+mapIDs = function(map){  
+	var ids = []
+	for(key in map){
+		ids.push(key);
+	}
+	return ids;
+}
+
 myajax = function(url,dataParam,async){
 	if (async==null)
 		async = false;

@@ -63,15 +63,28 @@ public class StockService extends BaseService {
 		StockExample example = new StockExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
-		criteria.andQtyEqualTo(qty);
 		criteria.andItemidEqualTo(stockId);
+		example.setOrderByClause("qty");
 		List<Stock> list = stockMapper.selectByExample(example);
-		if (list.size()>0){
-			stockMapper.deleteByPrimaryKey(list.get(0).getId());
-			DBCommit();
-			return true;
+		int needRemoveQty = qty;
+		boolean exec = false;
+		for (int i=0;i<list.size();i++){
+			Stock ss = list.get(i);
+			if (ss.getQty()<=needRemoveQty){
+				needRemoveQty -= ss.getQty();
+				stockMapper.deleteByPrimaryKey(ss.getId());
+			}else {
+				ss.setQty(ss.getQty()-needRemoveQty);
+				needRemoveQty = 0;
+				stockMapper.updateByPrimaryKey(ss);
+			}
+			if (needRemoveQty==0) {
+				DBCommit();
+				exec = true;
+				break;
+			}
 		}
-		return false;
+		return exec;
 	}
 	
 	public boolean updateStocks(List<Stock> stocks)

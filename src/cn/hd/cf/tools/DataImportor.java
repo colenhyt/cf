@@ -277,6 +277,129 @@ public class DataImportor extends Base{
 		return null;
 	}
 	
+	private String getStringMapData(String strSheetName,int nameIndex,int dataIndex)
+	{
+		String strdata = "";
+		XSSFSheet st = getSheet(strSheetName);
+	    int rows=st.getLastRowNum()+1;//总行数  
+	    if (rows<2){
+	    	return strdata;
+	    }
+	    int cols;//总列数  
+	    //schema
+	    XSSFRow row1=st.getRow(nameIndex);//:row name
+	
+	    for(int i=dataIndex;i<rows;i++){  
+	        XSSFRow row=st.getRow(i);//读取某一行数据  
+	        if(row!=null){  
+	            //获取行中所有列数据  
+	            cols=row.getLastCellNum();  
+	            String record = "";
+	        for(int j=0;j<cols;j++){  
+            	if (row1.getCell(j)==null) continue;
+	            XSSFCell cell=row.getCell(j);  
+	            if(cell==null){ 
+	            	System.out.print("   ");    
+	            	continue;
+	            }
+	            //判断单元格的数据类型  
+	            	
+            	String fieldName = row1.getCell(j).getStringCellValue();
+            	if (fieldName.equalsIgnoreCase("id")){
+            		int value = (int)cell.getNumericCellValue();
+            		record += "'"+value+"':{";
+            		continue;
+            	}
+	            	
+	            record += "\""+fieldName+"\":";
+	            switch (cell.getCellType()) {    
+	                case XSSFCell.CELL_TYPE_STRING: // 字符串    
+	                    record += "\""+cell.getStringCellValue()+"\",";
+	                    break;    
+	                case XSSFCell.CELL_TYPE_NUMERIC: // 数字,转为float
+	                	float value = (float)cell.getNumericCellValue();
+	                    record += value+",";
+	                    break;    
+	                case XSSFCell.CELL_TYPE_BOOLEAN: // bool 
+	                    record += cell.getBooleanCellValue()+",";
+	                    break;    
+	                default:    
+	                    record += cell.getNumericCellValue()+",";
+	                    break;    
+	                }    
+	        }  
+	            record += "},";
+	            strdata += record+"\n";
+	        }  
+	    }  
+	    		
+		return strdata;
+	}
+
+	public void outputJsData(String dataName,int nameIndex,int dataIndex)
+	{
+	    File fileDes = new File(CONFIG_PATH_JS+"/"+dataName+".js");  
+	    FileOutputStream out = null;
+		try {
+			if (!fileDes.exists())
+			{
+				fileDes.createNewFile();
+			}
+	        out = new FileOutputStream(fileDes);
+	        if (dataName=="eventdata"){
+				Float freq = getRowData(dataName,2);
+				Integer ifreq = Integer.valueOf(freq.intValue());
+		        out.write(("var data_"+dataName+"_feq = "+ifreq+";\n\n").getBytes());
+	        }
+	        out.write(("var data_"+dataName+"={\n").getBytes());
+			String strMapData = getStringMapData(dataName,nameIndex,dataIndex);
+			out.write(strMapData.getBytes());
+			out.write("}\n".getBytes());
+			System.out.println("output ("+dataName+")js data success");
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void importXls2Quote(){
+	    File fileDes = new File(cfg_file);  
+	    InputStream str;
+		try {
+			str = new FileInputStream(fileDes);
+	        XSSFWorkbook xwb = new XSSFWorkbook(str);  //利用poi读取excel文件流  
+	        Iterator<XSSFSheet> iterator = xwb.iterator();
+	        quotedataService.clear();
+	        while (iterator.hasNext())
+	        {
+	        	XSSFSheet i = (XSSFSheet) iterator.next();
+	        	importQuoteData(i.getSheetName(),0,1);
+	        	
+	        }	
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  		
+	}
+
+	public void importQuoteData(String dataName,int nameIndex,int dataIndex)
+	{
+		Quotedata record = new Quotedata();
+		System.out.println("import quote for :"+dataName+" ....");
+		JSONArray data = getArraydata(dataName,nameIndex,dataIndex,50);
+		Stock stock = stockdataService.findStock(dataName);
+		record.setName(dataName);
+		record.setStockid(stock.getId());
+		record.setData(data.toString().getBytes());
+		quotedataService.add(record);
+		System.out.println("import ("+dataName+") quote success");
+
+	}
+
 	private JSONArray getJsondata(String strSheetName,int nameIndex,int dataIndex)
 	{
 		JSONArray jsondata = new JSONArray();
@@ -329,78 +452,11 @@ public class DataImportor extends Base{
 		return jsondata;
 	}
 
-	public void outputJsData(String dataName,int nameIndex,int dataIndex)
-	{
-	    File fileDes = new File(CONFIG_PATH_JS+"/"+dataName+".js");  
-	    FileOutputStream out = null;
-		try {
-			if (!fileDes.exists())
-			{
-				fileDes.createNewFile();
-			}
-	        out = new FileOutputStream(fileDes);
-	        if (dataName=="eventdata"){
-				Float freq = getRowData(dataName,2);
-				Integer ifreq = Integer.valueOf(freq.intValue());
-		        out.write(("var data_"+dataName+"_feq = "+ifreq+";\n\n").getBytes());
-	        }
-	        out.write(("var data_"+dataName+"=[\n").getBytes());
-			JSONArray data = getJsondata(dataName,nameIndex,dataIndex);
-			for (int i=0;i<data.size();i++){
-			out.write(data.get(i).toString().getBytes());
-			out.write(",\n".getBytes());
-			}
-			out.write("]\n".getBytes());
-			System.out.println("output ("+dataName+")js data success");
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public void importXls2Quote(){
-	    File fileDes = new File(cfg_file);  
-	    InputStream str;
-		try {
-			str = new FileInputStream(fileDes);
-	        XSSFWorkbook xwb = new XSSFWorkbook(str);  //利用poi读取excel文件流  
-	        Iterator<XSSFSheet> iterator = xwb.iterator();
-	        quotedataService.clear();
-	        while (iterator.hasNext())
-	        {
-	        	XSSFSheet i = (XSSFSheet) iterator.next();
-	        	importQuoteData(i.getSheetName(),0,1);
-	        	
-	        }	
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}  		
-	}
-
-	public void importQuoteData(String dataName,int nameIndex,int dataIndex)
-	{
-		Quotedata record = new Quotedata();
-		System.out.println("import quote for :"+dataName+" ....");
-		JSONArray data = getArraydata(dataName,nameIndex,dataIndex,50);
-		Stock stock = stockdataService.findStock(dataName);
-		record.setName(dataName);
-		record.setStockid(stock.getId());
-		record.setData(data.toString().getBytes());
-		quotedataService.add(record);
-		System.out.println("import ("+dataName+") quote success");
-
-	}
-
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		DataImportor importor = new DataImportor("cfdata.xlsx");
 		String name = "insuredata";
-		importor.importData(name);
+		//importor.importData(name);
 		importor.outputJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);
 
 		

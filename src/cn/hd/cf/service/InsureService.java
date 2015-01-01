@@ -3,7 +3,9 @@ package cn.hd.cf.service;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.hd.base.BaseService;
 import cn.hd.cf.dao.InsureMapper;
@@ -41,7 +43,7 @@ public class InsureService extends BaseService {
 		return insureMapper.selectByExample(example);
 	}
 	
-	public List<Insure> findUpdatedSavings(int playerId,Date lastLogin)
+	public Map<Integer,Insure> findUpdatedSavings(int playerId,Date lastLogin)
 	{
 		if (lastLogin==null)
 			lastLogin = new Date();
@@ -56,6 +58,7 @@ public class InsureService extends BaseService {
 		List<Insure> insures = this.findByPlayerId(playerId);
 		List<Insure> updateInsures = new ArrayList<Insure>();
 		
+		Map<Integer,Insure>	mdata = new HashMap<Integer,Insure>();
 		for (int i=0;i<insures.size();i++){
 			Insure insure = insures.get(i);
 			Insure uinsure = new Insure();
@@ -70,14 +73,13 @@ public class InsureService extends BaseService {
 				}
 			}
 			
-			uinsure.setPlayerid(insure.getPlayerid());
 			uinsure.setAmount(insure.getAmount());
-			uinsure.setItemid(insure.getItemid());
 			uinsure.setQty(insure.getQty());
 			uinsure.setProfit(inter);
 			updateInsures.add(uinsure);
+			mdata.put(insure.getItemid(), uinsure);
 		}
-		return updateInsures;
+		return mdata;
 	}
 	
 	public boolean updateInsures(List<Insure> insures)

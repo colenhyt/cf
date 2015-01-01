@@ -134,7 +134,7 @@ Datamgr.prototype = {
 		return item;
 	},	
 	
-	confirmBuy:function(id,qty){  
+	confirmBuy:function(id,qty,price){  
 		if (this.name=="insure"&&qty==0){
 			var tag = document.getElementById('finan_count');
 			if (tag!=null)
@@ -145,18 +145,24 @@ Datamgr.prototype = {
 		    return;
 		}
 			
-	   var item = this.findItem(id);
-	   
+	   var item = store.get(this.name)[id];
+	   if (!item){
+	   		g_msg.tip("找不到"+this.name+"数据");
+	   		return;
+	   }
+	   var ps = item.price;
+	   if (price)
+	   	ps = price;
 	   if (qty>0){
-		    var needCash = item.price * qty;
-		    var cash = g_player.saving[0].amount;
+		    var needCash = ps * qty;
+		    var cash = g_player.saving[1].amount;
 		    if (cash<needCash){
 			    g_msg.tip("你的现金不够，购买失败!");
 			    return;
 		    }		
 	    }else {
 	    	if (this.name=="stock"){
-			   var pitem = g_player.getItemData(this.name,item);
+			   var pitem = g_player.getStockItem(id);
 			   if (pitem.qty<(0-qty)){
 			   		g_msg.tip("持有数量少于你抛售数量!");	
 			   		return;
@@ -167,12 +173,12 @@ Datamgr.prototype = {
 	    	
 	    }
 
-		this.buy(id,qty);
+		this.buy(id,qty,ps);
 		return;
 	},
 	
-	buy:function(id,qty){
-	    var ret = g_player.buyItem(this.name,id,qty);
+	buy:function(id,qty,ps){
+	    var ret = g_player.buyItem(this.name,id,qty,ps);
 	    if (ret.ret==true){
 	    	var item = ret.item;
 	    	//tip:

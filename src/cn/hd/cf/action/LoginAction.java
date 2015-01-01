@@ -161,14 +161,12 @@ public class LoginAction extends BaseAction {
 	
 	public String getPlayerJsonData(PlayerWithBLOBs playerBlob)
 	{
-		List<Saving> savings = savingService.findUpdatedSavings(playerBlob.getPlayerid(),playerBlob.getLastlogin());
-		JSONArray  jsonSaving = JSONArray.fromObject(savings);
-		playerBlob.setSaving(jsonSaving.toString());
+		Map<Integer,Saving> savings = savingService.findUpdatedSavings(playerBlob.getPlayerid(),playerBlob.getLastlogin());
+		playerBlob.setSaving(JSON.toJSONString(savings));
 		Map<Integer,List<Stock>> stocks = stockService.findMapByPlayerId(playerBlob.getPlayerid());
 		playerBlob.setStock(JSON.toJSONString(stocks));			
-		List<Insure> insures = insureService.findUpdatedSavings(playerBlob.getPlayerid(),playerBlob.getLastlogin());
-		JSONArray jsonStock = JSONArray.fromObject(insures);
-		playerBlob.setInsure(jsonStock.toString());			
+		Map<Integer,Insure> insures = insureService.findUpdatedSavings(playerBlob.getPlayerid(),playerBlob.getLastlogin());
+		playerBlob.setInsure(JSON.toJSONString(insures));			
 		int top = toplistService.findCountByGreaterMoney(0,playerBlob.getPlayerid());
 		playerBlob.setWeektop(top+1);
 		top = toplistService.findCountByGreaterMoney(1,playerBlob.getPlayerid());

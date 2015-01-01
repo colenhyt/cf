@@ -217,7 +217,7 @@ public class StockDataImportor extends Base{
 
 	public static void main(String[] args) {	
 		StockDataImportor importor2 = new StockDataImportor("stockdata.xlsx");
-		importor2.importStockdata();
+		//importor2.importStockdata();
 		
 		DataImportor importor3 = new DataImportor("stockdata.xlsx");
 		String name = "stockdata";
