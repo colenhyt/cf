@@ -45,19 +45,19 @@ Saving.prototype.showDetail = function(id){
 Saving.prototype.inContent = function(id,item){
     var dftAmount = 1000;
     var dftProfit = ForDight(dftAmount * (item.rate/100));
-	var content =      "        <div style='margin-top:-10px;text-align:center;'>"
+	var content =      "        <div class='cfsaving_div'>"
  content += "        <div><span class='cpgapedetail_h2 left'>"+item.name+"存款</span>"
-	content += "<span style='float:right;color:green;font-size:30px'>存款 </span></div>"
+	content += "<span class='cfsaving_stext'>存款 </span></div>"
 	content += "<img src='static/img/pop_line.png' class='cf_line'>"
  content += "           <div class='cfmsg_text saving'>  "
- content += "        <table id='toplist1_tab' style='text-align:left;line-height:60px'>"
+ content += "        <table id='toplist1_tab' class='cfsaving_content'>"
  content += "             <tr>"
  content += "               <td colspan='4'>利率: "+item.rate+"%</td>"
 content += "              </tr>"
  content += "             <tr>"
  content += "               <td>存入:</td>"
  content += "               <td><input type='button' class='cf_count' onclick='g_saving.countBuy("+id+",-1000)'></td>"
- content += "               <td><input type='text' id='saving_amount' onBlur='' value='1000' style='width:160px;text-align:center;height:58px;font-size:30px'></td>"
+ content += "               <td><input type='text' id='saving_amount' onBlur='' value='1000' class='cfsaving_qty'></td>"
  content += "               <td><input type='button' class='cf_count add' onclick='g_saving.countBuy("+id+",1000)'></td>"
 content += "              </tr>"
 content += "             <tr>"
@@ -74,12 +74,12 @@ content += "             </div>"
 
 Saving.prototype.outContent = function(id,item,amount){
    var dftProfit = ForDight(amount * (item.rate/100));
-	var content =      "        <div style='margin-top:-10px;text-align:center;'>"
+	var content =      "        <div class='cfsaving_div'>"
  content += "        <div><span class='cpgapedetail_h2 left'>"+item.name+"取款</span>"
-	content += "<span style='float:right;color:red;font-size:30px'>取款 </span></div>"
+	content += "<span class='cfsaving_stext out'>取款 </span></div>"
 	content += "<img src='static/img/pop_line.png' class='cf_line'>"
  content += "           <div class='cfmsg_text saving'>  "
- content += "        <table id='toplist1_tab' style='text-align:left;line-height:60px'>"
+ content += "        <table id='toplist1_tab' class='cfsaving_content'>"
  content += "             <tr>"
  content += "               <td>利率: "+item.rate+"%</td>"
 content += "              </tr>"
@@ -111,7 +111,7 @@ Saving.prototype.countBuy = function(id,count){
     tag.value = currCount;
     
 	var tdata = store.get(this.name);
-   var item = this.findItem(id);
+   var item = tdata[id];
    if (item==null) return;
     
     var tag2 = document.getElementById('savingprofit');

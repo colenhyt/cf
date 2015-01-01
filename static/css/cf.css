@@ -15,8 +15,28 @@ position:absolute;
 font:bold 23px arial,serif;
 }
 
-.cfpage_text.small{
+.cfpage_text.playerinfo{
+left:35px;
+top:115px;
 font-size:20px;
+}
+
+.cfpage_text.saving{
+left:160px;
+top:23px;
+z-index:5;
+}
+
+.cfpage_text.weektop{
+left:385px;
+top:23px;
+z-index:5;
+}
+
+.cfpage_text.level{
+left:10px;
+top:112px;
+z-index:20;
 }
 
 .cf_bt{
@@ -62,11 +82,44 @@ color:#ffffff;
   color:yellow;
 }
 
+.cflogin_input_div {
+position:absolute;
+left:140px;
+top:410px;
+}
+
+.cflogin_tip {
+position:absolute;
+left:130px;
+top:490px;
+color:black;
+}
+
 .cflogin_input {
 width:285px;
 border:none;
 color:blue;
 background:none;
+}
+
+.cfsaving_div {
+margin-top:-10px;text-align:center;
+}
+
+.cfsaving_stext {
+float:right;color:green;font-size:30px;
+}
+
+.cfsaving_stext.out {
+color:red;
+}
+
+.cfsaving_content {
+text-align:left;line-height:60px
+}
+
+.cfsaving_qty {
+width:160px;text-align:center;height:58px;font-size:30px
 }
 
 .cfplayer_head_bg{
@@ -104,6 +157,10 @@ margin-top:30px;
 font-size:20px;
 width:200px;
 vertical-align:top;
+}
+
+.cfplayer_pie {
+margin-left:-10px;margin-top:-30px;
 }
 
 .cfpage
@@ -215,6 +272,10 @@ height:30px;
 font-size:20px;
 background: yellow; 
 text-align:center;
+}
+
+.cfstock_content {
+height:200px;
 }
 
 .cfpagedetail.small
@@ -463,12 +524,81 @@ padding-bottom:20px;
 .cftoplist_td {
 font-size:30px;
 }
+
+.cftoplist_content {
+text-align:center;
+width:160px;
+}
+
+.cftoplist_c2 {
+width:60px;
+}
+
+.cftoplist_c3 {
+margin-left:10px;
+width:60px;
+}
+
+.cftoplist_c4 {
+text-align:center;
+width:120px;
+}
+
+.cftoplist_c5 {
+width:160px;
+}
+
+.cftoplist_c6 {
+padding-left:30px
+}
+
 .cfsignin_feelingimgs{
 padding-top:30px;
 padding-left:20px;
 padding-right:20px;
 width:140px;
 text-align:center;
+}
+
+.cfsignin_content {
+margin-left:10px;margin-top:5px;
+}
+
+.cfquest_td {
+width:450px;
+}
+.cfquest_icon {
+width:78px;height:27px;
+}
+
+.cfinsure_tip {
+margin-top:10px;font-size:25px;color:pink;
+}
+
+.cfinsure_content {
+margin-top:-10px;text-align:center;
+}
+
+.cfinsure_finan {
+margin-top:10px;margin-bottom:30px;height:150px;
+}
+
+.cfinsure_finalcount {
+width:150px;text-align:center;height:58px;font-size:32px;
+}
+
+.cfmsg {
+position:absolute;
+left:60px;
+top:350px;
+width:500px;
+height:90px;
+display:none;
+color:yellow;
+textAlign:center;
+border:1px solid pink;
+background-color:black;
+z-index:2000;
 }
 
 .td_right {

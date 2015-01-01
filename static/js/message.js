@@ -62,17 +62,7 @@ Msg.prototype.poptip = function(desc)
 	}
 	tag = document.createElement("DIV");
 	tag.id = this.tipname;
-	tag.style.position = "absolute";
-	tag.style.left = "60px";
-	tag.style.top = "350px";
-	tag.style.width = "500px";
-	tag.style.height = "90px";
-	tag.style.display = "none";
-	tag.style.color = "yellow";
-	tag.style.textAlign = "center";
-	tag.style.border = "1px solid pink";
-	tag.style.cssText += "background-color:blue";
-	tag.style.zIndex = 2000;
+	tag.className = "cfmsg";
 	tag.innerHTML = desc;
     document.body.appendChild(tag);
     

@@ -31,19 +31,14 @@ Login.prototype.draw = function()
 		    var title = "<span>昵称:</span>"
 		    var input = "<input type='text' id='inputnick' value='"+nickName+"' class='cflogin_input' onfocus='g_login.clearInput()'>";
 		    div.innerHTML = title+input;
-		    div.style.position = "absolute";
-		    div.style.left = (img.x+10) + "px";
-		    div.style.top =  (img.y+10) + "px";
+		    div.className = "cflogin_input_div";
 		    document.body.appendChild(div);   
 		    	 
 	   	 }
    	}
 		    var div = document.createElement("div");
 		    div.id = "errmsg";
-		    div.style.position = "absolute";
-		    div.style.color = "black";
-		    div.style.left = "130px";
-		    div.style.top =  "490px";
+		    div.className = "cflogin_tip";
 		    document.body.appendChild(div);     	
    	if (tdata!=null){
    		this.drawChoseBorder(tdata.sex,100,100);

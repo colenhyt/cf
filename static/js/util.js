@@ -56,7 +56,7 @@ ForDight = function(Dight){
 }
 
 cfeval = function(jsonStr){  
-	if (jsonStr==null)
+	if (jsonStr==null||jsonStr.length<=0)
 		return null;
     return eval ("(" + jsonStr + ")");
 }

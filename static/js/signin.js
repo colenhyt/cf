@@ -80,7 +80,7 @@ Signin.prototype.show = function(){
 	}    
 	
 	var context = "";
- 	 context += "        <table style='margin-left:10px;margin-top:5px;'>"
+ 	 context += "        <table class='cfsignin_content'>"
 	 context += "             <tr>"
 	 for (var i=0;i<4;i++){
 	 	var img = feeling_imgs[i];
@@ -106,8 +106,7 @@ Signin.prototype.clickFeeling = function(feelingId){
 		ftag.style.border = "none";
 	}
 	var ftag = document.getElementById("signin_feeling"+feelingId);
-	ftag.style.border = "2px solid green";
-    //this.style.border = "1px red";
+	ftag.style.border = "3px solid green";
     
     g_player.prize(this.data);
     

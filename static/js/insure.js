@@ -102,7 +102,7 @@ Insure.prototype.buildPage = function(page)
 			content += "     </div>"
       		content += "</div>"
 		}
-			content += "           <div style='margin-top:10px;font-size:25px;color:pink'>  "
+			content += "           <div class='cfinsure_tip'>  "
 			content += "          保险分为规避风险类产品和理财投资类产品"  
 			content += "             </div>"
    		content += "</div>"
@@ -125,7 +125,7 @@ Insure.prototype.clickDetail = function(id,type){
 }
 
 Insure.prototype.showDetail = function(title,desc,okCallback,cbParam1,cbParam2,cbParam3,confmText){
-	var content =      "        <div style='margin-top:-10px;text-align:center'>"
+	var content =      "        <div class='cfinsure_content'>"
 	content += "<div class='cfmsg_h2'>"+title+"</div>"
 	content += "<img src='static/img/pop_line.png'>"
 	content += "            <div class='cfmsg_text'>"+desc+"</div>"
@@ -189,7 +189,7 @@ Insure.prototype.show_finandetail = function(id){
 		psColor = "red"
         
  var content = "            <div>"+item.descs+"</div>"
- content += "           <div style='margin-top:10px;margin-bottom:30px;height:150px'>  "
+ content += "           <div class='cfinsure_finan'>  "
  content += "        <table id='toplist1_tab'>"
  content += "           <thead>"
  content += "             <tr>"
@@ -202,7 +202,7 @@ Insure.prototype.show_finandetail = function(id){
 content += "              </tr>"
  content += "             <tr>"
  content += "               <td colspan='2' class='td-c-name'><input type='button' class='cf_count' onclick='g_insure.countBuy(-1)'></td>"
- content += "               <td colspan='2' class='td-c-name'><input type='text' id='finan_count' value='1' style='width:150px;text-align:center;height:58px;font-size:32px'></td>"
+ content += "               <td colspan='2' class='td-c-name'><input type='text' id='finan_count' value='1' class='cfinsure_finalcount'></td>"
  content += "               <td colspan='2' class='td-c-name'><input type='button' class='cf_count add' onclick='g_insure.countBuy(1)'></td>"
 content += "              </tr>"
 content += "            </thead>"

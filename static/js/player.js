@@ -97,7 +97,9 @@ Player.prototype.getTotal = function(data) {
 	}
 	var stock = 0;
 	for (key in data.stock){
-		stock += data.stock[key].amount;
+		for (var i=0;i<data.stock[key].length;i++){
+			stock += data.stock[key][i].amount;
+		}
 	}
 	return {saving:ForDight(saving),saving2:ForDight(saving2),insure:ForDight(insure),stock:ForDight(stock)};
 }
@@ -105,21 +107,13 @@ Player.prototype.getTotal = function(data) {
 Player.prototype.flushPageview = function() {
     var tag = document.getElementById("tagsaving");
     tag.innerHTML = "存款: " +ForDight(this.saving[1].amount);	
-    tag.style.fontSize = "23px";
-    tag.style.display = "";
     tag = document.getElementById("tagweektop");
     tag.innerHTML = "周排名: "+this.data.weektop;	
-    tag.style.fontSize = "23px";
-    tag.style.display = "";
     tag = document.getElementById("tagplayerinfo");
 	var lv = g_title.getLevel();
     tag.innerHTML = g_title.getData(lv).name;	
-    tag.style.fontSize = "20px";
-    tag.style.display = "";
     tag = document.getElementById("taglevel");
     tag.innerHTML = lv;	
-    tag.style.fontSize = "26px";
-    tag.style.display = "";
 }
 
 Player.prototype.updateData = function(prop) {
@@ -164,7 +158,7 @@ Player.prototype.syncData2 = function(){
 
 Player.prototype.syncCallback=function(dataobj){
 	try    {
-			var obj = eval ("(" + dataobj + ")");
+			var obj = cfeval(dataobj);
 			//alert(obj);
 	}   catch  (e)   {
 	    document.write(e.name  +   " :  "   +  dataobj);
@@ -305,17 +299,17 @@ Player.prototype.find = function(playerid){
 	var dataobj = $.ajax({url:"/cf/login_get.do?player.playerid="+playerid,async:false});
 	try    {
 		if (dataobj!=null&&dataobj.responseText.length>0) {
-			var obj = eval ("(" + dataobj.responseText + ")");
+			var obj = cfeval(dataobj.responseText);
 			if (obj!=null){
 				serverPlayer.data = obj;
 				if (obj.saving)
-					serverPlayer.saving = eval ("(" + obj.saving + ")");
+					serverPlayer.saving = cfeval(obj.saving);
 				if (obj.quest)
-					serverPlayer.data.quest = eval ("(" + obj.quest + ")");
+					serverPlayer.data.quest = cfeval(obj.quest);
 				if (obj.stock)
-					serverPlayer.stock = eval ("(" + obj.stock + ")");
+					serverPlayer.stock = cfeval(obj.stock);
 				if (obj.insure)
-					serverPlayer.insure = eval ("(" + obj.insure + ")");
+					serverPlayer.insure = cfeval(obj.insure);
 			}
 		}
 	}   catch  (e)   {

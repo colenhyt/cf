@@ -45,10 +45,10 @@ Playerinfo.prototype.showInfo = function(jsondata){
 	var data = g_player.getTotal(jsondata);
 	var total = ForDight(data.saving+data.insure+data.stock);
     
-	content += "<div style='margin-left:-10px;margin-top:30px'>"
+	content += "<div class='cfplayer_info'>"
 	content += "<table>"
 	content += " <tr>"
-	content += "  <td style='font-size:20px;width:200px;vertical-align:top'>"
+	content += "  <td class='cfplayer_info2'>"
 	content +=	"<div class='cfprop p1'>定期存款<br>"+data.saving2+"</div>"
 	content +=	"<div class='cfprop p2'>投资股票<br>"+data.stock+"</div>"
 	content +=	"<div class='cfprop p3'>投资保险<br>"+data.insure+"</div>"
@@ -56,7 +56,7 @@ Playerinfo.prototype.showInfo = function(jsondata){
 	content +=	"<div class='cfprop p5'>总资产值<br>"+total+"</div>"
 	content += "</td>"
 	content += "   <td>"
-	content += "<div id='"+this.graphName+"' style='margin-left:-10px;margin-top:-30px'></div>"
+	content += "<div id='"+this.graphName+"' class='cfplayer_pie'></div>"
 	content += "</td>"
 	content += " </tr>"
 	content += "</table>"

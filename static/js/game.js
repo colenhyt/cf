@@ -132,20 +132,7 @@ Map.prototype.enter = function(){
         if (mapImgs[i].hasDiv==true){
             var div = document.createElement("DIV");
             div.id = "tag"+mapImgs[i].name;
-            div.style.color = "#ffffff";
-            div.style.font = "bold 18px arial,serif";
-            div.style.position = "absolute";
-            div.style.display = "none";
-            if (mapImgs[i].divX>0)
-                div.style.left = mapImgs[i].divX+"px";
-            else 
-                div.style.left = mapImgs[i].x + "px";
-            
-            if (mapImgs[i].divY>0) 
-                div.style.top = mapImgs[i].divY+"px";
-            else
-                div.style.top = mapImgs[i].y + "px";
-            //div.style = "position:absolute;left:100px,top:300px"; 
+            div.className = "cfpage_text "+mapImgs[i].name;
             document.body.appendChild(div);	          
         }        
     }

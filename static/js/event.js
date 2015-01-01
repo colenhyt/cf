@@ -44,13 +44,8 @@ Event.prototype.triggerEvent = function(){
 Event.prototype.goodEvent = function(item){
 	var found;
 	var insures = g_player.insure;
-	if (insures.length>0){		
-	for (var i=0;i<insures.length;i++){
-		if (insures[i].itemid == item.itemid){
+	if (insures[item.itemid]!=null){		
 			found = true;
-			break;
-		}
-	}
 	}
 	var content = ""
 	//if (found==true)
@@ -58,7 +53,7 @@ Event.prototype.goodEvent = function(item){
 			//var pp = eval ("(" + item.prize + ")");
 			//g_player.prize(pp);
 			desc = item.descs;
-			var targetInsure = g_insure.findItem(item.itemid);
+			var targetInsure = store.get(g_insure.name)[item.itemid];
 			var iname = targetInsure?targetInsure.name:"";
 			content = "<div>"
 			content += "<img src='static/img/icon_good.png'>"
@@ -91,7 +86,7 @@ Event.prototype.badEvent = function(item){
 			//var pp = eval ("(" + item.prize + ")");
 			//g_player.prize(pp);
 			desc = item.descs;
-			var targetInsure = g_insure.findItem(item.itemid);
+			var targetInsure = store.get(g_insure.name)[item.itemid];
 			var iname = targetInsure?targetInsure.name:"";
 			desc += "<br>提示:购买"+iname+"可避免该类意外"	
 	}
