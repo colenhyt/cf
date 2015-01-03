@@ -254,7 +254,7 @@ Stock.prototype.showDetail = function(id,isflush){
 	content += "              </tr>"
 	 content += "             <tr>"
 	 content += "               <td colspan='2'><input type='button' class='cf_bt_green' value='减持100股' onclick='g_stock.countBuy("+id+",-100,"+ps+")'></td>"
-	 content += "               <td colspan='2'><input type='button' class='cf_bt_green right' value='加持100股' onclick='g_stock.countBuy("+id+",100,"+ps+")'></td>"
+	 content += "               <td colspan='2'><input type='button' class='cf_bt_green right' value='增持100股' onclick='g_stock.countBuy("+id+",100,"+ps+")'></td>"
 	content += "              </tr>"
 	content += "          </table>     "
 	content += "           </div>  "
@@ -266,10 +266,19 @@ Stock.prototype.showDetail = function(id,isflush){
 	var tag = document.getElementById(this.pagedetailname);
 	tag.innerHTML = content;
 	
-    g_stockdetail.drawQuote(id,this.graphName);
+    g_stockdetail.drawQuote(id,ps,this.graphName);
         
     if (isflush==null)
 		$('#'+this.tagdetailname).modal({position:30,show: true});  
+}
+
+Stock.prototype.isStockOpen = function()
+{
+	var open = false;
+	var now = new Date();
+	if (now.getHours()>=9&&now.getHours()<=20)
+		open = true;
+	return open;
 }
 
 Stock.prototype.countBuy = function(stockid,count,price)
@@ -289,6 +298,10 @@ Stock.prototype.doBuy = function()
 		g_msg.tip("请减持或者增持");
 		return;
 	}
+	if (!this.isStockOpen()){
+		g_msg.tip("现在休市，不能交易");
+		return;
+	}	
 	//alert(this.waitCount);
 	this.confirmBuy(this.waitStockid,this.waitCount,this.buyPrice);
 	this.waitCount = 0;

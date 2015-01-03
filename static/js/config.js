@@ -13,7 +13,7 @@ var UpdateDuration = 1000;	//刷帧频率(ms)
 
 var QUOTETIME = 300;		//行情跳动时间(秒)
 
-var EventTriggerTime = 30;	//随机事件跳动;
+var EventTriggerTime = 30000;	//随机事件跳动;
 
 var Panel_ClickColor = "#123123";
 

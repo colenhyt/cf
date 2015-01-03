@@ -14,7 +14,7 @@ Stockdetail.prototype.init = function(){
 	//this.buildHTML();
 }
 
-Stockdetail.prototype.drawQuote = function(itemid,divName){
+Stockdetail.prototype.drawQuote = function(itemid,currPs,divName){
 	var sdata = store.get(g_stock.name);
 	var item = sdata[itemid];
 	if (item==null){
@@ -24,15 +24,30 @@ Stockdetail.prototype.drawQuote = function(itemid,divName){
 	
 	var quotes = g_stock.findQuotes(itemid);
 	if (quotes==null){
-		alert('no stock quote for:'+itemid);
+		g_msg.tip('no stock quote for:'+itemid);
 		return;
 	}
 		
 	var time = new Date();
-	var currPs = quotes[quotes.length-1].price;
-	var stockHead = {currPs:currPs,dir:0,per:item.per,currTime:item.createtime,status:1};
-	var titleText = item.name+","+stockHead.currPs+":"+stockHead.dir+":("+stockHead.per+")";
-	var subTitleText = stockHead.currTime+":s"+stockHead.status+"(北京时间)"
+	var firstPs = quotes[0].price;
+	var per = (currPs-firstPs)/firstPs;
+	var color = "red"
+	var dir = "↑";
+	if (per<0) {
+		dir = "↓";
+		color = "green"
+	}
+	per = ForDight(per/100,3);
+	var now = new Date();
+	var tt = now.toLocaleTimeString();
+	var status = "已休市"
+	if (g_stock.isStockOpen()) {
+		status = "开市";
+		tt = now.toLocaleTimeString();
+	}
+	var stockHead = {currPs:currPs,dir:dir,per:per,currTime:tt,status:status};
+	var titleText = item.name+" "+stockHead.currPs+" "+stockHead.dir+" ("+stockHead.per+"%)";
+	var subTitleText = stockHead.currTime+"(北京时间,"+stockHead.status+")"
 	var upps = 0;
 	var lowps = 0;
 		var flow = [];
@@ -74,14 +89,14 @@ Stockdetail.prototype.drawQuote = function(itemid,divName){
 			title : {
 				text:titleText,
 				font : '微软雅黑',
-				fontsize:18,
-				color:'#b4b4b4'
+				fontsize:22,
+				color:color
 			},
 			subtitle : {
 				text:subTitleText,
 				font : '微软雅黑',
-				fontsize:12,
-				color:'#b4b4b4'
+				fontsize:18,
+				color:color
 			},
 			animation:true,
 			offsetx: 15,

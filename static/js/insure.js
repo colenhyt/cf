@@ -24,6 +24,7 @@ Insure.prototype.init = function(){
 
 Insure.prototype.onEnter = function(){
 	//
+	return;
 	var pitems = g_player.insure;
 	var data = store.get(this.name);
 	var hasRisk = true;

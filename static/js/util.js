@@ -43,8 +43,11 @@ logerr = function(text){
 	g_msg.open(text);
 }
 
-ForDight = function(Dight){  
-    Dight = Math.round(Dight*Math.pow(10,2))/Math.pow(10,2);  
+ForDight = function(Dight,point){  
+	var pp = 2;
+	if (point>pp)
+		pp = point;
+    Dight = Math.round(Dight*Math.pow(10,pp))/Math.pow(10,pp);  
     return Dight;  
 }
 
