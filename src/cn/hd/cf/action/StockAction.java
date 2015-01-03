@@ -2,16 +2,18 @@ package cn.hd.cf.action;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
+import com.alibaba.fastjson.JSON;
 
 import net.sf.json.JSONArray;
 import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Stockdata;
 import cn.hd.cf.service.StockService;
-import cn.hd.mgr.EventManager;
-import cn.hd.mgr.PlayerManager;
 import cn.hd.mgr.StockManager;
 
 public class StockAction extends SavingAction {
@@ -71,12 +73,10 @@ public class StockAction extends SavingAction {
 	}
 	
 	public String nextquotetime(){
-		long margin = StockManager.getInstance().getMarginSec();
-		long m2 = StockManager.getInstance().STOCK_QUOTE_PERIOD;
-		float fmargin = (float)margin/(float)m2;
+		float margin = StockManager.getInstance().getMarginSec();
 		String tt = String.valueOf(margin);
 		write(tt,"utf-8");		
-		System.out.println(margin+"上次行情过去时间比例:"+fmargin);
+		System.out.println("上次行情过去时间比例:"+margin);
 		return null;
 	}
 	
@@ -86,6 +86,24 @@ public class StockAction extends SavingAction {
 		JSONArray jsonObject = JSONArray.fromObject(list);
 		write(jsonObject.toString(),"utf-8");		
 		//System.out.println("found stocks quote:"+jsonObject.toString());
+		return null;
+	}	
+	
+	public String pagelastquotes(){
+		String pp = getHttpRequest().getParameter("stockids");
+		JSONArray ppObj = JSONArray.fromObject(pp);
+		Map<Integer,Float> mquotes = new HashMap<Integer,Float>();
+		for (int i=0;i<ppObj.size();i++){
+			String strstockid = (String)ppObj.get(i);
+			int stockid = Integer.valueOf(strstockid);
+			List<Quote> list = stockMgr.getLastQuotes(stockid);
+			if (list.size()>0){
+				Quote q = list.get(0);
+				mquotes.put(stockid, q.getPrice());
+			}
+		}
+		write(JSON.toJSONString(mquotes),"utf-8");		
+		System.out.println("found stocks page quote:"+mquotes.size());
 		return null;
 	}	
 	

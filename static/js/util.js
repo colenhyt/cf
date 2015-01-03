@@ -40,14 +40,7 @@ log = function(text){
 }
 
 logerr = function(text){
-	var name = "consoleerr";
-	 var div=document.getElementById(name);
-	if (div==null){
-	    var div = document.createElement("div");
-	    div.id = name;
-	    document.body.appendChild(div);	
-    }	
-	div.innerHTML = text;
+	g_msg.open(text);
 }
 
 ForDight = function(Dight){  
@@ -99,6 +92,7 @@ itemStr = function(items,split){
     var itemDesc = "";
     for (var i=0;i<items.length;i++){
     	var item = items[i];
+    	if (item.v==0) continue;
     	if (item.t==ITEM_TYPE.CASH)
     		itemDesc += item.v+ITEM_NAME.CASH+split;
     	else if (item.t==ITEM_TYPE.EXP)
@@ -107,9 +101,28 @@ itemStr = function(items,split){
     return itemDesc;
 }
 
-computeUnit = function(startDate,endDate){
-	var mills = Date.parse(endDate) - Date.parse(startDate);
-	return parseInt(mills/TimeUnit);
+itemStr2 = function(items,split){
+    var itemDesc = "";
+    for (var i=0;i<items.length;i++){
+    	var item = items[i];
+    	if (item.v==0) continue;
+    	var vv = item.v;
+    	if (vv<0)
+    		vv = 0-vv;
+    	if (item.t==ITEM_TYPE.CASH)
+    		itemDesc += vv+"现金"+split;
+    	else if (item.t==ITEM_TYPE.EXP)
+    		itemDesc += vv+"经验"+split;
+    }
+    return itemDesc;
+}
+//天
+calculateTimeout = function(pitem,item){
+    var ctime = pitem.createtime;
+    var now = Date.parse(new Date());
+    var diffMinuts = (now - ctime)/(1000*60*60*24);
+    var periodTime = item.period*pitem.qty;
+    return ForDight(periodTime - diffMinuts);
 }
 
 randomItems = function(items,existItems,count){

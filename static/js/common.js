@@ -99,11 +99,11 @@ Datamgr.prototype = {
 		var ss = myDate.getSeconds(); 
 		var ms = myDate.getMilliseconds();	
 		this.buildPage(0);
-          $('#'+this.tagname).modal({position:Page_Top,show: true}); 
+        $('#'+this.tagname).modal({position:Page_Top,show: true}); 
         var myDate22 = new Date();
 		var ss2 = myDate22.getSeconds(); 
 		var ms2 = myDate22.getMilliseconds();
-		g_msg.tip("s: "+(ss2-ss)+",ms: "+(ms2-ms));    
+		g_msg.tip("cost: "+((ss2-ss)*1000+(ms2-ms))); 
 	},
 
     onclick:function(clickX,clickY){
@@ -135,11 +135,6 @@ Datamgr.prototype = {
 	},	
 	
 	confirmBuy:function(id,qty,price){  
-		if (this.name=="insure"&&qty==0){
-			var tag = document.getElementById('finan_count');
-			if (tag!=null)
-				qty = tag.value;
-		}
 		if (qty==0){
 		    g_msg.tip(this.cname+"购买","数量不能为零!");
 		    return;
@@ -150,9 +145,12 @@ Datamgr.prototype = {
 	   		g_msg.tip("找不到"+this.name+"数据");
 	   		return;
 	   }
-	   var ps = item.price;
-	   if (price)
+	   var ps = 0;
+	   if (price&&price>0)
 	   	ps = price;
+	   else
+	    ps = item.price;
+	    
 	   if (qty>0){
 		    var needCash = ps * qty;
 		    var cash = g_player.saving[1].amount;

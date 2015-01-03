@@ -160,6 +160,37 @@ Login.prototype.register = function(){
 	return true;
 }
 
+Login.prototype.loadData = function(obj){
+	g_player.data = obj;
+	g_player.data.quest = cfeval(obj.quest);
+	g_player.saving = {};
+	var msg = [];
+	var sdata = cfeval(obj.saving);
+	for (itemid in sdata){
+		var item = store.get(g_saving.name)[itemid];
+		if (item.type==0||sdata[itemid].profit<=0)
+			g_player.saving[itemid] = sdata[itemid];
+		//存款利息提示:
+		if (sdata[itemid].profit>0){
+			msg.push({type:g_saving.name,t:parseInt(item.type),name:item.name,profit:sdata[itemid].profit});
+		}
+	}
+	g_player.insure = {};
+	var idata = cfeval(obj.insure);
+	for (itemid in idata){
+		var item = store.get(g_insure.name)[itemid];
+		//没到期
+		if (idata[itemid].profit==0)
+		  g_player.insure[itemid]= idata[itemid];
+		 else {
+			msg.push({type:g_insure.name,t:parseInt(item.type),name:item.name,profit:idata[itemid].profit});
+		 }
+	}
+	g_player.stock = cfeval(obj.stock);
+	
+	return msg;
+}
+
 Login.prototype.login = function(){
      var player = store.get(g_player.name);
      if (player==null){
@@ -171,6 +202,7 @@ Login.prototype.login = function(){
 	g_game.m_scene.m_map.enter();
 	
      g_player.data = player;
+     var loginMsg = [];
      var ppobj = {playerid:player.playerid,pwd:player.pwd,playername:player.playername}
    	var dataParam = obj2ParamStr("player",ppobj);
     var serverPlayer;
@@ -179,11 +211,7 @@ Login.prototype.login = function(){
 		if (dataobj!=null&&dataobj.responseText.length>0) {
 			var obj = cfeval(dataobj.responseText);
 			if (obj!=null&&obj.playerid!=null){
-				g_player.data = obj;
-				g_player.data.quest = cfeval(obj.quest);
-				g_player.saving = cfeval(obj.saving);
-				g_player.stock = cfeval(obj.stock);
-				g_player.insure = cfeval(obj.insure);
+				loginMsg = this.loadData(obj);
 			}else {
 				logerr("数据错误: "+obj);
 			}
@@ -193,12 +221,20 @@ Login.prototype.login = function(){
 	   return false;
 	}	
 	
-	for (var i=0;i<g_player.saving.length;i++){
-		var profit = g_player.saving[i].profit;
-		if (profit>0){
-			g_msg.tip("获得收益:"+ForDight(profit));
+	for (var i=0;i<loginMsg.length;i++){
+		var msg = loginMsg[i];
+		if (msg.type==g_saving.name){
+			var ppf = ForDight(msg.profit);
+			if (msg.t==0)
+				g_msg.tip("获得"+msg.name+"利息:"+ppf);
+			else
+				g_msg.tip("你的"+msg.name+"存款到期, 获得利息:"+ppf);
+		}else if (msg.type==g_insure.name){
+			if (msg.profit==-1){
+				g_msg.tip("你的"+msg.name+"已到期");
+			}else
+				g_msg.tip("你的"+msg.name+"已到期,获得收益:"+msg.profit);
 		}
-		//g_player.saving[i].interest = 0;
 	}
 	
     //head img:
@@ -225,7 +261,7 @@ Login.prototype.login = function(){
 	{
 		g_signin.start(0);
 	}else {
-		g_insure.onEnter();
+		g_game.onEnter();
 	}
 	
    return true;

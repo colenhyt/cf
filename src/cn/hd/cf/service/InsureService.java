@@ -11,10 +11,13 @@ import cn.hd.base.BaseService;
 import cn.hd.cf.dao.InsureMapper;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.InsureExample;
+import cn.hd.cf.model.SavingExample;
 import cn.hd.cf.model.InsureExample.Criteria;
 
 public class InsureService extends BaseService {
 	private InsureMapper	insureMapper;
+	private SavingService savingService;
+	private InsuredataService insuredataService;
 	
 	public InsureMapper getInsureMapper() {
 		return insureMapper;
@@ -27,6 +30,8 @@ public class InsureService extends BaseService {
 	public InsureService()
 	{
 		initMapper("insureMapper");
+		savingService = new SavingService();
+		insuredataService = new InsuredataService();
 	}
 	
 	public List<Insure> findAll()
@@ -43,42 +48,55 @@ public class InsureService extends BaseService {
 		return insureMapper.selectByExample(example);
 	}
 	
-	public Map<Integer,Insure> findUpdatedSavings(int playerId,Date lastLogin)
+	public Map<Integer,Insure> findUpdatedInsures(int playerId)
 	{
-		if (lastLogin==null)
-			lastLogin = new Date();
+		Date curr = new Date();
 	
-        Calendar c = Calendar.getInstance(); 
-		c.setTime(lastLogin);
-		Date d2 = new Date();
-		long l2 =  System.currentTimeMillis();
-		long diffdd = super.findDayMargin(c.getTimeInMillis(),l2,1);
+        Calendar cCurr = Calendar.getInstance(); 
+        cCurr.setTime(curr);
+        Calendar c2 = Calendar.getInstance(); 
 		
-		System.out.println("保险相差天数: "+diffdd);
 		List<Insure> insures = this.findByPlayerId(playerId);
-		List<Insure> updateInsures = new ArrayList<Insure>();
 		
 		Map<Integer,Insure>	mdata = new HashMap<Integer,Insure>();
+		
+		try {		
 		for (int i=0;i<insures.size();i++){
 			Insure insure = insures.get(i);
-			Insure uinsure = new Insure();
 			float inter = 0;
-			if (insure.getType()!=null&&insure.getType()==1){
-				if (insure.getPeriod()<=diffdd)
-				{
-					//inter = insure.getAmount()*insure.getRate()/100;
-					insure.setAmount(insure.getAmount()+inter);
-					insure.setUpdatetime(d2);
-					update(insure);
+	        c2.setTime(insure.getUpdatetime());
+			float diffdd = super.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
+			float periodMinutes = insure.getPeriod()*60;
+			if ((diffdd-periodMinutes)>0.001)
+			{
+				//到期,删除并移出现金:
+				if (insure.getType()!=null&&insure.getType()==1){
+				
+					Insure incfg = insuredataService.findInsure(insure.getItemid());
+					inter = incfg.getProfit()*insure.getQty();
+					savingService.addAmountToLiveSaving(playerId, insure.getAmount()+inter);
+				}else {		//保险到期，移除
+					inter = -1;
 				}
+				InsureExample example = new InsureExample();
+				Criteria criteria = example.createCriteria();
+				criteria.andPlayeridEqualTo(playerId);
+				criteria.andItemidEqualTo(insure.getItemid());
+				insureMapper.deleteByExample(example);
+				DBCommit();					
 			}
 			
+			Insure uinsure = new Insure();
 			uinsure.setAmount(insure.getAmount());
+			uinsure.setCreatetime(insure.getCreatetime());
 			uinsure.setQty(insure.getQty());
 			uinsure.setProfit(inter);
-			updateInsures.add(uinsure);
 			mdata.put(insure.getItemid(), uinsure);
 		}
+		}catch (Exception e){
+			e.printStackTrace();
+			return mdata;
+		}		
 		return mdata;
 	}
 	

@@ -109,10 +109,22 @@ Bank.prototype.showSaving2 = function(page){
 			var psColor = "red";
 		     content += "<div class='cfpanel bank2' ID='"+this.name+"_d"+itemid+"' onclick='g_bank.showDetail("+itemid+")'>"
 		     content += "<span class='cfpanel_title'>"+item.name+"</span>"
-		     content += "<span class='cfpanel_text right'>存款  <span style='color:yellow'> "+ForDight(pitem.amount)+"</span> 元</span>"
+		     if (pitem.amount>0){
+		     	content += "<span class='cfpanel_text right'>已存入 <span style='color:yellow'>"+ForDight(pitem.amount)+"</span>元"
+		     	var inter = ForDight(item.rate*pitem.amount/100);
+			     content += ",利息 <span style='color:color'> "+inter+"</span> 元</span>"
+		     }else {
+		     content += "<span class='cfpanel_text right'>存款  <span style='color:yellow'>0</span> 元</span>"
+		     }
+		     content += "</span>";
 			 content += "	<div>"
 			 content += "<span class='cfpanel_text'>利率: "+ForDight(item.rate)+"%</span>"
-			 content += "<span class='cfpanel_text right'>已获得利息: <span style='color:"+psColor+"'>"+ForDight(pitem.profit)+"</span> 元</span>"
+			 if (pitem.amount<=0)
+			 	content += "<span class='cfpanel_text right'>尚未存入</span>"
+			 else {
+			 	var timeout = calculateTimeout(pitem,item);
+			 	content += "<span class='cfpanel_text right'>到期 <span style='color:red'>"+timeout+"</span> 天</span>"
+			 }
 			content += "     </div>"
       		content += "</div>"
 		}

@@ -30,7 +30,7 @@ Saving.prototype.showDetail = function(id){
     var content;
     if (pitem.amount>0){
     	//取款:
-    	content = this.outContent(id,item,pitem.amount);
+    	content = this.outContent(id,item,pitem);
     }else {
     	//存款:
     	content = this.inContent(id,item);
@@ -72,8 +72,10 @@ content += "             </div>"
  	return content;
 }
 
-Saving.prototype.outContent = function(id,item,amount){
-   var dftProfit = ForDight(amount * (item.rate/100));
+Saving.prototype.outContent = function(id,item,pitem){
+   var dftProfit = ForDight(pitem.amount * (item.rate/100));
+   var timeout = calculateTimeout(pitem,item);
+ 	   
 	var content =      "        <div class='cfsaving_div'>"
  content += "        <div><span class='cpgapedetail_h2 left'>"+item.name+"取款</span>"
 	content += "<span class='cfsaving_stext out'>取款 </span></div>"
@@ -84,10 +86,10 @@ Saving.prototype.outContent = function(id,item,amount){
  content += "               <td>利率: "+item.rate+"%</td>"
 content += "              </tr>"
 content += "             <tr>"
- content += "               <td>当前存入: <span id='savingprofit'>"+amount+"</span></td>"
+ content += "               <td>当前存入: <span id='savingprofit' style='color:red'>"+pitem.amount+"</span> 到期:<span style='color:red'>"+timeout+"</span> 天</td>"
 content += "              </tr>"
 content += "             <tr>"
- content += "               <td>预计利息: <span id='savingprofit'>"+dftProfit+"</span></td>"
+ content += "               <td>预计利息: <span>"+dftProfit+"</span></td>"
 content += "              </tr>"
 content += "             <tr>"
  content += "               <td><span style='color:red'>取出定期存款，将无法获得利息收益</span></td>"

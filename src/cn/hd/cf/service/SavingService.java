@@ -44,39 +44,57 @@ public class SavingService extends BaseService {
 	}
 	
 	//
-	public Map<Integer,Saving> findUpdatedSavings(int playerId,Date lastLogin)
+	public Map<Integer,Saving> findUpdatedSavings(int playerId)
 	{
-		if (lastLogin==null)
-			lastLogin = new Date();
-	
-		Date d2 = new Date();
-        Calendar c = Calendar.getInstance(); 
-        c.setTime(lastLogin);
+		Date currDate = new Date();
+        Calendar cCurr = Calendar.getInstance(); 
+        cCurr.setTime(currDate);
         Calendar c2 = Calendar.getInstance(); 
-        c2.setTime(d2);
-        long diffdd = super.findDayMargin(c.getTimeInMillis(),c2.getTimeInMillis(),1);
 		
-		System.out.println("相差天数: "+diffdd);
 		List<Saving> savings = this.findByPlayerId(playerId);
-		List<Saving> updateSavings = new ArrayList<Saving>();
 		
 		Map<Integer,Saving>	 mdata = new HashMap<Integer,Saving>();
+		Saving liveSaving = null;
 		for (int i=0;i<savings.size();i++){
 			Saving saving = savings.get(i);
-			Saving usaving = new Saving();
+			if (saving.getType()==0)
+				liveSaving = saving;
 			float inter = 0;
-			//if (saving.getPeriod()<=diffdd)
+	        c2.setTime(saving.getUpdatetime());
+	        float diffdd = super.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
+	        float periodMinutes = saving.getPeriod()*60;
+			System.out.println("利息到期时间:"+diffdd+","+periodMinutes);
+			if ((diffdd-periodMinutes)>0.001)
 			{
-				inter = saving.getAmount()*saving.getRate()/100;
-				saving.setAmount(saving.getAmount()+inter);
-				saving.setUpdatetime(d2);
-				update(saving);
+				//活期
+				if (saving.getType()==0)
+				{
+					long diff = (long)(diffdd/periodMinutes);
+					inter = diff * saving.getAmount()*saving.getRate()/100;
+					saving.setAmount(saving.getAmount()+inter);
+					saving.setUpdatetime(currDate);
+					update(saving);
+				}else //定期，取出来,跟利息一起放回到活期
+				{
+					inter = saving.getAmount()*saving.getRate()/100;
+					float newsaving = saving.getAmount()+inter;
+					if (liveSaving!=null){
+						liveSaving.setAmount(liveSaving.getAmount()+newsaving);
+						update(liveSaving);
+						remove(playerId,saving.getItemid());
+						Saving ll = mdata.get(liveSaving.getItemid());
+						if (ll!=null)
+							ll.setAmount(liveSaving.getAmount());
+					}
+				}
 			}
+			
+			Saving usaving = new Saving();
 			usaving.setAmount(saving.getAmount());
+			usaving.setCreatetime(saving.getCreatetime());
 			usaving.setQty(saving.getQty());
 			usaving.setProfit(inter);
 			System.out.println("得到利息: "+inter);
-			updateSavings.add(usaving);
 			mdata.put(saving.getItemid(), usaving);
 		}
 		return mdata;
@@ -133,6 +151,28 @@ public class SavingService extends BaseService {
 		}	
 		return true;
 	}	
+	
+	public boolean addAmountToLiveSaving(int playerId,float amount)
+	{
+		SavingExample example = new SavingExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
+		List<Saving> savings = savingMapper.selectByExample(example);
+		Saving liveSaving = null;
+		for (int i=0;i<savings.size();i++){
+			if (savings.get(i).getType()==0){
+				liveSaving = savings.get(i);
+				break;
+			}
+		}
+		if (liveSaving!=null)
+		{
+			liveSaving.setAmount(liveSaving.getAmount()+amount); 
+			update(liveSaving);
+		}
+		
+		return true;
+	}
 	
 	public boolean update(Saving record)
 	{

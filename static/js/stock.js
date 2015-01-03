@@ -4,6 +4,8 @@ Stock = function(){
     this.cname = "股票";
     this.pageCount = 4;
     this.currPage = 0;
+    this.lastquotes = {};
+    this.syncDuration = 1;
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
     this.tagdetailname = this.tagname+"detail";
@@ -22,7 +24,11 @@ Stock.prototype.init = function(){
 		store.set(this.name,data_stockdata);
 	}
     this.buildHTML();
-      
+    
+	$('#'+this.tagname).on('hide.zui.modal', function()
+	{
+	  g_stock.onClose();
+	})      
 }
 
 Stock.prototype.load = function(data)
@@ -35,7 +41,36 @@ Stock.prototype.load = function(data)
 	store.set(this.quotename,qdata);
 }
 
-Stock.prototype.loadNextQuoteTime = function()
+Stock.prototype.loadPageLastQuote = function(ids)
+{
+	var jids = "stockids="+JSON.stringify(ids);
+	try  {
+		$.ajax({type:"post",url:"/cf/stock_pagelastquotes.do",data:jids,success:function(data){
+			var lastquotes = cfeval(data);
+			g_stock.lastquotes = lastquotes;
+			for (itemid in lastquotes){
+				var pitem = g_player.getStockItem(itemid);
+				var quote = ForDight(lastquotes[itemid]);
+				var tagps = document.getElementById(g_stock.name+"_ps"+itemid);
+				tagps.innerHTML = quote;
+				if (pitem.qty<=00)continue;
+				
+				var tagpr = document.getElementById(g_stock.name+"_pr"+itemid);
+				var pr = pitem.qty*quote - pitem.amount;
+				tagpr.innerHTML = pr;
+				if (pr>0)
+					tagpr.style.color = "red";
+				else
+					tagpr.style.color = "green";
+			}
+		}});
+	}   catch  (e)   {
+	    logerr(e.name);
+	    return;
+	} 
+}
+
+Stock.prototype.loadNextQuoteTime = function(ids)
 {
 	var quatetime;
 	try  {
@@ -48,6 +83,7 @@ Stock.prototype.loadNextQuoteTime = function()
 	    return;
 	} 
 	return quatetime;
+
 }
 
 Stock.prototype.loadQuotes = function(stockid,fromServer)
@@ -101,11 +137,12 @@ Stock.prototype.show = function(){
 		var ss = myDate.getSeconds(); 
 		var ms = myDate.getMilliseconds();		
 		this.buildPage(0);
+		this.isOpen = true;
         $('#'+this.tagname).modal({position:Page_Top,show: true});    
         var myDate22 = new Date();
 		var ss2 = myDate22.getSeconds(); 
 		var ms2 = myDate22.getMilliseconds();
-		g_msg.tip("s: "+(ss2-ss)+",ms: "+(ms2-ms));    
+		g_msg.tip("cost: "+((ss2-ss)*1000+(ms2-ms)));    
 	}
 }
 
@@ -126,8 +163,6 @@ Stock.prototype.buildPage = function(page)
 		  content += "<div class='cfpanel' ID='stock_d1'><div class='panel-body'>没有产品</div>"
       content += "</div>"
 	}else {
-		var tt = this.loadNextQuoteTime();
-		tt /= 60;
 		var loadFromServer = false;
 		var start = page* this.pageCount;
 		var end = (page+1)* this.pageCount;
@@ -136,37 +171,33 @@ Stock.prototype.buildPage = function(page)
 			end = rids.length;
 		  content += "<div class='cfpanel_body'>"
 		  
+		var pageids = []
 		for (var i=start;i<end;i++){
 			var item = tdata[rids[i]];
 			var itemid = rids[i];
+			pageids.push(itemid);
 			var pitem = g_player.getStockItem(itemid);
-			var quote = this.findLastQuote(itemid);		//35ms
-			var ps = 0;
-			var profit = 0;
-			if (quote!=null){
-				ps = quote.price;
-				profit = ps*pitem.qty - pitem.amount;
-			}
-			var psColor = "red";
-			if (profit<=0)
-				psColor = "green"
 		     content += "<div class='cfpanel' ID='"+this.name+"_d"+itemid+"' onclick='g_stock.showDetail("+itemid+")'>"
 		     content += "<span class='cfpanel_title'>"+item.name+"</span>"
 		     content += "<span class='cfpanel_text right'>目前持有<span style='color:yellow'> "+pitem.qty/100+"</span> 手</span>"
-			 content += "	<div>"
-			 content += "<span class='cfpanel_text'>当前价格: ￥"+ForDight(ps)+"</span>"
-			 content += "<span class='cfpanel_text right'>总盈亏: <span style='color:"+psColor+"'>"+ForDight(profit)+"</span></span>"
+			 content += "	<div>" 
+			 content += "<span class='cfpanel_text'>当前价格: ￥"
+			 content += "<span id='"+this.name+"_ps"+itemid+"'>0</span></span>"
+			 content += "<span class='cfpanel_text right'>总盈亏: "
+			 content += "<span id='"+this.name+"_pr"+itemid+"'>0</span></span>"
 			content += "     </div>"
       		content += "</div>"
 		}
 			content += "           <div class='cfinsure_tip'>  "
-			content += "          股市开市为8:00AM-9:00PM<br>下次股价变动: "+tt+"分钟"  
+			content += "          股市开市为8:00AM-9:00PM<br>下次价格跳动: "
+			content += "<span id='"+this.name+"_quotetime' style='color:red'></span>"  
 			content += "             </div>"
      		content += "</div>"
 		
 		 
 		this.currPage = page;
         content += this.buildPaging(page,rids.length);
+        this.loadPageLastQuote(pageids);
 	}
      
 	var tag = document.getElementById(this.pagename);
@@ -182,18 +213,14 @@ Stock.prototype.showDetail = function(id,isflush){
    if (item==null) return;
         
    var strPro = "尚未持有";
- 	var quote = this.findLastQuote(id);
+ 	var quote = this.lastquotes[id];
 	var ps = 0;
- 	if (quote==null) {
-		ps = 1;
-		g_msg.tip("当前股票没有行情"+item.name);
-	}else {
-		ps = quote.price;
+ 	if (quote!=null) {
+		ps = ForDight(quote);
 	}
-	ps = ForDight(ps);
 	
    var pitem = g_player.getStockItem(id);
-	if (pitem){
+	if (pitem.qty>0){
 		profit = ps*pitem.qty - pitem.amount;
 		var psColor = "red";
 		if (profit<0)
@@ -221,7 +248,7 @@ Stock.prototype.showDetail = function(id,isflush){
 	content += "              </tr>"
 	 content += "             <tr>"
 	 content += "               <td>买卖:</td>"
-	 content += "               <td><span id='stockBudyCount'>0</span> 手</td>"
+	 content += "               <td><span id='stockBudyCount' style='color:red'>0</span> 手</td>"
 	 content += "               <td>可买入:</td>"
 	 content += "               <td>"+canBuyQty+"手</td>"
 	content += "              </tr>"
@@ -285,27 +312,30 @@ Stock.prototype.findQuotes = function(stockid)
 	return quote;
 }
 
-//取行情:未調用
-Stock.prototype.syncData33 = function(){
+Stock.prototype.onClose = function(data)
+{
+	this.isOpen = false;
+}
 
-	var lastquotes ;
-	try  {
-		var dataobj = $.ajax({type:"post",url:"/cf/stock_lastquote.do",async:false});
-		if (dataobj!=null&&dataobj.responseText.length>0) {
-			quotes = eval ("(" + dataobj.responseText + ")");
-		}
-	}   catch  (e)   {
-	    document.write(e.name);
-	} 
-	if (quotes!=null){
-		var qdata = store.get(this.quotename);
-		for (var i=0;i<lastquotes.size;i++){
-			var quotes = qdata[lastquotes[i].stockid];
-			if (quotes!=null){
-				quotes.shift();
-				quotes.push(lastquotes[i]);
-			}
-		}
+//page打开才执行:
+Stock.prototype.update = function(){
+	if (!this.isOpen) return;
+	
+	var now = Date.parse(new Date());
+	var enterTime = (now - g_player.data.lastlogin.time)/1000;		//进入系统时间(秒);
+
+	var tag = document.getElementById(this.name+"_quotetime");
+	//行情消逝时间:
+	var quotePassTime = parseInt(enterTime+g_player.data.quotetime);
+	var mm = quotePassTime%QUOTETIME;
+	var lsec = QUOTETIME - mm;
+	var min = parseInt(lsec/60);
+	var sec = lsec%60;
+	if (sec<10)
+		sec = "0"+sec;
+	tag.innerHTML = "0"+min+":"+sec;
+	if (lsec==QUOTETIME){
+		this.buildPage(this.currPage);
 	}
 }
 

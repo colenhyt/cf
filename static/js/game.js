@@ -254,11 +254,10 @@ Game.prototype.init = function(canvas){
 	
 	var game = this;
 	
-	TimerUpdate = function(){
-	   game.update();
-	};
-	
-	setInterval(TimerUpdate,1000);
+	setInterval(function(){
+	   g_game.update();
+	  },UpdateDuration
+	);
 	
 	this.register(g_insure);
 	this.register(g_title);
@@ -272,6 +271,11 @@ Game.prototype.init = function(canvas){
 	
 	g_login.init();
 	
+}
+
+Game.prototype.onEnter = function(){
+	g_insure.onEnter();
+	this.register(g_event);
 }
 
 Game.prototype.register = function(obj){

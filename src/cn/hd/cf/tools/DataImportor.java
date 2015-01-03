@@ -336,7 +336,7 @@ public class DataImportor extends Base{
 		return strdata;
 	}
 
-	public void outputJsData(String dataName,int nameIndex,int dataIndex)
+	public void outputMapJsData(String dataName,int nameIndex,int dataIndex)
 	{
 	    File fileDes = new File(CONFIG_PATH_JS+"/"+dataName+".js");  
 	    FileOutputStream out = null;
@@ -350,7 +350,7 @@ public class DataImportor extends Base{
 				Float freq = getRowData(dataName,2);
 				Integer ifreq = Integer.valueOf(freq.intValue());
 		        out.write(("var data_"+dataName+"_feq = "+ifreq+";\n\n").getBytes());
-	        }
+	        }      
 	        out.write(("var data_"+dataName+"={\n").getBytes());
 			String strMapData = getStringMapData(dataName,nameIndex,dataIndex);
 			out.write(strMapData.getBytes());
@@ -452,13 +452,46 @@ public class DataImportor extends Base{
 		return jsondata;
 	}
 
+	public void outputJsData(String dataName,int nameIndex,int dataIndex)
+	{
+	    File fileDes = new File(CONFIG_PATH_JS+"/"+dataName+".js");  
+	    FileOutputStream out = null;
+		try {
+			if (!fileDes.exists())
+			{
+				fileDes.createNewFile();
+			}
+	        out = new FileOutputStream(fileDes);
+	        if (dataName=="eventdata"){
+				Float freq = getRowData(dataName,2);
+				Integer ifreq = Integer.valueOf(freq.intValue());
+		        out.write(("var data_"+dataName+"_feq = "+ifreq+";\n\n").getBytes());
+	        }
+	        out.write(("var data_"+dataName+"=[\n").getBytes());
+	        JSONArray data = getJsondata(dataName,nameIndex,dataIndex);
+	        for (int i=0;i<data.size();i++){
+	        out.write(data.get(i).toString().getBytes());
+	        out.write(",\n".getBytes());
+	        }
+	        out.write("]\n".getBytes());
+			System.out.println("output ("+dataName+")js data success");
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		DataImportor importor = new DataImportor("cfdata.xlsx");
-		String name = "insuredata";
-		//importor.importData(name);
+		String name = "savingdata";
+//		importor.importData(name);
+//		importor.outputMapJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);
+		
+		name = "eventdata";
+	//	importor.importData(name);
 		importor.outputJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);
-
 		
 		
 	}

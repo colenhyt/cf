@@ -81,7 +81,7 @@ Insure.prototype.buildPage = function(page)
 				if (pitem.qty<=0)
 					buyDesc = "尚未购买";
 				else
-					buyDesc = "你已购买 <span style='color:yellow'>"+pitem.qty+"</span> 份";
+					buyDesc = "购买 <span style='color:yellow'>"+pitem.qty+"</span> 份";
 			}else {
 				var psColor = "green";
 				if (pitem.profit<0)
@@ -89,7 +89,7 @@ Insure.prototype.buildPage = function(page)
 				if (pitem.qty<=0)
 					buyDesc = "尚未购买";
 				else {
-					buyDesc = "已购买"+pitem.qty+"份,总盈亏:"+pitem.profit;
+					buyDesc = "已购买 <span style='color:yellow'>"+pitem.qty+"</span>份,总盈亏:<span style='color:red'>"+ForDight(item.profit*pitem.qty)+"</span>";
 				}			
 			}
 			
@@ -98,7 +98,12 @@ Insure.prototype.buildPage = function(page)
 			 content += "<span class='cfpanel_text right'>"+buyDesc+"</span>"
 			 content += "	<div>"
 			 content += "<span class='cfpanel_text'>价格: ￥"+ForDight(item.price)+"</span>"
-			 content += "<span class='cfpanel_text right'>期限:"+item.period+"天</span>"
+			 if (pitem.qty<=0)
+			 	content += "<span class='cfpanel_text right'>期限:"+item.period+"天</span>"
+			 else {
+			 	var timeout = calculateTimeout(pitem,item);
+			 	content += "<span class='cfpanel_text right'>到期:<span style='color:red'>"+timeout+"</span>天</span>"
+			 }
 			content += "     </div>"
       		content += "</div>"
 		}
@@ -118,7 +123,7 @@ Insure.prototype.buildPage = function(page)
 
 Insure.prototype.clickDetail = function(id,type){  
  	this.onPanelClick(id);
-   if (type==1)
+   if (type==0)
    	g_insure.show_insuredetail(id)
    else
    	g_insure.show_finandetail(id)
@@ -158,8 +163,10 @@ Insure.prototype.show_insuredetail = function(id){
 	var pitem = g_player.getInsureItem(id);
        
 	 var content = "            <div>"+item.descs+"</div>"
-	 if (pitem.qty>0)
-	 	content += "到期时间:"
+ 	if (pitem.qty>0){
+	     var timeout = calculateTimeout(pitem,item);
+      	content += "已购买该保险,  还有<span style='color:red'>"+timeout+"</span>天到期";
+ 	}
 	 content += "           <div>  "
 	 content += "        <table id='toplist1_tab'>"
 	 content += "             <tr>"
@@ -174,7 +181,7 @@ Insure.prototype.show_insuredetail = function(id){
 	var confirm;
 	if (pitem.qty<=0)
 		confirm = "购买";		
-    this.showDetail(item.name,content,"g_insure.confirmBuy",id,1,0,confirm);
+    this.showDetail(item.name,content,"g_insure.preBuy",id,1,0,confirm);
 	
 }
 
@@ -184,27 +191,30 @@ Insure.prototype.show_finandetail = function(id){
    if (item==null) return;
         
 	var pitem = g_player.getInsureItem(id);
-	var psColor = "green";
-	if (pitem.profit<0)
-		psColor = "red"
-        
+
  var content = "            <div>"+item.descs+"</div>"
  content += "           <div class='cfinsure_finan'>  "
+ 	if (pitem.qty>0){
+	     var timeout = calculateTimeout(pitem,item);
+      	content += "已购买  <span style='color:red'>"+pitem.qty+"</span>份, 还有<span style='color:red'>"+timeout+"</span>天到期";
+ 	}
  content += "        <table id='toplist1_tab'>"
  content += "           <thead>"
  content += "             <tr>"
  content += "               <td class='td-c-name'>价格:</td>"
- content += "               <td class='td-c-value'>￥ "+item.price+"</td>"
+ content += "               <td class='td-c-value'>￥"+item.price+" </td>"
  content += "               <td class='td-c-name'> 收益</td>"
- content += "               <td class='td-c-value'>"+item.profit+"</td>"
+ content += "               <td class='td-c-value'>￥"+item.profit+"/份 </td>"
  content += "               <td class='td-c-name'> 周期</td>"
  content += "               <td class='td-c-value'>"+item.period+"天</td>"
 content += "              </tr>"
- content += "             <tr>"
- content += "               <td colspan='2' class='td-c-name'><input type='button' class='cf_count' onclick='g_insure.countBuy(-1)'></td>"
- content += "               <td colspan='2' class='td-c-name'><input type='text' id='finan_count' value='1' class='cfinsure_finalcount'></td>"
- content += "               <td colspan='2' class='td-c-name'><input type='button' class='cf_count add' onclick='g_insure.countBuy(1)'></td>"
-content += "              </tr>"
+ 	if (pitem.qty<=0){
+	 content += "             <tr>"
+	 content += "               <td colspan='2' class='td-c-name'><input type='button' class='cf_count' onclick='g_insure.countBuy(-1)'></td>"
+	 content += "               <td colspan='2' class='td-c-name'><input type='text' id='finan_count' value='1' class='cfinsure_finalcount'></td>"
+	 content += "               <td colspan='2' class='td-c-name'><input type='button' class='cf_count add' onclick='g_insure.countBuy(1)'></td>"
+	content += "              </tr>"
+}
 content += "            </thead>"
 content += "          </table>     "
 content += "           </div>  "
@@ -212,7 +222,7 @@ content += "           </div>  "
 	var confirm;
 	if (pitem.qty<=0)
 		confirm = "购买";		
-    this.showDetail(item.name,content,"g_insure.confirmBuy",id,0,0,confirm);
+    this.showDetail(item.name,content,"g_insure.preBuy",id,0,0,confirm);
 }
 
 Insure.prototype.countBuy = function(count) {
@@ -224,5 +234,18 @@ var tag = document.getElementById('finan_count');
 	currCount += count;
     tag.value = currCount;
 }
+
+
+Insure.prototype.preBuy = function(id,qty) {
+	var item = store.get(this.name)[id];
+	if (!item) return;
+	if (item.type==1){
+		var tag = document.getElementById('finan_count');
+		if (tag!=null)
+			qty = tag.value;	
+	}
+	this.confirmBuy(id,qty);
+}
+
 var g_insure = new Insure();
  g_insure.init();

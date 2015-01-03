@@ -9,14 +9,21 @@ var g_db;
 var Page_Top = 80;
 var PageDetail_Top = 100;
 
-var TimeUnit = 60000;
+var UpdateDuration = 1000;	//刷帧频率(ms)
+
+var QUOTETIME = 300;		//行情跳动时间(秒)
+
+var EventTriggerTime = 30;	//随机事件跳动;
 
 var Panel_ClickColor = "#123123";
 
 var Login_InputDft = "输入你的昵称";
 
+var Screen_Status_Height = 40;
+var Screen_Nav_Height = 88;
+
 var Scene_Width = 640;
-var Scene_Height = 1280;
+var Scene_Height = 1136 - Screen_Status_Height - Screen_Nav_Height;
 
 var game_screen = {
 	swidth:window.screen.width/Scene_Width,sheight:window.screen.height/Scene_Height

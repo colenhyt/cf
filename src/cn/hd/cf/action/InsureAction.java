@@ -40,7 +40,7 @@ public class InsureAction extends SavingAction {
 			insure.setCreatetime(new Date());
 			insure.setUpdatetime(new Date());
 			Insure incfg = insuredataService.findInsure(insure.getItemid());
-			insure.setPeriod(incfg.getPeriod());
+			insure.setPeriod(incfg.getPeriod()*insure.getQty());
 			insure.setType(incfg.getType());
 			boolean add = insureService.add(insure);	
 			if (add==false){

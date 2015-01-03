@@ -95,7 +95,7 @@ public class Base {
 	 * 获得两个时间相差天数
 	 * @param type:0:分钟，1:小时,2:天
 	 */	
-	public long findDayMargin(long l1,long l2,int type){
+	public float findDayMargin(long l2,long l1,int type){
 		int t = 1000;
 		if (type==0)	//minute
 			t *= 60;
@@ -105,6 +105,6 @@ public class Base {
 			t *= 60*60*24;
 		
 		System.out.println("时间相差: "+l2+","+l1+","+t);
-		return (l2 - l1) / t;
+		return (float)((l2 - l1)) / t;
 	}
 }

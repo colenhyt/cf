@@ -6282,7 +6282,7 @@ ol.linenums li {
 .modal-footer .btn-block + .btn-block {
   margin-left: 0;
 }
-@media screen and (min-width: 580px) {
+@media screen {
   .modal-dialog {
     width: 580px;
     margin-top: 30px;

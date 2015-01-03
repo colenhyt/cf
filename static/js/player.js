@@ -275,6 +275,7 @@ Player.prototype.buyItem = function(tname,id,qty,ps){
 	if (tname==g_saving.name||tname==g_insure.name){
 		if (amount>0){
 			pitems[id] = tgoods;
+			pitems[id].createtime = Date.parse(new Date());
 			pitems[id].profit = 0;
 		}else
 			pitems[id] = null;

@@ -1,20 +1,19 @@
 /* CSS Document */
 img{ max-width:100%;} 
 body {
-  font:100%;
+  font-size:350%;
   color:#ffffff;
 }
 
 .cflogin_input_div {
-font-size:3em;
 position:absolute;
+font-size:1.2em;
 left:140px;
 top:410px;
 }
 
 .cflogin_tip {
 position:absolute;
-font-size:3em;
 left:130px;
 top:490px;
 color:black;
@@ -172,7 +171,7 @@ margin-left:-10px;margin-top:-30px;
   padding-left:25px;
   outline: none;
   transition:all 0.3s;
-  width:585px;
+  width:100%;
   height:637px;
   background:url('../../static/img/pop_big.png') no-repeat;
   -moz-background-size:100% 100%;  
@@ -202,6 +201,7 @@ font-size:28px;
 }
 
 .cfpanel_text.right{
+position:relative;
 float:right;
 }
 
@@ -222,7 +222,7 @@ height:280px;
   position: relative;
   padding-left:10px;
   padding-top:6px;
-  width:534px;
+  width:95%;
   height:100px;
   margin-top:8px;
  background:url('../../static/img/panel_bg.png') no-repeat;

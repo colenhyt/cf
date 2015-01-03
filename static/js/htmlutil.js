@@ -31,7 +31,8 @@ PageUtil.prototype.buildSingleTab = function(titleImg,pName)
 {
 	var header = "<ul id='"+this.id+"Tab' class='nav nav-tabs'>"
      header += "<div class='cf_title_bg' onclick='g_"+pName+".onClickHead()'><img src='static/img/"+titleImg+"' class='cf_title'></div>"
-    header += "<button type='button' class='close' data-dismiss='modal'><img src='static/img/close.png' class='cf_title_close'></button>"	
+     if (pName!="signin")
+    	header += "<button type='button' class='close' data-dismiss='modal'><img src='static/img/close.png' class='cf_title_close'></button>"	
     header += "</ul>"	
 	this.addHeader(header);
 }

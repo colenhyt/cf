@@ -13,13 +13,10 @@ import net.sf.json.JSONArray;
 
 import org.apache.log4j.Logger;
 
-import com.alibaba.fastjson.JSON;
-
 import cn.hd.cf.model.Quote;
-import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Stockdata;
-import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.StockdataService;
+import cn.hd.cf.service.ToplistService;
 
 public class StockManager {
 	private static Logger logger = Logger.getLogger(StockManager.class); 
@@ -68,9 +65,9 @@ public class StockManager {
     	return stockData;
     }
     
-    public long getMarginSec(){
+    public float getMarginSec(){
     	long curr = System.currentTimeMillis();
-		long diffdd = stockdataService.findDayMargin(lastQuoteTime,curr,-1);
+		float diffdd = stockdataService.findDayMargin(curr,lastQuoteTime,-1);
 		return diffdd;
     }
         
@@ -149,13 +146,17 @@ public class StockManager {
 //    	JSONObject obj = JSONObject.fromObject(a);
     	StockManager stmgr = StockManager.getInstance();
     	stmgr.update();
-    	long e = stmgr.getMarginSec();
+    	float e = stmgr.getMarginSec();
     	int a = 10;
-//    	ToplistService toplist = new ToplistService();
-//    	toplist.findByType(1);
-    	StockService stockService= new StockService();
-    	Map<Integer,List<Stock>> stocks = stockService.findMapByPlayerId(221);
-    	String jsonss = JSON.toJSONString(stocks);
-    	System.out.println(jsonss);
+    	Date dt= new Date();
+    	  long time= dt.getTime();
+    	ToplistService toplist = new ToplistService();
+    	for (int i=0;i<1000;i++){
+        	int ab = toplist.findCount(0,-1);    		
+    	}
+    	Date dt2= new Date();
+    	long end = dt2.getTime();
+    	System.out.println("cost "+(end-time));
+
     }
 }

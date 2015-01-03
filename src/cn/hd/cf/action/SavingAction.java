@@ -57,7 +57,9 @@ public class SavingAction extends BaseAction {
 			System.out.println("存钱:"+saving.getPlayerid()+":itemid="+saving.getItemid());
 			saving.setName(savingCfg.getName());
 			saving.setCreatetime(new Date());
+			saving.setUpdatetime(new Date());
 			saving.setRate(savingCfg.getRate());
+			saving.setQty(1);
 			saving.setType(savingCfg.getType());
 			saving.setPeriod(savingCfg.getPeriod());
 			exec = savingService.add(saving);		

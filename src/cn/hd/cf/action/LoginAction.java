@@ -27,6 +27,7 @@ import cn.hd.cf.service.SignindataService;
 import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.ToplistService;
 import cn.hd.mgr.EventManager;
+import cn.hd.mgr.StockManager;
 import cn.hd.util.MD5;
 import cn.hd.util.StringUtil;
 
@@ -145,7 +146,9 @@ public class LoginAction extends BaseAction {
 			saving.setName(savingCfg.getName());
 			saving.setPeriod(savingCfg.getPeriod());
 			saving.setRate(savingCfg.getRate());
-			saving.setItemid(1);
+			saving.setItemid(savingCfg.getId());
+			saving.setQty(1);
+			saving.setUpdatetime(time);
 			saving.setType(savingCfg.getType());
 			saving.setPlayerid(playerBlob.getPlayerid());
 			saving.setAmount(Float.valueOf(init.getMoney().intValue()));
@@ -161,16 +164,20 @@ public class LoginAction extends BaseAction {
 	
 	public String getPlayerJsonData(PlayerWithBLOBs playerBlob)
 	{
-		Map<Integer,Saving> savings = savingService.findUpdatedSavings(playerBlob.getPlayerid(),playerBlob.getLastlogin());
+		Map<Integer,Insure> insures = insureService.findUpdatedInsures(playerBlob.getPlayerid());
+		playerBlob.setInsure(JSON.toJSONString(insures));			
+		Map<Integer,Saving> savings = savingService.findUpdatedSavings(playerBlob.getPlayerid());
 		playerBlob.setSaving(JSON.toJSONString(savings));
 		Map<Integer,List<Stock>> stocks = stockService.findMapByPlayerId(playerBlob.getPlayerid());
 		playerBlob.setStock(JSON.toJSONString(stocks));			
-		Map<Integer,Insure> insures = insureService.findUpdatedSavings(playerBlob.getPlayerid(),playerBlob.getLastlogin());
-		playerBlob.setInsure(JSON.toJSONString(insures));			
 		int top = toplistService.findCountByGreaterMoney(0,playerBlob.getPlayerid());
 		playerBlob.setWeektop(top+1);
 		top = toplistService.findCountByGreaterMoney(1,playerBlob.getPlayerid());
 		playerBlob.setMonthtop(top);
+		float margin = StockManager.getInstance().getMarginSec();
+		System.out.println("价格跳动:"+margin);
+		playerBlob.setQuotetime(margin);
+		playerBlob.setLastlogin(new Date());
 		//List<Integer> dataIds = findUpdateDataIds(player.getVersions());
 		//取需要更新的模块id
 		JSONObject obj = JSONObject.fromObject(playerBlob);	
@@ -194,7 +201,7 @@ public class LoginAction extends BaseAction {
 	
 		PlayerWithBLOBs p2 = new PlayerWithBLOBs();
 		p2.setPlayerid(player.getPlayerid());
-		p2.setLastlogin(new Date());
+		p2.setLastlogin(playerBlob.getLastlogin());
 		playerService.updateByKey(p2);
 			
 		write(pdata,"utf-8");

@@ -1,6 +1,7 @@
 // JavaScript Document
 Signin = function(){
 	this.name = "signin"
+	this.backdrop = "static";
 	this.tagname = "my"+this.name
     this.pagename = this.tagname+"page";
 	this.feeling = -1;
@@ -97,7 +98,7 @@ Signin.prototype.show = function(){
     
     tagfeel.innerHTML = context;
     
-    $('#'+this.tagname).modal({position:Page_Top,show:true});       
+    $('#'+this.tagname).modal({backdrop:'static',position:Page_Top,show:true});       
 }
 
 Signin.prototype.clickFeeling = function(feelingId){
@@ -114,7 +115,7 @@ Signin.prototype.clickFeeling = function(feelingId){
     
     $('#'+this.tagname).modal('hide'); 
     
-    g_insure.onEnter();     
+    g_game.onEnter();     
 }
 
 
