@@ -20,13 +20,12 @@ Main.prototype.init = function(){
     canvas.height = Scene_Height;
     document.body.appendChild(canvas);
 
-	var meme = {};
-//    g_msg.tip("aaaaa","500px",-200);
-//    g_msg.tip("fdafda","100px",100);
-//    g_msg.tip("fdafda","100px",100);
-//    g_msg.tip("fdafda","100px",100);
-//    g_msg.tip("fdafda","100px",100);
-//    g_msg.tip("fdafda","100px",100);
+    g_msg.tip("aaaaa","500px",-200);
+    g_msg.tip("bb","100px",100);
+    g_msg.tip("cc","100px",100);
+    g_msg.tip("dd","100px",100);
+    g_msg.tip("ee","100px",100);
+    g_msg.tip("ff","100px",100);
 	g_game = new Game();
 	g_game.init(canvas);
 }

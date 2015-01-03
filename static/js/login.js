@@ -105,7 +105,8 @@ Login.prototype.onImgClick = function(image)
 		}
 		if (this.sex==null){
 			this.msg("选择你的性别");
-			return;
+			this.sex = 1;
+			//return;
 		}
 		var canLogin = true;
 		if (tdata==null)

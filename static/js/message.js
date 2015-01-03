@@ -10,7 +10,10 @@ var MSG = {
 Msg = function(){
 	this.name ="msg";
 	this.tipname ="msgtip";
+	this.count = 0;
 	this.tips = [];
+	this.intips = [];
+	this.outtips = [];
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
 }
@@ -35,40 +38,29 @@ Msg.prototype.buildHTML = function()
 }
 
 function MsgTipCallback(){
-	//alert('msgtipCallback');
-	var desc = g_msg.tips.shift();
-	if (desc!=null){
-		g_msg.poptip(desc);
-	}
+	var tagid = g_msg.outtips.shift();
+	var tag = document.getElementById(tagid);
+	if (tag ){
+		document.body.removeChild(tag);
+	}	
 }
 
 Msg.prototype.tip = function(desc)
 {
-	var tag = document.getElementById(this.tipname);
-	if (tag==null ){
-	    this.poptip(desc);
-    }else {
-		this.tips.push(desc);
-		if (this.tips.length==1)
-		    this.poptip(desc);
-	}
+	this.intips.push(desc);
 }
 
-Msg.prototype.poptip = function(desc)
+Msg.prototype.createtip = function(desc)
 {
-	var tag = document.getElementById(this.tipname);
-	if (tag ){
-		document.body.removeChild(tag);
-	}
+	var tagname = "msgtip"+this.count;
+	this.count ++;
 	tag = document.createElement("DIV");
-	tag.id = this.tipname;
+	tag.id = tagname;
 	tag.className = "cfmsg";
 	tag.innerHTML = desc;
     document.body.appendChild(tag);
-    
-	this.tips.shift();
-    
-	$('#'+this.tipname).animate({marginTop:-320, opacity:'show'},2500,MsgTipCallback).fadeOut(1500);
+	$('#'+tagname).animate({marginTop:-320, opacity:'show'},2500,MsgTipCallback).fadeOut(1500);
+	return tagname;
 }
 
 //title自定义：
@@ -102,6 +94,16 @@ Msg.prototype.open2 = function(title,desc,okCallback,cbParam1,cbParam2,cbParam3,
 Msg.prototype.open = function(desc,okCallback,cbParam1,cbParam2,cbParam3)
 {
 	this.open2("提示",desc,okCallback,cbParam1,cbParam2,cbParam3);
+}
+
+Msg.prototype.update = function()
+{
+	while (this.intips.length>0){
+		var desc = g_msg.intips.shift();
+		var tipid = this.createtip(desc);
+		this.outtips.push(tipid);
+		break;
+	}
 }
 
 var g_msg = new Msg()
