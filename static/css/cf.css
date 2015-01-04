@@ -132,6 +132,10 @@ vertical-align: bottom;
     background-size:100% 100%;  
 }
 
+.cfplayer_head_bg.uplevel{
+margin-left:180px;
+}
+
 .cfplayer_panel_text{
 padding-left:30px;
 font-size:28px;
@@ -182,9 +186,59 @@ margin-left:-10px;margin-top:-30px;
 {
   height:704px;
 }
+
+.cfhelp{
+
+}
+
+.cfhelp_info{
+position:relative;
+left:110px;
+top:90px;
+}
+
+.cfhelp_info_text{
+position:relative;
+margin-left:90px;
+display:block; 
+}
+
+.cfhelp_quest{
+position:relative;
+left:400px;
+top:-100px;
+}
+
+.cfhelp_quest_text{
+position:relative;
+margin-left:-30px;
+display:block; 
+}
+.cfhelp_quest_img{
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: skew(0deg, 120deg) scale(-1, 1);
+    -o-transform: skew(0deg, 180deg) scale(-1, 1);
+    transform: rotateY(180deg);
+}
+
+.cfhelp_toplist{
+position:relative;
+left:440px;
+}
+
+.cfhelp_toplist_text{
+position:relative;
+margin-top:30px;
+margin-left:-40px;
+display:block; 
+}
+.cfhelp_toplist_img{
+  -webkit-transform: rotate(120deg);
+  -moz-transform: rotate(120deg);
+}
 .cfpage.small
 {
-padding-top:20px;
+margin-top:120px;
 }
 
 .cfpanel_title{
@@ -211,6 +265,14 @@ text-align:center;
 line-weight:23px;
 font-size:28px;
 height:280px;
+}
+
+.cfmsg_text.uplevel{
+position:relative;
+text-align:center;
+line-weight:23px;
+font-size:28px;
+height:150px;
 }
 
 .cfmsg_text.saving{

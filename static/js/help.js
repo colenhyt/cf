@@ -8,33 +8,29 @@ Help = function(){
 Help.prototype = new Datamgr();
 
 Help.prototype.init = function(){
-	this.buildHTML("title_help.png");
+	this.buildHTML();
 }
 
-Help.prototype.buildPage = function(page)
+Help.prototype.buildHTML = function()
 {
-	var content = "<div class='cf-help-prize'>"
-	content +=	"<div> 今天获得:"
-    content +=      "      <div id='help_gettoday'></div>"
-    content +=       " </div>"
-    content +=           "  <div> 明天将获得:"
-    content +=            "     <div id='help_gettomorrow'></div>"
-    content +=            " </div></div>"
-    content +=            " <div class='cf-help-feeling'> 请选择你今天的心情:"
-    content +=            "     <div id ='help_feeling'>help_feeling</div>  "
-    content +=       " </div>"
-    content +=            " </div>"
-
-	var tag = document.getElementById(this.pagename);
-	tag.innerHTML = content;
-
+    var page = new PageUtil(this.tagname);
+    
+     var content =     "<div class='tab-pane in active' onclick='g_help.closeHelp()'>";
+    content += "<div class='cfhelp' id='"+this.pagename+"'>"
+	content += "<div class='cfhelp_info'><img src='static/img/arrow.png'><span class='cfhelp_info_text'>个人信息</span></div>"
+	content += "<div class='cfhelp_quest'><img src='static/img/arrow.png' class='cfhelp_quest_img'><span class='cfhelp_quest_text'>任务</span></div>"
+	content += "<div class='cfhelp_toplist'><img src='static/img/arrow.png' class='cfhelp_toplist_img'><span class='cfhelp_toplist_text'>排行榜</span></div>"    
+    content += "</div>"
+    content += "</div>"
+    page.addContent(content);
+    document.write(page.toString());  
 }
 
+Help.prototype.closeHelp = function(){
+	$('#'+this.tagname).modal('hide');  
+}
 Help.prototype.show = function(){
-	g_msg.open("该模块尚未开放，敬请期待");
-	return;
-	
-    $('#'+this.tagname).modal({position:Page_Top,show: true});       
+    $('#'+this.tagname).modal({position:0,show: true});       
 }
 
 var g_help = new Help();

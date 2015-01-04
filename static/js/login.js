@@ -221,7 +221,7 @@ Login.prototype.login = function(){
 	    logerr(e.name  +   " :  "   +  dataobj.responseText);
 	   return false;
 	}	
-	
+
 	for (var i=0;i<loginMsg.length;i++){
 		var msg = loginMsg[i];
 		if (msg.type==g_saving.name){

@@ -118,13 +118,17 @@ Player.prototype.flushPageview = function() {
 
 Player.prototype.updateData = function(prop) {
     var sets =[];
-    for (key in prop){
+	var oldLevel = g_title.getLevel();
+   for (key in prop){
     	if (key=="cash")
     		this.saving[1].amount = prop[key];
     	else
 			this.data[key] = prop[key];
     }
-	this.flushPageview();
+     var newLevel = g_title.getLevel();
+     if (newLevel>oldLevel)
+     	g_msg.openLevel();
+ 	this.flushPageview();
 	this.syncData2();
     store.set(this.name,this.data);
 }

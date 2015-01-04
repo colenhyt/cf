@@ -8,7 +8,7 @@ Datamgr.prototype = {
          var page = new PageUtil(this.tagname);
         var titleImgName = "title_"+this.name+".png";
         page.buildSingleTab(titleImgName,this.name);
-         var content =     "<div class='tab-pane in active' id='quest1'>";
+         var content =     "<div class='tab-pane in active'>";
          var pclass = "cfpage ";
          if (this.name=="signin") {
             pclass += "small";
