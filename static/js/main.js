@@ -26,7 +26,7 @@ Main.prototype.init = function(){
 //    g_msg.tip("dd","100px",100);
 //    g_msg.tip("ee","100px",100);
 //    g_msg.tip("ff","100px",100);
-	//g_msg.openLevel();
+//g_uplevel.open();
 	g_game = new Game();
 	g_game.init(canvas);
 }

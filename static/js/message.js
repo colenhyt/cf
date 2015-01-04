@@ -64,27 +64,6 @@ Msg.prototype.createtip = function(desc)
 }
 
 //title自定义：
-Msg.prototype.openLevel = function()
-{
-	var lv = g_title.getLevel();
-	var content =      "        <div style='margin: auto;text-align:center;margin-top:-70px'>"
-	//content += "<img src='static/img/light.png' style='z-index:-10'>"
-	content += "<div><img src='static/img/title_up.png'></div>"
-	content += "<img src='static/img/pop_line.png'>"
-	content += " <div class='cfplayer_head_bg uplevel'>"
-    content += "<img src='"+head_imgs[g_player.data.sex].src+"'/>"
-    content += " </div>"
-	content += "            <div class='cfmsg_text uplevel'>恭喜升级为"+lv+"级<br>获得新称号:"
-	content +=  g_title.getData(lv).name+"</div>"
-	content += "          <button class='cf_bt' data-dismiss='modal'>确认</button>"
-	content += "             </div>"
-	var tag = document.getElementById(this.pagename);
-	tag.innerHTML = content;
-		
-	$('#'+this.tagname).modal({position:120,show: true});  
-}
-
-//title自定义：
 Msg.prototype.open2 = function(title,desc,okCallback,cbParam1,cbParam2,cbParam3,confmText)
 {
 	var content =      "        <div style='margin: auto;text-align:center;'>"
@@ -119,11 +98,15 @@ Msg.prototype.open = function(desc,okCallback,cbParam1,cbParam2,cbParam3)
 
 Msg.prototype.update = function()
 {
-	while (this.intips.length>0){
-		var desc = g_msg.intips.shift();
-		var tipid = this.createtip(desc);
-		this.outtips.push(tipid);
-		break;
+	this.count++;
+	//if (this.count%5==0)
+	{
+		while (this.intips.length>0){
+			var desc = g_msg.intips.shift();
+			var tipid = this.createtip(desc);
+			this.outtips.push(tipid);
+			break;
+		}
 	}
 }
 

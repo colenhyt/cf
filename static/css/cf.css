@@ -353,6 +353,17 @@ height:457px;
     background-size:100% 100%;  
 }
 
+.cfpagedetail.uplevel
+{
+margin-left:70px;
+margin-top:-330px;
+width:516px;
+height:457px;
+ background:url('../../static/img/popd_small.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
+
 .cpgapedetail_h2 {
 margin-left:5px;
 margin-top:5px;

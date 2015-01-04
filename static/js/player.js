@@ -127,7 +127,7 @@ Player.prototype.updateData = function(prop) {
     }
      var newLevel = g_title.getLevel();
      if (newLevel>oldLevel)
-     	g_msg.openLevel();
+     	g_uplevel.open();
  	this.flushPageview();
 	this.syncData2();
     store.set(this.name,this.data);
