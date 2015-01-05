@@ -59,7 +59,7 @@ Msg.prototype.createtip = function(desc)
 	tag.className = "cfmsg";
 	tag.innerHTML = desc;
     document.body.appendChild(tag);
-	$('#'+tagname).animate({marginTop:-320, opacity:'show'},2500,MsgTipCallback).fadeOut(1500);
+	$('#'+tagname).animate({marginTop:-340},2500,MsgTipCallback);
 	return tagname;
 }
 

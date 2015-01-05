@@ -205,7 +205,8 @@ Player.prototype.prize = function(prizes) {
 Player.prototype.setStockIds = function(){
 	this.stockids = [];
 	for (stockid in this.stock){
-		this.stockids.push(stockid);
+		if (this.stock[stockid]&&this.stock[stockid].qty>0)
+			this.stockids.push(stockid);
 	}
 }
 
