@@ -18,6 +18,10 @@ var Panel_ClickColor = "#123123";
 
 var Login_InputDft = "输入你的昵称";
 
+var PlayerInfo_Pie_Width = 300;
+
+var PlayerInfo_Pie_Height = 300;
+
 var Screen_Status_Height = 40;
 var Screen_Nav_Height = 88;
 
