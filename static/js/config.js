@@ -1,10 +1,7 @@
-var g_dbname = 'cfgame';
-var g_dbversion = '1.0';
-var g_dbfile = 'cfgame_file';
-var g_dbsize = 200000;
-
 var g_game;
 var g_db;
+
+var CSS_FILE = "static/css/cf.css";
 
 var Page_Top = 80;
 var PageDetail_Top = 100;

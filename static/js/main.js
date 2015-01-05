@@ -15,11 +15,16 @@ Main.prototype.init = function(){
 			alert('联网失败，请检查你的网络');
 	})	
 	
-	loadStyle('static/css/cf.css');
+	//loadStyle('static/css/cf.css');
+	//outputCssFiles();
     var canvas = document.createElement("canvas");
     canvas.width = Scene_Width;
     canvas.height = Scene_Height;
     document.body.appendChild(canvas);
+
+//alert(screen.width);
+		//var width = getCSSValue("cfpage","width");
+		//g_msg.tip(width);
 
 //    g_msg.tip("aaaaa","500px",-200);
 //    g_msg.tip("bb","100px",100);

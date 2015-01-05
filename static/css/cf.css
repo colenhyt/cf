@@ -34,7 +34,9 @@ td {
 
 .cfpage_text{
 position:absolute;
-font:bold 23px arial,serif;
+font-size:23px;
+font-weight:bold;
+font-family:arial,serif;
 }
 
 .cfpage_text.playerinfo{
@@ -176,7 +178,7 @@ margin-left:-10px;margin-top:-30px;
   padding-left:25px;
   outline: none;
   transition:all 0.3s;
-  width:100%;
+  width:580px;
   height:637px;
   background:url('../../static/img/pop_big.png') no-repeat;
   -moz-background-size:100% 100%;  

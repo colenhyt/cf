@@ -44,12 +44,18 @@ function getStyleValue(css_file_name,labname,param)
 	return value;  
 } 
 
+function getCSSValue(labname,param)  
+{ 
+	return getStyleValue("cf.css","."+labname,param);
+}
+
 function uncamelize(s, sep) { 
 sep = sep || '-'; 
 return s.replace(/([a-z])([A-Z])/g, function (match, p1, p2){ 
 return p1 + sep + p2.toLowerCase(); 
 }); 
 } 
+
 
 function isLegalName(param){
 	var ii = param.indexOf('-y');
@@ -61,7 +67,7 @@ function isLegalValue(vv){
 	return vv.length>0&&vv.toLowerCase()!='initial';
 }
 
-function outputCssStyles(css_file_name) {
+function outputCssStyles(css_file_name,per) {
 	var tar;
 	for (key in document.styleSheets){
 		var index = document.styleSheets[key].href.indexOf(css_file_name);
@@ -82,9 +88,16 @@ function outputCssStyles(css_file_name) {
 	 style = rss[i]; 
 	 	content += style.selectorText.toLowerCase()+"{"
 	 	for (param in style.style){
-
-	 		if (isLegalName(param)&&isLegalValue(style.style[param])){
-	 			content += uncamelize(param,'-')+":"+style.style[param]+";";
+			var value = style.style[param];
+	 		if (isLegalName(param)&&isLegalValue(value)){
+			 var index = value.indexOf("px");
+			 if (index>0){
+			  var pxva = value.substr(0,index);
+			  value = parseInt(parseInt(pxva)*per)+"px";
+			  //g_msg.tip(pxva);
+			 }
+	 			
+	 			content += uncamelize(param,'-')+":"+value+";";
 //		 		if (param=='backgroundOrigin'){
 //		 			alert(style.style[param]);
 //		 		}
@@ -94,6 +107,17 @@ function outputCssStyles(css_file_name) {
 	}	
 	//alert(content);
 	return content;	
+}
+
+function outputCssFiles() {
+	var tag = document.createElement("DIV");
+	var twidth = 480; //screen.width
+	var per = (twidth/640);
+	tag.innerHTML = outputCssStyles("cf.css",per);
+	tag.style.color = "#000000"
+	tag.width = "500px"
+    tag.height = "600px";
+    document.body.appendChild(tag);	
 }
 
 function stringToBytes (str) {  

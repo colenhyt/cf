@@ -20,7 +20,11 @@ Datamgr.prototype = {
         content += "<div class='"+pclass+"' id='"+this.pagename+"'>"
         content += "</div></div>"
         page.addContent(content);
-        document.write(page.toString());    
+        document.write(page.toString());   
+         
+ 		var tag = document.getElementById(this.pagename);
+		//var width = getCSSValue("cfpage","width");
+		//g_msg.tip(width);
         
         var pagedetail = new PageUtil(this.tagdetailname);
         var psubclass = "";
@@ -32,7 +36,7 @@ Datamgr.prototype = {
         content += "</div></div>"
         pagedetail.addContent(content);
         document.write(pagedetail.toString());    
-
+		
 	},
 
 
