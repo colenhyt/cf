@@ -15,6 +15,7 @@ Main.prototype.init = function(){
 			alert('联网失败，请检查你的网络');
 	})	
 	
+	loadStyle('static/css/cf.css');
     var canvas = document.createElement("canvas");
     canvas.width = Scene_Width;
     canvas.height = Scene_Height;

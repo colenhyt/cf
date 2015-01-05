@@ -117,13 +117,18 @@ Stock.prototype.findStockIds = function()
 	
 	var tdata = store.get(this.name);
 	var data = [];
-	var ids = [];
-	for (key in tdata){
-		var pitem = g_player.getStockItem(key);
-		if (pitem.qty>0)
-			ids.push(key);
-		else
-			data.push(key);
+	var ids = g_player.stockids.concat();
+	for (itemid in tdata){
+		var found = false;
+		for (var i=0;i<ids.length;i++){
+			if (itemid==ids[i]){
+				found = true;
+				break;
+			}
+		}
+		if (!found){
+			data.push(itemid);
+		}
 	}
 	var others = randomItems(data,null,countNeed-ids.length);
 	return ids.concat(others);
@@ -325,6 +330,32 @@ Stock.prototype.findQuotes = function(stockid)
 	return quote;
 }
 
+Stock.prototype.stockChange = function()
+{
+	if (g_player.stockids.length<=0) return;
+	
+	var jids = "stockids="+JSON.stringify(g_player.stockids);
+	try  {
+		$.ajax({type:"post",url:"/cf/stock_pagelastquotes.do",data:jids,success:function(data){
+			var lastquotes = cfeval(data);
+			g_stock.lastquotes = lastquotes;
+			for (itemid in lastquotes){
+				var pitem = g_player.getStockItem(itemid);
+				var newps = lastquotes[itemid];
+				var pr = pitem.qty*newps - pitem.amount;
+				//涨:
+				if (pr>0)
+				{
+					//alert("价格涨:"+itemid);
+				}
+			}
+		}});
+	}   catch  (e)   {
+	    logerr(e.name);
+	    return;
+	} 
+}
+
 Stock.prototype.onClose = function(data)
 {
 	this.isOpen = false;
@@ -332,18 +363,21 @@ Stock.prototype.onClose = function(data)
 
 //page打开才执行:
 Stock.prototype.update = function(){
-	if (!this.isOpen) return;
-	
 	var now = Date.parse(new Date());
-	var enterTime = (now - g_player.data.lastlogin.time)/1000;		//进入系统时间(秒);
-
-	var tag = document.getElementById(this.name+"_quotetime");
-	//行情消逝时间:
+	var enterTime = (now - g_player.data.lastlogin.time)/UpdateDuration;		//进入系统时间(秒);
 	var quotePassTime = parseInt(enterTime+g_player.data.quotetime);
 	var mm = quotePassTime%QUOTETIME;
 	var lsec = QUOTETIME - mm;
 	var min = parseInt(lsec/60);
 	var sec = lsec%60;
+	if (lsec==QUOTETIME){
+		this.stockChange();	//股票涨跌获取通知:
+	}
+
+	if (!this.isOpen) return;
+	
+	var tag = document.getElementById(this.name+"_quotetime");
+	//行情消逝时间:
 	if (sec<10)
 		sec = "0"+sec;
 	tag.innerHTML = "0"+min+":"+sec;

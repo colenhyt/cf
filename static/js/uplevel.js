@@ -24,11 +24,19 @@ Uplevel.prototype.buildHTML = function()
         var pagedetail = new PageUtil(this.tagname);
         var psubclass = "";
         content =     "<div class=\"tab-pane in active\" id='quest2'>";
-		content += "<img src='static/img/light.png' style='margin-left:70px' id='msglevel_g1'>"
+		content += "<img src='static/img/light.png' class='cfuplevel_img' id='msglevel_g1'>"
         content += "<div class='cfpagedetail uplevel' id='"+this.pagename+"'>"
         content += "</div></div>"
         pagedetail.addContent(content);
         document.write(pagedetail.toString());  
+        var tag = document.getElementById('msglevel_g1');
+        tag = document.getElementById('cssvalues');
+        
+       // tag.innerHTML = outputCssStyles("cf.css");
+       // alert(getStyleValue("cf.css","."+tag.className,"margin-left"));
+       // tag.style.setProperty("margin-left","70px");
+       //  alert(tag.style.getPropertyValue("margin-left"));
+       // tag.style.setProperty("margin-top","-330px");
 }
 
 //title自定义：

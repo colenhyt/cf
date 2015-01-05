@@ -1,3 +1,100 @@
+function loadStyle(url){
+    var link = document.createElement('link');
+    link.rel = "stylesheet";
+    link.type = "text/css";
+    link.href = url;
+    var head = document.getElementsByTagName("head")[0];
+    head.appendChild(link);
+}
+
+/**  
+* function for get the style value in special css file  
+* @param int css_file_id  
+* @param String labname  
+* @param String param  
+*/  
+function getStyleValue(css_file_name,labname,param)  
+{  
+	var tar;  
+	var rss;  
+	var style;  
+	var value;  
+	var tar;
+	for (key in document.styleSheets){
+		var index = document.styleSheets[key].href.indexOf(css_file_name);
+		if (index>0){
+			tar = document.styleSheets[key];
+			break;
+		}
+	}
+	if (!tar)
+		return;
+		
+	rss = tar.cssRules?tar.cssRules:tar.rules  
+
+	for(i=0;i<rss.length;i++ )  
+	{  
+	 style = rss[i];  
+	 if(style.selectorText.toLowerCase() == labname.toLowerCase())  
+	 {  
+	  value = style.style[param];  
+	  break;
+	 }  
+	}  
+	return value;  
+} 
+
+function uncamelize(s, sep) { 
+sep = sep || '-'; 
+return s.replace(/([a-z])([A-Z])/g, function (match, p1, p2){ 
+return p1 + sep + p2.toLowerCase(); 
+}); 
+} 
+
+function isLegalName(param){
+	var ii = param.indexOf('-y');
+	var ii2 = param.indexOf('-x');
+	return param!='cssText'&&!param.match(/^[0-9].*$/)&&ii==-1&&ii2==-1;
+}
+
+function isLegalValue(vv){
+	return vv.length>0&&vv.toLowerCase()!='initial';
+}
+
+function outputCssStyles(css_file_name) {
+	var tar;
+	for (key in document.styleSheets){
+		var index = document.styleSheets[key].href.indexOf(css_file_name);
+		if (index>0){
+			tar = document.styleSheets[key];
+			break;
+		}
+	}
+	if (!tar)
+		return;
+		
+	rss = tar.cssRules?tar.cssRules:tar.rules  
+	
+	var content = "";
+
+	for(i=0;i<rss.length;i++ )  
+	{  
+	 style = rss[i]; 
+	 	content += style.selectorText.toLowerCase()+"{"
+	 	for (param in style.style){
+
+	 		if (isLegalName(param)&&isLegalValue(style.style[param])){
+	 			content += uncamelize(param,'-')+":"+style.style[param]+";";
+//		 		if (param=='backgroundOrigin'){
+//		 			alert(style.style[param]);
+//		 		}
+	 		}
+	 	} 
+	 	content += "}<br><br>";
+	}	
+	//alert(content);
+	return content;	
+}
 
 function stringToBytes (str) {  
   var ch, st, re = [];  

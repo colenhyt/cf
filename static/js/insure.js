@@ -2,6 +2,7 @@ Insure = function(){
     this.name = "insure";
     this.cname = "保险";
     this.pageCount = 4;
+    this.count = 0;
     this.currPage = 0;
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
@@ -246,6 +247,14 @@ Insure.prototype.preBuy = function(id,qty) {
 			qty = tag.value;	
 	}
 	this.confirmBuy(id,qty);
+}
+
+Insure.prototype.update = function(){
+	this.count++;
+	if (this.count%5==0){
+		var ids = g_player.getOfftimeInsure();
+		//g_msg.tip("dd"+ids.length);
+	}
 }
 
 var g_insure = new Insure();

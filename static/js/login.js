@@ -189,6 +189,8 @@ Login.prototype.loadData = function(obj){
 	}
 	g_player.stock = cfeval(obj.stock);
 	
+	g_player.setStockIds();
+	
 	return msg;
 }
 

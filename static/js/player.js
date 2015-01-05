@@ -68,9 +68,7 @@ Player = function(){
     this.count = 0;
     this.syncDuration = 5;
     this.data = {};
-    this.stock = [];
-    this.insure = [];
-    this.saving = [];
+    this.stockids = [];
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
     this.pageheader = this.tagname+"header";
@@ -114,6 +112,12 @@ Player.prototype.flushPageview = function() {
     tag.innerHTML = g_title.getData(lv).name;	
     tag = document.getElementById("taglevel");
     tag.innerHTML = lv;	
+    
+   var questids = this.getQuests(QUEST_STATUS.ACTIVE);
+   if (questids.length>0){
+   	//alert("未完成任务:"+questids.length);
+   }
+   
 }
 
 Player.prototype.updateData = function(prop) {
@@ -198,6 +202,13 @@ Player.prototype.prize = function(prizes) {
      this.updateData(prop);
 }
 
+Player.prototype.setStockIds = function(){
+	this.stockids = [];
+	for (stockid in this.stock){
+		this.stockids.push(stockid);
+	}
+}
+
 Player.prototype.getData = function(tname){
 	var tdata;
 	if (tname=="insure"){
@@ -218,6 +229,32 @@ Player.prototype.getItem = function(tname,id){
 	return items[id];
 }
 
+//快到期保险产品
+Player.prototype.getOfftimeInsure = function() {
+	var now = new Date();
+	var itemids = [];
+	var mills = Date.parse(now);
+	for (itemid in this.insure){
+		var ctime = this.insure[itemid].createtime;
+		if (mills-ctime<3000){
+			itemids.push(itemid);
+		}
+	}
+	return itemids;
+}
+
+//未完成任务；
+//快到期保险产品
+Player.prototype.getQuests = function(status) {
+	var itemids = [];
+	for (var i=0;i<this.data.quest.length;i++){
+		if (this.data.quest[i].status==status){
+			itemids.push(itemid);
+		}
+	}
+	return itemids;
+}
+ 
 Player.prototype.getStockItem = function(itemid) {
 	var qty = 0;
 	var amount = 0;
@@ -253,7 +290,6 @@ Player.prototype.buyItem = function(tname,id,qty,ps){
 		
 	if (item==null) return false;
 	
-	
 	var cash = this.saving[1].amount;
 	var amount = ps * qty;
 	if (cash<amount){
@@ -287,6 +323,9 @@ Player.prototype.buyItem = function(tname,id,qty,ps){
 		if (!pitems[id])
 			pitems[id] = [];
 		pitems[id].push(tgoods);
+		if (tname==g_stock.name){
+			g_player.setStockIds();
+		}
 	}
 				
 	cash -= amount;
