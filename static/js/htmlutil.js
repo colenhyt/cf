@@ -8,7 +8,7 @@ PageUtil = function(id,zIndex,contentClass){
 		head += " style='z-index:"+zIndex+"'>";
 	else
 		head += ">"
-	head += "<div class='modal-dialog'>";		
+	head += "<div class='modal-dialog' id='"+id+"_dialog'>";		
   	if (contentClass&&contentClass.length>0)
     	head += "<div class='"+contentClass+"'>";
     else

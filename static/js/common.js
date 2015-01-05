@@ -22,9 +22,13 @@ Datamgr.prototype = {
         page.addContent(content);
         document.write(page.toString());   
          
- 		var tag = document.getElementById(this.pagename);
+ 		var tag = document.getElementById(this.tagname+"_dialog");
+		//g_msg.tip(tag);
+		//alert(tag);
+		tag.style.setProperty("width","580px");
+		//alert(tag.style.getPropertyValue("width"));
 		//var width = getCSSValue("cfpage","width");
-		//g_msg.tip(width);
+//		g_msg.tip(width);
         
         var pagedetail = new PageUtil(this.tagdetailname);
         var psubclass = "";

@@ -35,7 +35,7 @@ function getStyleValue(css_file_name,labname,param)
 	for(i=0;i<rss.length;i++ )  
 	{  
 	 style = rss[i];  
-	 if(style.selectorText.toLowerCase() == labname.toLowerCase())  
+	 if(style.selectorText&&style.selectorText.toLowerCase() == labname.toLowerCase())  
 	 {  
 	  value = style.style[param];  
 	  break;

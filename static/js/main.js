@@ -22,6 +22,9 @@ Main.prototype.init = function(){
     canvas.height = Scene_Height;
     document.body.appendChild(canvas);
 
+
+var tt =	getStyleValue("zui.css",".modal-dialog","width");
+
 //alert(screen.width);
 		//var width = getCSSValue("cfpage","width");
 		//g_msg.tip(width);
