@@ -113,11 +113,6 @@ Player.prototype.flushPageview = function() {
     tag = document.getElementById("taglevel");
     tag.innerHTML = lv;	
     
-   var questids = this.getQuests(QUEST_STATUS.ACTIVE);
-   if (questids.length>0){
-   	//alert("未完成任务:"+questids.length);
-   }
-   
 }
 
 Player.prototype.updateData = function(prop) {
@@ -205,7 +200,11 @@ Player.prototype.prize = function(prizes) {
 Player.prototype.setStockIds = function(){
 	this.stockids = [];
 	for (stockid in this.stock){
-		if (this.stock[stockid]&&this.stock[stockid].qty>0)
+		var qty = 0;
+		for (var i=0;i<this.stock[stockid].length;i++){
+			qty += this.stock[stockid][i].qty;
+		}	
+		if (qty>0)
 			this.stockids.push(stockid);
 	}
 }

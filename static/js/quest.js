@@ -3,6 +3,7 @@
 Quest = function(){
     this.name = "quest";
     this.tagname = "my"+this.name;
+    this.count = 0;
     this.pagename = this.tagname+"page";
     this.tagdetailname = this.tagname+"detail";
     this.pagedetailname = this.tagdetailname+"page";
@@ -185,6 +186,23 @@ Quest.prototype.onBuyItem = function(tname,item,qty){
 		}
     }
 }
+
+Quest.prototype.update = function(){
+	this.count ++;
+	if (this.count%3!=0)return;
+	
+	var tag = document.getElementById("tag"+this.name);
+	var questids = g_player.getQuests(QUEST_STATUS.ACTIVE);
+	if (questids.length>0&&tag){
+		var tip = tag.innerHTML;
+		var index = tip.indexOf("quest2");
+		if (index>0){
+			tag.innerHTML = ""
+		}else
+			tag.innerHTML = "<img src='static/img/icon_quest_on.png' class='cfpage_text quest2'>"
+	}		
+}
+
 
 Quest.prototype.constructor = Quest;
 

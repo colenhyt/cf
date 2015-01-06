@@ -52,7 +52,7 @@ Stock.prototype.loadPageLastQuote = function(ids)
 				
 				var tagpr = document.getElementById(g_stock.name+"_pr"+itemid);
 				var pr = pitem.qty*quote - pitem.amount;
-				tagpr.innerHTML = pr;
+				tagpr.innerHTML = ForDight(pr);
 				if (pr>0)
 					tagpr.style.color = "red";
 				else
@@ -79,31 +79,6 @@ Stock.prototype.loadNextQuoteTime = function(ids)
 	} 
 	return quatetime;
 
-}
-
-Stock.prototype.loadQuotes = function(stockid,fromServer)
-{
-	var qdata = store.get(this.quotename);
-	if (qdata==null){
-		qdata = {};
-	}
-	
-	var squotes = qdata[stockid];
-	if (squotes!=null&&fromServer!=true){
-		return squotes;
-	}
-	try  {
-		var dataobj = $.ajax({type:"post",url:"/cf/stock_quotes.do",data:"stock.id="+stockid,async:false});
-		if (dataobj!=null&&dataobj.responseText.length>0) {
-			squotes =cfeval(dataobj.responseText);
-		}
-	}   catch  (e)   {
-	    logerr(e.name);
-	    return
-	} 
-	qdata[stockid] = squotes;
-	store.set(this.quotename,qdata);
-	return squotes;
 }
 
 Stock.prototype.findStockIds = function()
@@ -190,7 +165,7 @@ Stock.prototype.buildPage = function(page)
       		content += "</div>"
 		}
 			content += "           <div class='cfinsure_tip'>  "
-			content += "          股市开市为8:00AM-9:00PM<br>下次价格跳动: "
+			content += "          股市开市为8:00AM-9:00PM<br>下次行情跳动: "
 			content += "<span id='"+this.name+"_quotetime' style='color:red'></span>"  
 			content += "             </div>"
      		content += "</div>"
@@ -267,7 +242,9 @@ Stock.prototype.showDetail = function(id,isflush){
 	var tag = document.getElementById(this.pagedetailname);
 	tag.innerHTML = content;
 	
-    g_stockdetail.drawQuote(id,ps,this.graphName);
+	var quotes = this.findQuotes(id,false,ps);
+	if (quotes)
+    	g_stockdetail.drawQuote(id,ps,quotes,this.graphName);
         
     if (isflush==null)
 		$('#'+this.tagdetailname).modal({position:30,show: true});  
@@ -308,24 +285,33 @@ Stock.prototype.doBuy = function()
 	this.waitCount = 0;
 }
 
-Stock.prototype.findLastQuote = function(stockid,fromServer)
-{
-	var quotes = this.loadQuotes(stockid,fromServer);
-	if (quotes!=null){
-		return quotes[quotes.length-1];
-	}else {
-		return {price:0};
-	}
-}
-
-
-Stock.prototype.findQuotes = function(stockid)
+Stock.prototype.findQuotes = function(stockid,fromServer,price)
 {
 	var qdata = store.get(this.quotename);
-	if (!qdata[stockid]) return;
+	if (qdata==null){
+		qdata = {};
+		store.set(this.quotename,qdata);
+	}
 	
-	var quote = qdata[stockid];
-	return quote;
+	var squotes = qdata[stockid];
+	if (squotes!=null&&fromServer!=true){
+	//alert('from local');
+		return squotes;
+	}
+	
+	try  {
+		$.ajax({type:"post",url:"/cf/stock_quotes.do",data:"stock.id="+stockid,success:function(dataobj){
+			squotes =cfeval(dataobj);
+			var qdatas = store.get(g_stock.quotename);		
+			qdatas[stockid] = squotes;		
+			store.set(g_stock.quotename,qdatas);
+			//alert('from server');
+			g_stockdetail.drawQuote(stockid,price,squotes,g_stock.graphName);
+		}});
+
+	}   catch  (e)   {
+	    logerr(e.name);
+	} 
 }
 
 Stock.prototype.stockChange = function()
@@ -396,6 +382,7 @@ Stock.prototype.update = function(){
 		sec = "0"+sec;
 	tag.innerHTML = "0"+min+":"+sec;
 	if (lsec==QUOTETIME){
+		store.remove(this.quotename);		//清空本地行情;
 		this.buildPage(this.currPage);
 	}
 }

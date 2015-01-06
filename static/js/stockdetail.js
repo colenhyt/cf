@@ -14,7 +14,7 @@ Stockdetail.prototype.init = function(){
 	//this.buildHTML();
 }
 
-Stockdetail.prototype.drawQuote = function(itemid,currPs,divName){
+Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 	var sdata = store.get(g_stock.name);
 	var item = sdata[itemid];
 	if (item==null){
@@ -22,7 +22,6 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,divName){
 		return;
 	}
 	
-	var quotes = g_stock.findQuotes(itemid);
 	if (quotes==null){
 		g_msg.tip('no stock quote for:'+itemid);
 		return;
