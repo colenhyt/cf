@@ -10,25 +10,10 @@ Target Server Type    : MYSQL
 Target Server Version : 50018
 File Encoding         : 65001
 
-Date: 2014-12-31 10:37:27
+Date: 2015-01-06 18:15:00
 */
 
 SET FOREIGN_KEY_CHECKS=0;
-
--- ----------------------------
--- Table structure for `account`
--- ----------------------------
-DROP TABLE IF EXISTS `account`;
-CREATE TABLE `account` (
-  `accountid` int(11) NOT NULL auto_increment,
-  `accountname` varchar(300) NOT NULL,
-  `createtime` datetime default NULL,
-  PRIMARY KEY  (`accountid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of account
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for `event`
@@ -121,7 +106,7 @@ CREATE TABLE `insure` (
   `amount` float(11,2) default NULL,
   `price` float(11,2) default NULL,
   `qty` int(11) default NULL,
-  `profit` float default NULL,
+  `profit` float default '0',
   `period` int(11) default NULL,
   `createtime` datetime default NULL,
   `updatetime` datetime default NULL,
@@ -131,52 +116,6 @@ CREATE TABLE `insure` (
 -- ----------------------------
 -- Records of insure
 -- ----------------------------
-INSERT INTO `insure` VALUES ('1', '20', '1', null, null, null, '123.00', '123.00', '1', null, null, '2014-12-22 12:15:48', null);
-INSERT INTO `insure` VALUES ('2', '20', '1', null, null, null, '123.00', '123.00', '1', null, null, '2014-12-22 12:16:28', null);
-INSERT INTO `insure` VALUES ('3', '115', '2', null, null, null, '1200.00', '400.00', '3', null, null, '2014-12-23 08:50:12', null);
-INSERT INTO `insure` VALUES ('4', '116', '1', null, null, null, '2000.00', '2000.00', '1', null, null, '2014-12-23 09:02:48', null);
-INSERT INTO `insure` VALUES ('5', '118', '1', null, null, null, '2000.00', '2000.00', '1', null, null, '2014-12-23 09:07:52', null);
-INSERT INTO `insure` VALUES ('6', '161', '3', null, null, null, '1000.00', '1000.00', '1', null, null, '2014-12-23 19:50:20', null);
-INSERT INTO `insure` VALUES ('7', '160', '2', null, null, null, '1200.00', '400.00', '3', null, null, '2014-12-23 19:59:37', null);
-INSERT INTO `insure` VALUES ('8', '164', '1', null, null, null, '2000.00', '2000.00', '1', null, null, '2014-12-23 22:17:21', null);
-INSERT INTO `insure` VALUES ('9', '164', '1', null, null, null, '2000.00', '2000.00', '1', null, null, '2014-12-23 23:56:09', null);
-INSERT INTO `insure` VALUES ('10', '164', '1', null, null, null, '2000.00', '2000.00', '1', null, null, '2014-12-24 00:01:40', null);
-INSERT INTO `insure` VALUES ('11', '164', '1', null, null, null, '2000.00', '2000.00', '1', null, null, '2014-12-24 00:02:49', null);
-INSERT INTO `insure` VALUES ('12', '164', '3', null, null, null, '1000.00', '1000.00', '1', null, null, '2014-12-24 00:04:25', null);
-INSERT INTO `insure` VALUES ('13', '164', '3', null, null, null, '1000.00', '1000.00', '1', null, null, '2014-12-24 00:04:58', null);
-INSERT INTO `insure` VALUES ('14', '164', '2', null, null, null, '1200.00', '400.00', '3', null, null, '2014-12-24 00:05:11', null);
-INSERT INTO `insure` VALUES ('15', '165', '1', null, null, null, '2000.00', '2000.00', '1', null, null, '2014-12-24 00:32:43', null);
-INSERT INTO `insure` VALUES ('16', '165', '4', null, null, null, '3000.00', '1500.00', '2', null, null, '2014-12-24 00:32:52', null);
-INSERT INTO `insure` VALUES ('17', '166', '2', null, null, null, '800.00', '400.00', '2', null, null, '2014-12-24 01:24:00', null);
-INSERT INTO `insure` VALUES ('18', '168', '4', null, null, null, '4500.00', '1500.00', '3', null, null, '2014-12-24 02:10:27', null);
-INSERT INTO `insure` VALUES ('19', '179', '2', null, null, null, '1200.00', '400.00', '3', null, null, '2014-12-24 09:52:43', null);
-INSERT INTO `insure` VALUES ('20', '180', '6', null, null, null, '3600.00', '1800.00', '2', null, null, '2014-12-24 10:16:39', null);
-INSERT INTO `insure` VALUES ('21', '180', '5', null, null, null, '6000.00', '6000.00', '1', null, null, '2014-12-24 10:16:52', null);
-INSERT INTO `insure` VALUES ('22', '181', '3', null, null, null, '1000.00', '1000.00', '1', null, null, '2014-12-24 10:25:18', null);
-INSERT INTO `insure` VALUES ('23', '181', '1', null, null, null, '2000.00', '2000.00', '1', null, null, '2014-12-24 10:32:22', null);
-INSERT INTO `insure` VALUES ('24', '182', '2', null, null, null, '1600.00', '400.00', '4', null, null, '2014-12-24 14:26:51', null);
-INSERT INTO `insure` VALUES ('25', '182', '1', null, null, null, '2000.00', '2000.00', '1', null, null, '2014-12-24 16:57:10', null);
-INSERT INTO `insure` VALUES ('26', '182', '2', null, null, null, '1200.00', '400.00', '3', null, null, '2014-12-24 16:57:20', null);
-INSERT INTO `insure` VALUES ('27', '182', '6', null, null, null, '3600.00', '1800.00', '2', null, null, '2014-12-24 17:09:19', null);
-INSERT INTO `insure` VALUES ('28', '182', '3', '意外险', null, null, '1000.00', '1000.00', '1', null, null, '2014-12-24 17:41:46', null);
-INSERT INTO `insure` VALUES ('29', '182', '4', '少儿分红保险', null, null, '1500.00', '1500.00', '1', null, null, '2014-12-24 17:41:51', null);
-INSERT INTO `insure` VALUES ('30', '182', '9', '重大疾病保险', null, null, '5000.00', '5000.00', '1', null, null, '2014-12-24 17:41:58', null);
-INSERT INTO `insure` VALUES ('31', '193', '6', '财产保险', null, '0', '700.00', '700.00', '1', null, '24', '2014-12-29 11:33:34', '2014-12-29 11:33:34');
-INSERT INTO `insure` VALUES ('32', '194', '2', '少儿分红保险', null, '1', '1500.00', '1500.00', '1', null, '12', '2014-12-29 11:37:26', '2014-12-29 11:37:26');
-INSERT INTO `insure` VALUES ('33', '194', '3', '美满人生', null, '1', '6000.00', '6000.00', '1', null, '12', '2014-12-29 11:37:32', '2014-12-29 11:37:32');
-INSERT INTO `insure` VALUES ('34', '194', '6', '财产保险', null, '0', '2100.00', '700.00', '3', null, '24', '2014-12-29 11:37:40', '2014-12-29 11:37:40');
-INSERT INTO `insure` VALUES ('35', '197', '1', '乐享理财', null, '1', '400.00', '400.00', '1', null, '12', '2014-12-29 14:08:00', '2014-12-31 09:47:38');
-INSERT INTO `insure` VALUES ('36', '197', '4', '养老基金', null, '1', '1800.00', '1800.00', '1', null, '24', '2014-12-29 14:08:09', '2014-12-31 09:47:38');
-INSERT INTO `insure` VALUES ('37', '197', '7', '旅游保险', null, '0', '800.00', '400.00', '2', null, '24', '2014-12-29 14:41:32', '2014-12-29 14:41:32');
-INSERT INTO `insure` VALUES ('38', '198', '1', '乐享理财', null, '1', '400.00', '400.00', '1', null, '12', '2014-12-29 14:52:24', '2014-12-30 17:27:03');
-INSERT INTO `insure` VALUES ('39', '202', '2', '少儿分红保险', null, '1', '1500.00', '1500.00', '1', null, '12', '2014-12-30 20:19:28', '2014-12-30 20:19:28');
-INSERT INTO `insure` VALUES ('40', '202', '7', '旅游保险', null, '0', '400.00', '400.00', '1', null, '24', '2014-12-30 20:19:37', '2014-12-30 20:19:37');
-INSERT INTO `insure` VALUES ('41', '206', '3', '美满人生', null, '1', '6000.00', '6000.00', '1', null, '12', '2014-12-30 20:39:27', '2014-12-30 20:39:27');
-INSERT INTO `insure` VALUES ('42', '220', '1', '乐享理财', null, '1', '400.00', '400.00', '1', null, '12', '2014-12-30 21:55:49', '2014-12-30 21:55:49');
-INSERT INTO `insure` VALUES ('43', '220', '6', '财产保险', null, '0', '700.00', '700.00', '1', null, '24', '2014-12-30 21:56:05', '2014-12-30 21:56:05');
-INSERT INTO `insure` VALUES ('44', '221', '5', '意外险', null, '0', '400.00', '400.00', '1', null, '12', '2014-12-31 09:34:10', '2014-12-31 09:34:10');
-INSERT INTO `insure` VALUES ('45', '221', '1', '乐享理财', null, '1', '400.00', '400.00', '1', null, '12', '2014-12-31 09:36:13', '2014-12-31 09:36:13');
-INSERT INTO `insure` VALUES ('46', '221', '2', '少儿分红保险', null, '1', '1500.00', '1500.00', '1', null, '12', '2014-12-31 09:36:22', '2014-12-31 09:36:22');
 
 -- ----------------------------
 -- Table structure for `insuredata`
@@ -249,49 +188,13 @@ CREATE TABLE `player` (
   `stockdata` varchar(100) default NULL,
   `weektop` int(11) default NULL,
   `monthtop` int(11) default NULL,
+  `quotetime` float(11,4) default NULL,
   PRIMARY KEY  (`playerid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of player
 -- ----------------------------
-INSERT INTO `player` VALUES ('185', '1', 'a5daf6ebcfd47b35ddcdf67c82495ec2', '1', '0', null, null, '15', '1', null, null, null, null, '[{\"id\":1,\"accept\":1419822127000,\"status\":0},{\"id\":2,\"accept\":1419822127000,\"status\":0}]', null, null, null, '0', '2014-12-29 11:02:07', '2014-12-29 11:02:07', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('186', '2', '96739f86a82709261b4053a8da75c226', '1', '0', null, null, '15', '1', null, null, null, null, '[{\"id\":3,\"accept\":1419822387000,\"status\":0},{\"id\":2,\"accept\":1419822387000,\"status\":0}]', null, null, null, '0', '2014-12-29 11:06:26', '2014-12-29 11:06:27', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('187', '12', '42daebb6898fb97313b7250303ef3069', '1', '0', null, null, '15', '1', null, null, null, null, '[{\"id\":3,\"accept\":1419822545000,\"status\":0},{\"id\":2,\"accept\":1419822545000,\"status\":0}]', null, null, null, '0', '2014-12-29 11:09:05', '2014-12-29 11:09:05', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('188', '11', 'bd44f8e21661056e8479fa2428ab1fda', '1', '0', null, null, '15', '1', null, null, null, null, '[{\"id\":2,\"accept\":1419822722000,\"status\":0},{\"id\":3,\"accept\":1419822722000,\"status\":0}]', null, null, null, '0', '2014-12-29 11:12:02', '2014-12-29 11:12:02', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('189', '4', '0e4bdce544d0298ff8a61f127e322b52', '1', '0', null, null, '15', '1', null, null, null, null, '[{\"id\":1,\"accept\":1419822837000,\"status\":0},{\"id\":3,\"accept\":1419822837000,\"status\":0}]', null, null, null, '0', '2014-12-29 11:13:57', '2014-12-29 11:13:57', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('190', '1111', '5285969fd0426e9f5b31e4e89150ded6', '1', '0', null, null, '15', '1', null, null, null, null, '[{\"id\":1,\"accept\":1419822997000,\"status\":0},{\"id\":3,\"accept\":1419822997000,\"status\":0}]', null, null, null, '0', '2014-12-29 11:16:37', '2014-12-29 11:16:37', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('191', '5', '9a1f0a82e8f3a54d1eb28dd56c9dab25', '1', '0', null, null, '15', '1', null, null, null, null, '[{\"id\":2,\"accept\":1419823623000,\"status\":0},{\"id\":3,\"accept\":1419823623000,\"status\":0}]', null, null, null, '0', '2014-12-29 11:27:03', '2014-12-29 11:27:03', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('192', '431', 'b435f3dd024482aa8856d0f26a30aa6c', '1', '0', null, null, '15', '1', null, null, null, null, '[{\"id\":1,\"accept\":1419823756000,\"status\":0},{\"id\":2,\"accept\":1419823756000,\"status\":0}]', null, null, null, '0', '2014-12-29 11:29:16', '2014-12-29 11:29:16', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('193', '564', '0bbd2ccb722b3c37ff338d64d5a9a351', '1', '0', null, null, '15', '1', null, null, null, null, '[{\"id\":1,\"accept\":1419823999000,\"status\":0},{\"id\":2,\"accept\":1419823999000,\"status\":0}]', null, null, null, '0', '2014-12-29 11:33:19', '2014-12-29 11:33:19', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('194', '562', 'a053f83edbb876863cdbe118409eb148', '1', '0', null, null, '15', '1', null, null, null, null, '[{\"id\":3,\"accept\":1419824238000,\"status\":0},{\"id\":1,\"accept\":1419824238000,\"status\":0}]', null, null, null, '0', '2014-12-29 11:37:18', '2014-12-29 11:37:18', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('195', 'az', '5704374240e61f4b587d1b80e3c834c6', '1', '0', null, null, '15', '1', null, null, null, null, '[{\"id\":2,\"accept\":1419828354000,\"status\":0},{\"id\":3,\"accept\":1419828354000,\"status\":0}]', null, null, null, '0', '2014-12-29 12:45:54', '2014-12-29 12:45:54', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('196', 'dfda', '75397bd6c975972290fd6ea14ae3d591', '1', '0', null, null, '10', '1', null, null, null, null, '[{\"id\":3,\"accept\":1419828849000,\"status\":0},{\"id\":1,\"accept\":1419828849000,\"status\":0}]', null, null, null, '0', '2014-12-29 12:54:09', '2014-12-29 12:54:09', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('197', 'yr', '66d1b2bbf450a73cebf4ffba82bc3b13', '1', '0', null, null, '15', '1', null, null, null, null, '[{\"id\":1,\"accept\":1419829005000,\"status\":1},{\"id\":3,\"accept\":1419829005000,\"status\":1}]', null, null, null, '0', '2014-12-29 12:56:45', '2014-12-29 14:50:55', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('198', '41', '9b7eafb0f17b73bb288b4e4d934080df', '1', '0', null, null, '15', '1', null, null, null, null, '[{\"id\":3,\"accept\":1419835915000,\"status\":0},{\"id\":2,\"accept\":1419835915000,\"status\":0}]', null, null, null, '0', '2014-12-29 14:51:55', '2014-12-29 14:52:29', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('199', 'trr', '479c76eff53c2ce4799bcb5a7f3c71e1', '1', '0', null, null, '15', '1', null, null, null, null, '[{\"id\":2,\"accept\":1419836016000,\"status\":0},{\"id\":3,\"accept\":1419836016000,\"status\":0}]', null, null, null, '0', '2014-12-29 14:53:36', '2014-12-29 15:14:25', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('200', 'qaz', 'f2ef3d4f75f05aee20c082b84d65ca62', '1', '0', null, null, '15', '1', null, null, null, null, '[{\"id\":3,\"accept\":1419837351000,\"status\":0},{\"id\":1,\"accept\":1419837351000,\"status\":0}]', null, null, null, '0', '2014-12-29 15:15:51', '2014-12-29 15:15:51', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('201', 'hd', 'aa2dbfd6ca903b2d49b262d6b401cff4', '1', '0', '1', null, '25', '1', null, null, null, null, '[{\"id\":2,\"accept\":1419837470000,\"status\":1},{\"id\":1,\"accept\":1419837470000,\"status\":1},{\"id\":2,\"accept\":1419925429000,\"status\":0},{\"id\":3,\"accept\":1419925429000,\"status\":0},{\"id\":2,\"accept\":1419990808000,\"status\":0},{\"id\":3,\"accept\":1419990808000,\"status\":0}]', null, null, null, '0', '2014-12-29 15:17:50', '2014-12-31 10:00:37', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('202', 'yy', 'a32276dc39a455702f6c162bc8f3e12d', '1', '0', '1', null, '15', '1', null, null, null, null, '[{\"id\":3,\"accept\":1419941841000,\"status\":1},{\"id\":2,\"accept\":1419941841000,\"status\":1}]', null, null, null, '0', '2014-12-30 20:17:16', '2014-12-30 20:24:31', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('203', 'tt', '6ac317b7118c4e6597e0947981ca532b', '1', '0', '0', null, '15', '1', null, null, null, null, '[{\"id\":1,\"accept\":1419942305000,\"status\":0},{\"id\":2,\"accept\":1419942305000,\"status\":0}]', null, null, null, '0', '2014-12-30 20:25:01', '2014-12-30 20:25:01', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('204', 'rr', '54f78dca79ef4a97c1db8ba7984ff9d2', '1', '0', '0', null, '15', '1', null, null, null, null, '[{\"id\":1,\"accept\":1419942461000,\"status\":0},{\"id\":3,\"accept\":1419942461000,\"status\":0}]', null, null, null, '0', '2014-12-30 20:27:37', '2014-12-30 20:27:37', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('205', 'qq', '03f4bbd4fa5a867173ec6f2f599c6778', '1', '0', '0', null, '10', '1', null, null, null, null, '[{\"id\":1,\"accept\":1419942830000,\"status\":0},{\"id\":2,\"accept\":1419942830000,\"status\":0}]', null, null, null, '0', '2014-12-30 20:33:46', '2014-12-30 20:33:46', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('206', 'ee', 'd568bf1cd44bd16bad0ff2aad596e51d', '1', '0', '1', null, '15', '1', null, null, null, null, '[{\"id\":1,\"accept\":1419942998000,\"status\":0},{\"id\":2,\"accept\":1419942998000,\"status\":0}]', null, null, null, '0', '2014-12-30 20:36:33', '2014-12-30 20:36:33', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('207', 'qqtt', '2a416518775b00df487d291fda5ab294', '1', '0', '1', null, '10', '1', null, null, null, null, '[{\"id\":3,\"accept\":1419943349000,\"status\":0},{\"id\":1,\"accept\":1419943349000,\"status\":0}]', null, null, null, '0', '2014-12-30 20:42:25', '2014-12-30 20:42:25', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('208', 'iiii', '4be3ef4284cf44d9e9eeb80d3f490b49', '1', '0', '0', null, '10', '1', null, null, null, null, '[{\"id\":2,\"accept\":1419943415000,\"status\":0},{\"id\":1,\"accept\":1419943415000,\"status\":0}]', null, null, null, '0', '2014-12-30 20:43:30', '2014-12-30 20:43:31', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('209', 'uu', '5d78838fbd12ee1a14dd7fbe5e3cef7b', '1', '0', '1', null, '15', '1', null, null, null, null, '[{\"id\":2,\"accept\":1419943502000,\"status\":1},{\"id\":3,\"accept\":1419943502000,\"status\":1}]', null, null, null, '0', '2014-12-30 20:44:58', '2014-12-30 20:44:58', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('210', 'ooo', '690feab0156c5bbec7e52298a7691954', '1', '0', '0', null, '15', '1', null, null, null, null, '[{\"id\":1,\"accept\":1419943722000,\"status\":0},{\"id\":3,\"accept\":1419943722000,\"status\":0}]', null, null, null, '0', '2014-12-30 20:48:38', '2014-12-30 20:48:38', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('211', 'yyyp', '5a86a70c0607a01d45303b4aec048d5c', '1', '0', '0', null, '15', '1', null, null, null, null, '[{\"id\":2,\"accept\":1419943874000,\"status\":0},{\"id\":1,\"accept\":1419943874000,\"status\":0}]', null, null, null, '0', '2014-12-30 20:51:10', '2014-12-30 20:51:10', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('212', 'ggh', 'd4fdfc5e5ae12a5ec1615a1180599ff9', '1', '0', '0', null, '15', '1', null, null, null, null, '[{\"id\":3,\"accept\":1419943934000,\"status\":0},{\"id\":2,\"accept\":1419943934000,\"status\":0}]', null, null, null, '0', '2014-12-30 20:52:10', '2014-12-30 20:52:10', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('213', 'esd', '56b556f3331346095777dd3c19d3570a', '1', '0', '0', null, '15', '1', null, null, null, null, '[{\"id\":2,\"accept\":1419944102000,\"status\":0},{\"id\":1,\"accept\":1419944102000,\"status\":0}]', null, null, null, '0', '2014-12-30 20:54:58', '2014-12-30 20:54:58', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('214', '啊哈', '9db2fab8acde572b91ebfa693b68800f', '1', '0', '1', null, '15', '1', null, null, null, null, '[{\"id\":1,\"accept\":1419945266000,\"status\":1},{\"id\":2,\"accept\":1419945266000,\"status\":0}]', null, null, null, '0', '2014-12-30 21:14:22', '2014-12-30 21:14:22', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('215', '拜拜', 'c6e66705d637ccc5cff074e4382a2c30', '1', '0', '0', null, '15', '1', null, null, null, null, '[{\"id\":2,\"accept\":1419945727000,\"status\":0},{\"id\":1,\"accept\":1419945727000,\"status\":0}]', null, null, null, '0', '2014-12-30 21:22:02', '2014-12-30 21:22:03', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('216', '那是', '95a456005b8d1fee74171e6888882bd8', '1', '0', '0', null, '15', '1', null, null, null, null, '[{\"id\":1,\"accept\":1419945976000,\"status\":0},{\"id\":3,\"accept\":1419945976000,\"status\":0}]', null, null, null, '0', '2014-12-30 21:26:12', '2014-12-30 21:26:12', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('217', '你们', '31b3d533a712842c860c5457265679a3', '1', '0', '0', null, '15', '1', null, null, null, null, '[{\"id\":1,\"accept\":1419946012000,\"status\":0},{\"id\":3,\"accept\":1419946012000,\"status\":0}]', null, null, null, '0', '2014-12-30 21:26:48', '2014-12-30 21:26:48', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('218', '就要没', '5212a8a9b97c2129de449cb9b588f9c7', '1', '0', '1', null, '15', '1', null, null, null, null, '[{\"id\":3,\"accept\":1419947384000,\"status\":0},{\"id\":2,\"accept\":1419947384000,\"status\":0}]', null, null, null, '0', '2014-12-30 21:49:40', '2014-12-30 21:52:32', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('219', 'iji', 'c1c0b05c46b922784136fd7079e53dc0', '1', '0', '0', null, '15', '1', null, null, null, null, '[{\"id\":2,\"accept\":1419947452000,\"status\":0},{\"id\":3,\"accept\":1419947452000,\"status\":0}]', null, null, null, '0', '2014-12-30 21:50:52', '2014-12-30 21:52:07', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('220', '就行', 'e6a01678c46b39855990fa6b73ac025b', '1', '0', '1', null, '15', '1', null, null, null, null, '[{\"id\":1,\"accept\":1419947688000,\"status\":1},{\"id\":2,\"accept\":1419947688000,\"status\":0}]', null, null, null, '0', '2014-12-30 21:54:44', '2014-12-30 21:54:44', '0', null, null, null, null);
-INSERT INTO `player` VALUES ('221', '干净利落', 'f6eccbe52174e9d84865b63e83f7c13f', '1', '0', '1', null, '15', '1', null, null, null, null, '[{\"id\":3,\"accept\":1419989328000,\"status\":1},{\"id\":2,\"accept\":1419989328000,\"status\":1}]', null, null, null, '0', '2014-12-31 09:28:44', '2014-12-31 10:10:53', '0', null, null, null, null);
 
 -- ----------------------------
 -- Table structure for `playerlog`
@@ -414,295 +317,13 @@ CREATE TABLE `saving` (
   `rate` float(11,3) default NULL,
   `createtime` datetime default NULL,
   `updatetime` datetime default NULL,
-  `period` int(11) default NULL,
+  `period` float(11,4) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of saving
 -- ----------------------------
-INSERT INTO `saving` VALUES ('1', '1', null, '活期', '0', null, '1.00', null, null, '1.200', '2014-12-20 11:32:22', null, '1');
-INSERT INTO `saving` VALUES ('2', '15', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-20 11:41:25', null, '1');
-INSERT INTO `saving` VALUES ('3', '16', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-20 11:48:20', null, '1');
-INSERT INTO `saving` VALUES ('4', '17', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-21 10:44:48', null, '1');
-INSERT INTO `saving` VALUES ('5', '18', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-21 11:07:21', null, '1');
-INSERT INTO `saving` VALUES ('6', '19', null, '活期', '0', null, '2000000.00', null, null, '1.200', '2014-12-21 17:17:11', null, '1');
-INSERT INTO `saving` VALUES ('7', '20', null, '活期', '0', null, '2023228.88', null, null, '1.200', '2014-12-22 09:24:09', '2014-12-29 10:25:17', '1');
-INSERT INTO `saving` VALUES ('8', '21', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:29:43', null, '1');
-INSERT INTO `saving` VALUES ('9', '22', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:31:42', null, '1');
-INSERT INTO `saving` VALUES ('10', '23', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:32:57', null, '1');
-INSERT INTO `saving` VALUES ('11', '24', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:33:25', null, '1');
-INSERT INTO `saving` VALUES ('12', '25', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:36:07', null, '1');
-INSERT INTO `saving` VALUES ('13', '26', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:37:18', null, '1');
-INSERT INTO `saving` VALUES ('14', '27', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:38:58', null, '1');
-INSERT INTO `saving` VALUES ('15', '28', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:39:30', null, '1');
-INSERT INTO `saving` VALUES ('16', '29', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:40:25', null, '1');
-INSERT INTO `saving` VALUES ('17', '1', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:41:12', null, '1');
-INSERT INTO `saving` VALUES ('18', '2', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:42:00', null, '1');
-INSERT INTO `saving` VALUES ('19', '3', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:44:15', null, '1');
-INSERT INTO `saving` VALUES ('20', '4', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:47:05', null, '1');
-INSERT INTO `saving` VALUES ('21', '5', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:47:56', null, '1');
-INSERT INTO `saving` VALUES ('22', '6', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:48:26', null, '1');
-INSERT INTO `saving` VALUES ('23', '7', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:49:38', null, '1');
-INSERT INTO `saving` VALUES ('24', '8', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:50:27', null, '1');
-INSERT INTO `saving` VALUES ('25', '9', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:53:10', null, '1');
-INSERT INTO `saving` VALUES ('26', '10', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:53:47', null, '1');
-INSERT INTO `saving` VALUES ('27', '11', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:54:02', null, '1');
-INSERT INTO `saving` VALUES ('28', '12', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:54:13', null, '1');
-INSERT INTO `saving` VALUES ('29', '13', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 18:54:47', null, '1');
-INSERT INTO `saving` VALUES ('30', '14', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 20:45:49', null, '1');
-INSERT INTO `saving` VALUES ('31', '15', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 20:46:51', null, '1');
-INSERT INTO `saving` VALUES ('32', '16', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 20:53:49', null, '1');
-INSERT INTO `saving` VALUES ('33', '17', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 20:54:49', null, '1');
-INSERT INTO `saving` VALUES ('34', '18', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 20:55:30', null, '1');
-INSERT INTO `saving` VALUES ('35', '19', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 20:56:18', null, '1');
-INSERT INTO `saving` VALUES ('36', '20', null, '活期', '0', null, '2024.00', null, null, '1.200', '2014-12-22 20:56:47', '2014-12-29 10:25:17', '1');
-INSERT INTO `saving` VALUES ('37', '21', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 20:57:41', null, '1');
-INSERT INTO `saving` VALUES ('38', '22', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 20:58:00', null, '1');
-INSERT INTO `saving` VALUES ('39', '23', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 20:58:28', null, '1');
-INSERT INTO `saving` VALUES ('40', '24', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 20:59:02', null, '1');
-INSERT INTO `saving` VALUES ('41', '25', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 20:59:30', null, '1');
-INSERT INTO `saving` VALUES ('42', '26', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 20:59:56', null, '1');
-INSERT INTO `saving` VALUES ('43', '27', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:00:33', null, '1');
-INSERT INTO `saving` VALUES ('44', '28', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:02:21', null, '1');
-INSERT INTO `saving` VALUES ('45', '29', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:02:43', null, '1');
-INSERT INTO `saving` VALUES ('46', '30', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:02:54', null, '1');
-INSERT INTO `saving` VALUES ('47', '31', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:03:56', null, '1');
-INSERT INTO `saving` VALUES ('48', '32', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:04:14', null, '1');
-INSERT INTO `saving` VALUES ('49', '33', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:05:02', null, '1');
-INSERT INTO `saving` VALUES ('50', '34', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:05:23', null, '1');
-INSERT INTO `saving` VALUES ('51', '35', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:05:29', null, '1');
-INSERT INTO `saving` VALUES ('52', '36', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:05:48', null, '1');
-INSERT INTO `saving` VALUES ('53', '37', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:06:09', null, '1');
-INSERT INTO `saving` VALUES ('54', '38', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:06:28', null, '1');
-INSERT INTO `saving` VALUES ('55', '39', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:07:33', null, '1');
-INSERT INTO `saving` VALUES ('56', '40', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:08:05', null, '1');
-INSERT INTO `saving` VALUES ('57', '41', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:08:25', null, '1');
-INSERT INTO `saving` VALUES ('58', '42', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:08:37', null, '1');
-INSERT INTO `saving` VALUES ('59', '43', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:08:49', null, '1');
-INSERT INTO `saving` VALUES ('60', '44', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:09:16', null, '1');
-INSERT INTO `saving` VALUES ('61', '45', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:09:29', null, '1');
-INSERT INTO `saving` VALUES ('62', '46', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:09:42', null, '1');
-INSERT INTO `saving` VALUES ('63', '47', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:10:11', null, '1');
-INSERT INTO `saving` VALUES ('64', '48', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:10:43', null, '1');
-INSERT INTO `saving` VALUES ('65', '49', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:10:58', null, '1');
-INSERT INTO `saving` VALUES ('66', '50', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:11:59', null, '1');
-INSERT INTO `saving` VALUES ('67', '51', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:12:43', null, '1');
-INSERT INTO `saving` VALUES ('68', '52', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:12:58', null, '1');
-INSERT INTO `saving` VALUES ('69', '53', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:13:52', null, '1');
-INSERT INTO `saving` VALUES ('70', '54', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:14:14', null, '1');
-INSERT INTO `saving` VALUES ('71', '55', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:14:33', null, '1');
-INSERT INTO `saving` VALUES ('72', '56', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:15:09', null, '1');
-INSERT INTO `saving` VALUES ('73', '57', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:15:35', null, '1');
-INSERT INTO `saving` VALUES ('74', '58', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:16:08', null, '1');
-INSERT INTO `saving` VALUES ('75', '59', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:16:34', null, '1');
-INSERT INTO `saving` VALUES ('76', '60', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:16:58', null, '1');
-INSERT INTO `saving` VALUES ('77', '61', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:17:12', null, '1');
-INSERT INTO `saving` VALUES ('78', '62', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:17:53', null, '1');
-INSERT INTO `saving` VALUES ('79', '63', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:21:25', null, '1');
-INSERT INTO `saving` VALUES ('80', '64', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:21:56', null, '1');
-INSERT INTO `saving` VALUES ('81', '65', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:22:23', null, '1');
-INSERT INTO `saving` VALUES ('82', '66', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:22:37', null, '1');
-INSERT INTO `saving` VALUES ('83', '67', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:23:22', null, '1');
-INSERT INTO `saving` VALUES ('84', '68', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:23:49', null, '1');
-INSERT INTO `saving` VALUES ('85', '69', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:24:09', null, '1');
-INSERT INTO `saving` VALUES ('86', '70', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:24:40', null, '1');
-INSERT INTO `saving` VALUES ('87', '71', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:25:13', null, '1');
-INSERT INTO `saving` VALUES ('88', '72', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:25:45', null, '1');
-INSERT INTO `saving` VALUES ('89', '73', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:26:14', null, '1');
-INSERT INTO `saving` VALUES ('90', '74', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:26:25', null, '1');
-INSERT INTO `saving` VALUES ('91', '75', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:27:07', null, '1');
-INSERT INTO `saving` VALUES ('92', '76', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:30:23', null, '1');
-INSERT INTO `saving` VALUES ('93', '77', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:31:09', null, '1');
-INSERT INTO `saving` VALUES ('94', '78', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:31:46', null, '1');
-INSERT INTO `saving` VALUES ('95', '79', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:31:52', null, '1');
-INSERT INTO `saving` VALUES ('96', '80', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:32:08', null, '1');
-INSERT INTO `saving` VALUES ('97', '81', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:32:14', null, '1');
-INSERT INTO `saving` VALUES ('98', '82', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:32:31', null, '1');
-INSERT INTO `saving` VALUES ('99', '83', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:32:48', null, '1');
-INSERT INTO `saving` VALUES ('100', '84', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:33:48', null, '1');
-INSERT INTO `saving` VALUES ('101', '85', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:34:17', null, '1');
-INSERT INTO `saving` VALUES ('102', '86', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:34:30', null, '1');
-INSERT INTO `saving` VALUES ('103', '87', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:34:44', null, '1');
-INSERT INTO `saving` VALUES ('104', '88', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:34:57', null, '1');
-INSERT INTO `saving` VALUES ('105', '89', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:35:13', null, '1');
-INSERT INTO `saving` VALUES ('106', '90', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:35:22', null, '1');
-INSERT INTO `saving` VALUES ('107', '91', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:35:37', null, '1');
-INSERT INTO `saving` VALUES ('108', '92', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:36:00', null, '1');
-INSERT INTO `saving` VALUES ('109', '93', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:36:18', null, '1');
-INSERT INTO `saving` VALUES ('110', '94', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:36:24', null, '1');
-INSERT INTO `saving` VALUES ('111', '95', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:37:56', null, '1');
-INSERT INTO `saving` VALUES ('112', '96', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:38:43', null, '1');
-INSERT INTO `saving` VALUES ('113', '97', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:39:06', null, '1');
-INSERT INTO `saving` VALUES ('114', '98', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:39:18', null, '1');
-INSERT INTO `saving` VALUES ('115', '99', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:39:41', null, '1');
-INSERT INTO `saving` VALUES ('116', '100', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:40:12', null, '1');
-INSERT INTO `saving` VALUES ('117', '101', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:40:31', null, '1');
-INSERT INTO `saving` VALUES ('118', '102', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:40:44', null, '1');
-INSERT INTO `saving` VALUES ('119', '103', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:41:02', null, '1');
-INSERT INTO `saving` VALUES ('120', '104', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:41:31', null, '1');
-INSERT INTO `saving` VALUES ('121', '105', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:41:42', null, '1');
-INSERT INTO `saving` VALUES ('122', '106', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:42:14', null, '1');
-INSERT INTO `saving` VALUES ('123', '107', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:42:40', null, '1');
-INSERT INTO `saving` VALUES ('124', '108', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:42:58', null, '1');
-INSERT INTO `saving` VALUES ('125', '109', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:43:28', null, '1');
-INSERT INTO `saving` VALUES ('126', '110', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:43:35', null, '1');
-INSERT INTO `saving` VALUES ('127', '111', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:46:40', null, '1');
-INSERT INTO `saving` VALUES ('128', '112', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:47:45', null, '1');
-INSERT INTO `saving` VALUES ('129', '113', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:48:45', null, '1');
-INSERT INTO `saving` VALUES ('130', '114', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-22 21:48:54', null, '1');
-INSERT INTO `saving` VALUES ('131', '115', null, '活期', '0', null, '800.00', null, null, '1.200', '2014-12-22 21:49:15', null, '1');
-INSERT INTO `saving` VALUES ('132', '116', null, '活期', '0', null, '0.00', null, null, '1.200', '2014-12-23 09:02:25', null, '1');
-INSERT INTO `saving` VALUES ('133', '117', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 09:04:37', null, '1');
-INSERT INTO `saving` VALUES ('134', '118', null, '活期', '0', null, '0.00', null, null, '1.200', '2014-12-23 09:07:40', null, '1');
-INSERT INTO `saving` VALUES ('135', '119', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:17:12', null, '1');
-INSERT INTO `saving` VALUES ('136', '120', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:49:56', null, '1');
-INSERT INTO `saving` VALUES ('137', '121', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:51:03', null, '1');
-INSERT INTO `saving` VALUES ('138', '122', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:51:24', null, '1');
-INSERT INTO `saving` VALUES ('139', '123', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:51:38', null, '1');
-INSERT INTO `saving` VALUES ('140', '124', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:52:12', null, '1');
-INSERT INTO `saving` VALUES ('141', '125', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:52:26', null, '1');
-INSERT INTO `saving` VALUES ('142', '126', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:52:38', null, '1');
-INSERT INTO `saving` VALUES ('143', '127', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:52:48', null, '1');
-INSERT INTO `saving` VALUES ('144', '128', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:52:53', null, '1');
-INSERT INTO `saving` VALUES ('145', '129', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:52:59', null, '1');
-INSERT INTO `saving` VALUES ('146', '130', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:53:04', null, '1');
-INSERT INTO `saving` VALUES ('147', '131', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:53:15', null, '1');
-INSERT INTO `saving` VALUES ('148', '132', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:53:16', null, '1');
-INSERT INTO `saving` VALUES ('149', '133', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:53:18', null, '1');
-INSERT INTO `saving` VALUES ('150', '134', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:53:28', null, '1');
-INSERT INTO `saving` VALUES ('151', '135', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:53:30', null, '1');
-INSERT INTO `saving` VALUES ('152', '136', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:53:36', null, '1');
-INSERT INTO `saving` VALUES ('153', '137', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:53:37', null, '1');
-INSERT INTO `saving` VALUES ('154', '138', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:53:38', null, '1');
-INSERT INTO `saving` VALUES ('155', '139', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 10:53:43', null, '1');
-INSERT INTO `saving` VALUES ('156', '140', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 15:33:24', null, '1');
-INSERT INTO `saving` VALUES ('157', '141', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 15:36:05', null, '1');
-INSERT INTO `saving` VALUES ('158', '142', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 15:36:57', null, '1');
-INSERT INTO `saving` VALUES ('159', '143', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 15:51:24', null, '1');
-INSERT INTO `saving` VALUES ('160', '144', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 15:53:05', null, '1');
-INSERT INTO `saving` VALUES ('161', '145', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 15:57:43', null, '1');
-INSERT INTO `saving` VALUES ('162', '146', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 16:14:29', null, '1');
-INSERT INTO `saving` VALUES ('163', '147', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 16:15:23', null, '1');
-INSERT INTO `saving` VALUES ('164', '148', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 16:16:10', null, '1');
-INSERT INTO `saving` VALUES ('165', '149', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 16:21:59', null, '1');
-INSERT INTO `saving` VALUES ('166', '150', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 16:23:44', null, '1');
-INSERT INTO `saving` VALUES ('167', '151', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 16:26:45', null, '1');
-INSERT INTO `saving` VALUES ('168', '152', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 16:29:59', null, '1');
-INSERT INTO `saving` VALUES ('169', '153', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 16:30:28', null, '1');
-INSERT INTO `saving` VALUES ('170', '154', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 16:31:23', null, '1');
-INSERT INTO `saving` VALUES ('171', '155', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 16:31:53', null, '1');
-INSERT INTO `saving` VALUES ('172', '156', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 16:33:31', null, '1');
-INSERT INTO `saving` VALUES ('173', '157', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 16:37:04', null, '1');
-INSERT INTO `saving` VALUES ('174', '158', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 16:45:26', null, '1');
-INSERT INTO `saving` VALUES ('175', '159', null, '活期', '0', null, '2000.00', null, null, '1.200', '2014-12-23 16:58:13', null, '1');
-INSERT INTO `saving` VALUES ('176', '160', null, '活期', '0', null, '726.56', null, null, '1.200', '2014-12-23 16:58:39', null, '1');
-INSERT INTO `saving` VALUES ('177', '161', null, '活期', '0', null, '948.72', null, null, '1.200', '2014-12-23 19:48:18', null, '1');
-INSERT INTO `saving` VALUES ('178', '162', null, '活期', '0', null, '800.85', null, null, '1.200', '2014-12-23 21:56:32', null, '1');
-INSERT INTO `saving` VALUES ('179', '163', null, '活期', '0', null, '812.24', null, null, '1.200', '2014-12-23 22:04:44', null, '1');
-INSERT INTO `saving` VALUES ('180', '164', null, '活期', '0', null, '168709.64', null, null, '1.200', '2014-12-23 22:07:37', null, '1');
-INSERT INTO `saving` VALUES ('181', '164', '2', null, null, null, '1000.00', null, '1', null, null, null, null);
-INSERT INTO `saving` VALUES ('182', '164', '2', null, '1', null, '1000.00', null, '1', '2.200', '2014-12-23 22:47:22', null, '1');
-INSERT INTO `saving` VALUES ('183', '164', '2', null, '1', null, '4000.00', null, '1', '2.200', '2014-12-23 23:15:47', null, '1');
-INSERT INTO `saving` VALUES ('184', '164', '2', null, '1', null, '2000.00', null, '1', '2.200', '2014-12-23 23:17:06', null, '1');
-INSERT INTO `saving` VALUES ('185', '164', '2', null, '1', null, '1000.00', null, '1', '2.200', '2014-12-23 23:18:30', null, '1');
-INSERT INTO `saving` VALUES ('186', '164', '2', null, '1', null, '1000.00', null, '1', '2.200', '2014-12-23 23:19:06', null, '1');
-INSERT INTO `saving` VALUES ('187', '164', '3', null, '2', null, '2000.00', null, '1', '3.230', '2014-12-23 23:19:18', null, '1');
-INSERT INTO `saving` VALUES ('188', '165', '1', '活期', '0', null, '189159.47', null, null, '1.200', '2014-12-24 00:31:16', null, '1');
-INSERT INTO `saving` VALUES ('189', '165', '2', null, '1', null, '3000.00', null, '1', '2.200', '2014-12-24 00:31:50', null, '1');
-INSERT INTO `saving` VALUES ('190', '166', '1', '活期', '0', null, '190864.00', null, null, '1.200', '2014-12-24 01:11:31', null, '1');
-INSERT INTO `saving` VALUES ('191', '166', '3', null, '2', null, '3000.00', null, '1', '3.230', '2014-12-24 01:13:32', null, '1');
-INSERT INTO `saving` VALUES ('192', '166', '2', null, '1', null, '4000.00', null, '1', '2.200', '2014-12-24 01:48:48', null, '1');
-INSERT INTO `saving` VALUES ('193', '167', '1', '活期', '0', null, '200000.00', null, null, '1.200', '2014-12-24 02:01:17', null, '1');
-INSERT INTO `saving` VALUES ('194', '168', '1', '活期', '0', null, '195500.00', null, null, '1.200', '2014-12-24 02:09:26', null, '1');
-INSERT INTO `saving` VALUES ('195', '169', '1', '活期', '0', null, '192552.00', null, null, '1.200', '2014-12-24 08:39:22', null, '1');
-INSERT INTO `saving` VALUES ('196', '169', '2', null, '1', null, '4000.00', null, '1', '2.200', '2014-12-24 08:39:39', null, '1');
-INSERT INTO `saving` VALUES ('197', '170', '1', '活期', '0', null, '200000.00', null, null, '1.200', '2014-12-24 08:44:47', null, '1');
-INSERT INTO `saving` VALUES ('198', '171', '1', '活期', '0', null, '200000.00', null, null, '1.200', '2014-12-24 08:47:20', null, '1');
-INSERT INTO `saving` VALUES ('199', '172', '1', '活期', '0', null, '200000.00', null, null, '1.200', '2014-12-24 08:48:46', null, '1');
-INSERT INTO `saving` VALUES ('200', '173', '1', '活期', '0', null, '197000.00', null, null, '1.200', '2014-12-24 08:53:30', null, '1');
-INSERT INTO `saving` VALUES ('201', '173', '4', null, '3', null, '3000.00', null, '1', '5.870', '2014-12-24 08:54:07', null, '1');
-INSERT INTO `saving` VALUES ('202', '174', '1', '活期', '0', null, '200000.00', null, null, '1.200', '2014-12-24 08:55:03', null, '1');
-INSERT INTO `saving` VALUES ('203', '175', '1', '活期', '0', null, '200000.00', null, null, '1.200', '2014-12-24 08:59:47', null, '1');
-INSERT INTO `saving` VALUES ('204', '176', '1', '活期', '0', null, '200000.00', null, null, '1.200', '2014-12-24 09:35:00', null, '1');
-INSERT INTO `saving` VALUES ('205', '177', '1', '活期', '0', null, '199997.36', null, null, '1.200', '2014-12-24 09:35:48', null, '1');
-INSERT INTO `saving` VALUES ('206', '178', '1', '活期', '0', null, '194296.58', null, null, '1.200', '2014-12-24 09:40:54', null, '1');
-INSERT INTO `saving` VALUES ('207', '179', '1', '活期', '0', null, '189105.03', null, null, '1.200', '2014-12-24 09:51:09', null, '1');
-INSERT INTO `saving` VALUES ('208', '179', '4', null, '3', null, '3000.00', null, '1', '5.870', '2014-12-24 09:51:47', null, '1');
-INSERT INTO `saving` VALUES ('209', '180', '1', '活期', '0', null, '185318.03', null, null, '1.200', '2014-12-24 10:14:11', null, '1');
-INSERT INTO `saving` VALUES ('210', '180', '2', null, '1', null, '4000.00', null, '1', '2.200', '2014-12-24 10:18:48', null, '1');
-INSERT INTO `saving` VALUES ('211', '181', '1', '活期', '0', null, '183473.13', null, null, '1.200', '2014-12-24 10:24:25', null, '1');
-INSERT INTO `saving` VALUES ('212', '181', '2', null, '1', null, '1000.00', null, '1', '2.200', '2014-12-24 10:24:56', null, '1');
-INSERT INTO `saving` VALUES ('213', '181', '2', null, '1', null, '2000.00', null, '1', '2.200', '2014-12-24 10:33:10', null, '1');
-INSERT INTO `saving` VALUES ('214', '181', '2', null, '1', null, '2000.00', null, '1', '2.200', '2014-12-24 10:33:17', null, '1');
-INSERT INTO `saving` VALUES ('215', '181', '2', null, '1', null, '2000.00', null, '1', '2.200', '2014-12-24 10:33:22', null, '1');
-INSERT INTO `saving` VALUES ('216', '182', '1', '活期', '0', null, '306671.88', null, null, '1.200', '2014-12-24 14:06:45', '2014-12-29 10:54:42', '1');
-INSERT INTO `saving` VALUES ('226', '182', '3', '两年期', '2', null, '1464.43', null, '1', '3.230', '2014-12-29 10:24:36', '2014-12-29 10:54:42', '1');
-INSERT INTO `saving` VALUES ('227', '182', '4', '三年期', '3', null, '1982.79', null, '1', '5.870', '2014-12-29 10:24:47', '2014-12-29 10:54:42', '1');
-INSERT INTO `saving` VALUES ('228', '183', '1', '活期', '0', null, '203000.00', null, null, '1.500', '2014-12-29 10:58:21', '2014-12-29 10:58:21', '0');
-INSERT INTO `saving` VALUES ('229', '184', '1', '活期', '0', null, '203000.00', null, null, '1.500', '2014-12-29 10:59:03', '2014-12-29 10:59:03', '0');
-INSERT INTO `saving` VALUES ('230', '185', '1', '活期', '0', null, '209135.67', null, null, '1.500', '2014-12-29 11:02:07', '2014-12-29 11:05:08', '0');
-INSERT INTO `saving` VALUES ('231', '186', '1', '活期', '0', null, '232108.17', null, null, '1.500', '2014-12-29 11:06:26', '2014-12-30 20:19:00', '0');
-INSERT INTO `saving` VALUES ('232', '187', '1', '活期', '0', null, '230981.67', null, null, '1.500', '2014-12-29 11:09:05', '2014-12-31 09:47:44', '0');
-INSERT INTO `saving` VALUES ('233', '187', '2', '半年期', '1', null, '1194.82', null, '1', '2.250', '2014-12-29 11:09:21', '2014-12-31 09:47:44', '0');
-INSERT INTO `saving` VALUES ('234', '188', '1', '活期', '0', null, '196045.00', null, null, '1.500', '2014-12-29 11:12:02', '2014-12-29 11:12:05', '0');
-INSERT INTO `saving` VALUES ('235', '188', '2', '半年期', '1', null, '4000.00', null, '1', '2.250', '2014-12-29 11:12:10', null, '0');
-INSERT INTO `saving` VALUES ('236', '188', '4', '2年期', '3', null, '6000.00', null, '1', '3.350', '2014-12-29 11:12:18', null, '2');
-INSERT INTO `saving` VALUES ('237', '189', '1', '活期', '0', null, '212272.70', null, null, '1.500', '2014-12-29 11:13:57', '2014-12-30 17:27:05', '0');
-INSERT INTO `saving` VALUES ('238', '190', '1', '活期', '0', null, '202045.00', null, null, '1.500', '2014-12-29 11:16:37', '2014-12-29 11:16:40', '0');
-INSERT INTO `saving` VALUES ('239', '190', '5', '3年期', '4', null, '4000.00', null, '1', '4.000', '2014-12-29 11:16:51', null, '3');
-INSERT INTO `saving` VALUES ('240', '191', '1', '活期', '0', null, '203000.00', null, null, '1.500', '2014-12-29 11:27:03', '2014-12-29 11:27:03', '0');
-INSERT INTO `saving` VALUES ('241', '192', '1', '活期', '0', null, '198000.00', null, null, '1.500', '2014-12-29 11:29:16', '2014-12-29 11:29:16', '0');
-INSERT INTO `saving` VALUES ('242', '192', '5', '3年期', '4', null, '1000.00', null, '1', '4.000', '2014-12-29 11:29:32', null, '3');
-INSERT INTO `saving` VALUES ('243', '192', '6', '5年期', '5', null, '4000.00', null, '1', '4.750', '2014-12-29 11:29:45', null, '5');
-INSERT INTO `saving` VALUES ('244', '193', '1', '活期', '0', null, '202300.00', null, null, '1.500', '2014-12-29 11:33:19', '2014-12-29 11:33:19', '0');
-INSERT INTO `saving` VALUES ('245', '194', '1', '活期', '0', null, '193400.00', null, null, '1.500', '2014-12-29 11:37:18', '2014-12-29 11:37:18', '0');
-INSERT INTO `saving` VALUES ('246', '195', '1', '活期', '0', null, '203000.00', null, null, '1.500', '2014-12-29 12:45:54', '2014-12-29 12:45:54', '0');
-INSERT INTO `saving` VALUES ('247', '196', '1', '活期', '0', null, '203000.00', null, null, '1.500', '2014-12-29 12:54:09', '2014-12-29 12:54:09', '0');
-INSERT INTO `saving` VALUES ('248', '197', '1', '活期', '0', null, '301700.19', null, null, '1.500', '2014-12-29 12:56:45', '2014-12-31 09:47:38', '0');
-INSERT INTO `saving` VALUES ('250', '197', '3', '1年期', '2', null, '7881.44', null, '1', '2.750', '2014-12-29 14:07:39', '2014-12-31 09:47:38', '1');
-INSERT INTO `saving` VALUES ('251', '198', '1', '活期', '0', null, '218270.38', null, null, '1.500', '2014-12-29 14:51:55', '2014-12-30 17:27:03', '0');
-INSERT INTO `saving` VALUES ('252', '199', '1', '活期', '0', null, '225298.52', null, null, '1.500', '2014-12-29 14:53:36', '2014-12-30 20:19:05', '0');
-INSERT INTO `saving` VALUES ('253', '200', '1', '活期', '0', null, '203000.00', null, null, '1.500', '2014-12-29 15:15:51', '2014-12-29 15:15:51', '0');
-INSERT INTO `saving` VALUES ('254', '201', '1', '活期', '0', null, '1749179.63', null, null, '1.500', '2014-12-29 15:17:50', '2014-12-31 10:00:37', '0');
-INSERT INTO `saving` VALUES ('255', '202', '1', '活期', '0', null, '186086.83', null, null, '1.500', '2014-12-30 20:17:16', '2014-12-30 20:24:31', '0');
-INSERT INTO `saving` VALUES ('256', '202', '2', '半年期', '1', null, '4276.12', null, '1', '2.250', '2014-12-30 20:18:27', '2014-12-30 20:24:31', '0');
-INSERT INTO `saving` VALUES ('257', '203', '1', '活期', '0', null, '203000.00', null, null, '1.500', '2014-12-30 20:25:01', '2014-12-30 20:25:01', '0');
-INSERT INTO `saving` VALUES ('258', '204', '1', '活期', '0', null, '203000.00', null, null, '1.500', '2014-12-30 20:27:37', '2014-12-30 20:27:37', '0');
-INSERT INTO `saving` VALUES ('259', '205', '1', '活期', '0', null, '203000.00', null, null, '1.500', '2014-12-30 20:33:46', '2014-12-30 20:33:46', '0');
-INSERT INTO `saving` VALUES ('260', '206', '1', '活期', '0', null, '194000.00', null, null, '1.500', '2014-12-30 20:36:33', '2014-12-30 20:36:33', '0');
-INSERT INTO `saving` VALUES ('261', '206', '5', '3年期', '4', null, '3000.00', null, '1', '4.000', '2014-12-30 20:38:08', null, '3');
-INSERT INTO `saving` VALUES ('262', '201', '2', '半年期', '1', null, '1993.23', null, '1', '2.250', '2014-12-30 20:39:02', '2014-12-31 10:00:37', '0');
-INSERT INTO `saving` VALUES ('263', '201', '3', '1年期', '2', null, '9274.63', null, '1', '2.750', '2014-12-30 20:39:15', '2014-12-31 10:00:37', '1');
-INSERT INTO `saving` VALUES ('264', '207', '1', '活期', '0', null, '203000.00', null, null, '1.500', '2014-12-30 20:42:25', '2014-12-30 20:42:25', '0');
-INSERT INTO `saving` VALUES ('265', '208', '1', '活期', '0', null, '203000.00', null, null, '1.500', '2014-12-30 20:43:30', '2014-12-30 20:43:31', '0');
-INSERT INTO `saving` VALUES ('266', '209', '1', '活期', '0', null, '203000.00', null, null, '1.500', '2014-12-30 20:44:58', '2014-12-30 20:44:58', '0');
-INSERT INTO `saving` VALUES ('267', '210', '1', '活期', '0', null, '202000.00', null, null, '1.500', '2014-12-30 20:48:38', '2014-12-30 20:48:38', '0');
-INSERT INTO `saving` VALUES ('268', '210', '2', '半年期', '1', null, '1000.00', null, '1', '2.250', '2014-12-30 20:49:08', null, '0');
-INSERT INTO `saving` VALUES ('269', '211', '1', '活期', '0', null, '203000.00', null, null, '1.500', '2014-12-30 20:51:10', '2014-12-30 20:51:10', '0');
-INSERT INTO `saving` VALUES ('270', '212', '1', '活期', '0', null, '202000.00', null, null, '1.500', '2014-12-30 20:52:10', '2014-12-30 20:52:10', '0');
-INSERT INTO `saving` VALUES ('271', '212', '2', '半年期', '1', null, '1000.00', null, '1', '2.250', '2014-12-30 20:52:40', null, '0');
-INSERT INTO `saving` VALUES ('272', '213', '1', '活期', '0', null, '200000.00', null, null, '1.500', '2014-12-30 20:54:58', '2014-12-30 20:54:58', '0');
-INSERT INTO `saving` VALUES ('273', '213', '3', '1年期', '2', null, '3000.00', null, '1', '2.750', '2014-12-30 20:55:14', null, '1');
-INSERT INTO `saving` VALUES ('274', '214', '1', '活期', '0', null, '197338.52', null, null, '1.500', '2014-12-30 21:14:22', '2014-12-30 21:14:22', '0');
-INSERT INTO `saving` VALUES ('275', '214', '2', '半年期', '1', null, '1000.00', null, '1', '2.250', '2014-12-30 21:14:39', null, '0');
-INSERT INTO `saving` VALUES ('276', '214', '3', '1年期', '2', null, '3000.00', null, '1', '2.750', '2014-12-30 21:16:17', null, '1');
-INSERT INTO `saving` VALUES ('277', '215', '1', '活期', '0', null, '201000.00', null, null, '1.500', '2014-12-30 21:22:02', '2014-12-30 21:22:03', '0');
-INSERT INTO `saving` VALUES ('278', '215', '3', '1年期', '2', null, '1000.00', null, '1', '2.750', '2014-12-30 21:22:22', null, '1');
-INSERT INTO `saving` VALUES ('279', '215', '2', '半年期', '1', null, '1000.00', null, '1', '2.250', '2014-12-30 21:22:34', null, '0');
-INSERT INTO `saving` VALUES ('280', '216', '1', '活期', '0', null, '203000.00', null, null, '1.500', '2014-12-30 21:26:12', '2014-12-30 21:26:12', '0');
-INSERT INTO `saving` VALUES ('281', '217', '1', '活期', '0', null, '202000.00', null, null, '1.500', '2014-12-30 21:26:48', '2014-12-30 21:26:48', '0');
-INSERT INTO `saving` VALUES ('282', '217', '4', '2年期', '3', null, '1000.00', null, '1', '3.350', '2014-12-30 21:27:20', null, '2');
-INSERT INTO `saving` VALUES ('283', '218', '1', '活期', '0', null, '208120.67', null, null, '1.500', '2014-12-30 21:49:40', '2014-12-30 21:52:32', '0');
-INSERT INTO `saving` VALUES ('284', '218', '2', '半年期', '1', null, '1022.50', null, '1', '2.250', '2014-12-30 21:50:02', '2014-12-30 21:52:32', '0');
-INSERT INTO `saving` VALUES ('285', '219', '1', '活期', '0', null, '211285.39', null, null, '1.500', '2014-12-30 21:50:52', '2014-12-30 21:52:07', '0');
-INSERT INTO `saving` VALUES ('286', '219', '2', '半年期', '1', null, '3279.25', null, '1', '2.250', '2014-12-30 21:51:02', '2014-12-30 21:52:07', '0');
-INSERT INTO `saving` VALUES ('288', '219', '3', '1年期', '2', null, '1000.00', null, '1', '2.750', '2014-12-30 21:52:12', null, '1');
-INSERT INTO `saving` VALUES ('289', '220', '1', '活期', '0', null, '200241.84', null, null, '1.500', '2014-12-30 21:54:44', '2014-12-30 21:54:44', '0');
-INSERT INTO `saving` VALUES ('290', '220', '4', '2年期', '3', null, '1000.00', null, '1', '3.350', '2014-12-30 21:55:00', null, '2');
-INSERT INTO `saving` VALUES ('291', '221', '1', '活期', '0', null, '212891.00', null, null, '1.500', '2014-12-31 09:28:44', '2014-12-31 10:10:53', '0');
-INSERT INTO `saving` VALUES ('292', '221', '2', '半年期', '1', null, '1142.82', null, '1', '2.250', '2014-12-31 09:37:34', '2014-12-31 10:10:53', '0');
-INSERT INTO `saving` VALUES ('293', '221', '3', '1年期', '2', null, '3530.32', null, '1', '2.750', '2014-12-31 09:38:41', '2014-12-31 10:10:53', '1');
 
 -- ----------------------------
 -- Table structure for `savingdata`
@@ -724,7 +345,8 @@ CREATE TABLE `savingdata` (
 INSERT INTO `savingdata` VALUES ('1', '2', 0x5B7B226E616D65223A22E6B4BBE69C9F222C2274797065223A302C2272617465223A312E327D2C7B226E616D65223A22E4B880E5B9B4E69C9F222C2274797065223A312C2272617465223A322E327D2C7B226E616D65223A22E4B8A4E5B9B4E69C9F222C2274797065223A322C2272617465223A332E32337D2C7B226E616D65223A22E4B889E5B9B4E69C9F222C2274797065223A332C2272617465223A352E38377D5D, '2014-12-16 17:43:50', '0', '0.900');
 INSERT INTO `savingdata` VALUES ('2', '2', 0x5B7B226964223A312C226E616D65223A22E6B4BBE69C9F222C2274797065223A302C2272617465223A312E322C22706572696F64223A317D2C7B226964223A322C226E616D65223A22E4B880E5B9B4E69C9F222C2274797065223A312C2272617465223A322E322C22706572696F64223A317D2C7B226964223A332C226E616D65223A22E4B8A4E5B9B4E69C9F222C2274797065223A322C2272617465223A332E32332C22706572696F64223A317D2C7B226964223A342C226E616D65223A22E4B889E5B9B4E69C9F222C2274797065223A332C2272617465223A352E38372C22706572696F64223A317D5D, '2014-12-20 10:41:00', '0', '1.000');
 INSERT INTO `savingdata` VALUES ('3', '2', 0x5B7B226964223A312C226E616D65223A22E58D8AE5B9B4E69C9F222C2274797065223A302C2272617465223A322E32352C22706572696F64223A302E357D2C7B226964223A322C226E616D65223A2231E5B9B4E69C9F222C2274797065223A312C2272617465223A322E37352C22706572696F64223A317D2C7B226964223A332C226E616D65223A2232E5B9B4E69C9F222C2274797065223A322C2272617465223A332E33352C22706572696F64223A327D2C7B226964223A342C226E616D65223A2233E5B9B4E69C9F222C2274797065223A332C2272617465223A342C22706572696F64223A337D2C7B226964223A352C226E616D65223A2235E5B9B4E69C9F222C2274797065223A342C2272617465223A342E37352C22706572696F64223A357D5D, '2014-12-29 10:39:55', '0', '2.000');
-INSERT INTO `savingdata` VALUES ('4', '2', 0x5B7B226964223A312C226E616D65223A22E6B4BBE69C9F222C2274797065223A302C2272617465223A312E352C22706572696F64223A302E317D2C7B226964223A322C226E616D65223A22E58D8AE5B9B4E69C9F222C2274797065223A312C2272617465223A322E32352C22706572696F64223A302E357D2C7B226964223A332C226E616D65223A2231E5B9B4E69C9F222C2274797065223A322C2272617465223A322E37352C22706572696F64223A317D2C7B226964223A342C226E616D65223A2232E5B9B4E69C9F222C2274797065223A332C2272617465223A332E33352C22706572696F64223A327D2C7B226964223A352C226E616D65223A2233E5B9B4E69C9F222C2274797065223A342C2272617465223A342C22706572696F64223A337D2C7B226964223A362C226E616D65223A2235E5B9B4E69C9F222C2274797065223A352C2272617465223A342E37352C22706572696F64223A357D5D, '2014-12-29 10:53:31', '1', '2.100');
+INSERT INTO `savingdata` VALUES ('4', '2', 0x5B7B226964223A312C226E616D65223A22E6B4BBE69C9F222C2274797065223A302C2272617465223A312E352C22706572696F64223A302E317D2C7B226964223A322C226E616D65223A22E58D8AE5B9B4E69C9F222C2274797065223A312C2272617465223A322E32352C22706572696F64223A302E357D2C7B226964223A332C226E616D65223A2231E5B9B4E69C9F222C2274797065223A322C2272617465223A322E37352C22706572696F64223A317D2C7B226964223A342C226E616D65223A2232E5B9B4E69C9F222C2274797065223A332C2272617465223A332E33352C22706572696F64223A327D2C7B226964223A352C226E616D65223A2233E5B9B4E69C9F222C2274797065223A342C2272617465223A342C22706572696F64223A337D2C7B226964223A362C226E616D65223A2235E5B9B4E69C9F222C2274797065223A352C2272617465223A342E37352C22706572696F64223A357D5D, '2014-12-29 10:53:31', '0', '2.100');
+INSERT INTO `savingdata` VALUES ('5', '2', 0x5B7B226964223A312C226E616D65223A22E6B4BBE69C9F222C2274797065223A302C2272617465223A302E33352C22706572696F64223A302E30317D2C7B226964223A322C226E616D65223A22E58D8AE5B9B4E69C9F222C2274797065223A312C2272617465223A322E32352C22706572696F64223A302E357D2C7B226964223A332C226E616D65223A2231E5B9B4E69C9F222C2274797065223A322C2272617465223A322E37352C22706572696F64223A317D2C7B226964223A342C226E616D65223A2232E5B9B4E69C9F222C2274797065223A332C2272617465223A332E33352C22706572696F64223A327D2C7B226964223A352C226E616D65223A2233E5B9B4E69C9F222C2274797065223A342C2272617465223A342C22706572696F64223A337D2C7B226964223A362C226E616D65223A2235E5B9B4E69C9F222C2274797065223A352C2272617465223A342E37352C22706572696F64223A357D5D, '2015-01-02 14:19:20', '1', '2.200');
 
 -- ----------------------------
 -- Table structure for `signin`
@@ -796,91 +418,6 @@ CREATE TABLE `stock` (
 -- ----------------------------
 -- Records of stock
 -- ----------------------------
-INSERT INTO `stock` VALUES ('4', '16', null, '4', null, null, '30.00', null, '30.00', null, '1', '2014-12-20 18:39:43', null, '0', null);
-INSERT INTO `stock` VALUES ('5', '16', null, '6', null, null, '33.94', null, '101.81', null, '3', '2014-12-20 18:40:22', null, '0', null);
-INSERT INTO `stock` VALUES ('6', '19', null, '4', null, null, '27.67', null, '27.67', null, '1', '2014-12-21 17:17:59', null, '0', null);
-INSERT INTO `stock` VALUES ('7', '20', null, '1', null, null, '34.42', null, '34.42', null, '1', '2014-12-22 10:55:00', null, null, null);
-INSERT INTO `stock` VALUES ('8', '20', null, '1', null, null, '34.42', null, '34.42', null, '1', '2014-12-22 10:55:38', null, null, null);
-INSERT INTO `stock` VALUES ('9', '20', null, '1', null, null, '34.42', null, '34.42', null, '1', '2014-12-22 10:56:04', null, null, null);
-INSERT INTO `stock` VALUES ('10', '20', null, '3', null, null, '39.84', null, '39.84', null, '1', '2014-12-22 11:37:16', null, null, null);
-INSERT INTO `stock` VALUES ('11', '20', null, '4', null, null, '27.49', null, '27.49', null, '1', '2014-12-22 11:39:08', null, null, null);
-INSERT INTO `stock` VALUES ('12', '20', null, '1', null, null, '12.00', null, '12.00', null, '1', '2014-12-22 12:02:57', null, null, null);
-INSERT INTO `stock` VALUES ('13', '20', null, '4', null, null, '30.00', null, '30.00', null, '1', '2014-12-22 12:18:32', null, null, null);
-INSERT INTO `stock` VALUES ('14', '20', null, '1', null, null, '12.00', null, '12.00', null, '1', '2014-12-22 12:18:44', null, null, null);
-INSERT INTO `stock` VALUES ('15', '20', null, '4', null, null, '37.27', null, '37.27', null, '1', '2014-12-22 16:04:37', null, null, null);
-INSERT INTO `stock` VALUES ('16', '20', null, '4', null, null, '39.68', null, '39.68', null, '1', '2014-12-22 16:04:54', null, null, null);
-INSERT INTO `stock` VALUES ('17', '20', null, '2', null, null, '31.57', null, '31.57', null, '1', '2014-12-22 16:05:02', null, null, null);
-INSERT INTO `stock` VALUES ('18', '20', null, '2', null, null, '39.57', null, '39.57', null, '1', '2014-12-22 16:08:58', null, null, null);
-INSERT INTO `stock` VALUES ('19', '20', null, '2', null, null, '36.36', null, '36.36', null, '1', '2014-12-22 16:09:18', null, null, null);
-INSERT INTO `stock` VALUES ('20', '20', null, '2', null, null, '40.29', null, '40.29', null, '1', '2014-12-22 16:10:13', null, null, null);
-INSERT INTO `stock` VALUES ('21', '20', null, '1', null, null, '46.87', null, '46.87', null, '1', '2014-12-22 16:12:47', null, null, null);
-INSERT INTO `stock` VALUES ('22', '161', null, '2', null, null, '30.90', null, '30.90', null, '1', '2014-12-23 19:49:01', null, null, null);
-INSERT INTO `stock` VALUES ('23', '161', null, '3', null, null, '20.38', null, '20.38', null, '1', '2014-12-23 19:49:12', null, null, null);
-INSERT INTO `stock` VALUES ('24', '160', null, '2', null, null, '30.90', null, '30.90', null, '1', '2014-12-23 19:53:13', null, null, null);
-INSERT INTO `stock` VALUES ('25', '160', null, '2', null, null, '30.90', null, '30.90', null, '1', '2014-12-23 19:58:20', null, null, null);
-INSERT INTO `stock` VALUES ('26', '160', null, '1', null, null, '11.64', null, '11.64', null, '1', '2014-12-23 20:01:05', null, null, null);
-INSERT INTO `stock` VALUES ('27', '162', null, '1', null, null, '11.99', null, '1199.15', null, '100', '2014-12-23 21:57:27', null, null, null);
-INSERT INTO `stock` VALUES ('28', '163', null, '1', null, null, '11.88', null, '1187.76', null, '100', '2014-12-23 22:05:13', null, null, null);
-INSERT INTO `stock` VALUES ('29', '164', null, '1', null, null, '11.71', null, '1170.83', null, '100', '2014-12-23 22:07:49', null, null, null);
-INSERT INTO `stock` VALUES ('30', '164', null, '1', null, null, '11.71', null, '1170.83', null, '100', '2014-12-23 22:07:59', null, null, null);
-INSERT INTO `stock` VALUES ('31', '164', null, '1', null, null, '11.24', null, '1124.00', null, '100', '2014-12-23 22:08:20', null, null, null);
-INSERT INTO `stock` VALUES ('32', '164', null, '2', null, null, '30.00', null, '3000.00', null, '100', '2014-12-23 22:15:17', null, null, null);
-INSERT INTO `stock` VALUES ('33', '164', null, '3', null, null, '19.77', null, '1977.15', null, '100', '2014-12-23 22:16:22', null, null, null);
-INSERT INTO `stock` VALUES ('34', '164', null, '3', null, null, '18.96', null, '1895.69', null, '100', '2014-12-23 22:16:25', null, null, null);
-INSERT INTO `stock` VALUES ('35', '164', null, '1', null, null, '15.24', null, '1523.60', null, '100', '2014-12-24 00:07:01', null, null, null);
-INSERT INTO `stock` VALUES ('36', '164', null, '2', null, null, '25.19', null, '2519.09', null, '100', '2014-12-24 00:12:10', null, null, null);
-INSERT INTO `stock` VALUES ('37', '165', null, '1', null, null, '14.20', null, '1420.27', null, '100', '2014-12-24 00:32:13', null, null, null);
-INSERT INTO `stock` VALUES ('38', '165', null, '1', null, null, '14.20', null, '1420.27', null, '100', '2014-12-24 00:32:19', null, null, null);
-INSERT INTO `stock` VALUES ('39', '166', null, '1', null, null, '13.36', null, '1335.99', null, '100', '2014-12-24 01:11:58', null, null, null);
-INSERT INTO `stock` VALUES ('40', '169', null, '2', null, null, '33.07', null, '3307.34', null, '100', '2014-12-24 08:40:11', null, null, null);
-INSERT INTO `stock` VALUES ('41', '169', null, '5', null, null, '9.82', null, '981.93', null, '100', '2014-12-24 08:40:47', null, null, null);
-INSERT INTO `stock` VALUES ('42', '169', null, '3', null, null, '22.89', null, '2288.82', null, '100', '2014-12-24 08:41:11', null, null, null);
-INSERT INTO `stock` VALUES ('43', '177', null, '1', null, null, '9.56', null, '956.02', null, '100', '2014-12-24 09:36:43', null, null, null);
-INSERT INTO `stock` VALUES ('44', '177', null, '1', null, null, '10.14', null, '1014.24', null, '100', '2014-12-24 09:36:47', null, null, null);
-INSERT INTO `stock` VALUES ('45', '178', null, '2', null, null, '28.81', null, '2880.52', null, '100', '2014-12-24 09:41:47', null, null, null);
-INSERT INTO `stock` VALUES ('46', '178', null, '2', null, null, '28.23', null, '2822.90', null, '100', '2014-12-24 09:41:51', null, null, null);
-INSERT INTO `stock` VALUES ('47', '179', null, '2', null, null, '33.47', null, '3347.48', null, '100', '2014-12-24 09:52:21', null, null, null);
-INSERT INTO `stock` VALUES ('48', '179', null, '2', null, null, '33.47', null, '3347.48', null, '100', '2014-12-24 09:52:26', null, null, null);
-INSERT INTO `stock` VALUES ('49', '180', null, '1', null, null, '13.33', null, '1332.97', null, '100', '2014-12-24 10:17:16', null, null, null);
-INSERT INTO `stock` VALUES ('50', '180', null, '3', null, null, '5.62', null, '562.03', null, '100', '2014-12-24 10:17:50', null, null, null);
-INSERT INTO `stock` VALUES ('51', '181', null, '2', null, null, '36.66', null, '3666.27', null, '100', '2014-12-24 10:26:39', null, null, null);
-INSERT INTO `stock` VALUES ('52', '181', null, '1', null, null, '9.41', null, '940.99', null, '100', '2014-12-24 10:33:55', null, null, null);
-INSERT INTO `stock` VALUES ('53', '181', null, '1', null, null, '9.60', null, '959.81', null, '100', '2014-12-24 10:33:59', null, null, null);
-INSERT INTO `stock` VALUES ('54', '181', null, '1', null, null, '9.60', null, '959.81', null, '100', '2014-12-24 10:34:02', null, null, null);
-INSERT INTO `stock` VALUES ('57', '182', null, '1', null, null, '11.81', null, '1180.89', null, '100', '2014-12-24 16:53:33', null, null, null);
-INSERT INTO `stock` VALUES ('58', '182', null, '1', null, null, '12.16', null, '1215.60', null, '100', '2014-12-24 16:54:21', null, null, null);
-INSERT INTO `stock` VALUES ('59', '182', null, '1', null, null, '14.23', null, '1423.03', null, '100', '2014-12-24 16:56:03', null, null, null);
-INSERT INTO `stock` VALUES ('61', '182', null, '6', null, null, '20.76', null, '2076.21', null, '100', '2014-12-24 17:08:40', null, null, null);
-INSERT INTO `stock` VALUES ('62', '182', null, '1', '中国平安', null, '10.21', null, '1021.42', null, '100', '2014-12-24 17:40:45', null, null, null);
-INSERT INTO `stock` VALUES ('63', '182', null, '1', '中国平安', null, '10.21', null, '1021.42', null, '100', '2014-12-24 17:40:46', null, null, null);
-INSERT INTO `stock` VALUES ('64', '182', null, '1', '中国平安', null, '9.81', null, '980.57', null, '100', '2014-12-24 17:41:33', null, null, null);
-INSERT INTO `stock` VALUES ('65', '182', null, '1', '中国平安', null, '9.81', null, '980.57', null, '100', '2014-12-24 17:41:37', null, null, null);
-INSERT INTO `stock` VALUES ('72', '182', null, '5', '长江电力', null, null, null, '743.25', null, '100', '2014-12-29 09:20:20', null, null, null);
-INSERT INTO `stock` VALUES ('73', '182', null, '5', '长江电力', null, null, null, '743.25', null, '100', '2014-12-29 09:20:21', null, null, null);
-INSERT INTO `stock` VALUES ('74', '182', null, '5', '长江电力', null, null, null, '743.25', null, '100', '2014-12-29 09:20:23', null, null, null);
-INSERT INTO `stock` VALUES ('75', '182', null, '4', '中兴通讯', null, null, null, '3756.64', null, '100', '2014-12-29 09:20:50', null, null, null);
-INSERT INTO `stock` VALUES ('76', '182', null, '4', '中兴通讯', null, null, null, '3756.64', null, '100', '2014-12-29 09:20:51', null, null, null);
-INSERT INTO `stock` VALUES ('77', '182', null, '4', '中兴通讯', null, null, null, '3756.64', null, '100', '2014-12-29 09:20:52', null, null, null);
-INSERT INTO `stock` VALUES ('78', '182', null, '4', '中兴通讯', null, null, null, '3756.64', null, '100', '2014-12-29 10:09:08', null, null, null);
-INSERT INTO `stock` VALUES ('89', '182', null, '2', '中石油', null, null, null, '3337.40', null, '100', '2014-12-29 10:22:37', null, null, null);
-INSERT INTO `stock` VALUES ('90', '182', null, '2', '中石油', null, null, null, '3337.40', null, '100', '2014-12-29 10:23:13', null, null, null);
-INSERT INTO `stock` VALUES ('91', '182', null, '2', '中石油', null, null, null, '3337.40', null, '100', '2014-12-29 10:23:15', null, null, null);
-INSERT INTO `stock` VALUES ('92', '182', null, '2', '中石油', null, null, null, '3337.40', null, '100', '2014-12-29 10:23:18', null, null, null);
-INSERT INTO `stock` VALUES ('93', '182', null, '2', '中石油', null, null, null, '3337.40', null, '100', '2014-12-29 10:23:19', null, null, null);
-INSERT INTO `stock` VALUES ('95', '197', null, '42', '方正证券', null, null, null, '664.00', null, '100', '2014-12-29 14:06:44', null, null, null);
-INSERT INTO `stock` VALUES ('98', '202', null, '6', '苏宁电器', null, null, null, '4100.00', null, '100', '2014-12-30 20:17:43', null, null, null);
-INSERT INTO `stock` VALUES ('99', '202', null, '6', '苏宁电器', null, null, null, '4100.00', null, '100', '2014-12-30 20:17:54', null, null, null);
-INSERT INTO `stock` VALUES ('100', '202', null, '6', '苏宁电器', null, null, null, '4100.00', null, '100', '2014-12-30 20:17:59', null, null, null);
-INSERT INTO `stock` VALUES ('101', '202', null, '20', '中国太保', null, null, null, '3421.00', null, '100', '2014-12-30 20:20:00', null, null, null);
-INSERT INTO `stock` VALUES ('102', '202', null, '20', '中国太保', null, null, null, '3421.00', null, '100', '2014-12-30 20:20:04', null, null, null);
-INSERT INTO `stock` VALUES ('105', '214', null, '19', '工商银行', null, null, null, '553.83', null, '100', '2014-12-30 21:15:28', null, null, null);
-INSERT INTO `stock` VALUES ('106', '214', null, '19', '工商银行', null, null, null, '553.83', null, '100', '2014-12-30 21:15:31', null, null, null);
-INSERT INTO `stock` VALUES ('107', '214', null, '19', '工商银行', null, null, null, '553.83', null, '100', '2014-12-30 21:15:34', null, null, null);
-INSERT INTO `stock` VALUES ('109', '201', null, '52', '中金黄金', null, null, null, '856.63', null, '100', '2014-12-30 21:33:16', null, null, null);
-INSERT INTO `stock` VALUES ('110', '220', null, '28', '华夏银行', null, null, null, '658.15', null, '100', '2014-12-30 21:55:32', null, null, null);
-INSERT INTO `stock` VALUES ('120', '221', null, '25', '大秦铁路', null, null, null, '574.53', null, '100', '2014-12-31 10:11:51', null, null, null);
-INSERT INTO `stock` VALUES ('121', '221', null, '25', '大秦铁路', null, null, null, '574.53', null, '100', '2014-12-31 10:11:53', null, null, null);
-INSERT INTO `stock` VALUES ('122', '221', null, '25', '大秦铁路', null, null, null, '574.53', null, '100', '2014-12-31 10:11:56', null, null, null);
 
 -- ----------------------------
 -- Table structure for `stockdata`
@@ -1013,7 +550,8 @@ CREATE TABLE `toplist` (
   `zan` int(11) default NULL,
   `createtime` datetime default NULL,
   `updatetime` datetime default NULL,
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
+  KEY `toptyp` (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -1022,13 +560,13 @@ CREATE TABLE `toplist` (
 INSERT INTO `toplist` VALUES ('498', '0', '-1', '186', '2', '232108.17', null, '4', '2014-12-30 18:17:01', '2014-12-30 21:16:33');
 INSERT INTO `toplist` VALUES ('500', '0', '-1', '187', '12', '232176.48', null, '3', '2014-12-30 18:17:01', '2014-12-31 10:27:23');
 INSERT INTO `toplist` VALUES ('503', '0', '-1', '189', '4', '212272.70', null, '0', '2014-12-30 18:17:01', null);
-INSERT INTO `toplist` VALUES ('510', '0', '-1', '197', 'yr', '313310.06', null, '2', '2014-12-30 18:17:02', '2014-12-31 10:27:23');
+INSERT INTO `toplist` VALUES ('510', '0', '-1', '197', 'yr', '313638.78', null, '2', '2014-12-30 18:17:02', '2015-01-02 14:44:03');
 INSERT INTO `toplist` VALUES ('511', '1', '52', '197', 'yr', '308598.75', null, '0', '2014-12-30 18:17:02', '2014-12-30 21:16:33');
 INSERT INTO `toplist` VALUES ('512', '0', '-1', '198', '41', '218670.38', null, '0', '2014-12-30 18:17:02', null);
 INSERT INTO `toplist` VALUES ('513', '1', '52', '198', '41', '218670.38', null, '0', '2014-12-30 18:17:02', null);
 INSERT INTO `toplist` VALUES ('514', '0', '-1', '199', 'trr', '225298.52', null, '0', '2014-12-30 18:17:02', '2014-12-30 21:16:33');
 INSERT INTO `toplist` VALUES ('515', '1', '52', '199', 'trr', '225298.52', null, '0', '2014-12-30 18:17:02', '2014-12-30 21:16:33');
-INSERT INTO `toplist` VALUES ('516', '0', '-1', '201', 'hd', '1761337.13', null, '8', '2014-12-30 18:17:02', '2014-12-31 10:27:23');
+INSERT INTO `toplist` VALUES ('516', '0', '-1', '201', 'hd', '17666742.00', null, '8', '2014-12-30 18:17:02', '2015-01-02 14:44:03');
 INSERT INTO `toplist` VALUES ('517', '1', '52', '201', 'hd', '1176466.25', null, '0', '2014-12-30 18:17:02', '2014-12-30 21:16:33');
 INSERT INTO `toplist` VALUES ('518', '0', '-1', '185', '1', '209135.67', null, '0', '2014-12-30 21:16:33', null);
 INSERT INTO `toplist` VALUES ('519', '1', '52', '185', '1', '209135.67', null, '0', '2014-12-30 21:16:33', null);
@@ -1040,16 +578,38 @@ INSERT INTO `toplist` VALUES ('524', '1', '52', '189', '4', '212272.70', null, '
 INSERT INTO `toplist` VALUES ('525', '0', '-1', '190', '1111', '206045.00', null, '0', '2014-12-30 21:16:33', null);
 INSERT INTO `toplist` VALUES ('526', '1', '52', '190', '1111', '206045.00', null, '0', '2014-12-30 21:16:33', null);
 INSERT INTO `toplist` VALUES ('529', '1', '53', '187', '12', '232176.48', null, '0', '2014-12-31 10:27:23', null);
-INSERT INTO `toplist` VALUES ('536', '1', '53', '194', '562', '203000.00', null, '0', '2014-12-31 10:27:23', null);
 INSERT INTO `toplist` VALUES ('537', '1', '53', '197', 'yr', '313310.06', null, '0', '2014-12-31 10:27:23', null);
-INSERT INTO `toplist` VALUES ('538', '1', '53', '198', '41', '218670.38', null, '0', '2014-12-31 10:27:23', null);
 INSERT INTO `toplist` VALUES ('539', '1', '53', '199', 'trr', '225298.52', null, '0', '2014-12-31 10:27:23', null);
-INSERT INTO `toplist` VALUES ('540', '1', '53', '201', 'hd', '1761337.13', null, '0', '2014-12-31 10:27:23', null);
-INSERT INTO `toplist` VALUES ('541', '0', '-1', '202', 'yy', '211092.33', null, '0', '2014-12-31 10:27:23', null);
-INSERT INTO `toplist` VALUES ('542', '1', '53', '202', 'yy', '211092.33', null, '0', '2014-12-31 10:27:23', null);
+INSERT INTO `toplist` VALUES ('540', '1', '53', '201', 'hd', '2410826.75', null, '0', '2014-12-31 10:27:23', '2014-12-31 21:33:00');
+INSERT INTO `toplist` VALUES ('541', '0', '-1', '202', 'yy', '214691.19', null, '0', '2014-12-31 10:27:23', '2015-01-01 16:58:10');
 INSERT INTO `toplist` VALUES ('543', '0', '-1', '218', '就要没', '209143.17', null, '0', '2014-12-31 10:27:23', null);
-INSERT INTO `toplist` VALUES ('544', '1', '53', '218', '就要没', '209143.17', null, '0', '2014-12-31 10:27:23', null);
 INSERT INTO `toplist` VALUES ('545', '0', '-1', '219', 'iji', '215564.64', null, '0', '2014-12-31 10:27:23', null);
-INSERT INTO `toplist` VALUES ('546', '1', '53', '219', 'iji', '215564.64', null, '0', '2014-12-31 10:27:23', null);
-INSERT INTO `toplist` VALUES ('547', '0', '-1', '220', '就行', '203028.41', null, '0', '2014-12-31 10:27:23', null);
-INSERT INTO `toplist` VALUES ('548', '1', '53', '220', '就行', '203028.41', null, '0', '2014-12-31 10:27:23', null);
+INSERT INTO `toplist` VALUES ('547', '0', '-1', '220', '就行', '203135.03', null, '0', '2014-12-31 10:27:23', '2015-01-01 15:42:48');
+INSERT INTO `toplist` VALUES ('550', '1', '53', '186', '2', '232108.17', null, '0', '2014-12-31 21:24:10', null);
+INSERT INTO `toplist` VALUES ('553', '1', '53', '198', '41', '218670.38', null, '0', '2014-12-31 21:24:10', null);
+INSERT INTO `toplist` VALUES ('554', '1', '53', '202', 'yy', '213363.00', null, '0', '2014-12-31 21:24:10', '2014-12-31 21:33:00');
+INSERT INTO `toplist` VALUES ('555', '1', '53', '218', '就要没', '209143.17', null, '0', '2014-12-31 21:24:11', null);
+INSERT INTO `toplist` VALUES ('556', '0', '-1', '221', '干净利落', '222330.88', null, '0', '2014-12-31 21:24:11', '2015-01-01 16:58:10');
+INSERT INTO `toplist` VALUES ('557', '1', '53', '221', '干净利落', '221785.44', null, '0', '2014-12-31 21:24:11', '2014-12-31 21:33:01');
+INSERT INTO `toplist` VALUES ('558', '1', '53', '185', '1', '209135.67', null, '0', '2014-12-31 21:33:00', null);
+INSERT INTO `toplist` VALUES ('559', '1', '53', '219', 'iji', '215564.64', null, '0', '2014-12-31 21:33:01', null);
+INSERT INTO `toplist` VALUES ('573', '1', '1', '201', 'hd', '17666742.00', null, '0', '2015-01-01 10:26:58', '2015-01-02 14:44:03');
+INSERT INTO `toplist` VALUES ('586', '0', '-1', '214', '啊哈', '203348.33', null, '0', '2015-01-01 12:56:14', '2015-01-01 16:42:49');
+INSERT INTO `toplist` VALUES ('587', '0', '-1', '223', 'fdafw', '212272.70', null, '0', '2015-01-01 21:04:41', null);
+INSERT INTO `toplist` VALUES ('590', '0', '-1', '225', 'aaabbb', '561961.00', null, '0', '2015-01-01 22:04:41', '2015-01-02 13:44:03');
+INSERT INTO `toplist` VALUES ('591', '1', '1', '225', 'aaabbb', '561961.00', null, '0', '2015-01-01 22:04:41', '2015-01-02 13:44:03');
+INSERT INTO `toplist` VALUES ('592', '1', '1', '187', '12', '232176.48', null, '0', '2015-01-02 12:44:02', null);
+INSERT INTO `toplist` VALUES ('593', '1', '1', '199', 'trr', '225298.52', null, '0', '2015-01-02 12:44:02', null);
+INSERT INTO `toplist` VALUES ('594', '1', '1', '219', 'iji', '215564.64', null, '0', '2015-01-02 12:44:02', null);
+INSERT INTO `toplist` VALUES ('595', '1', '1', '202', 'yy', '214277.00', null, '0', '2015-01-02 14:44:03', null);
+INSERT INTO `toplist` VALUES ('597', '0', '-1', '226', '542', '206045.00', null, '0', '2015-01-02 14:44:03', null);
+INSERT INTO `toplist` VALUES ('598', '1', '1', '189', '4', '212272.70', null, '0', '2015-01-02 15:44:03', null);
+INSERT INTO `toplist` VALUES ('599', '0', '-1', '228', 'azx', '4973421.50', null, '0', '2015-01-02 16:44:04', '2015-01-06 17:13:56');
+INSERT INTO `toplist` VALUES ('600', '1', '1', '228', 'azx', '4973421.50', null, '0', '2015-01-03 11:36:09', '2015-01-06 17:13:56');
+INSERT INTO `toplist` VALUES ('601', '0', '-1', '229', 'UI哦', '877779968.00', null, '0', '2015-01-03 16:12:04', '2015-01-06 17:13:56');
+INSERT INTO `toplist` VALUES ('602', '1', '1', '229', 'UI哦', '877779968.00', null, '0', '2015-01-03 16:12:04', '2015-01-06 17:13:56');
+INSERT INTO `toplist` VALUES ('603', '0', '-1', '238', 'fdafdaw', '1905532.50', null, '0', '2015-01-06 10:28:30', '2015-01-06 17:13:56');
+INSERT INTO `toplist` VALUES ('604', '1', '1', '238', 'fdafdaw', '1905532.50', null, '0', '2015-01-06 10:28:30', '2015-01-06 17:13:56');
+INSERT INTO `toplist` VALUES ('605', '0', '-1', '239', 'l那', '209245.58', null, '0', '2015-01-06 17:13:56', null);
+INSERT INTO `toplist` VALUES ('606', '0', '-1', '241', '到底', '253868.33', null, '0', '2015-01-06 18:13:57', null);
+INSERT INTO `toplist` VALUES ('607', '1', '1', '241', '到底', '253868.33', null, '0', '2015-01-06 18:13:57', null);
