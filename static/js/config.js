@@ -48,7 +48,7 @@ var game_imgs = [
 	{name:"map",src:"static/img/map.png",x:0,y:0,zindex:0},
 	{name:"quest",src:"static/img/icon_quest.png",x:555,y:7,hasDiv:true},
 	{name:"playerinfo",src:"static/img/icon_head.png",x:0,y:0,hasDiv:true},
-	{name:"toplist",src:"static/img/icon_toplist.png",x:555,y:120},
+	{name:"toplist",src:"static/img/icon_toplist.png",x:555,y:120,hasDiv:true,zindex:100},
 	{name:"help",src:"static/img/icon_help.png",x:170,y:280,hasDiv:true},
 	{name:"stock",src:"static/img/icon_stock.png",x:385,y:207,hasDiv:true,zindex:100,},
 	{name:"bank",src:"static/img/icon_bank.png",x:70,y:448,hasDiv:true,zindex:100,},

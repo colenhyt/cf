@@ -44,6 +44,13 @@ Toplist.prototype.buildHTML2 = function()
 	    content += "</div></div>"
 		page.addContent(content);
 		document.write(page.toString());
+
+		page = this;
+		$('#'+this.tagname).on('hide.zui.modal', function()
+		{
+			if (page.onClose)
+		  		page.onClose();
+		}) 	
 }
 
 Toplist.prototype.buildPage = function(page)
