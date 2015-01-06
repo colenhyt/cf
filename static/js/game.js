@@ -117,10 +117,8 @@ Map.prototype.init = function(width,height){
 
 Map.prototype.enter = function(){
     this.m_imgs = game_imgs;
-    this.cars = [];
-	var map = this;
 	this.m_imgs.sort(this.sortImg);
-	var mapImgs = this.m_imgs;
+	var mapImgs = game_imgs;
 
     for (var i=0 ; i<mapImgs.length; i++)
     {
@@ -130,8 +128,7 @@ Map.prototype.enter = function(){
             map.draw();
         };	       
         mapImgs[i].img = img;
-        if (mapImgs[i].name.indexOf("car")>=0)
-        	this.cars.push(mapImgs[i]);
+      //  this.addImg(mapImgs[i]);
         if (mapImgs[i].hasDiv==true){
             var div = document.createElement("DIV");
             div.id = "tag"+mapImgs[i].name;

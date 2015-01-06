@@ -64,7 +64,7 @@ Msg.prototype.createtip = function(desc)
 }
 
 //title自定义：
-Msg.prototype.open2 = function(title,desc,okCallback,cbParam1,cbParam2,cbParam3,confmText)
+Msg.prototype.open2 = function(title,desc,okCallback,cbParam1,cbParam2,cbParam3,confmText,cancelCallback)
 {
 	var content =      "        <div style='margin: auto;text-align:center;'>"
 	if (confmText==null)
@@ -75,7 +75,10 @@ Msg.prototype.open2 = function(title,desc,okCallback,cbParam1,cbParam2,cbParam3,
 	if (okCallback==null){
 		content += "          <button class='cf_bt' data-dismiss='modal'>确认</button>"	
 	}else {
+		if (!cancelCallback)
 		content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>"
+		else
+		content += "          <button class='cf_bt bt_cancel' onclick='"+cancelCallback+"()'>取消</button>"
 		if (cbParam1==null)
 			cbParam1 = "1";
 		if (cbParam2==null)

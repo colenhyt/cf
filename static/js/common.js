@@ -114,7 +114,8 @@ Datamgr.prototype = {
     onclick:function(clickX,clickY){
     	var tag = document.getElementById("tag"+this.name);
     	if (tag){
-    		tag.innerHTML = "<img src='static/img/icon_"+this.name+"_on.png'>"
+    		var name = "g_"+this.name;
+    		tag.innerHTML = "<img src='static/img/icon_"+this.name+"_on.png' onclick='"+name+".onclick()'>"
     	}
 	     this.show();
     },    

@@ -106,7 +106,7 @@ Stock.prototype.findStockIds = function()
 
 Stock.prototype.show = function(){
 	if (g_player.data.openstock!=1){
-		g_msg.open2("证券开户","您需要开通证券账户才能投资股票，请点击'确认'按钮开通","g_stock.confirmOpen");
+		g_msg.open2("证券开户","您需要开通证券账户才能投资股票，请点击'确认'按钮开通","g_stock.confirmOpen",1,1,1,null,"g_stock.onClose");
 	}else {
 		var myDate = new Date();
 		var ss = myDate.getSeconds(); 
@@ -348,6 +348,8 @@ Stock.prototype.onClose = function()
 		tag.innerHTML = ""
 	}	
 	this.isOpen = false;
+	
+	$('#'+g_msg.tagname).modal('hide'); 
 	//alert(this.name+"close");
 }
 
@@ -361,6 +363,7 @@ Stock.prototype.update = function(){
 	        div.id = "tag2"+this.name;
 	        div.className = "cfpage_text "+this.name;
 	        document.body.appendChild(div);	  	
+	        tag = document.getElementById("tag2"+this.name);
 		}	
 			
 		var tip = tag.innerHTML;

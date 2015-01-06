@@ -266,6 +266,7 @@ Insure.prototype.update = function(){
         div.id = "tag2"+this.name;
         div.className = "cfpage_text "+this.name;
         document.body.appendChild(div);	  	
+        tag = document.getElementById("tag2"+this.name);
 	}	
 	
 	var tip = tag.innerHTML;
