@@ -34,6 +34,14 @@ Bank.prototype.buildHTML2 = function()
 	    content += "</div></div>"
 		page.addContent(content);
 		document.write(page.toString());
+		
+        var page = this;
+        
+		$('#'+this.tagname).on('hide.zui.modal', function()
+		{
+			if (page.onClose)
+		  		page.onClose();
+		}) 		
 }
 
 Bank.prototype.buildPage = function(page){
@@ -141,6 +149,19 @@ Bank.prototype.showSaving2 = function(page){
 Bank.prototype.showDetail = function(id){
 	this.onPanelClick(id);
 	g_saving.showDetail(id);
+}
+
+Bank.prototype.update = function(){
+	var tag = document.getElementById("tag"+this.name);
+	this.hasTip = true;
+	if (this.hasTip&&tag){
+		var tip = tag.innerHTML;
+		var index = tip.indexOf("tip2");
+		if (index>0){
+			tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text tip'>"
+		}else
+			tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text tip2'>"
+	}
 }
 
 var g_bank = new Bank();

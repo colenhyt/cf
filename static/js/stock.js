@@ -24,11 +24,6 @@ Stock.prototype.init = function(){
 		store.set(this.name,data_stockdata);
 	}
     this.buildHTML();
-    
-	$('#'+this.tagname).on('hide.zui.modal', function()
-	{
-	  g_stock.onClose();
-	})      
 }
 
 Stock.prototype.load = function(data)
@@ -143,6 +138,7 @@ Stock.prototype.show = function(){
 		var ms = myDate.getMilliseconds();		
 		this.buildPage(0);
 		this.isOpen = true;
+		this.hasTip = false;
         $('#'+this.tagname).modal({position:Page_Top,show: true});    
         var myDate22 = new Date();
 		var ss2 = myDate22.getSeconds(); 
@@ -326,6 +322,8 @@ Stock.prototype.findLastQuote = function(stockid,fromServer)
 Stock.prototype.findQuotes = function(stockid)
 {
 	var qdata = store.get(this.quotename);
+	if (!qdata[stockid]) return;
+	
 	var quote = qdata[stockid];
 	return quote;
 }
@@ -346,6 +344,7 @@ Stock.prototype.stockChange = function()
 				//涨:
 				if (pr>0)
 				{
+					this.hasTip = true;
 					//alert("价格涨:"+itemid);
 				}
 			}
@@ -356,15 +355,30 @@ Stock.prototype.stockChange = function()
 	} 
 }
 
-Stock.prototype.onClose = function(data)
+Stock.prototype.onClose = function()
 {
+	var tag = document.getElementById("tag"+this.name);
+	if (tag){
+		tag.innerHTML = ""
+	}	
 	this.isOpen = false;
+	//alert(this.name+"close");
 }
 
 //page打开才执行:
 Stock.prototype.update = function(){
+	var tag = document.getElementById("tag"+this.name);
+	if (this.hasTip&&tag){
+		var tip = tag.innerHTML;
+		var index = tip.indexOf("tip2");
+		if (index>0){
+			tag.innerHTML = "<img src='static/img/tip_stock.png' class='cfpage_text tip'>"
+		}else
+			tag.innerHTML = "<img src='static/img/tip_stock.png' class='cfpage_text tip2'>"
+	}
+	
 	var now = Date.parse(new Date());
-	var enterTime = (now - g_player.data.lastlogin.time)/UpdateDuration;		//进入系统时间(秒);
+	var enterTime = (now - g_player.data.lastlogin.time)/1000;		//进入系统时间(秒);
 	var quotePassTime = parseInt(enterTime+g_player.data.quotetime);
 	var mm = quotePassTime%QUOTETIME;
 	var lsec = QUOTETIME - mm;

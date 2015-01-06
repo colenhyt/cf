@@ -22,6 +22,13 @@ Datamgr.prototype = {
         page.addContent(content);
         document.write(page.toString());   
          
+        var page = this;
+		$('#'+this.tagname).on('hide.zui.modal', function()
+		{
+			if (page.onClose)
+		  		page.onClose();
+		}) 
+	         
  		var tag = document.getElementById(this.tagname+"_dialog");
 		//g_msg.tip(tag);
 		//alert(tag);
@@ -77,6 +84,15 @@ Datamgr.prototype = {
 		return content;
 	},
     
+	onClose:function()
+	{
+		//alert(this.name+"close");
+    	var tag = document.getElementById("tag"+this.name);
+    	if (tag){
+    		tag.innerHTML = ""
+    	}		
+	},
+	
     loadServerData:function(){
         //var dataobj = $.ajax({url:"../bbs/record.php",async:false});
         alert('999'+this.name);
@@ -101,6 +117,14 @@ Datamgr.prototype = {
 		else
 		$('#'+pagename).modal('hide');  
 	},
+
+    onclick:function(clickX,clickY){
+    	var tag = document.getElementById("tag"+this.name);
+    	if (tag){
+    		tag.innerHTML = "<img src='static/img/icon_"+this.name+"_on.png'>"
+    	}
+	     this.show();
+    },    
 	
 	show:function(){
 		var myDate = new Date();
@@ -113,10 +137,6 @@ Datamgr.prototype = {
 		var ms2 = myDate22.getMilliseconds();
 		g_msg.tip("cost: "+((ss2-ss)*1000+(ms2-ms))); 
 	},
-
-    onclick:function(clickX,clickY){
-	     this.show();
-    },    
     
     onPanelClick:function(id){
      	var tname = this.name+"_d";

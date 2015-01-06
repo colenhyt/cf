@@ -251,10 +251,22 @@ Insure.prototype.preBuy = function(id,qty) {
 
 Insure.prototype.update = function(){
 	this.count++;
-	if (this.count%5==0){
+	if (this.count%25==0){
 		var ids = g_player.getOfftimeInsure();
-		//g_msg.tip("dd"+ids.length);
+		if (ids.length>0)
+			this.hasTip = true;
 	}
+	
+	var tag = document.getElementById("tag"+this.name);
+	this.hasTip = true;
+	if (this.hasTip&&tag){
+		var tip = tag.innerHTML;
+		var index = tip.indexOf("tip2");
+		if (index>0){
+			tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text tip'>"
+		}else
+			tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text tip2'>"
+	}	
 }
 
 var g_insure = new Insure();

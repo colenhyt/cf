@@ -6,7 +6,7 @@ var CSS_FILE = "static/css/cf.css";
 var Page_Top = 80;
 var PageDetail_Top = 100;
 
-var UpdateDuration = 1000;	//刷帧频率(ms)
+var UpdateDuration = 200;	//刷帧频率(ms)
 
 var MsgDuration = 200;	//消息刷帧频率(ms)
 
@@ -46,13 +46,13 @@ var login_imgs = [
 
 var game_imgs = [
 	{name:"map",src:"static/img/map.png",x:0,y:0,zindex:0},
-	{name:"quest",src:"static/img/icon_quest.png",x:555,y:0},
+	{name:"quest",src:"static/img/icon_quest.png",x:555,y:0,hasDiv:true},
 	{name:"playerinfo",src:"static/img/icon_head.png",x:0,y:0,hasDiv:true},
 	{name:"toplist",src:"static/img/icon_toplist.png",x:555,y:120},
-	{name:"help",src:"static/img/icon_help.png",x:127,y:190,},
-	{name:"stock",src:"static/img/icon_stock.png",x:375,y:260,},
-	{name:"bank",src:"static/img/icon_bank.png",x:72,y:420,},
-	{name:"insure",src:"static/img/icon_insure.png",x:377,y:575,},
+	{name:"help",src:"static/img/icon_help.png",x:170,y:280,hasDiv:true},
+	{name:"stock",src:"static/img/icon_stock.png",x:385,y:207,hasDiv:true},
+	{name:"bank",src:"static/img/icon_bank.png",x:70,y:448,hasDiv:true},
+	{name:"insure",src:"static/img/icon_insure.png",x:342,y:622,hasDiv:true},
 	{name:"saving",src:"static/img/icon_saving.png",x:150,y:15,hasDiv:true},
 	{name:"weektop",src:"static/img/icon_weektop.png",x:365,y:15,hasDiv:true},
 	{name:"level",src:"static/img/icon_level.png",x:-5,y:103,hasDiv:true},
