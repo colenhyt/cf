@@ -26,7 +26,7 @@ var Screen_Status_Height = 40;
 var Screen_Nav_Height = 88;
 
 var Scene_Width = 640;
-var Scene_Height = 1136 - Screen_Status_Height - Screen_Nav_Height;
+var Scene_Height = 1236 - Screen_Status_Height - Screen_Nav_Height;
 
 var game_screen = {
 	swidth:window.screen.width/Scene_Width,sheight:window.screen.height/Scene_Height

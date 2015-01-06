@@ -166,7 +166,7 @@ Stock.prototype.buildPage = function(page)
 		}
 			content += "           <div class='cfinsure_tip'>  "
 			content += "          股市开市为8:00AM-9:00PM<br>下次行情跳动: "
-			content += "<span id='"+this.name+"_quotetime' style='color:red'></span>"  
+			content += "<span id='"+this.name+"_quotetime' style='color:yellow'></span>"  
 			content += "             </div>"
      		content += "</div>"
 		

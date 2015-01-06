@@ -81,7 +81,7 @@ Datamgr.prototype = {
 	{
 		//alert(this.name+"close");
     	var tag = document.getElementById("tag"+this.name);
-    	if (tag){
+    	if (tag&&this.name!=g_playerinfo.name){
     		tag.innerHTML = ""
     	}		
 	},
@@ -113,7 +113,7 @@ Datamgr.prototype = {
 
     onclick:function(clickX,clickY){
     	var tag = document.getElementById("tag"+this.name);
-    	if (tag){
+    	if (tag&&this.name!=g_playerinfo.name){
     		var name = "g_"+this.name;
     		tag.innerHTML = "<img src='static/img/icon_"+this.name+"_on.png' onclick='"+name+".onclick()'>"
     	}

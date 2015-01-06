@@ -28,6 +28,11 @@ Help.prototype.buildHTML = function()
 
 Help.prototype.closeHelp = function(){
 	$('#'+this.tagname).modal('hide');  
+	
+    	var tag = document.getElementById("tag"+this.name);
+    	if (tag){
+    		tag.innerHTML = ""
+    	}		
 }
 Help.prototype.show = function(){
     $('#'+this.tagname).modal({position:0,show: true});       

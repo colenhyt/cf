@@ -124,8 +124,7 @@ Login.prototype.onImgClick = function(image)
 Login.prototype.register = function(){
     var createtime = Date.parse(new Date());
 	var tag = document.getElementById("inputnick");
-	var ppname = "player"+createtime;
-	ppname = tag.value;
+	var ppname = tag.value;
      var player = {
         "accountid":1,"playerid":-1,"playername":ppname,"exp":0,
 		quest:[],sex:this.sex,createtime:createtime

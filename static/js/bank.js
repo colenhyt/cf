@@ -167,9 +167,9 @@ this.hasTip = true;
 	var tip = tag.innerHTML;
 	var index = tip.indexOf("tip2");
 	if (index>0){
-		tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text tip'>"
+		tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text banktip'>"
 	}else
-		tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text tip2'>"
+		tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text banktip2'>"
 }
 
 var g_bank = new Bank();

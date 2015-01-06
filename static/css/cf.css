@@ -45,6 +45,11 @@ top:115px;
 font-size:20px;
 }
 
+.cfpage_text.help{
+left:170px;
+top:280px;
+}
+
 .cfpage_text.saving{
 left:160px;
 top:20px;
@@ -81,13 +86,25 @@ top:207px;
 }
 
 .cfpage_text.tip{
-left:35px;
+left:75px;
 top:-75px;
 z-index:200;
 }
 
 .cfpage_text.tip2{
-left:35px;
+left:75px;
+top:-90px;
+z-index:200;
+}
+
+.cfpage_text.banktip{
+left:75px;
+top:-75px;
+z-index:200;
+}
+
+.cfpage_text.banktip2{
+left:75px;
 top:-90px;
 z-index:200;
 }
@@ -391,6 +408,8 @@ height:457px;
 
 .cfpagedetail.uplevel
 {
+margin-top:-300px;
+margin-left:65px;
 width:516px;
 height:457px;
  background:url('../../static/img/popd_small.png') no-repeat;

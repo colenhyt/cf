@@ -149,6 +149,7 @@ log33 = function(text){
 }
 
 log = function(text){
+return;
 	var name = "console";
 	 var div=document.getElementById(name);
 	if (div==null){

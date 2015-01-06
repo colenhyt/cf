@@ -117,6 +117,7 @@ Map.prototype.init = function(width,height){
 
 Map.prototype.enter = function(){
     this.m_imgs = game_imgs;
+    var map = this;
 	this.m_imgs.sort(this.sortImg);
 	var mapImgs = game_imgs;
 
@@ -137,6 +138,7 @@ Map.prototype.enter = function(){
             	div.style.zIndex = mapImgs[i].zindex;
             document.body.appendChild(div);	
         }        
+		g_game.enter = true;
     }
 }
 
@@ -205,6 +207,7 @@ Map.prototype.draw = function(){
 }
 
 Map.prototype.update = function(){
+
 	if (!g_game.enter) return;
 	
 	for (var i=0;i<this.m_imgs.length;i++){
@@ -226,7 +229,7 @@ Map.prototype.update = function(){
 			this.m_imgs[i].y += 3;
 			}
 		}else if (name=="car3"){
-			if (this.m_imgs[i].x<=305){
+			if (this.m_imgs[i].x<=205){
 			 this.m_imgs[i].x = 585;
 			 this.m_imgs[i].y = 843;
 			}else{
@@ -257,17 +260,14 @@ Map.prototype.onclick = function(obj,clickX,clickY){
 
 Scene = function(canvas){
     this.name = "scene";
-	this.tt = 33;	
 	this.m_x = 0;	//scene x
 	this.m_y = 0;	//scene y
 		
 }
 
-Scene.prototype.init = function(canvas,width,height){
-	this.m_width = width;
-	this.m_height = height;
+Scene.prototype.init = function(canvas){
 	this.m_map = new Map(12,canvas);
-	this.m_map.init(this.m_width,this.m_height);
+	this.m_map.init();
 }
 
 Scene.prototype.draw = function(){
@@ -322,7 +322,6 @@ Game.prototype.init = function(canvas){
 
 Game.prototype.onEnter = function(){
 	g_insure.onEnter();
-	this.enter = true;
 	this.register(g_event);
 }
 
