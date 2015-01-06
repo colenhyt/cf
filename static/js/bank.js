@@ -152,16 +152,23 @@ Bank.prototype.showDetail = function(id){
 }
 
 Bank.prototype.update = function(){
-	var tag = document.getElementById("tag"+this.name);
-	this.hasTip = true;
-	if (this.hasTip&&tag){
-		var tip = tag.innerHTML;
-		var index = tip.indexOf("tip2");
-		if (index>0){
-			tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text tip'>"
-		}else
-			tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text tip2'>"
+this.hasTip = true;
+	if (!this.hasTip||!g_game.enter) return;
+	
+	var tag = document.getElementById("tag2"+this.name);
+	if (!tag){
+        var div = document.createElement("DIV");
+        div.id = "tag2"+this.name;
+        div.className = "cfpage_text "+this.name;
+        document.body.appendChild(div);	  	
 	}
+	
+	var tip = tag.innerHTML;
+	var index = tip.indexOf("tip2");
+	if (index>0){
+		tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text tip'>"
+	}else
+		tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text tip2'>"
 }
 
 var g_bank = new Bank();

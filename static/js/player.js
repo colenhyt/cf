@@ -249,7 +249,7 @@ Player.prototype.getQuests = function(status) {
 	var itemids = [];
 	for (var i=0;i<this.data.quest.length;i++){
 		if (this.data.quest[i].status==status){
-			itemids.push(itemid);
+			itemids.push(this.data.quest[i].itemid);
 		}
 	}
 	return itemids;

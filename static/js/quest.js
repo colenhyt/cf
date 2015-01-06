@@ -195,11 +195,11 @@ Quest.prototype.update = function(){
 	var questids = g_player.getQuests(QUEST_STATUS.ACTIVE);
 	if (questids.length>0&&tag){
 		var tip = tag.innerHTML;
-		var index = tip.indexOf("quest2");
+		var index = tip.indexOf("icon_quest_on.png");
 		if (index>0){
-			tag.innerHTML = ""
+			tag.innerHTML = "<img src='static/img/icon_quest.png' class='cfpage_text quest2' onclick='g_quest.onclick()"
 		}else
-			tag.innerHTML = "<img src='static/img/icon_quest_on.png' class='cfpage_text quest2'>"
+			tag.innerHTML = "<img src='static/img/icon_quest_on.png' class='cfpage_text quest2' onclick='g_quest.onclick()'>"
 	}		
 }
 

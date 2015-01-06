@@ -46,17 +46,27 @@ var login_imgs = [
 
 var game_imgs = [
 	{name:"map",src:"static/img/map.png",x:0,y:0,zindex:0},
-	{name:"quest",src:"static/img/icon_quest.png",x:555,y:0,hasDiv:true},
+	{name:"quest",src:"static/img/icon_quest.png",x:555,y:7,hasDiv:true},
 	{name:"playerinfo",src:"static/img/icon_head.png",x:0,y:0,hasDiv:true},
 	{name:"toplist",src:"static/img/icon_toplist.png",x:555,y:120},
 	{name:"help",src:"static/img/icon_help.png",x:170,y:280,hasDiv:true},
-	{name:"stock",src:"static/img/icon_stock.png",x:385,y:207,hasDiv:true},
-	{name:"bank",src:"static/img/icon_bank.png",x:70,y:448,hasDiv:true},
+	{name:"stock",src:"static/img/icon_stock.png",x:385,y:207,hasDiv:true,zindex:100,},
+	{name:"bank",src:"static/img/icon_bank.png",x:70,y:448,hasDiv:true,zindex:100,},
 	{name:"insure",src:"static/img/icon_insure.png",x:342,y:622,hasDiv:true},
 	{name:"saving",src:"static/img/icon_saving.png",x:150,y:15,hasDiv:true},
 	{name:"weektop",src:"static/img/icon_weektop.png",x:365,y:15,hasDiv:true},
 	{name:"level",src:"static/img/icon_level.png",x:-5,y:103,hasDiv:true},
+	{name:"car1",src:"static/img/icon_car1.png",x:-45,y:338,hasDiv:true},
+	{name:"car2",src:"static/img/icon_car2.png",x:625,y:243,hasDiv:true},
+	{name:"car3",src:"static/img/icon_car3.png",x:585,y:843,hasDiv:true},
+	{name:"car4",src:"static/img/icon_car2.png",x:585,y:603,hasDiv:true},
 ];
+
+var cars_pos = {
+"car1":[[25,363],[30,365],[35,367],[40,369],[45,371],[50,376],[55,378],[]],
+"car2":[],
+"car3":[],
+};
 
 var head_imgs = [
 	{name:"man",src:"static/img/icon_boy.png",x:0,y:0,abs:true,hasDiv:true,divX:160,divY:10,zindex:10},

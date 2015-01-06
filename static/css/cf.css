@@ -47,17 +47,17 @@ font-size:20px;
 
 .cfpage_text.saving{
 left:160px;
-top:23px;
+top:20px;
 }
 
 .cfpage_text.weektop{
-left:385px;
-top:23px;
+left:378px;
+top:20px;
 }
 
 .cfpage_text.level{
 left:10px;
-top:112px;
+top:108px;
 }
 
 .cfpage_text.bank{
@@ -66,13 +66,13 @@ top:448px;
 }
 
 .cfpage_text.quest{
-left:550px;
-top:-5px;
+left:552px;
+top:0px;
 }
 
 .cfpage_text.quest2{
-left:-2px;
-top:-2px;
+left:-3px;
+top:0px;
 }
 
 .cfpage_text.stock{
@@ -273,10 +273,6 @@ display:block;
 .cfhelp_toplist_img{
   -webkit-transform: rotate(120deg);
   -moz-transform: rotate(120deg);
-}
-.cfpage.small
-{
-margin-top:120px;
 }
 
 .cfpanel_title{

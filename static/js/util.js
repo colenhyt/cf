@@ -281,3 +281,26 @@ randomItems = function(items,existItems,count){
 	
 	return ritems;
 }
+
+function rotateImg(ctx,px,py,width,height){
+// 取得这个图片的数据，图片与当前页面必须同域，否则会出错
+	    var img_data = ctx.getImageData(px, py, width, height);
+	    var    x, y, p, i, i2, t;
+	    var    h = img_data.height;
+	    var    w = img_data.width;
+	     var   w_2 = w / 2;
+	 
+	    // 将 img_data 的数据水平翻转
+	    for (y = 0; y < h; y ++) {
+	        for (x = 0; x < w_2; x ++) {
+	            i = (y<<2) * w + (x<<2);
+	            i2 = ((y + 1) << 2) * w - ((x + 1) << 2);
+	            for (p = 0; p < 4; p ++) {
+	                t = img_data.data[i + p];
+	                img_data.data[i + p] = img_data.data[i2 + p];
+	                img_data.data[i2 + p] = t;
+	            }
+	        }
+	    }
+		return img_data;
+}

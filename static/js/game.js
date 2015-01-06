@@ -117,6 +117,7 @@ Map.prototype.init = function(width,height){
 
 Map.prototype.enter = function(){
     this.m_imgs = game_imgs;
+    this.cars = [];
 	var map = this;
 	this.m_imgs.sort(this.sortImg);
 	var mapImgs = this.m_imgs;
@@ -129,11 +130,15 @@ Map.prototype.enter = function(){
             map.draw();
         };	       
         mapImgs[i].img = img;
+        if (mapImgs[i].name.indexOf("car")>=0)
+        	this.cars.push(mapImgs[i]);
         if (mapImgs[i].hasDiv==true){
             var div = document.createElement("DIV");
             div.id = "tag"+mapImgs[i].name;
             div.className = "cfpage_text "+mapImgs[i].name;
-            document.body.appendChild(div);	          
+            if (mapImgs[i].zindex)
+            	div.style.zIndex = mapImgs[i].zindex;
+            document.body.appendChild(div);	
         }        
     }
 }
@@ -196,8 +201,52 @@ Map.prototype.draw = function(){
   	     newy = pos.y + this.m_imgs[i].y;
         }
       context.drawImage(img,0,0,img.width,img.height,newx,newy,img.width*scale,img.height*scale);
+//				var img_data = rotateImg(context,img.x,img.y,img.width,img.height);
+//				context.putImageData(img_data, img.x, img.y);        
    }
 
+}
+
+Map.prototype.update = function(){
+	if (!g_game.enter) return;
+	
+	for (var i=0;i<this.m_imgs.length;i++){
+		var name = this.m_imgs[i].name;
+		if (name=="car1"){
+			if (this.m_imgs[i].x>=355){
+			 this.m_imgs[i].x = -45;
+			 this.m_imgs[i].y = 338;
+			}else {
+			this.m_imgs[i].x += 5;
+			this.m_imgs[i].y += 3;
+			}
+		}else if (name=="car2"){
+			if (this.m_imgs[i].x<=303){
+			 this.m_imgs[i].x = 625;
+			 this.m_imgs[i].y = 243;
+			}else{
+			this.m_imgs[i].x -= 5;
+			this.m_imgs[i].y += 3;
+			}
+		}else if (name=="car3"){
+			if (this.m_imgs[i].x<=305){
+			 this.m_imgs[i].x = 585;
+			 this.m_imgs[i].y = 843;
+			}else{
+			this.m_imgs[i].x -= 6;
+			this.m_imgs[i].y += 4;
+			}
+		}else if (name=="car4"){
+			if (this.m_imgs[i].x<=405){
+			 this.m_imgs[i].x = 585;
+			 this.m_imgs[i].y = 603;
+			}else{
+			this.m_imgs[i].x -= 3;
+			this.m_imgs[i].y += 2;
+			}
+		}
+	}
+	this.draw();
 }
 
 Map.prototype.onclick = function(obj,clickX,clickY){
@@ -276,6 +325,7 @@ Game.prototype.init = function(canvas){
 
 Game.prototype.onEnter = function(){
 	g_insure.onEnter();
+	this.enter = true;
 	this.register(g_event);
 }
 
@@ -298,6 +348,9 @@ Game.prototype.syncData = function(){
 //
 Game.prototype.update = function(){
     this.count ++;
+    
+    this.m_scene.m_map.update();
+    
    if (this.count%this.syncDuration==0) {
         this.syncData();
     }

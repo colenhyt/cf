@@ -118,7 +118,7 @@ Stock.prototype.show = function(){
         var myDate22 = new Date();
 		var ss2 = myDate22.getSeconds(); 
 		var ms2 = myDate22.getMilliseconds();
-		g_msg.tip("cost: "+((ss2-ss)*1000+(ms2-ms)));    
+		//g_msg.tip("cost: "+((ss2-ss)*1000+(ms2-ms)));    
 	}
 }
 
@@ -353,8 +353,16 @@ Stock.prototype.onClose = function()
 
 //page打开才执行:
 Stock.prototype.update = function(){
-	var tag = document.getElementById("tag"+this.name);
-	if (this.hasTip&&tag){
+//this.hasTip = true;
+	if (this.hasTip&&g_game.enter){
+		var tag = document.getElementById("tag2"+this.name);
+		if (!tag){
+	        var div = document.createElement("DIV");
+	        div.id = "tag2"+this.name;
+	        div.className = "cfpage_text "+this.name;
+	        document.body.appendChild(div);	  	
+		}	
+			
 		var tip = tag.innerHTML;
 		var index = tip.indexOf("tip2");
 		if (index>0){

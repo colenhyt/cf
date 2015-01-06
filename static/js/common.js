@@ -10,9 +10,7 @@ Datamgr.prototype = {
         page.buildSingleTab(titleImgName,this.name);
          var content =     "<div class='tab-pane in active'>";
          var pclass = "cfpage ";
-         if (this.name=="signin") {
-            pclass += "small";
-         }else if (this.name=="bank") {
+         if (this.name=="bank") {
             pclass += "bank"
          }else if (this.name=="playerinfo") {
             pclass += "player"
@@ -30,12 +28,7 @@ Datamgr.prototype = {
 		}) 
 	         
  		var tag = document.getElementById(this.tagname+"_dialog");
-		//g_msg.tip(tag);
-		//alert(tag);
 		tag.style.setProperty("width","580px");
-		//alert(tag.style.getPropertyValue("width"));
-		//var width = getCSSValue("cfpage","width");
-//		g_msg.tip(width);
         
         var pagedetail = new PageUtil(this.tagdetailname);
         var psubclass = "";
@@ -135,7 +128,7 @@ Datamgr.prototype = {
         var myDate22 = new Date();
 		var ss2 = myDate22.getSeconds(); 
 		var ms2 = myDate22.getMilliseconds();
-		g_msg.tip("cost: "+((ss2-ss)*1000+(ms2-ms))); 
+		//g_msg.tip("cost: "+((ss2-ss)*1000+(ms2-ms))); 
 	},
     
     onPanelClick:function(id){
