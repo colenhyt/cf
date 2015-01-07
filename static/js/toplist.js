@@ -8,6 +8,7 @@ Toplist = function(){
    this.pageheader = this.tagname+"header";
      this.tagtab1 = this.name+"tab1";
     this.tagtab2 = this.name+"tab2";
+    this.zandata = this.name+"zan";    
     this.syncDuration = 5;
 }
 
@@ -26,6 +27,10 @@ store.remove(this.tagtab2);
 	{
 		store.set(this.tagtab2,[]);
 	} 
+	var pzan = store.get(this.zandata);
+	if (pzan==null){
+		store.set(this.zandata,{});
+	}	
 	this.syncData2();
 	this.buildHTML2();
 }
@@ -103,6 +108,7 @@ Toplist.prototype.showToplist = function(type,page)
 			content += "              </tr>"
 			content += "          </table>"
 			 content += "        <table id='toplist1_tab'>"
+			 
 		for (var i=start;i<end;i++){
 			var item = tdata[i];
 			 content += "             <tr>"
@@ -128,6 +134,30 @@ Toplist.prototype.showToplist = function(type,page)
 
 Toplist.prototype.zan = function(page,playerId)
 {
+	if (playerId==g_player.data.playerid){
+		g_msg.tip("不能给自己点赞");
+		return;	
+	}
+	
+	var ZAN_COUNT = 3;
+	var now = new Date();
+	var zandata = store.get(this.zandata);
+	var key = now.getFullYear()+"-"+now.getMonth()+"-"+now.getDate();
+	var zans = zandata[key];
+	if (zans==null){
+		zans = [];
+	}else if (zans.length>ZAN_COUNT){
+		g_msg.tip("每天点赞不能多于"+ZAN_COUNT+"次");
+		return;
+	}else {
+		for (var i=0;i<zans.length;i++){
+			if (zans[i]==playerId){
+				g_msg.tip("你每天只能对一个人点赞1次");
+				return;
+			}
+		}
+	}
+	
     var zanTag = document.getElementById('zan_'+playerId);
     var zanCount = parseInt(zanTag.innerHTML)+1;
 	try  {
@@ -150,6 +180,10 @@ Toplist.prototype.zan = function(page,playerId)
     }
     store.set(dbName,tdata);
 	zanTag.innerHTML = zanCount;
+	
+	zans.push(playerId);
+	zandata[key] = zans;
+	store.set(this.zandata,zandata);	 
 	 
 }
 
@@ -180,3 +214,4 @@ Toplist.prototype.syncData2 = function(){
 
 var g_toplist = new Toplist();
 g_toplist.init();
+//store.remove(g_toplist.zandata);

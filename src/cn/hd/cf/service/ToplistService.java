@@ -43,10 +43,11 @@ public class ToplistService extends BaseService {
 		return list;
 	}
 	
-	public Toplist findByPlayerId(int playerId){
+	public Toplist findByPlayerId(int playerId,int type){
 		ToplistExample example=new ToplistExample();
 		Criteria criteria=example.createCriteria();		
 		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
+		criteria.andTypeEqualTo(type);
 		List<Toplist> list = toplistMapper.selectByExample(example);
 		if (list.size()>0)
 			return list.get(0);
@@ -95,7 +96,7 @@ public class ToplistService extends BaseService {
 		Criteria criteria=example.createCriteria();		
 		criteria.andTypeEqualTo(type);
 		BigDecimal fMoney = BigDecimal.valueOf(0);
-		Toplist top = findByPlayerId(playerid);
+		Toplist top = findByPlayerId(playerid,type);
 		if (top!=null)
 			fMoney = top.getMoney();
 		criteria.andMoneyGreaterThan(fMoney);
@@ -113,24 +114,16 @@ public class ToplistService extends BaseService {
 	private boolean updateOneData(PlayerWithBLOBs playerBlob,double money,int type,int week,int keepCount){
 		Toplist toplist = findByPlayerIdAndTypeAndWeek(playerBlob.getPlayerid(),type,week);
 		if (toplist==null){
-			toplist = findByLessMoney(money,week);
-			int topCount = findCount(type,week);
-			if (toplist!=null||(keepCount>0&&topCount<keepCount))
-			{
-				Toplist newtop = new Toplist();
-				newtop.setPlayerid(playerBlob.getPlayerid());
-				newtop.setPlayername(playerBlob.getPlayername());
-				newtop.setCreatetime(new Date());
-				newtop.setMoney(BigDecimal.valueOf(money));
-				newtop.setType(type);
-				newtop.setWeek(week);
-				newtop.setZan(0);
-				add(newtop);				
-				System.out.println("增加排行榜记录: "+newtop.getPlayername()+":"+newtop.getMoney());
-			}
-			if (keepCount>0&&toplist!=null&&topCount>=keepCount){
-				remove(toplist.getId());
-			}
+			Toplist newtop = new Toplist();
+			newtop.setPlayerid(playerBlob.getPlayerid());
+			newtop.setPlayername(playerBlob.getPlayername());
+			newtop.setCreatetime(new Date());
+			newtop.setMoney(BigDecimal.valueOf(money));
+			newtop.setType(type);
+			newtop.setWeek(week);
+			newtop.setZan(0);
+			add(newtop);				
+			System.out.println("增加排行榜记录: "+newtop.getPlayername()+":"+newtop.getMoney());
 		}else {
 			double topMoney = toplist.getMoney().doubleValue();
 			if ((money-topMoney)>0.01){

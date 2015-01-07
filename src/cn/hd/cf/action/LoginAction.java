@@ -173,7 +173,7 @@ public class LoginAction extends BaseAction {
 		int top = toplistService.findCountByGreaterMoney(0,playerBlob.getPlayerid());
 		playerBlob.setWeektop(top+1);
 		top = toplistService.findCountByGreaterMoney(1,playerBlob.getPlayerid());
-		playerBlob.setMonthtop(top);
+		playerBlob.setMonthtop(top+1);
 		float margin = StockManager.getInstance().getMarginSec();
 		System.out.println("价格跳动:"+margin);
 		playerBlob.setQuotetime(margin);
@@ -197,7 +197,6 @@ public class LoginAction extends BaseAction {
 	
 	
 		String pdata = getPlayerJsonData(playerBlob);
-		
 	
 		PlayerWithBLOBs p2 = new PlayerWithBLOBs();
 		p2.setPlayerid(player.getPlayerid());
@@ -206,7 +205,7 @@ public class LoginAction extends BaseAction {
 			
 		write(pdata,"utf-8");
 		
-		System.out.println("player("+player.getPlayername()+") login success");
+		System.out.println("player("+pdata+") login success");
 		return null;
 	}
 	

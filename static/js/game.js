@@ -322,6 +322,7 @@ Game.prototype.init = function(canvas){
 
 Game.prototype.onEnter = function(){
 	g_insure.onEnter();
+	g_stock.onEnter();
 	this.register(g_event);
 }
 

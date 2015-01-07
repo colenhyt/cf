@@ -26,6 +26,10 @@ Stock.prototype.init = function(){
     this.buildHTML();
 }
 
+Stock.prototype.onEnter = function(){
+	this.stockChange();
+}
+
 Stock.prototype.load = function(data)
 {
 	store.set(this.name,data);
@@ -323,9 +327,11 @@ Stock.prototype.stockChange = function()
 		$.ajax({type:"post",url:"/cf/stock_pagelastquotes.do",data:jids,success:function(data){
 			var lastquotes = cfeval(data);
 			g_stock.lastquotes = lastquotes;
+			var floatAmounts = {};
 			for (itemid in lastquotes){
 				var pitem = g_player.getStockItem(itemid);
 				var newps = lastquotes[itemid];
+				floatAmounts[itemid] = pitem.qty*newps; 
 				var pr = pitem.qty*newps - pitem.amount;
 				//涨:
 				if (pr>0)
@@ -334,6 +340,8 @@ Stock.prototype.stockChange = function()
 					//alert("价格涨:"+itemid);
 				}
 			}
+			g_player.currStockAmounts = floatAmounts;
+			g_msg.tip("取得当前盈亏:"+floatAmounts);
 		}});
 	}   catch  (e)   {
 	    logerr(e.name);
@@ -373,6 +381,8 @@ Stock.prototype.update = function(){
 		}else
 			tag.innerHTML = "<img src='static/img/tip_stock.png' class='cfpage_text tip2'>"
 	}
+	
+	if (!g_player.data||!g_player.data.lastlogin) return;
 	
 	var now = Date.parse(new Date());
 	var enterTime = (now - g_player.data.lastlogin.time)/1000;		//进入系统时间(秒);

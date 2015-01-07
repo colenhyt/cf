@@ -17,8 +17,7 @@ import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.ToplistService;
 
 public class PlayerManager {
-	public static int DAY_SECOND = 24;
-	private int WEEK_UPDATE_PERIOD = 20*60;
+	private int WEEK_UPDATE_PERIOD = 20;		//20*60: 一小时
 	private SavingService savingService;
 	private StockService stockService;
 	private ToplistService toplistService;
@@ -41,6 +40,7 @@ public class PlayerManager {
     	insureService = new InsureService();
     	stockService = new StockService();
     	toplistService = new ToplistService();
+    	updateToplist();
      }
   
     public void updateToplist(){

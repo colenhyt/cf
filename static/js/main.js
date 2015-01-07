@@ -36,6 +36,8 @@ var tt =	getStyleValue("zui.css",".modal-dialog","width");
 //    g_msg.tip("ee","100px",100);
 //    g_msg.tip("ff","100px",100);
 //g_uplevel.open();
+//g_toplist.zan(1,1);
+
 	g_game = new Game();
 	g_game.init(canvas);
 }

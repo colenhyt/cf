@@ -7,6 +7,7 @@ Quest = function(){
     this.pagename = this.tagname+"page";
     this.tagdetailname = this.tagname+"detail";
     this.pagedetailname = this.tagdetailname+"page";
+    this.currPage = 0;
     this.dailyCount = 2;
     this.pageCount = 3;
 }
@@ -31,7 +32,7 @@ Quest.prototype.buildPage = function(page)
 	var tdata = store.get(this.name);
 	var content = 	"";
 	if (quest.length<=0){
-		  content += "<div class='cfpanel' ID='insure_d1'>>你当前没有任务"
+		  content += "<div class='cfpanel' ID='insure_d1'>你当前没有任务"
       content += "</div>"
 	}else {
 		var start = page* this.pageCount;
@@ -49,9 +50,13 @@ Quest.prototype.buildPage = function(page)
 				}
 			}
 			var img = "notdone.png";
-			if (item!=null&&pitem.status==QUEST_STATUS.DONE)	
-				img = "done.png";		
-		  	content += "<div class='cfpanel' ID='"+this.name+"_d"+item.id+"' onclick='g_quest.showDetail("+item.id+")'>"
+			var isDone = false;
+			var click = "g_quest.gotoQuest("+item.id+")"
+			if (item!=null&&pitem.status==QUEST_STATUS.DONE){	
+				img = "done.png";
+				click = "g_quest.getQuetPrize("+item.id+")"
+			}
+		  	content += "<div class='cfpanel' ID='"+this.name+"_d"+item.id+"' onclick='"+click+"'>"
 		     content += "<h2 class='cf_h'>"+item.name+"</h2>"
 			 content += "        <table id='"+this.tagname+"tab'>"
 			 content += "           <thead>"
@@ -59,6 +64,7 @@ Quest.prototype.buildPage = function(page)
 	//		 content += "               <td class='td-c-name'>描述</td>"
 			 content += "               <td class='cfquest_td'>"+item.descs.substring(0,15)+"</td>"
 			 content += "               <td style='text-align:right'><img class='cfquest_icon' src='static/img/"+img+"'></td>"
+			 
 //			 content += "               <td class='td-c-name'>条件</td>"
 //			 content += "               <td class='td-c-value'>"+item.need+"</td>"
 //			 content += "               <td class='td-c-name'>奖励</td>"
@@ -70,6 +76,8 @@ Quest.prototype.buildPage = function(page)
 		}
    		content += "</div>"
 		
+		this.currPage = page;
+		
         content += this.buildPaging(page,quest.length);
 	}
 	
@@ -77,37 +85,27 @@ Quest.prototype.buildPage = function(page)
 	tag.innerHTML = content;	
 }
 
-Quest.prototype.showDetail = function(id){  
+Quest.prototype.gotoQuest = function(id){  
  	this.onPanelClick(id);
  	
- 	return;
 	var tdata = store.get(this.name);
    var item = this.findItem(id);
    if (item==null) return;
+	
+	if (item.type==QUEST_TYPE.BUY_INSURE||item.type==QUEST_TYPE.BUY_FINAN)
+	{
+		g_insure.show();
+	}
+	else if (item.type==QUEST_TYPE.BUY_STOCK||item.type==QUEST_TYPE.SELL_STOCK)
+	{
+		g_stock.show();
+	}
+	else if (item.type==QUEST_TYPE.SAVING)
+	{
+		g_bank.show();
+	}
 
-var content =      "        <div><h2>"+item.name+"</h2>"
- content += "            <div>"+item.descs+"</div>"
-// content += "        <table id='toplist1_tab'>"
-// content += "           <thead>"
-//			 content += "             <tr>"
-//			 content += "               <td class='td-c-name'>描述</td>"
-//			 content += "               <td class='td-c-value'>"+item.descs+"</td>"
-//			 content += "               <td class='td-c-name'>条件</td>"
-//			 content += "               <td class='td-c-value'>"+item.need+"</td>"
-//			 content += "               <td class='td-c-name'>奖励</td>"
-//			 content += "               <td class='td-c-value'>"+item.prize+"</td>"
-//			content += "              </tr>"
-//content += "            </thead>"
-//content += "          </table>     "
-//content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>      "  
-//content += "          <button class='cf_bt' onclick='g_quest.acceptQuest("+id+")'>接收</button>"
-content += "          <button class='cf_bt' data-dismiss='modal'>确认</button>"
-content += "             </div>"
-content += "           </div>  "
-
-	var tag = document.getElementById(this.pagedetailname);
-	tag.innerHTML = content;
-	$('#'+this.tagdetailname).modal('show');
+	this.hide();
 }
 
 Quest.prototype.acceptQuest = function(id){
@@ -154,27 +152,52 @@ Quest.prototype.doneQuest = function(quest){
 		}
 		items[i].status = QUEST_STATUS.DONE;
 		g_player.updateData({"quest":items});
-		g_player.prize(quest.prize);
+		//g_player.prize(quest.prize);		//奖励手工领取
 	    break;
 	}
     }
 }
 
-Quest.prototype.onDoneQuest = function(){
-    alert('onDoneQuest');
+Quest.prototype.getQuetPrize = function(id){
+    var tdata = store.get(this.name);
+   var item = this.findItem(id);
+   if (item==null) return;
+   
+   var pz = cfeval(item.prize);
+   g_player.prize(pz);
+   //移除:
+	var quests = g_player.data.quest;
+	var index;
+	for (var i=0;i<quests.length;i++)
+	{
+		if (quests[i].id==id){
+			index = i;
+			break;
+		}
+	}   
+	g_msg.tip("成功领取任务奖励:"+itemStr(pz,","));
+	quests.splice(index,1);
+	g_player.updateData({quest:quests});
+	
+	this.buildPage(0);
 }
-
 
 Quest.prototype.onBuyItem = function(tname,item,qty){
 	var type;
-	if (tname=="insure")
-		type = QUEST_TYPE.BUY_INSURE;
-	else if (tname=="stock"){
+	if (tname=="insure"){
+		if (parseInt(item.type)==0)
+		 type = QUEST_TYPE.BUY_INSURE;
+		else
+		 type = QUEST_TYPE.BUY_FINAN;
+	}else if (tname=="stock"){
 		if (qty>0)
 			type = QUEST_TYPE.BUY_STOCK;
 		else if (qty<0)
 			type = QUEST_TYPE.SELL_STOCK;
+	}else if (tname=="saving"){
+		type = QUEST_TYPE.SAVING;
 	}
+	
 	var items = g_player.data.quest
     for (var i=0;i<items.length;i++){
 		if (items[i].status==QUEST_STATUS.ACTIVE) {

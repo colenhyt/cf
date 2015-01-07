@@ -69,6 +69,7 @@ Player = function(){
     this.syncDuration = 5;
     this.data = {};
     this.stockids = [];
+    this.currStockAmounts = {};
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
     this.pageheader = this.tagname+"header";
@@ -94,10 +95,9 @@ Player.prototype.getTotal = function(data) {
 		insure += data.insure[key].amount;
 	}
 	var stock = 0;
-	for (key in data.stock){
-		for (var i=0;i<data.stock[key].length;i++){
-			stock += data.stock[key][i].amount;
-		}
+	var floatStock = this.currStockAmounts;
+	for (key in floatStock){
+			stock += floatStock[key];
 	}
 	return {saving:ForDight(saving),saving2:ForDight(saving2),insure:ForDight(insure),stock:ForDight(stock)};
 }
@@ -247,6 +247,9 @@ Player.prototype.getOfftimeInsure = function() {
 //快到期保险产品
 Player.prototype.getQuests = function(status) {
 	var itemids = [];
+	if (!this.data||!this.data.quest)
+		return itemids;
+		
 	for (var i=0;i<this.data.quest.length;i++){
 		if (this.data.quest[i].status==status){
 			itemids.push(this.data.quest[i].itemid);
@@ -326,6 +329,11 @@ Player.prototype.buyItem = function(tname,id,qty,ps){
 		if (tname==g_stock.name){
 			g_player.setStockIds();
 		}
+		var newamount = 0;
+		for (var i=0;i<pitems[id].length;i++){
+			newamount += pitems[id][i].amount;
+		}
+		this.currStockAmounts[id]=newamount;
 	}
 				
 	cash -= amount;
@@ -363,8 +371,8 @@ Player.prototype.find = function(playerid){
 	return serverPlayer;
 }
 
-//store.remove("player");
-//store.remove("playerlog");
+store.remove("player");
+store.remove("playerlog");
 var g_playerlog = new Playerlog()
 g_playerlog.init();
 var g_player = new Player();

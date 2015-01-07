@@ -38,7 +38,7 @@ public class ToplistAction extends BaseAction {
 	}
 	
 	public String zan(){
-		Toplist toplist2 = toplistService.findByPlayerId(toplist.getPlayerid());
+		Toplist toplist2 = toplistService.findByPlayerId(toplist.getPlayerid(),-1);
 		System.out.println("toplist zan: playerid="+toplist.getPlayerid()+",zan="+toplist.getZan());
 		if (toplist2!=null){
 			toplist2.setZan(toplist.getZan());
