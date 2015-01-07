@@ -20,6 +20,19 @@ Bank.prototype.init = function(){
 	this.buildHTML2();
 }
 
+Bank.prototype.onEnter = function(){
+	var pitems = g_player.saving;
+	var hasRisk = true;
+	for (key in pitems){
+		if (key!=1){
+			hasRisk = false;
+			break;
+		}
+	}	
+	if (hasRisk)
+	 g_msg.tip("你还没有任何定期存款，收益偏低");
+}
+
 Bank.prototype.buildHTML2 = function()
 {
 		var page = new PageUtil(this.tagname);

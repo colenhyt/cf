@@ -10,6 +10,8 @@ var UpdateDuration = 200;	//刷帧频率(ms)
 
 var MsgDuration = 200;	//消息刷帧频率(ms)
 
+var StockDuration = 1000;	//股票刷帧频率(ms)
+
 var QUOTETIME = 300;		//行情跳动时间(秒)
 
 var EventTriggerTime = 30000;	//随机事件跳动;

@@ -168,6 +168,39 @@ Player.prototype.syncCallback=function(dataobj){
 	}   
 }
 
+//破产处理
+Player.prototype.broke = function() {
+  var amount = 0 - this.saving[1].amount;
+  if (amount<=0) return;
+  
+  var savingids = [];
+  //定期:
+  for (key in this.saving)
+  {
+   if (key!=1){
+   	amount -= this.saving[key];
+   	if (amount<=0)
+   	 break;
+   }
+  }
+  
+  //股票:
+  var stockids = [];
+  if (amount>0)
+  {
+   for (key in this.stock)
+   {
+   
+   }
+  }
+  
+  //破产
+  if (amount>0)
+  {
+   
+  }
+}
+
 Player.prototype.prize = function(prizes) {
 	var prop = {};
  	var cashUpdate = false;
@@ -185,6 +218,11 @@ Player.prototype.prize = function(prizes) {
      		cashUpdate = true;
      	}
      }
+     if (this.saving[1].amount<0)	//
+     {
+      this.broke();
+     }
+     
      if (cashUpdate==true){
  		try  {
 			var obj = {id:this.saving[1].id,amount:this.saving[1].amount};
@@ -371,8 +409,8 @@ Player.prototype.find = function(playerid){
 	return serverPlayer;
 }
 
-store.remove("player");
-store.remove("playerlog");
+//store.remove("player");
+//store.remove("playerlog");
 var g_playerlog = new Playerlog()
 g_playerlog.init();
 var g_player = new Player();

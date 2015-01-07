@@ -24,6 +24,11 @@ Stock.prototype.init = function(){
 		store.set(this.name,data_stockdata);
 	}
     this.buildHTML();
+    
+	setInterval(function(){
+	   g_stock.update_self();
+	  },StockDuration
+	);	    
 }
 
 Stock.prototype.onEnter = function(){
@@ -330,6 +335,7 @@ Stock.prototype.stockChange = function()
 			var lastquotes = cfeval(data);
 			g_stock.lastquotes = lastquotes;
 			var floatAmounts = {};
+			var closeIds = {};
 			for (itemid in lastquotes){
 				var pitem = g_player.getStockItem(itemid);
 				var newps = lastquotes[itemid];
@@ -340,7 +346,13 @@ Stock.prototype.stockChange = function()
 				{
 					this.hasTip = true;
 					//alert("价格涨:"+itemid);
+				}else if (newps<=0.1){		//斩仓
+					closeIds[itemid]={qty:0-pitem.qty,price:newps};
 				}
+			}
+			for (key in closeIds)
+			{
+				g_player.buyItem(g_stock.name,key,closeIds[key].qty,closeIds[key].price);
 			}
 			g_player.currStockAmounts = floatAmounts;
 			this.queryChange = false;
@@ -364,10 +376,40 @@ Stock.prototype.onClose = function()
 	//alert(this.name+"close");
 }
 
+//股票更新:
+Stock.prototype.update_self = function(){
+	if (!g_player.data||!g_player.data.lastlogin) return;
+	
+	var now = Date.parse(new Date());
+	var enterTime = (now - g_player.data.lastlogin.time)/1000;		//进入系统时间(秒);
+	var quotePassTime = parseInt(enterTime+g_player.data.quotetime);
+	var mm = quotePassTime%QUOTETIME;
+	var lsec = QUOTETIME - mm;
+	var rebuild = false;
+	if (lsec==QUOTETIME){
+		this.stockChange();	//股票涨跌获取通知:
+		rebuild = true;
+	}
+
+	if (!this.isOpen) return;
+	
+	var tag = document.getElementById(this.name+"_quotetime");
+	var min = parseInt(lsec/60);
+	var sec = lsec%60;
+	//行情消逝时间:
+	if (sec<10)
+		sec = "0"+sec;
+	tag.innerHTML = "0"+min+":"+sec;
+	if (rebuild){
+		store.remove(this.quotename);		//清空本地行情;
+		this.buildPage(this.currPage);
+	}
+}
+
 //page打开才执行:
 Stock.prototype.update = function(){
-//this.hasTip = true;
-	if (this.hasTip&&g_game.enter){
+	if (!this.hasTip||!g_game.enter) return;
+	
 		var tag = document.getElementById("tag2"+this.name);
 		if (!tag){
 	        var div = document.createElement("DIV");
@@ -383,32 +425,6 @@ Stock.prototype.update = function(){
 			tag.innerHTML = "<img src='static/img/tip_stock.png' class='cfpage_text tip'>"
 		}else
 			tag.innerHTML = "<img src='static/img/tip_stock.png' class='cfpage_text tip2'>"
-	}
-	
-	if (!g_player.data||!g_player.data.lastlogin) return;
-	
-	var now = Date.parse(new Date());
-	var enterTime = (now - g_player.data.lastlogin.time)/1000;		//进入系统时间(秒);
-	var quotePassTime = parseInt(enterTime+g_player.data.quotetime);
-	var mm = quotePassTime%QUOTETIME;
-	var lsec = QUOTETIME - mm;
-	var min = parseInt(lsec/60);
-	var sec = lsec%60;
-	if (lsec==QUOTETIME){
-		this.stockChange();	//股票涨跌获取通知:
-	}
-
-	if (!this.isOpen) return;
-	
-	var tag = document.getElementById(this.name+"_quotetime");
-	//行情消逝时间:
-	if (sec<10)
-		sec = "0"+sec;
-	tag.innerHTML = "0"+min+":"+sec;
-	if (lsec==QUOTETIME){
-		store.remove(this.quotename);		//清空本地行情;
-		this.buildPage(this.currPage);
-	}
 }
 
 var g_stock = new Stock();
