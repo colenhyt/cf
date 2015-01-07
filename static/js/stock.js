@@ -320,7 +320,9 @@ Stock.prototype.findQuotes = function(stockid,fromServer,price)
 
 Stock.prototype.stockChange = function()
 {
-	if (g_player.stockids.length<=0) return;
+	if (g_player.stockids.length<=0||this.queryChange==true) return;
+	
+	this.queryChange = true;
 	
 	var jids = "stockids="+JSON.stringify(g_player.stockids);
 	try  {
@@ -341,7 +343,8 @@ Stock.prototype.stockChange = function()
 				}
 			}
 			g_player.currStockAmounts = floatAmounts;
-			g_msg.tip("取得当前盈亏:"+floatAmounts);
+			this.queryChange = false;
+			//g_msg.tip("取得当前盈亏:"+floatAmounts);
 		}});
 	}   catch  (e)   {
 	    logerr(e.name);
