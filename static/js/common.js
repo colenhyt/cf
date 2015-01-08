@@ -5,20 +5,23 @@ Datamgr = function(){
 Datamgr.prototype = {        
 
 	buildHTML:function(){
-         var page = new PageUtil(this.tagname);
-        var titleImgName = "title_"+this.name+".png";
-        page.buildSingleTab(titleImgName,this.name);
-         var content =     "<div class='tab-pane in active'>";
-         var pclass = "cfpage ";
-         if (this.name=="bank") {
-            pclass += "bank"
-         }else if (this.name=="playerinfo") {
-            pclass += "player"
-         }
-        content += "<div class='"+pclass+"' id='"+this.pagename+"'>"
-        content += "</div></div>"
-        page.addContent(content);
-        document.write(page.toString());   
+		if (this.name!="saving")
+		{
+	         var page = new PageUtil(this.tagname);
+	        var titleImgName = "title_"+this.name+".png";
+	        page.buildSingleTab(titleImgName,this.name);
+	         var content =     "<div class='tab-pane in active'>";
+	         var pclass = "cfpage ";
+	         if (this.name=="bank") {
+	            pclass += "bank"
+	         }else if (this.name=="playerinfo") {
+	            pclass += "player"
+	         }
+	        content += "<div class='"+pclass+"' id='"+this.pagename+"'>"
+	        content += "</div></div>"
+	        page.addContent(content);
+	        document.write(page.toString());   
+		}
          
         var page = this;
 		$('#'+this.tagname).on('hide.zui.modal', function()
@@ -28,7 +31,8 @@ Datamgr.prototype = {
 		}) 
 	         
  		var tag = document.getElementById(this.tagname+"_dialog");
-		tag.style.setProperty("width","580px");
+ 		if (tag)
+		 tag.style.setProperty("width","580px");
         
         var pagedetail = new PageUtil(this.tagdetailname);
         var psubclass = "";

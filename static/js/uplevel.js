@@ -24,7 +24,7 @@ Uplevel.prototype.buildHTML = function()
         var pagedetail = new PageUtil(this.tagname);
         var psubclass = "";
         content =     "<div class=\"tab-pane in active\" id='quest2'>";
-		content += "<img src='static/img/light.png' class='cfuplevel_img' id='msglevel_g1'>"
+		content += "<img class='cfuplevel_img' id='msglevel_g1'>"
         content += "<div class='cfpagedetail uplevel' id='"+this.pagename+"'>"
         content += "</div></div>"
         pagedetail.addContent(content);

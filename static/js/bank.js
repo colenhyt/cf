@@ -180,9 +180,9 @@ this.hasTip = true;
 	var tip = tag.innerHTML;
 	var index = tip.indexOf("tip2");
 	if (index>0){
-		tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text banktip'>"
+		tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text banktip' onclick='g_bank.show()'>"
 	}else
-		tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text banktip2'>"
+		tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text banktip2' onclick='g_bank.show()'>"
 }
 
 var g_bank = new Bank();

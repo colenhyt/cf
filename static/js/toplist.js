@@ -93,12 +93,7 @@ Toplist.prototype.showToplist = function(type,page)
 		  content += "<div class='cfpanel' ID='insure_d1'>目前还没有排名数据"
       	  content += "</div>"
 	}else {
-		var start = page* this.pageCount;
-		var end = (page+1)* this.pageCount;
-		if (end>tdata.length)
-			end = tdata.length;
-                  
-                content += "<div class='cf_top'>";
+			 content += "<div class='cf_top'>";
  			 content += "        <table id='toplist1_tab' class='cf_top_header'>"
 			 content += "             <tr>"
 			 content += "               <td class='cftoplist_content'>姓名</td>"
@@ -108,15 +103,44 @@ Toplist.prototype.showToplist = function(type,page)
 			content += "              </tr>"
 			content += "          </table>"
 			 content += "        <table id='toplist1_tab'>"
-			 
+  
+			 var me = g_player.data;
+			 me.top = me.weektop;
+			 me.money = g_player.getTotalMoney();
+			 if (type==1) 
+			  me.top = me.monthtop;
+			
+			var items = []
+			items.push(me);
+			for (var i=0;i<tdata.length;i++){
+				var item = tdata[i];
+				if (item.playerid==me.playerid)continue;
+				item.top = i+1;
+				items.push(item);
+			}
+						 
+		var start = page* this.pageCount;
+		var end = (page+1)* this.pageCount;
+		if (end>items.length)
+			end = items.length;
 		for (var i=start;i<end;i++){
-			var item = tdata[i];
+			var item = items[i];
+			if (i==0)
+			{
+			 content += "             <tr>"
+			 content += "               <td class='cftoplist_content' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.playername.substring(0,8)+"</div></td>"
+			 content += "               <td class='cftoplist_c5' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.money+"</div></td>"
+			 content += "               <td class='cftoplist_c4' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.top+"</div></td>"
+			 content += "               <td class='cftoplist_c3' style='color:yellow'><div class='cf_top_zan_me'><span class='cftoplist_c6 me'>*"+item.zan+"</span></div></td>"
+			content += "              </tr>"			
+			}else {
 			 content += "             <tr>"
 			 content += "               <td class='cftoplist_content'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.playername.substring(0,8)+"</div></td>"
 			 content += "               <td class='cftoplist_c5'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.money+"</div></td>"
-			 content += "               <td class='cftoplist_c4'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+(i+1)+"</div></td>"
+			 content += "               <td class='cftoplist_c4'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.top+"</div></td>"
 			 content += "               <td class='cftoplist_c3'><div onclick='g_toplist.zan("+page+","+item.playerid+")'<input type='button' class='cf_top_zan'/><span class='cftoplist_c6'>*<span id='zan_"+item.playerid+"'>"+item.zan+"</span></span></div></td>"
 			content += "              </tr>"
+			}
 			 content += "             <tr>"
 			 content += "               <td colspan='4'><img src='static/img/top_line.png'></td>"
 			content += "              </tr>"
@@ -146,7 +170,7 @@ Toplist.prototype.zan = function(page,playerId)
 	var zans = zandata[key];
 	if (zans==null){
 		zans = [];
-	}else if (zans.length>ZAN_COUNT){
+	}else if (zans.length>=ZAN_COUNT){
 		g_msg.tip("每天点赞不能多于"+ZAN_COUNT+"次");
 		return;
 	}else {
@@ -167,18 +191,24 @@ Toplist.prototype.zan = function(page,playerId)
 	    document.write(e.name);
 	}   
 	
-    var dbName = this.tagtab1;
-    if (page==1) {
-        dbName = this.tagtab2;
-    }
-    var tdata = store.get(dbName);
-    for (var i=0;i<tdata.length;i++){
-        if (tdata[i].playerid==playerId) {
-            tdata[i].zan = zanCount;
+    var tdata1 = store.get(this.tagtab1);
+    for (var i=0;i<tdata1.length;i++){
+        if (tdata1[i].playerid==playerId) {
+            tdata1[i].zan = zanCount;
              break;
         }
     }
-    store.set(dbName,tdata);
+    store.set(this.tagtab1,tdata1);
+	
+    var tdata2 = store.get(this.tagtab2);
+    for (var i=0;i<tdata2.length;i++){
+        if (tdata2[i].playerid==playerId) {
+            tdata2[i].zan = zanCount;
+             break;
+        }
+    }
+    store.set(this.tagtab2,tdata2);
+        
 	zanTag.innerHTML = zanCount;
 	
 	zans.push(playerId);
@@ -213,5 +243,6 @@ Toplist.prototype.syncData2 = function(){
 }
 
 var g_toplist = new Toplist();
+store.remove(g_toplist.zandata);
 g_toplist.init();
-//store.remove(g_toplist.zandata);
+

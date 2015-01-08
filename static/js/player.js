@@ -102,6 +102,16 @@ Player.prototype.getTotal = function(data) {
 	return {saving:ForDight(saving),saving2:ForDight(saving2),insure:ForDight(insure),stock:ForDight(stock)};
 }
 
+Player.prototype.getTotalMoney = function() {
+	var data = {};
+	data.saving = cfeval(this.data.saving);
+	data.saving2 = cfeval(this.data.saving2);
+	data.insure = cfeval(this.data.insure);
+	data.stock = cfeval(this.data.stock);
+	var moneys = this.getTotal(data);
+	return ForDight(moneys.saving+moneys.saving2+moneys.insure+moneys.stock);
+}
+
 Player.prototype.flushPageview = function() {
     var tag = document.getElementById("tagsaving");
     tag.innerHTML = "存款: " +ForDight(this.saving[1].amount);	

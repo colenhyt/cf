@@ -128,6 +128,13 @@ background:url('../../static/img/bt_yellow.png') no-repeat;
     background-size:100% 100%; 
 }
 
+.cf_bt.questprize {
+	font-size:23px;
+float:right;
+  width:120px;
+  height:45px;
+}
+
 .cf_bt.pagingleft {
   position: relative;
   float:left;
@@ -580,6 +587,14 @@ background:url('../../static/img/zan.png') no-repeat;
     background-size:100% 100%;    
 }
 
+.cf_top_zan_me{
+  border: none;
+  width: 31px;
+  height: 28px;
+background:url('../../static/img/zan.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;    
+}
 .cf_count {
 position:relative;
 float:left;
@@ -685,6 +700,9 @@ width:160px;
 padding-left:30px
 }
 
+.cftoplist_c6.me {
+float:top;
+}
 .cfsignin_feelingimgs{
 padding-top:30px;
 padding-left:20px;

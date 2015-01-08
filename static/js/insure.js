@@ -272,9 +272,9 @@ Insure.prototype.update = function(){
 	var tip = tag.innerHTML;
 	var index = tip.indexOf("tip2");
 	if (index>0){
-		tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text tip'>"
+		tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text tip' onclick='g_insure.show()'>"
 	}else
-		tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text tip2'>"
+		tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text tip2' onclick='g_insure.show()'>"
 }
 
 var g_insure = new Insure();

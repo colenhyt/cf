@@ -50,27 +50,29 @@ Quest.prototype.buildPage = function(page)
 				}
 			}
 			var img = "notdone.png";
-			var isDone = false;
+			var isDone = item!=null&&pitem.status==QUEST_STATUS.DONE;
 			var click = "g_quest.gotoQuest("+item.id+")"
-			if (item!=null&&pitem.status==QUEST_STATUS.DONE){	
-				img = "done.png";
+			if (isDone){	
 				click = "g_quest.getQuetPrize("+item.id+")"
 			}
 		  	content += "<div class='cfpanel' ID='"+this.name+"_d"+item.id+"' onclick='"+click+"'>"
-		     content += "<h2 class='cf_h'>"+item.name+"</h2>"
+		     content += "<div>"+item.name
+			if (isDone){	
+				content += "<input type='button' class='cf_bt questprize' value='领取奖励'/>"
+			}
+			content += "</div>"
 			 content += "        <table id='"+this.tagname+"tab'>"
-			 content += "           <thead>"
 			 content += "             <tr>"
 	//		 content += "               <td class='td-c-name'>描述</td>"
 			 content += "               <td class='cfquest_td'>"+item.descs.substring(0,15)+"</td>"
-			 content += "               <td style='text-align:right'><img class='cfquest_icon' src='static/img/"+img+"'></td>"
+			if (isDone){	
+				content += "<td style='text-align:right'><img class='cfquest_icon' src='static/img/done.png'></td>"
+			}else
+				content += "<td style='text-align:right'><img class='cfquest_icon' src='static/img/notdone.png'></td>"
 			 
-//			 content += "               <td class='td-c-name'>条件</td>"
-//			 content += "               <td class='td-c-value'>"+item.need+"</td>"
 //			 content += "               <td class='td-c-name'>奖励</td>"
 //			 content += "               <td class='td-c-value'>"+item.prize+"</td>"
 			content += "              </tr>"
-			content += "            </thead>"
 			content += "          </table>"
       		content += "</div>"
 		}
@@ -152,6 +154,7 @@ Quest.prototype.doneQuest = function(quest){
 		}
 		items[i].status = QUEST_STATUS.DONE;
 		g_player.updateData({"quest":items});
+		g_msg.tip("任务<span style='color:red'>"+quest.name+"</span>完成，请领取奖励");
 		//g_player.prize(quest.prize);		//奖励手工领取
 	    break;
 	}
