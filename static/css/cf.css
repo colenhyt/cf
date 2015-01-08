@@ -102,6 +102,18 @@ top:-90px;
 z-index:200;
 }
 
+.cfpage_text.stocktip{
+left:35px;
+top:-75px;
+z-index:200;
+}
+
+.cfpage_text.stocktip2{
+left:35px;
+top:-90px;
+z-index:200;
+}
+
 .cfpage_text.banktip{
 left:75px;
 top:-75px;

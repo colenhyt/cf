@@ -255,6 +255,9 @@ Player.prototype.setStockIds = function(){
 		if (qty>0)
 			this.stockids.push(stockid);
 	}
+	if (this.stockids.length>0){
+		g_stock.hasTip = true;
+	}
 }
 
 Player.prototype.getData = function(tname){

@@ -122,7 +122,7 @@ Stock.prototype.show = function(){
 		var ms = myDate.getMilliseconds();		
 		this.buildPage(0);
 		this.isOpen = true;
-		this.hasTip = false;
+		//this.hasTip = false;
         $('#'+this.tagname).modal({position:Page_Top,show: true});    
         var myDate22 = new Date();
 		var ss2 = myDate22.getSeconds(); 
@@ -420,11 +420,11 @@ Stock.prototype.update = function(){
 		}	
 			
 		var tip = tag.innerHTML;
-		var index = tip.indexOf("tip2");
+		var index = tip.indexOf("stocktip2");
 		if (index>0){
-			tag.innerHTML = "<img src='static/img/tip_stock.png' class='cfpage_text tip'>"
+			tag.innerHTML = "<img src='static/img/tip_stock.png' class='cfpage_text stocktip' onclick='g_stock.show()'>"
 		}else
-			tag.innerHTML = "<img src='static/img/tip_stock.png' class='cfpage_text tip2'>"
+			tag.innerHTML = "<img src='static/img/tip_stock.png' class='cfpage_text stocktip2' onclick='g_stock.show()'>"
 }
 
 var g_stock = new Stock();

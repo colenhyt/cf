@@ -14,7 +14,7 @@ var StockDuration = 1000;	//股票刷帧频率(ms)
 
 var QUOTETIME = 300;		//行情跳动时间(秒)
 
-var EventTriggerTime = 200;	//随机事件跳动;
+var EventTriggerTime = 250;	//随机事件跳动;
 
 var Panel_ClickColor = "#123123";
 
