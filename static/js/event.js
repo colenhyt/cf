@@ -23,7 +23,7 @@ Event.prototype.triggerEvent = function(){
 	var tdata = store.get(this.name);
 	var index = Math.floor(Math.random()*tdata.length);
 	var item = tdata[index]; 
-	log("event trigger:"+item.prize.id);
+	//g_msg.tip("event trigger:"+item);
 	
 	//this.isTrigger = true;
 	if (item.type==1){
@@ -92,6 +92,7 @@ Event.prototype.badEvent = function(item){
 //
 Event.prototype.update = function(){
 	this.tick++;
+	//g_msg.tip(this.tick);
 	if (this.tick%EventTriggerTime==0)
 	{
 		this.triggerEvent();
