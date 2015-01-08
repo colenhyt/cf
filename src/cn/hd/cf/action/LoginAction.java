@@ -2,13 +2,9 @@ package cn.hd.cf.action;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.fastjson.JSON;
-
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import cn.hd.base.BaseAction;
 import cn.hd.cf.model.Init;
@@ -18,6 +14,7 @@ import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Signindata;
 import cn.hd.cf.model.Stock;
+import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.InitdataService;
 import cn.hd.cf.service.InsureService;
 import cn.hd.cf.service.PlayerService;
@@ -30,6 +27,8 @@ import cn.hd.mgr.EventManager;
 import cn.hd.mgr.StockManager;
 import cn.hd.util.MD5;
 import cn.hd.util.StringUtil;
+
+import com.alibaba.fastjson.JSON;
 
 public class LoginAction extends BaseAction {
 	private PlayerWithBLOBs player;
@@ -169,7 +168,10 @@ public class LoginAction extends BaseAction {
 		Map<Integer,Saving> savings = savingService.findUpdatedSavings(playerBlob.getPlayerid());
 		playerBlob.setSaving(JSON.toJSONString(savings));
 		Map<Integer,List<Stock>> stocks = stockService.findMapByPlayerId(playerBlob.getPlayerid());
-		playerBlob.setStock(JSON.toJSONString(stocks));			
+		playerBlob.setStock(JSON.toJSONString(stocks));	
+		Toplist toplist = toplistService.findByPlayerId(playerBlob.getPlayerid(),0);
+		if (toplist!=null)
+			playerBlob.setZan(toplist.getZan());
 		int top = toplistService.findCountByGreaterMoney(0,playerBlob.getPlayerid());
 		playerBlob.setWeektop(top+1);
 		top = toplistService.findCountByGreaterMoney(1,playerBlob.getPlayerid());

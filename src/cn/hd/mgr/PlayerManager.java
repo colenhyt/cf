@@ -2,7 +2,6 @@ package cn.hd.mgr;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import cn.hd.cf.model.Insure;
@@ -10,6 +9,7 @@ import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
+import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.InsureService;
 import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.service.SavingService;
@@ -54,14 +54,30 @@ public class PlayerManager {
 	      int currWeek = dayOfYear/7;
 	      if (dayOfYear%7!=0)
 	    	  currWeek++;    	
-	      //更新最新的财富值:
+	      //更新全部人最新的财富值:
 	      List<PlayerWithBLOBs> all = playerService.findAll();
 	      for (int i=0;i<all.size();i++){
     		PlayerWithBLOBs pp = all.get(i);
     		float money = this.calculatePlayerMoney(pp);
     		pp.setMoney(money);
-    		toplistService.updateData(pp,money,currWeek);
-    	}
+    		toplistService.updateCurrData(pp,money);
+    	  }
+    	  //更新当周排行,从type=0中选取updatetime在当周的填进去:
+	      //1. 先删除这一周数据
+	      toplistService.removeCurrWeekdata(currWeek);
+	      //2. 找到当前当周排名，并插入
+	      List<Toplist> weeklist = toplistService.findCurrWeekToplist();
+	      for (int i=0;i<weeklist.size();i++)
+	      {
+	    	  if (i>=20) break;
+	    	  Toplist item =  weeklist.get(i);
+	    	  item.setId(null);
+	    	  item.setCreatetime(new Date());
+	    	  item.setUpdatetime(new Date());
+	    	  item.setType(1);
+	    	  item.setWeek(currWeek);
+	    	  toplistService.add(item);
+	      }
     }
     
     private float calculatePlayerMoney(PlayerWithBLOBs player){
@@ -93,9 +109,13 @@ public class PlayerManager {
 	}
     
     public static void main(String[] args) {
-    	PlayerManager stmgr = PlayerManager.getInstance();
-    	stmgr.updateToplist();
+    	//PlayerManager stmgr = PlayerManager.getInstance();
+    	//stmgr.updateToplist();
     	ToplistService toplistService = new ToplistService();
+    	Toplist list = toplistService.findByPlayerId(3, 0);
+    	list.setZan(17);
+    	toplistService.updateZan(list);
+    	int  a = 10;
     	//int b = toplistService.findCountByGreaterMoney(0,199);
     }
 }

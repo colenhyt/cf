@@ -16,14 +16,12 @@ public class ToplistAction extends BaseAction {
 	}
 	
 	public String list(){
-		int count = 10;
 		List<Toplist> weeklist = toplistService.findByType(0);
 		List<Toplist> monthlist = toplistService.findByType(1);
-	//System.out.println("get list :"+tt.size());
 		JSONArray jsonObject = new JSONArray();
 		jsonObject.add(weeklist);
 		jsonObject.add(monthlist);
-		
+		System.out.println("取得排行榜数据:"+weeklist.size());
 		write(jsonObject.toString(),"utf-8");
 		return null;
 	}
@@ -38,11 +36,11 @@ public class ToplistAction extends BaseAction {
 	}
 	
 	public String zan(){
-		Toplist toplist2 = toplistService.findByPlayerId(toplist.getPlayerid(),-1);
+		Toplist toplist2 = toplistService.findByPlayerId(toplist.getPlayerid(),0);
 		System.out.println("toplist zan: playerid="+toplist.getPlayerid()+",zan="+toplist.getZan());
 		if (toplist2!=null){
 			toplist2.setZan(toplist.getZan());
-			toplistService.updateByKey(toplist2);
+			toplistService.updateZan(toplist2);
 		}
 		return null;
 	}
