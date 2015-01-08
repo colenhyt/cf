@@ -32,7 +32,7 @@ Datamgr.prototype = {
 	         
  		var tag = document.getElementById(this.tagname+"_dialog");
  		if (tag)
-		 tag.style.setProperty("width","580px");
+		 tag.style.setProperty("width",getSizes().PageWidth);
         
         var pagedetail = new PageUtil(this.tagdetailname);
         var psubclass = "";

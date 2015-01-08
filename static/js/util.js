@@ -1,3 +1,8 @@
+
+getSizes = function(){
+	return PageSizes["480"];
+}
+
 function loadStyle(url){
     var link = document.createElement('link');
     link.rel = "stylesheet";

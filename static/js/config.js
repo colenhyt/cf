@@ -1,7 +1,4 @@
 var g_game;
-var g_db;
-
-var CSS_FILE = "static/css/cf.css";
 
 var Page_Top = 80;
 var PageDetail_Top = 100;
@@ -20,8 +17,6 @@ var Panel_ClickColor = "#123123";
 
 var Login_InputDft = "输入你的昵称";
 
-var PlayerInfo_Pie_Width = 350;
-
 var PlayerInfo_Pie_Height = 400;
 
 var Screen_Status_Height = 40;
@@ -29,6 +24,11 @@ var Screen_Nav_Height = 88;
 
 var Scene_Width = 640;
 var Scene_Height = 1236 - Screen_Status_Height - Screen_Nav_Height;
+
+var PageSizes = {
+	"640":{PieWidth:350,PieHeight:400,PageWidth:"580px"},
+	"480":{PieWidth:260,PieHeight:280,PageWidth:"432px"},
+}
 
 var game_screen = {
 	swidth:window.screen.width/Scene_Width,sheight:window.screen.height/Scene_Height
@@ -64,28 +64,10 @@ var game_imgs = [
 	{name:"car4",src:"static/img/icon_car2.png",x:585,y:603,hasDiv:true},
 ];
 
-var cars_pos = {
-"car1":[[25,363],[30,365],[35,367],[40,369],[45,371],[50,376],[55,378],[]],
-"car2":[],
-"car3":[],
-};
-
 var head_imgs = [
 	{name:"man",src:"static/img/icon_boy.png",x:0,y:0,abs:true,hasDiv:true,divX:160,divY:10,zindex:10},
 	{name:"women",src:"static/img/icon_girl.png",x:0,y:0,abs:true,hasDiv:true,divX:160,divY:10,zindex:10},
 ]
-
-var game_page_imgs = {
-	"close.png":{width:77,height:69},
-	"title_bg.png":{width:268,height:69},
-	"title_signin.png":{width:185,height:41},
-	"title_quest.png":{width:185,height:41},
-	"title_insure.png":{width:185,height:41},
-	"title_stock.png":{width:185,height:41},
-	"title_bank.png":{width:185,height:41},
-	"title_help.png":{width:185,height:41},
-	"pop_big.png":{width:580,height:654},
-}
 
 var feeling_imgs = [
     {id:1,src:"static/img/feeling_1.png"},

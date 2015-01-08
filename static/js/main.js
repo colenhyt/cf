@@ -22,7 +22,6 @@ Main.prototype.init = function(){
     canvas.height = Scene_Height;
     document.body.appendChild(canvas);
 
-
 var tt =	getStyleValue("zui.css",".modal-dialog","width");
 
 //alert(screen.width);
@@ -41,6 +40,6 @@ var tt =	getStyleValue("zui.css",".modal-dialog","width");
 	g_game = new Game();
 	g_game.init(canvas);
 }
- 
+
 var g_main = new Main();
 g_main.init();

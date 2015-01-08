@@ -56,6 +56,10 @@ Toplist.prototype.buildHTML2 = function()
 			if (page.onClose)
 		  		page.onClose();
 		}) 	
+		
+ 		var tag = document.getElementById(this.tagname+"_dialog");
+ 		if (tag)
+		 tag.style.setProperty("width",getSizes().PageWidth);		
 }
 
 Toplist.prototype.buildPage = function(page)

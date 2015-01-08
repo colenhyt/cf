@@ -116,8 +116,8 @@ Playerinfo.prototype.showPie = function(data,divName){
 		showpercent:true,
 		animation:true,
 		decimalsnum:2,
-		width : PlayerInfo_Pie_Width,
-		height : PlayerInfo_Pie_Height,
+		width : getSizes().PieWidth,
+		height : getSizes().PieHeight,
 		radius:140,
 		offset_angle:12,
 	}).draw();	

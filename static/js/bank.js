@@ -50,6 +50,10 @@ Bank.prototype.buildHTML2 = function()
 		
         var page = this;
         
+ 		var tag = document.getElementById(this.tagname+"_dialog");
+ 		if (tag)
+		 tag.style.setProperty("width",getSizes().PageWidth);
+		         
 		$('#'+this.tagname).on('hide.zui.modal', function()
 		{
 			if (page.onClose)
