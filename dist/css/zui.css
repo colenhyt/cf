@@ -6195,6 +6195,8 @@ ol.linenums li {
 }
 .modal-dialog{
   z-index: 1050;
+  margin-top: 30px;
+  margin-bottom: 30px;  
   width: auto;
   height: 100%;
   margin-right: auto;
@@ -6282,13 +6284,7 @@ ol.linenums li {
 .modal-footer .btn-block + .btn-block {
   margin-left: 0;
 }
-@media screen {
-  .modal-dialog {
-    width: 580px;
-    margin-top: 30px;
-    margin-bottom: 30px;
-  }
-}
+
 .tooltip {
   position: absolute;
   z-index: 1030;
