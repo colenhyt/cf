@@ -1,17 +1,4 @@
 
-getSizes = function(){
-	return PageSizes["480"];
-}
-
-function loadStyle(url){
-    var link = document.createElement('link');
-    link.rel = "stylesheet";
-    link.type = "text/css";
-    link.href = url;
-    var head = document.getElementsByTagName("head")[0];
-    head.appendChild(link);
-}
-
 /**  
 * function for get the style value in special css file  
 * @param int css_file_id  
@@ -65,11 +52,30 @@ return p1 + sep + p2.toLowerCase();
 function isLegalName(param){
 	var ii = param.indexOf('-y');
 	var ii2 = param.indexOf('-x');
-	return param!='cssText'&&!param.match(/^[0-9].*$/)&&ii==-1&&ii2==-1;
+	var unlegls = ["backgroundRepeat","cssText","backgroundClip"
+	,"borderRight","borderLeft","backgroundImage"];
+	var found = false;
+	for (var i=0;i<unlegls.length;i++){
+		var index = param.indexOf(unlegls[i]);
+		if (index>=0){
+			found = true;
+			break;
+		}
+	}	
+	return !found&&!param.match(/^[0-9].*$/)&&ii==-1&&ii2==-1;
 }
 
 function isLegalValue(vv){
-	return vv.length>0&&vv.toLowerCase()!='initial';
+	var unlegls = ["initial"];
+	var found = false;
+//	for (var i=0;i<unlegls.length;i++){
+//		var index = vv.toLowerCase().indexOf(unlegls[i]);
+//		if (index>=0){
+//			found = true;
+//			break;
+//		}
+//	}	
+	return vv.length>0&&vv!="initial";
 }
 
 function outputCssStyles(css_file_name,per) {
@@ -94,14 +100,20 @@ function outputCssStyles(css_file_name,per) {
 	 	content += style.selectorText.toLowerCase()+"{"
 	 	for (param in style.style){
 			var value = style.style[param];
+			if (param=='background-repeat')
+			{
+				var a = 0;
+			}
 	 		if (isLegalName(param)&&isLegalValue(value)){
+	 		 value = value.replace('(http://localhost:8080/cf/',"('../../");
+	 		 value = value.replace('.png)',".png')");
 			 var index = value.indexOf("px");
 			 if (index>0){
 			  var pxva = value.substr(0,index);
 			  value = parseInt(parseInt(pxva)*per)+"px";
 			  //g_msg.tip(pxva);
 			 }
-	 			
+	 			//content += param+":"+value+";";
 	 			content += uncamelize(param,'-')+":"+value+";";
 //		 		if (param=='backgroundOrigin'){
 //		 			alert(style.style[param]);
@@ -114,11 +126,10 @@ function outputCssStyles(css_file_name,per) {
 	return content;	
 }
 
-function outputCssFiles() {
+function outputCssFiles(twidth) {
 	var tag = document.createElement("DIV");
-	var twidth = 480; //screen.width
 	var per = (twidth/640);
-	tag.innerHTML = outputCssStyles("cf.css",per);
+	tag.innerHTML = outputCssStyles("cf640.css",per);
 	tag.style.color = "#000000"
 	tag.width = "500px"
     tag.height = "600px";

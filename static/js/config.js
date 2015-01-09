@@ -1,8 +1,5 @@
 var g_game;
 
-var Page_Top = 80;
-var PageDetail_Top = 100;
-
 var UpdateDuration = 200;	//刷帧频率(ms)
 
 var MsgDuration = 200;	//消息刷帧频率(ms)
@@ -11,28 +8,11 @@ var StockDuration = 1000;	//股票刷帧频率(ms)
 
 var QUOTETIME = 300;		//行情跳动时间(秒)
 
-var EventTriggerTime = 250;	//随机事件跳动;
+var EventTriggerTime = 250000;	//随机事件跳动;
 
 var Panel_ClickColor = "#123123";
 
 var Login_InputDft = "输入你的昵称";
-
-var PlayerInfo_Pie_Height = 400;
-
-var Screen_Status_Height = 40;
-var Screen_Nav_Height = 88;
-
-var Scene_Width = 640;
-var Scene_Height = 1236 - Screen_Status_Height - Screen_Nav_Height;
-
-var PageSizes = {
-	"640":{PieWidth:350,PieHeight:400,PageWidth:"580px"},
-	"480":{PieWidth:260,PieHeight:280,PageWidth:"432px"},
-}
-
-var game_screen = {
-	swidth:window.screen.width/Scene_Width,sheight:window.screen.height/Scene_Height
-}
 
 var login_imgs = [
 	{name:"map",src:"static/img/login_bg.png",x:0,y:0,zindex:0},
@@ -112,3 +92,49 @@ ERR_MSG[MSG_MoneyNotEnough] = "你的钱不够";
 ERR_MSG[MSG_NoThisStock] = "这个股票不存在";
 ERR_MSG[MSG_NoSavingData] = "没有该存款";
 ERR_MSG[MSG_PlayerNameIsExist] = "这个昵称已经被使用";
+
+function loadStyle(url){
+    var link = document.createElement('link');
+    link.rel = "stylesheet";
+    link.type = "text/css";
+    link.href = url;
+    var head = document.getElementsByTagName("head")[0];
+    head.appendChild(link);
+}
+
+var Page_Top = 80;
+var PageDetail_Top = 100;
+
+var Screen_Status_Height = 40;
+var Screen_Nav_Height = 88;
+
+var Scene_Height = 1236 - Screen_Status_Height - Screen_Nav_Height;
+
+var PageSizes = {
+	"640":{SceneWidth:640,SceneHeight:1108,PieWidth:350,
+	PieHeight:400,PageWidth:"580px",PageHeight:"637px",PageTop:100,
+	DetailPageTop:80,MsgTop:120,
+	StockView:[540,420,480,280,22]},
+	"480":{SceneWidth:640,SceneHeight:1108,PieWidth:260,
+	PieHeight:280,PageWidth:"432px",PageHeight:"477px",PageTop:70,
+	DetailPageTop:50,MsgTop:100,StockView:[410,300,400,280,18]},
+}
+
+var SCREENKEY = 640;
+
+function initScreen(){
+	if (window.screen.width<640)
+		SCREENKEY = 480;
+	else
+		SCREENKEY = 640;
+		
+	SCREENKEY = 480;
+	var cssFile = "static/css/cf"+SCREENKEY+".css";
+	loadStyle(cssFile);		
+}
+
+initScreen();
+
+getSizes = function(){	
+	return PageSizes[SCREENKEY];
+}

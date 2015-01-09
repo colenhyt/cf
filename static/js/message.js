@@ -91,7 +91,7 @@ Msg.prototype.open2 = function(title,desc,okCallback,cbParam1,cbParam2,cbParam3,
 		var tag = document.getElementById(this.pagename);
 		tag.innerHTML = content;
 		
-		 $('#'+this.tagname).modal({position:120,show: true});  
+		 $('#'+this.tagname).modal({position:getSizes().MsgTop,show: true});  
 }
 
 Msg.prototype.open = function(desc,okCallback,cbParam1,cbParam2,cbParam3)

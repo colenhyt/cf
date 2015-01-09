@@ -16,10 +16,12 @@ Main.prototype.init = function(){
 	})	
 	
 	//loadStyle('static/css/cf.css');
-	//outputCssFiles();
+	//outputCssFiles(480);
+	//return;
+	
     var canvas = document.createElement("canvas");
-    canvas.width = Scene_Width;
-    canvas.height = Scene_Height;
+    canvas.width = getSizes().SceneWidth;
+    canvas.height = getSizes().SceneHeight;
     document.body.appendChild(canvas);
 
 var tt =	getStyleValue("zui.css",".modal-dialog","width");

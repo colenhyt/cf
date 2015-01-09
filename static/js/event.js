@@ -23,7 +23,7 @@ Event.prototype.triggerEvent = function(){
 	var tdata = store.get(this.name);
 	var index = Math.floor(Math.random()*tdata.length);
 	var item = tdata[index]; 
-	g_msg.tip("event trigger:"+item.id);
+	//g_msg.tip("event trigger:"+item.id);
 	
 	//this.isTrigger = true;
 	if (item.type==1){

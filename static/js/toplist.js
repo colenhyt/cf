@@ -58,8 +58,10 @@ Toplist.prototype.buildHTML2 = function()
 		}) 	
 		
  		var tag = document.getElementById(this.tagname+"_dialog");
- 		if (tag)
-		 tag.style.setProperty("width",getSizes().PageWidth);		
+ 		if (tag){
+		 tag.style.setProperty("width",getSizes().PageWidth);
+		 tag.style.setProperty("height",getSizes().PageHeight);
+ 		}
 }
 
 Toplist.prototype.buildPage = function(page)
@@ -102,8 +104,8 @@ Toplist.prototype.showToplist = function(type,page)
 			 content += "             <tr>"
 			 content += "               <td class='cftoplist_content'>姓名</td>"
 			 content += "               <td class='cftoplist_content'>资产</td>"
-			 content += "               <td class='cftoplist_td'>"+desc+"</td>"
-			 content += "               <td class='cftoplist_c2'>赞</td>"
+			 content += "               <td class='cftoplist_c4'>排名</td>"
+			 content += "               <td class='cftoplist_c3'>赞</td>"
 			content += "              </tr>"
 			content += "          </table>"
 			 content += "        <table id='toplist1_tab'>"
@@ -135,7 +137,7 @@ Toplist.prototype.showToplist = function(type,page)
 			 content += "               <td class='cftoplist_content' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.playername.substring(0,8)+"</div></td>"
 			 content += "               <td class='cftoplist_c5' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.money+"</div></td>"
 			 content += "               <td class='cftoplist_c4' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.top+"</div></td>"
-			 content += "               <td class='cftoplist_c3' style='color:yellow'><div class='cf_top_zan_me'><span class='cftoplist_c6 me'>*"+item.zan+"</span></div></td>"
+			 content += "               <td class='cftoplist_c3' style='color:yellow'><div onclick='g_toplist.zan("+page+","+item.playerid+")'<input type='button' class='cf_top_zan'/><span class='cftoplist_c6'>*<span id='zan_"+item.playerid+"'>"+item.zan+"</span></span></div></td>"
 			content += "              </tr>"			
 			}else {
 			 content += "             <tr>"

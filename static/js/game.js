@@ -296,7 +296,7 @@ Game.prototype.init = function(canvas){
 	
 	this.m_scene = new Scene();
 	var scene = this.m_scene;
-	scene.init(canvas,Scene_Width,Scene_Height);
+	scene.init(canvas);
 	
 	var game = this;
 	

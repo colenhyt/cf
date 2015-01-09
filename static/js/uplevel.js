@@ -45,7 +45,7 @@ Uplevel.prototype.open = function()
 	this.isLevel = true;
 	
 	var lv = g_title.getLevel();
-	var content =      "        <div style='margin: auto;text-align:center;margin-top:-70px'>"
+	var content =      "        <div class='cfuplevel_block'>"
 	content += "<div><img src='static/img/title_up.png'></div>"
 	content += "<img src='static/img/pop_line.png'>"
 	content += " <div class='cfplayer_head_bg uplevel'>"

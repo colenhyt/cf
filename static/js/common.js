@@ -31,13 +31,17 @@ Datamgr.prototype = {
 		}) 
 	         
  		var tag = document.getElementById(this.tagname+"_dialog");
- 		if (tag)
+ 		if (tag){
 		 tag.style.setProperty("width",getSizes().PageWidth);
+		 tag.style.setProperty("height","800px");
+ 		}
         
         var pagedetail = new PageUtil(this.tagdetailname);
         var psubclass = "";
         if (this.name=="insure"||this.name=="event"||this.name=="saving")
         	psubclass = "small";
+        else if (this.name=="stock")
+        	psubclass = "stock";
         pclass = "cfpagedetail "+psubclass;
         content =     "<div class=\"tab-pane in active\" id='quest2'>";
         content += "<div class='"+pclass+"' id='"+this.pagedetailname+"'>"

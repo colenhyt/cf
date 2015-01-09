@@ -88,19 +88,19 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 			title : {
 				text:titleText,
 				font : '微软雅黑',
-				fontsize:22,
+				fontsize:getSizes().StockView[4],
 				color:color
 			},
 			subtitle : {
 				text:subTitleText,
 				font : '微软雅黑',
-				fontsize:18,
+				fontsize:getSizes().StockView[4]-3,
 				color:color
 			},
 			animation:true,
 			offsetx: 15,
-			width : 540,
-			height : 420,
+			width : getSizes().StockView[0],
+			height : getSizes().StockView[1],
 			border:{
 					enable:false,
 				 },
@@ -128,8 +128,8 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 				point_size:1
 			},
 			coordinate:{
-				width:480,
-				height:280,
+				width:getSizes().StockView[2],
+				height:getSizes().StockView[3],
 				striped_factor : 0.18,
 				axis:{
 					color:'#311212',

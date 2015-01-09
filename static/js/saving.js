@@ -49,7 +49,7 @@ Saving.prototype.inContent = function(id,item){
  content += "        <div><span class='cpgapedetail_h2 left'>"+item.name+"存款</span>"
 	content += "<span class='cfsaving_stext'>存款 </span></div>"
 	content += "<img src='static/img/pop_line.png' class='cf_line'>"
- content += "           <div class='cfmsg_text saving'>  "
+ content += "           <div class='cfmsg_text'>  "
  content += "        <table id='toplist1_tab' class='cfsaving_content'>"
  content += "             <tr>"
  content += "               <td colspan='4'>利率: "+item.rate+"%</td>"
