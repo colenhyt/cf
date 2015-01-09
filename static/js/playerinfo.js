@@ -67,7 +67,7 @@ Playerinfo.prototype.showInfo = function(jsondata){
     
 	this.showPie(data,this.graphName);
 	
-    $('#'+this.tagname).modal({position:Page_Top,show:true});       
+    $('#'+this.tagname).modal({position:getSizes().PageTop,show:true});       
 }
 
 
@@ -84,7 +84,7 @@ Playerinfo.prototype.showPie = function(data,divName){
 		data: data,
 		title : {
 			text:"资产分布",
-			fontsize:30,
+			fontsize:getSizes().PieFontSize,
 			offsety:30,
 			color:'#ffffff'
 		},

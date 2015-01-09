@@ -123,7 +123,8 @@ Datamgr.prototype = {
     	var tag = document.getElementById("tag"+this.name);
     	if (tag&&this.name!=g_playerinfo.name){
     		var name = "g_"+this.name;
-    		tag.innerHTML = "<img src='static/img/icon_"+this.name+"_on.png' onclick='"+name+".onclick()'>"
+    		var className = "cf"+this.name+"_clickon"
+    		tag.innerHTML = "<img src='static/img/icon_"+this.name+"_on.png' onclick='"+name+".onclick()' class='"+className+"'>"
     	}
 	     this.show();
     },    
@@ -133,7 +134,7 @@ Datamgr.prototype = {
 		var ss = myDate.getSeconds(); 
 		var ms = myDate.getMilliseconds();	
 		this.buildPage(0);
-        $('#'+this.tagname).modal({position:Page_Top,show: true}); 
+        $('#'+this.tagname).modal({position:getSizes().PageTop,show: true}); 
         var myDate22 = new Date();
 		var ss2 = myDate22.getSeconds(); 
 		var ms2 = myDate22.getMilliseconds();

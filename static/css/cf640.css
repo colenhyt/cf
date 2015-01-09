@@ -14,7 +14,7 @@ body {
   outline: none;
   transition:all 0.3s;
   width:580px;
-  height:637px;
+  height:650px;
   background:url('../../static/img/pop_big.png') no-repeat;
   -moz-background-size:100% 100%;  
     background-size:100% 100%;  
@@ -102,6 +102,8 @@ top:0px;
 .cfpage_text.quest2{
 left:-3px;
 top:0px;
+width:90px;
+height:100px;
 }
 
 .cfpage_text.stock{
@@ -112,36 +114,48 @@ top:207px;
 .cfpage_text.tip{
 left:75px;
 top:-75px;
+width:88px;
+height:101px;
 z-index:200;
 }
 
 .cfpage_text.tip2{
 left:75px;
 top:-90px;
+width:88px;
+height:101px;
 z-index:200;
 }
 
 .cfpage_text.stocktip{
 left:35px;
 top:-75px;
+width:88px;
+height:101px;
 z-index:200;
 }
 
 .cfpage_text.stocktip2{
 left:35px;
 top:-90px;
+width:88px;
+height:101px;
 z-index:200;
 }
 
 .cfpage_text.banktip{
 left:75px;
 top:-75px;
+width:88px;
+height:101px;
 z-index:200;
 }
 
 .cfpage_text.banktip2{
 left:75px;
 top:-90px;
+width:88px;
+height:101px;
 z-index:200;
 }
 
@@ -399,6 +413,26 @@ color:blue;
 .cfpagedetail.stock
 {
   height:940px;
+}
+
+.cfhelp_clickon{
+width:165px;
+height:170px;
+}
+
+.cfinsure_clickon{
+width:234px;
+height:317px;
+}
+
+.cfbank_clickon{
+width:200px;
+height:308px;
+}
+
+.cfstock_clickon {
+width:214px;
+height:390px;
 }
 
 .cfstock_qtime0{
@@ -662,15 +696,23 @@ margin-top:10px;
 color:red;
 }
 
+.cffeelingimg {
+width:99px;
+height:114px;
+}
+.cffeelingword {
+width:40px;
+height:41px;
+}
+
 .cf_signin_feeling{
 margin-left:-15px;
 margin-top:5px;
-padding-bottom:20px;
 }
 .cf_signin_feeling2{
 margin-left:-5px;
 width:534px;
-height:260px;
+height:230px;
 background:url('../../static/img/signin_bg.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%; 

@@ -39,7 +39,7 @@ Saving.prototype.showDetail = function(id){
 	var tag = document.getElementById(this.pagedetailname);
 	tag.innerHTML = content;
         
-	$('#'+this.tagdetailname).modal({position:PageDetail_Top,show: true});
+	$('#'+this.tagdetailname).modal({position:getSizes().DetailPageTop,show: true});
 }
 
 Saving.prototype.inContent = function(id,item){

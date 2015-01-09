@@ -16,7 +16,7 @@ Main.prototype.init = function(){
 	})	
 	
 	//loadStyle('static/css/cf.css');
-	//outputCssFiles(480);
+	//outputCssFiles(360);
 	//return;
 	
     var canvas = document.createElement("canvas");

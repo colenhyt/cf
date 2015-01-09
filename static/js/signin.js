@@ -87,9 +87,9 @@ Signin.prototype.show = function(){
 	 	var id = i+1;
         context += "<td class='cfsignin_feelingimgs' id='signin_feeling"+id+"'";
          context += " onclick='g_signin.clickFeeling("+id+")'>";
-        context += "<img src='"+img.src+"'><br><br>";
+        context += "<img class='cffeelingimg' src='"+img.src+"'><br>";
 	 	img = feeling_imgs[i+4];
-          context += "<img src='"+img.src+"'>";
+          context += "<img class='cffeelingword'  src='"+img.src+"'>";
  		context += "</td>"
  	  }
  	context += "</tr>"
@@ -97,7 +97,7 @@ Signin.prototype.show = function(){
     
     tagfeel.innerHTML = context;
     
-    $('#'+this.tagname).modal({backdrop:'static',position:Page_Top,show:true});       
+    $('#'+this.tagname).modal({backdrop:'static',position:getSizes().PageTop,show:true});       
 }
 
 Signin.prototype.clickFeeling = function(feelingId){

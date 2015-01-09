@@ -165,6 +165,8 @@ log33 = function(text){
 }
 
 log = function(text){
+if (g_msg)
+g_msg.tip(text);
 return;
 	var name = "console";
 	 var div=document.getElementById(name);

@@ -48,6 +48,8 @@ Map.prototype.init = function(width,height){
 	canvas.onclick = function(event){
 		var clickX = event.clientX - pos.x;
 		var clickY = event.clientY - pos.y;
+		if (g_msg)
+		g_msg.tip("x:"+clickX+";y:"+clickY);
 //		clickX = clickX/0.6;
 //		clickY = clickY/0.6-20;
 		var mapImgs = map.m_imgs;
@@ -56,8 +58,12 @@ Map.prototype.init = function(width,height){
             var image = mapImgs[i];
             if (image.name!="map")
             {            
-            if (image.x<=clickX&&clickX<=image.img.width+(image.x-pos.x)&&
-                image.y<=clickY&&clickY<=image.img.height+(image.y-pos.y))
+            	var imgx = parseInt(image.x*SIZEPER)
+            	var imgy = parseInt(image.y*SIZEPER)
+            	var imgwidth = parseInt(image.img.width*SIZEPER)
+            	var imgheight = parseInt(image.img.height*SIZEPER)
+            if (imgx<=clickX&&clickX<=imgwidth+(imgx-pos.x)&&
+                imgy<=clickY&&clickY<=imgwidth+(imgy-pos.y))
             {
                map.onclick(image,clickX,clickY);
                break;

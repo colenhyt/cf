@@ -112,25 +112,33 @@ var Scene_Height = 1236 - Screen_Status_Height - Screen_Nav_Height;
 
 var PageSizes = {
 	"640":{SceneWidth:640,SceneHeight:1108,PieWidth:350,
-	PieHeight:400,PageWidth:"580px",PageHeight:"637px",PageTop:100,
-	DetailPageTop:80,MsgTop:120,
+	PieHeight:400,PageWidth:"580px",PieFontSize:30,PageHeight:"637px",PageTop:80,
+	DetailPageTop:100,MsgTop:120,
 	StockView:[540,420,480,280,22]},
-	"480":{SceneWidth:640,SceneHeight:1108,PieWidth:260,
-	PieHeight:280,PageWidth:"432px",PageHeight:"477px",PageTop:70,
-	DetailPageTop:50,MsgTop:100,StockView:[410,300,400,280,18]},
+	"480":{SceneWidth:640,SceneHeight:1108,PieWidth:260,PieFontSize:24,
+	PieHeight:280,PageWidth:"432px",PageHeight:"477px",PageTop:60,
+	DetailPageTop:80,MsgTop:100,StockView:[410,300,400,280,18]},
+	"360":{SceneWidth:640,SceneHeight:1108,PieWidth:200,PieFontSize:20,
+	PieHeight:220,PageWidth:"328px",PageHeight:"477px",PageTop:40,
+	DetailPageTop:50,MsgTop:50,StockView:[300,220,280,200,15]},
 }
 
 var SCREENKEY = 640;
+var SIZEPER = 1;
 
 function initScreen(){
 //alert(window.screen.width)
 	var width = window.screen.width;
-	if (width>640)
+	if (width>=640)
 		SCREENKEY = 640;
-	else if (width<=640&&width>=480)
+	else if (width<640&&width>=480)
 		SCREENKEY = 480;
-		
-	//SCREENKEY = 480;
+	else
+		SCREENKEY = 360;
+			
+	//SCREENKEY = 360;
+	SIZEPER = SCREENKEY/640;
+	
 	var cssFile = "static/css/cf"+SCREENKEY+".css";
 	loadStyle(cssFile);		
 }

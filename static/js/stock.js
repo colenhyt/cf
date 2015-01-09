@@ -123,7 +123,7 @@ Stock.prototype.show = function(){
 		this.buildPage(0);
 		this.isOpen = true;
 		//this.hasTip = false;
-        $('#'+this.tagname).modal({position:Page_Top,show: true});    
+        $('#'+this.tagname).modal({position:getSizes().PageTop,show: true});    
         var myDate22 = new Date();
 		var ss2 = myDate22.getSeconds(); 
 		var ms2 = myDate22.getMilliseconds();
