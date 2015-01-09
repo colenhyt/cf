@@ -341,7 +341,7 @@ position:relative;
 text-align:center;
 line-weight:23px;
 font-size:28px;
-height:280px;
+height:260px;
 }
 
 .cfmsg_text.uplevel{
@@ -350,10 +350,6 @@ text-align:center;
 line-weight:23px;
 font-size:28px;
 height:150px;
-}
-
-.cfmsg_text.saving{
-height:280px;
 }
 
 .cfpanel
@@ -725,6 +721,14 @@ text-align:center;
 
 .cfuplevel_img {
 margin-left:70px;
+width:500px;
+height:500px;
+}
+
+.cfuplevel_block {
+margin: auto;
+text-align:center;
+margin-top:-70px
 }
 
 .cfsignin_content {
