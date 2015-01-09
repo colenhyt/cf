@@ -256,7 +256,7 @@ Stock.prototype.showDetail = function(id,isflush){
     	g_stockdetail.drawQuote(id,ps,quotes,this.graphName);
         
     if (isflush==null)
-		$('#'+this.tagdetailname).modal({position:30,show: true});  
+		$('#'+this.tagdetailname).modal({position:5,show: true});  
 }
 
 Stock.prototype.isStockOpen = function()

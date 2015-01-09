@@ -123,12 +123,14 @@ var PageSizes = {
 var SCREENKEY = 640;
 
 function initScreen(){
-	if (window.screen.width<640)
-		SCREENKEY = 480;
-	else
+//alert(window.screen.width)
+	var width = window.screen.width;
+	if (width>640)
 		SCREENKEY = 640;
+	else if (width<=640&&width>=480)
+		SCREENKEY = 480;
 		
-	SCREENKEY = 480;
+	//SCREENKEY = 480;
 	var cssFile = "static/css/cf"+SCREENKEY+".css";
 	loadStyle(cssFile);		
 }
