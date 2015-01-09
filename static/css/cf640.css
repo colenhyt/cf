@@ -2,7 +2,7 @@
 img{ max-width:100%;} 
 
 body {
-  font-size:350%;
+  font-size:36px;
   color:#ffffff;
 }
 
@@ -389,10 +389,16 @@ height:150px;
   position: relative;
   padding: 20px;
   margin: 0 0 15px;
+  width:580px;
 color:blue;
  background:url('../../static/img/popd_big.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
+}
+
+.cfpagedetail.stock
+{
+  height:950px;
 }
 
 .cfstock_qtime0{
