@@ -2,7 +2,7 @@ img{max-width:100%;}
 
 body{color:rgb(255, 255, 255);font-size:27px;}
 
-.cfpage{background:url('../../static/img/pop_big.png') no-repeat;background-size:100%;height:477px;outline:none;outline-style:none;padding-left:18px;padding-top:3px;position:relative;transition:all 0.3s;transition-duration:0.3s;transition-property:all;webkit-transition:all 0.3s;webkit-transition-duration:0.3s;webkit-transition-property:all;width:435px;}
+.cfpage{background:url('../../static/img/pop_big.png') no-repeat;background-size:100%;height:490px;outline:none;outline-style:none;padding-left:18px;padding-top:3px;position:relative;transition:all 0.3s;transition-duration:0.3s;transition-property:all;webkit-transition:all 0.3s;webkit-transition-duration:0.3s;webkit-transition-property:all;width:435px;}
 
 .cfpage.player{height:528px;}
 
@@ -112,9 +112,9 @@ td{font-size:21px;font-weight:bold;}
 
 .cfpanel_text.right{float:right;position:relative;}
 
-.cfmsg_text{font-size:21px;height:195px;position:relative;text-align:center;}
+.cfmsg_text{font-size:21px;height:175px;position:relative;text-align:center;}
 
-.cfmsg_text.uplevel{font-size:21px;height:112px;position:relative;text-align:center;}
+.cfmsg_text.uplevel{font-size:21px;height:80px;position:relative;text-align:center;}
 
 .cfpanel{background:url('../../static/img/panel_bg.png') no-repeat;background-size:100%;height:75px;margin-top:6px;padding-left:7px;padding-top:4px;position:relative;width:95%;}
 
