@@ -124,9 +124,12 @@ td{font-size:15px;font-weight:bold;}
 
 .cfpanel_body{height:292px;}
 
-.cfpagedetail{background:url('../../static/img/popd_big.png') no-repeat;background-size:100%;color:blue;margin:0px;margin-bottom:8px;margin-left:0px;margin-right:0px;margin-top:0px;padding:11px;padding-bottom:11px;padding-left:11px;padding-right:11px;padding-top:11px;position:relative;width:326px;}
+.cfpagedetail{background:url('../../static/img/popd_big.png') no-repeat;background-size:100%;color:blue;margin:0px;margin-bottom:8px;margin-left:0px;margin-right:0px;margin-top:0px;padding:11px;padding-bottom:11px;padding-left:11px;padding-right:11px;padding-top:11px;position:relative;width:326px;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
 
-.cfpagedetail.stock{height:528px;}
+.cfpagedetail.stock{height:590px;}
 
 .cfhelp_clickon{height:95px;width:92px;}
 
