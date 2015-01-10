@@ -34,7 +34,7 @@ var game_imgs = [
 	{name:"help",src:"static/img/icon_help.png",x:170,y:280,hasDiv:true},
 	{name:"stock",src:"static/img/icon_stock.png",x:385,y:207,hasDiv:true,zindex:100,},
 	{name:"bank",src:"static/img/icon_bank.png",x:70,y:448,hasDiv:true,zindex:100,},
-	{name:"insure",src:"static/img/icon_insure.png",x:342,y:622,hasDiv:true},
+	{name:"insure",src:"static/img/icon_insure.png",x:342,y:622,hasDiv:true,zindex:100,},
 	{name:"saving",src:"static/img/icon_saving.png",x:150,y:15,hasDiv:true},
 	{name:"weektop",src:"static/img/icon_weektop.png",x:365,y:15,hasDiv:true},
 	{name:"level",src:"static/img/icon_level.png",x:-5,y:103,hasDiv:true},
@@ -155,7 +155,17 @@ var SIZEPER = 1;
 function initScreen(){
 //alert(window.screen.width)
 	var versions = browser.versions
-	{
+	if (versions.iPhone==true){
+	metas = window.parent.document.getElementsByTagName("meta");
+	for(i=0;i<metas.length;i++)
+     {
+      if (metas[i].getAttribute("name")=="viewport"){
+       alert(metas[i].getAttribute("name"))
+       metas[i].setAttribute("content","width=320");
+       break;  
+      }
+	}
+ 	{
  	 var width = window.screen.width;
 	 if (width>=640)
 		SCREENKEY = 640;
@@ -166,8 +176,9 @@ function initScreen(){
 	 else
 	    SCREENKEY = 320;
 	}
-			
-	SCREENKEY = 320;
+
+}
+	//SCREENKEY = 320;
 	SIZEPER = SCREENKEY/640;
 	
 	var cssFile = "static/css/cf"+SCREENKEY+".css";
