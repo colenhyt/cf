@@ -160,10 +160,11 @@ function initScreen(){
 	for(i=0;i<metas.length;i++)
      {
       if (metas[i].getAttribute("name")=="viewport"){
-       alert(metas[i].getAttribute("name"))
+       //alert(metas[i].getAttribute("name"))
        metas[i].setAttribute("content","width=320");
        break;  
       }
+	}
 	}
  	{
  	 var width = window.screen.width;
@@ -177,7 +178,6 @@ function initScreen(){
 	    SCREENKEY = 320;
 	}
 
-}
 	//SCREENKEY = 320;
 	SIZEPER = SCREENKEY/640;
 	

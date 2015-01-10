@@ -48,8 +48,8 @@ Map.prototype.init = function(width,height){
 	canvas.onclick = function(event){
 		var clickX = event.clientX - pos.x;
 		var clickY = event.clientY - pos.y;
-		if (g_msg)
-		g_msg.tip("x:"+clickX+";y:"+clickY);
+		//if (g_msg)
+		//g_msg.tip("x:"+clickX+";y:"+clickY);
 //		clickX = clickX/0.6;
 //		clickY = clickY/0.6-20;
 		var mapImgs = map.m_imgs;
@@ -256,7 +256,7 @@ Map.prototype.update = function(){
 }
 
 Map.prototype.onclick = function(obj,clickX,clickY){
-    log('click map obj: '+obj.name);
+    //log('click map obj: '+obj.name);
     var clickObj = g_game.sys[obj.name];
     if (clickObj!=null)
         clickObj.onclick(clickX,clickY);
