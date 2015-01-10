@@ -118,15 +118,15 @@ var PageSizes = {
 	
 	"480":{SceneWidth:640,SceneHeight:1108,PieWidth:260,PieFontSize:24,
 	PieHeight:280,PageWidth:"432px",PageHeight:"477px",PageTop:60,
-	DetailPageTop:80,MsgTop:100,StockView:[410,300,400,280,18]},
+	DetailPageTop:80,MsgTop:100,StockView:[410,350,400,230,18]},
 	
 	"360":{SceneWidth:640,SceneHeight:1108,PieWidth:200,PieFontSize:20,
 	PieHeight:220,PageWidth:"328px",PageHeight:"477px",PageTop:40,
-	DetailPageTop:50,MsgTop:50,StockView:[300,220,280,200,15]},
+	DetailPageTop:50,MsgTop:50,StockView:[300,300,280,190,15]},
 
 	"320":{SceneWidth:640,SceneHeight:1108,PieWidth:180,PieFontSize:16,
 	PieHeight:190,PageWidth:"290px",PageHeight:"477px",PageTop:50,
-	DetailPageTop:60,MsgTop:40,StockView:[260,220,240,200,15]},
+	DetailPageTop:60,MsgTop:40,StockView:[270,220,260,120,15]},
 }
 
 var SCREENKEY = 640;
@@ -165,7 +165,6 @@ function initScreen(){
 		SCREENKEY = 360;
 	 else
 	    SCREENKEY = 320;
-	    		
 	}
 			
 	SCREENKEY = 320;
