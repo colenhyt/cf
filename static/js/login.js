@@ -257,7 +257,6 @@ Login.prototype.login = function(){
 	        }
     }
     
-    g_signin.start(0);
     //player props
     g_player.flushPageview();
     	   

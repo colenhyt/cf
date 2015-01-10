@@ -94,7 +94,7 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 			subtitle : {
 				text:subTitleText,
 				font : '微软雅黑',
-				fontsize:getSizes().StockView[4]-3,
+				fontsize:getSizes().StockView[4]-2,
 				color:color
 			},
 			animation:true,
@@ -111,8 +111,8 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 				listeners:{
 					 //tip:提示框对象、name:数据名称、value:数据值、text:当前文本、i:数据点的索引
 					parseText:function(tip,name,value,text,i){
-						return "<span style='color:#005268;font-size:15px;'>"+labels[i]+":00价格约:<br/>"+
-						"</span><span style='color:#005268;font-size:20px;'>"+value+"</span>";
+						return "<span style='color:#005268;font-size:15px;'>价格约:<br/>"+
+						"</span><span style='color:#005268;font-size:20px;'>"+ForDight(value)+"</span>";
 					}
 				}
 			},

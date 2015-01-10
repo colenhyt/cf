@@ -115,28 +115,60 @@ var PageSizes = {
 	PieHeight:400,PageWidth:"580px",PieFontSize:30,PageHeight:"637px",PageTop:80,
 	DetailPageTop:100,MsgTop:120,
 	StockView:[540,420,480,280,22]},
+	
 	"480":{SceneWidth:640,SceneHeight:1108,PieWidth:260,PieFontSize:24,
 	PieHeight:280,PageWidth:"432px",PageHeight:"477px",PageTop:60,
 	DetailPageTop:80,MsgTop:100,StockView:[410,300,400,280,18]},
+	
 	"360":{SceneWidth:640,SceneHeight:1108,PieWidth:200,PieFontSize:20,
 	PieHeight:220,PageWidth:"328px",PageHeight:"477px",PageTop:40,
 	DetailPageTop:50,MsgTop:50,StockView:[300,220,280,200,15]},
+
+	"320":{SceneWidth:640,SceneHeight:1108,PieWidth:180,PieFontSize:16,
+	PieHeight:190,PageWidth:"290px",PageHeight:"477px",PageTop:50,
+	DetailPageTop:60,MsgTop:40,StockView:[260,220,240,200,15]},
 }
 
 var SCREENKEY = 640;
 var SIZEPER = 1;
 
+ var browser={
+    versions:function(){ 
+           var u = navigator.userAgent, app = navigator.appVersion; 
+           return {//移动终端浏览器版本信息 
+                trident: u.indexOf('Trident') > -1, //IE内核
+                presto: u.indexOf('Presto') > -1, //opera内核
+                webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+                gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+                mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+                ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+                android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+                iPhone: u.indexOf('iPhone') > -1 , //是否为iPhone或者QQHD浏览器
+                iPhone5: u.indexOf('iPhone OS 6_1') > -1 , //os版本
+                iPad: u.indexOf('iPad') > -1, //是否iPad
+                webApp: u.indexOf('Safari') == -1 //是否web应该程序，没有头部与底部
+            };
+         }(),
+         language:(navigator.browserLanguage || navigator.language).toLowerCase()
+} 
+
 function initScreen(){
 //alert(window.screen.width)
-	var width = window.screen.width;
-	if (width>=640)
+	var versions = browser.versions
+	{
+ 	 var width = window.screen.width;
+	 if (width>=640)
 		SCREENKEY = 640;
-	else if (width<640&&width>=480)
+	 else if (width<640&&width>=480)
 		SCREENKEY = 480;
-	else
+	 else if (width<480&&width>=360)
 		SCREENKEY = 360;
+	 else
+	    SCREENKEY = 320;
+	    		
+	}
 			
-	//SCREENKEY = 360;
+	SCREENKEY = 320;
 	SIZEPER = SCREENKEY/640;
 	
 	var cssFile = "static/css/cf"+SCREENKEY+".css";
@@ -148,3 +180,16 @@ initScreen();
 getSizes = function(){	
 	return PageSizes[SCREENKEY];
 }
+
+
+function aa(){
+document.writeln("语言版本: "+browser.language);
+document.writeln(" 是否为移动终端: "+browser.versions.mobile);
+document.writeln(" ios终端: "+browser.versions.ios);
+document.writeln(" android终端: "+browser.versions.android);
+document.writeln(" 是否为iPhone: "+browser.versions.iPhone);
+document.writeln(" 是否为iPhone5: "+browser.versions.iPhone5);
+document.writeln(" 是否iPad: "+browser.versions.iPad);
+document.writeln(navigator.userAgent);
+}
+//aa();
