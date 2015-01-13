@@ -31,7 +31,6 @@ store.remove(this.tagtab2);
 	if (pzan==null){
 		store.set(this.zandata,{});
 	}	
-	this.syncData2();
 	this.buildHTML2();
 }
 
@@ -66,6 +65,7 @@ Toplist.prototype.buildHTML2 = function()
 
 Toplist.prototype.buildPage = function(page)
 {
+	this.syncData2();
 	this.currPage = page;
 	this.showToplist(0,0);
 }

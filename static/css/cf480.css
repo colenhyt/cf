@@ -2,7 +2,7 @@ img{max-width:100%;}
 
 body{color:rgb(255, 255, 255);font-size:27px;}
 
-.cfpage{background:url('../../static/img/pop_big.png') no-repeat;background-size:100%;height:490px;outline:none;outline-style:none;padding-left:18px;padding-top:3px;position:relative;transition:all 0.3s;transition-duration:0.3s;transition-property:all;webkit-transition:all 0.3s;webkit-transition-duration:0.3s;webkit-transition-property:all;width:435px;}
+.cfpage{background:url('../../static/img/pop_big.png') no-repeat;background-size:100%;height:487px;outline:none;outline-style:none;padding-left:18px;padding-top:3px;position:relative;transition:all 0.3s;transition-duration:0.3s;transition-property:all;webkit-transition:all 0.3s;webkit-transition-duration:0.3s;webkit-transition-property:all;width:435px;}
 
 .cfpage.player{height:528px;}
 
@@ -32,21 +32,21 @@ td{font-size:21px;font-weight:bold;}
 
 .cfpage_text.quest{left:414px;top:0px;}
 
-.cfpage_text.quest2{left:-2px;top:0px;}
+.cfpage_text.quest2{height:75px;left:-2px;top:0px;width:67px;}
 
 .cfpage_text.stock{left:288px;top:155px;}
 
-.cfpage_text.tip{left:56px;top:-56px;z-index:200;}
+.cfpage_text.tip{height:75px;left:56px;top:-56px;width:66px;z-index:200;}
 
-.cfpage_text.tip2{left:56px;top:-67px;z-index:200;}
+.cfpage_text.tip2{height:75px;left:56px;top:-67px;width:66px;z-index:200;}
 
-.cfpage_text.stocktip{left:26px;top:-56px;z-index:200;}
+.cfpage_text.stocktip{height:75px;left:26px;top:-56px;width:66px;z-index:200;}
 
-.cfpage_text.stocktip2{left:26px;top:-67px;z-index:200;}
+.cfpage_text.stocktip2{height:75px;left:26px;top:-67px;width:66px;z-index:200;}
 
-.cfpage_text.banktip{left:56px;top:-56px;z-index:200;}
+.cfpage_text.banktip{height:75px;left:56px;top:-56px;width:66px;z-index:200;}
 
-.cfpage_text.banktip2{left:56px;top:-67px;z-index:200;}
+.cfpage_text.banktip2{height:75px;left:56px;top:-67px;width:66px;z-index:200;}
 
 .cfpage_text.insure{left:256px;top:466px;}
 
@@ -112,9 +112,9 @@ td{font-size:21px;font-weight:bold;}
 
 .cfpanel_text.right{float:right;position:relative;}
 
-.cfmsg_text{font-size:21px;height:175px;position:relative;text-align:center;}
+.cfmsg_text{font-size:21px;height:195px;position:relative;text-align:center;}
 
-.cfmsg_text.uplevel{font-size:21px;height:80px;position:relative;text-align:center;}
+.cfmsg_text.uplevel{font-size:21px;height:112px;position:relative;text-align:center;}
 
 .cfpanel{background:url('../../static/img/panel_bg.png') no-repeat;background-size:100%;height:75px;margin-top:6px;padding-left:7px;padding-top:4px;position:relative;width:95%;}
 
@@ -129,7 +129,15 @@ td{font-size:21px;font-weight:bold;}
     background-size:100% 100%;  
 }
 
-.cfpagedetail.stock{height:735px;}
+.cfpagedetail.stock{height:705px;}
+
+.cfhelp_clickon{height:127px;width:123px;}
+
+.cfinsure_clickon{height:237px;width:175px;}
+
+.cfbank_clickon{height:231px;width:150px;}
+
+.cfstock_clickon{height:292px;width:160px;}
 
 .cfstock_qtime0{background:green;background-color:green;border:0px;border-bottom-color:black;border-bottom-style:solid;border-bottom-width:0px;border-color:black;border-style:solid;border-top:0px;border-top-color:black;border-top-style:solid;border-top-width:0px;border-width:0px;height:24px;position:relative;width:397px;}
 
@@ -207,9 +215,13 @@ td{font-size:21px;font-weight:bold;}
 
 .cf_font4{color:red;margin-top:7px;}
 
-.cf_signin_feeling{margin-left:-11px;margin-top:3px;padding-bottom:15px;}
+.cffeelingimg{height:85px;width:74px;}
 
-.cf_signin_feeling2{background:url('../../static/img/signin_bg.png') no-repeat;background-size:100%;height:195px;margin-left:-3px;width:400px;}
+.cffeelingword{height:30px;width:30px;}
+
+.cf_signin_feeling{margin-left:-11px;margin-top:3px;}
+
+.cf_signin_feeling2{background:url('../../static/img/signin_bg.png') no-repeat;background-size:100%;height:172px;margin-left:-3px;width:400px;}
 
 .cf_feeling{margin-left:11px;margin-top:15px;padding-bottom:15px;width:2px;}
 
@@ -249,6 +261,6 @@ td{font-size:21px;font-weight:bold;}
 
 .cfinsure_finalcount{font-size:24px;height:43px;text-align:center;width:112px;}
 
-.cfmsg{background:rgb(39, 88, 104);background-color:rgb(39, 88, 104);color:yellow;font-weight:bold;height:67px;left:45px;opacity:0.95;position:absolute;text-align:center;top:262px;width:375px;z-index:2000;}
+.cfmsg{background:rgb(39, 88, 104);background-color:rgb(39, 88, 104);color:yellow;font-weight:bold;height:82px;left:45px;opacity:0.95;position:absolute;text-align:center;top:262px;width:375px;z-index:2000;}
 
 .td_right{}

@@ -1,8 +1,8 @@
 img{max-width:100%;}
 
-body{color:rgb(255, 255, 255);font-size:20px;color:#ffffff}
+body{color:rgb(255, 255, 255);font-size:20px;}
 
-.cfpage{background:url('../../static/img/pop_big.png') no-repeat;background-size:100%;height:375px;outline:none;outline-style:none;padding-left:14px;padding-top:2px;position:relative;transition:all 0.3s;transition-duration:0.3s;transition-property:all;webkit-transition:all 0.3s;webkit-transition-duration:0.3s;webkit-transition-property:all;width:326px;}
+.cfpage{background:url('../../static/img/pop_big.png') no-repeat;background-size:100%;height:365px;outline:none;outline-style:none;padding-left:14px;padding-top:2px;position:relative;transition:all 0.3s;transition-duration:0.3s;transition-property:all;webkit-transition:all 0.3s;webkit-transition-duration:0.3s;webkit-transition-property:all;width:326px;}
 
 .cfpage.player{height:396px;}
 
@@ -129,7 +129,7 @@ td{font-size:15px;font-weight:bold;}
     background-size:100% 100%;  
 }
 
-.cfpagedetail.stock{height:590px;}
+.cfpagedetail.stock{height:528px;}
 
 .cfhelp_clickon{height:95px;width:92px;}
 

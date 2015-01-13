@@ -17,7 +17,7 @@ public class ToplistAction extends BaseAction {
 	
 	public String list(){
 		List<Toplist> weeklist = toplistService.findByType(0);
-		List<Toplist> monthlist = toplistService.findByType(1);
+		List<Toplist> monthlist = toplistService.findMonth();
 		JSONArray jsonObject = new JSONArray();
 		jsonObject.add(weeklist);
 		jsonObject.add(monthlist);

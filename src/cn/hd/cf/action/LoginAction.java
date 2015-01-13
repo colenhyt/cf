@@ -1,6 +1,7 @@
 package cn.hd.cf.action;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -172,9 +173,14 @@ public class LoginAction extends BaseAction {
 		Toplist toplist = toplistService.findByPlayerId(playerBlob.getPlayerid(),0);
 		if (toplist!=null)
 			playerBlob.setZan(toplist.getZan());
-		int top = toplistService.findCountByGreaterMoney(0,playerBlob.getPlayerid());
+		
+		Date now = new Date();
+	    Calendar cl = Calendar. getInstance();
+	    cl.setTime(now);	
+	    int currWeek = cl.get(Calendar.WEEK_OF_YEAR);
+		int top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),currWeek);
 		playerBlob.setWeektop(top+1);
-		top = toplistService.findCountByGreaterMoney(1,playerBlob.getPlayerid());
+		top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),-1);
 		playerBlob.setMonthtop(top+1);
 		float margin = StockManager.getInstance().getMarginSec();
 		System.out.println("价格跳动:"+margin);

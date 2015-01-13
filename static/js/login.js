@@ -28,7 +28,7 @@ Login.prototype.draw = function()
 		    var div = document.createElement("div");
 		    div.id = "inputnickdiv";
 		    var nickName = tdata?tdata.playername:Login_InputDft;
-		    nickName = Date.parse(new Date());
+		   // nickName = Date.parse(new Date());
 		    var title = "<span>昵称:</span>"
 		    var input = "<input type='text' id='inputnick' value='"+nickName+"' class='cflogin_input' onfocus='g_login.clearInput()'>";
 		    div.innerHTML = title+input;
@@ -107,7 +107,7 @@ Login.prototype.onImgClick = function(image)
 		if (this.sex==null){
 			this.msg("选择你的性别");
 			this.sex = 1;
-			//return;
+			return;
 		}
 		var canLogin = true;
 		if (tdata==null)

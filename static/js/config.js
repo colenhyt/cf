@@ -111,6 +111,11 @@ var Screen_Nav_Height = 88;
 var Scene_Height = 1236 - Screen_Status_Height - Screen_Nav_Height;
 
 var PageSizes = {
+	"960":{SceneWidth:640,SceneHeight:1108,PieWidth:350,
+	PieHeight:400,PageWidth:"580px",PieFontSize:30,PageHeight:"637px",PageTop:80,
+	DetailPageTop:100,MsgTop:120,
+	StockView:[540,420,480,280,22]},
+
 	"640":{SceneWidth:640,SceneHeight:1108,PieWidth:350,
 	PieHeight:400,PageWidth:"580px",PieFontSize:30,PageHeight:"637px",PageTop:80,
 	DetailPageTop:100,MsgTop:120,
@@ -166,7 +171,6 @@ function initScreen(){
       }
 	}
 	}
- 	{
  	 var width = window.screen.width;
 	 if (width>=640)
 		SCREENKEY = 640;
@@ -176,7 +180,6 @@ function initScreen(){
 		SCREENKEY = 360;
 	 else
 	    SCREENKEY = 320;
-	}
 
 	//SCREENKEY = 320;
 	SIZEPER = SCREENKEY/640;

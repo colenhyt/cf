@@ -1,6 +1,8 @@
 package cn.hd.cf.service;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -18,37 +20,47 @@ import cn.hd.cf.model.ToplistExample.Criteria;
 public class ToplistService extends BaseService {
 	private ToplistMapper toplistMapper;
 	
-	public List<Toplist> findByType(int type){
+	public List<Toplist> findMonth(){
 		ToplistExample example=new ToplistExample();
 		Criteria criteria=example.createCriteria();		
 		criteria.andTypeEqualTo(1);
 		Date now = new Date();
       Calendar cl = Calendar. getInstance();
       cl.setTime(now);
-      int currDay = cl.get(Calendar.DAY_OF_YEAR);
-      int currWeek = currDay/7;
-      if (currDay%7!=0)
-    	  currWeek++;
-	    //本周:
-		if (type==0){
-			criteria.andWeekEqualTo(currWeek);
-			System.out.println(type+"取当周排行榜:"+currWeek);
-		}
-		//取当月:
-		else if (type==1){
-		      Calendar c2 = Calendar. getInstance();
-		      c2.set(now.getYear(), now.getMonth(), 1);
-		      int firstMonthDay = c2.get(Calendar.DAY_OF_YEAR);
-		      int startWeek = firstMonthDay/7;
-		      if (firstMonthDay%7!=0)
-		    	  startWeek++;
+      int currWeek = cl.get(Calendar.WEEK_OF_YEAR);
+			int curryear = cl.get(Calendar.YEAR);
+			int currmonth = cl.get(Calendar.MONTH)+1;
+			String s = curryear+"-"+currmonth+"-01 00:00:00";  
+			Calendar car = Calendar.getInstance();  
+			Date startDate = new Date();  
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");  
+			try {  
+				startDate = sdf.parse(s);  
+			} catch (ParseException e) {  
+			    // TODO Auto-generated catch block  
+			    e.printStackTrace();  
+			}
+			car.setTime(startDate);
+			int startWeek = car.get(Calendar.WEEK_OF_YEAR); 
 		      criteria.andWeekGreaterThanOrEqualTo(startWeek);
 		      criteria.andWeekLessThanOrEqualTo(currWeek);
-				System.out.println(type+"取月排行榜:"+startWeek+",end:"+currWeek);
-		}
+				System.out.println("取月排行榜:"+startWeek+",end:"+currWeek);
 		 example.setOrderByClause("money desc");
 		List<Toplist> list = toplistMapper.selectByExample(example);
-		return list;
+		List<Toplist> monthlist = new ArrayList<Toplist>();
+		boolean exist = false;
+		for (int i=0;i<list.size();i++){
+			if (monthlist.size()>=20)break;
+			exist = false;
+			for (int j=0;j<monthlist.size();j++){
+				if (monthlist.get(j).getPlayerid()==list.get(i).getPlayerid()){
+					exist = true;
+				}
+			}
+			if (!exist)
+				monthlist.add(list.get(i));
+		}
+		return monthlist;
 	}
 	
 	public Toplist findByPlayerId(int playerId,int type){
@@ -138,12 +150,14 @@ public class ToplistService extends BaseService {
 		return toplistMapper.countByExample(example);
 	}	
 	
-	public int findCountByGreaterMoney(int type, int playerid){
+	public int findCountByGreaterMoney(int playerid,int week){
 		ToplistExample example=new ToplistExample();
 		Criteria criteria=example.createCriteria();		
-		criteria.andTypeEqualTo(type);
+		criteria.andTypeEqualTo(1);
+		if (week>0)
+		 criteria.andWeekEqualTo(week);
 		BigDecimal fMoney = BigDecimal.valueOf(0);
-		Toplist top = findByPlayerId(playerid,type);
+		Toplist top = findByPlayerId(playerid,1);
 		if (top!=null)
 			fMoney = top.getMoney();
 		criteria.andMoneyGreaterThan(fMoney);
@@ -254,5 +268,21 @@ public class ToplistService extends BaseService {
 			}
 		}
 		return true;		
+	}
+
+	public List<Toplist> findByType(int type){
+		ToplistExample example=new ToplistExample();
+		Criteria criteria=example.createCriteria();		
+		criteria.andTypeEqualTo(1);
+		Date now = new Date();
+	  Calendar cl = Calendar. getInstance();
+	  cl.setTime(now);
+	  int currWeek = cl.get(Calendar.WEEK_OF_YEAR);
+	    //本周:
+			criteria.andWeekEqualTo(currWeek);
+			System.out.println(type+"取当周排行榜:"+currWeek);
+		 example.setOrderByClause("money desc");
+		List<Toplist> list = toplistMapper.selectByExample(example);
+		return list;
 	}
 }

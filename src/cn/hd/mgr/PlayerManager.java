@@ -1,5 +1,7 @@
 package cn.hd.mgr;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -47,13 +49,10 @@ public class PlayerManager {
 		Date d1 = new Date();
 	      Calendar cl = Calendar. getInstance();
 	      cl.setTime(d1);
-	      
+	      cl.setFirstDayOfWeek(Calendar.MONDAY);
 	      System.out.println("更新排行榜财富和数据");
 	      
-	      int dayOfYear = cl.get(Calendar.DAY_OF_YEAR);
-	      int currWeek = dayOfYear/7;
-	      if (dayOfYear%7!=0)
-	    	  currWeek++;    	
+	      int currWeek = cl.get(Calendar.WEEK_OF_YEAR);
 	      //更新全部人最新的财富值:
 	      List<PlayerWithBLOBs> all = playerService.findAll();
 	      for (int i=0;i<all.size();i++){
@@ -109,7 +108,7 @@ public class PlayerManager {
 	}
     
     public static void main(String[] args) {
-    	//PlayerManager stmgr = PlayerManager.getInstance();
+    	PlayerManager stmgr = PlayerManager.getInstance();
     	//stmgr.updateToplist();
     	ToplistService toplistService = new ToplistService();
     	Toplist list = toplistService.findByPlayerId(3, 0);
