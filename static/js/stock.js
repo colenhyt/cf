@@ -236,9 +236,9 @@ Stock.prototype.showDetail = function(id,isflush){
 	content += "              </tr>"
 	 content += "             <tr>"
 	 content += "               <td>买卖:</td>"
-	 content += "               <td><span id='stockBudyCount' style='color:red'>0</span> 手</td>"
+	 content += "               <td><span id='stockTradeCount' style='color:red'>0</span> 手</td>"
 	 content += "               <td>可买入:</td>"
-	 content += "               <td>"+canBuyQty+"手</td>"
+	 content += "               <td><span id='canBuyCount'>"+canBuyQty+"</span>手</td>"
 	content += "              </tr>"
 	 content += "             <tr>"
 	 content += "               <td colspan='2'><input type='button' class='cf_bt_green' value='卖出100股' onclick='g_stock.countBuy("+id+",-100,"+ps+")'></td>"
@@ -286,8 +286,11 @@ Stock.prototype.countBuy = function(stockid,count,price)
    		
 	this.waitCount += count;
 	this.buyPrice = price;
-	var tag = document.getElementById('stockBudyCount');
+	var tag = document.getElementById('stockTradeCount');
 	tag.innerHTML = this.waitCount/100;
+//	tag = document.getElementById('canBuyCount');
+//	tag.innerHTML = this.waitCount/100;
+	
 }
 
 Stock.prototype.doBuy = function()
