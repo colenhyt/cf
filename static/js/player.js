@@ -115,8 +115,12 @@ Player.prototype.getTotalMoney = function() {
 Player.prototype.flushPageview = function() {
     var tag = document.getElementById("tagsaving");
     tag.innerHTML = "存款: " +ForDight(this.saving[1].amount);	
+    var strTop = "";
+    if (this.data.weektop>0){
+    	strTop = this.data.weektop;
+    }
     tag = document.getElementById("tagweektop");
-    tag.innerHTML = "周排名: "+this.data.weektop;	
+    tag.innerHTML = "周排名: "+strTop;	
     tag = document.getElementById("tagplayerinfo");
 	var lv = g_title.getLevel();
     tag.innerHTML = g_title.getData(lv).name;	

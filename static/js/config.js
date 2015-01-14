@@ -6,7 +6,7 @@ var MsgDuration = 200;	//消息刷帧频率(ms)
 
 var StockDuration = 1000;	//股票刷帧频率(ms)
 
-var QUOTETIME = 300;		//行情跳动时间(秒)
+var QUOTETIME = 30;		//行情跳动时间(秒)
 
 var EventTriggerTime = 250000;	//随机事件跳动;
 
@@ -183,7 +183,6 @@ function initScreen(){
 
 	//SCREENKEY = 320;
 	SIZEPER = SCREENKEY/640;
-	
 	var cssFile = "static/css/cf"+SCREENKEY+".css";
 	loadStyle(cssFile);		
 }

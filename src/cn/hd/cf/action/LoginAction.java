@@ -126,6 +126,8 @@ public class LoginAction extends BaseAction {
 		Init init = initdataService.findInit();
 		if (init!=null){
 			playerBlob.setExp(init.getExp());
+			if (init.getMoney()>0)
+				playerBlob.setMoney(Float.valueOf(init.getMoney().intValue()));
 		}
 		
 //		String ipAddr = getHttpRequest().getRemoteAddr();
@@ -170,17 +172,16 @@ public class LoginAction extends BaseAction {
 		playerBlob.setSaving(JSON.toJSONString(savings));
 		Map<Integer,List<Stock>> stocks = stockService.findMapByPlayerId(playerBlob.getPlayerid());
 		playerBlob.setStock(JSON.toJSONString(stocks));	
-		Toplist toplist = toplistService.findByPlayerId(playerBlob.getPlayerid(),0);
+		Toplist toplist = toplistService.findByPlayerId(playerBlob.getPlayerid());
 		if (toplist!=null)
 			playerBlob.setZan(toplist.getZan());
 		
-		Date now = new Date();
-	    Calendar cl = Calendar. getInstance();
-	    cl.setTime(now);	
-	    int currWeek = cl.get(Calendar.WEEK_OF_YEAR);
-		int top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),currWeek);
+		float fMm = 0;
+		if (playerBlob.getMoney()!=null)
+			fMm = playerBlob.getMoney().floatValue();
+		int top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),0,fMm);
 		playerBlob.setWeektop(top+1);
-		top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),-1);
+		top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),1,fMm);
 		playerBlob.setMonthtop(top+1);
 		float margin = StockManager.getInstance().getMarginSec();
 		System.out.println("价格跳动:"+margin);

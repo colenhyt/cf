@@ -56,7 +56,7 @@ Quest.prototype.buildPage = function(page)
 				click = "g_quest.getQuetPrize("+item.id+")"
 			}
 		  	content += "<div class='cfpanel' ID='"+this.name+"_d"+item.id+"' onclick='"+click+"'>"
-		     content += "<div>"+item.name
+		     content += "<div><span class='cfpanel_title'>"+item.name+"</span>"
 			if (isDone){	
 				content += "<input type='button' class='cf_bt questprize' value='领取奖励'/>"
 			}
@@ -149,8 +149,8 @@ Quest.prototype.doneQuest = function(quest){
     	var item = items[i];
 	if (item.id==quest.id) {
 		if (item.status==QUEST_STATUS.DONE){
-			g_msg.tip('该任务已被完成');
-			break;
+			//g_msg.tip('该任务已被完成');
+			continue;
 		}
 		items[i].status = QUEST_STATUS.DONE;
 		g_player.updateData({"quest":items});

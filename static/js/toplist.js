@@ -67,7 +67,6 @@ Toplist.prototype.buildPage = function(page)
 {
 	this.syncData2();
 	this.currPage = page;
-	this.showToplist(0,0);
 }
 
 Toplist.prototype.showToplist = function(type,page)
@@ -133,10 +132,13 @@ Toplist.prototype.showToplist = function(type,page)
 			var item = items[i];
 			if (i==0)
 			{
+			var topStr = "无";
+			if (item.top>0)
+				topStr = item.top;
 			 content += "             <tr>"
 			 content += "               <td class='cftoplist_content' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.playername.substring(0,8)+"</div></td>"
 			 content += "               <td class='cftoplist_c5' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.money+"</div></td>"
-			 content += "               <td class='cftoplist_c4' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.top+"</div></td>"
+			 content += "               <td class='cftoplist_c4' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+topStr+"</div></td>"
 			 content += "               <td class='cftoplist_c3' style='color:yellow'><div onclick='g_toplist.zan("+page+","+item.playerid+")'<input type='button' class='cf_top_zan'/><span class='cftoplist_c6'>*<span id='zan_"+item.playerid+"'>"+item.zan+"</span></span></div></td>"
 			content += "              </tr>"			
 			}else {
@@ -228,6 +230,8 @@ Toplist.prototype.updateData = function(data){
 		store.set(this.tagtab1,data[0]);
 		store.set(this.tagtab2,data[1]);
 	}
+	this.showToplist(0,0);
+	
 }
 
 Toplist.prototype.syncCallback=function(dataobj){

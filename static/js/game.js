@@ -63,7 +63,7 @@ Map.prototype.init = function(width,height){
             	var imgwidth = parseInt(image.img.width*SIZEPER)
             	var imgheight = parseInt(image.img.height*SIZEPER)
             if (imgx<=clickX&&clickX<=imgwidth+(imgx-pos.x)&&
-                imgy<=clickY&&clickY<=imgwidth+(imgy-pos.y))
+                imgy<=clickY&&clickY<=imgheight+(imgy-pos.y))
             {
                map.onclick(image,clickX,clickY);
                break;

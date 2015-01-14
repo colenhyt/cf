@@ -44,6 +44,7 @@ public class StockManager {
 	   	for (int i=0;i<stockData.size();i++){
     		Stockdata  stock = stockData.get(i);
     		int fre = stock.getFreq();
+    		fre = 1;
     		STOCK_QUOTE_PERIOD = fre*60*1000/EventManager.TICK_PERIOD;
 //    		STOCK_QUOTE_PERIOD = 5;
 	    		String json = new String(stock.getQuotes());
@@ -146,17 +147,6 @@ public class StockManager {
 //    	JSONObject obj = JSONObject.fromObject(a);
     	StockManager stmgr = StockManager.getInstance();
     	stmgr.update();
-    	float e = stmgr.getMarginSec();
-    	int a = 10;
-    	Date dt= new Date();
-    	  long time= dt.getTime();
-    	ToplistService toplist = new ToplistService();
-    	for (int i=0;i<1000;i++){
-        	int ab = toplist.findCount(0,-1);    		
-    	}
-    	Date dt2= new Date();
-    	long end = dt2.getTime();
-    	System.out.println("cost "+(end-time));
 
     }
 }

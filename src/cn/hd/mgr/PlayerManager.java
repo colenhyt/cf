@@ -52,7 +52,6 @@ public class PlayerManager {
 	      cl.setFirstDayOfWeek(Calendar.MONDAY);
 	      System.out.println("更新排行榜财富和数据");
 	      
-	      int currWeek = cl.get(Calendar.WEEK_OF_YEAR);
 	      //更新全部人最新的财富值:
 	      List<PlayerWithBLOBs> all = playerService.findAll();
 	      for (int i=0;i<all.size();i++){
@@ -61,22 +60,6 @@ public class PlayerManager {
     		pp.setMoney(money);
     		toplistService.updateCurrData(pp,money);
     	  }
-    	  //更新当周排行,从type=0中选取updatetime在当周的填进去:
-	      //1. 先删除这一周数据
-	      toplistService.removeCurrWeekdata(currWeek);
-	      //2. 找到当前当周排名，并插入
-	      List<Toplist> weeklist = toplistService.findCurrWeekToplist();
-	      for (int i=0;i<weeklist.size();i++)
-	      {
-	    	  if (i>=20) break;
-	    	  Toplist item =  weeklist.get(i);
-	    	  item.setId(null);
-	    	  item.setCreatetime(new Date());
-	    	  item.setUpdatetime(new Date());
-	    	  item.setType(1);
-	    	  item.setWeek(currWeek);
-	    	  toplistService.add(item);
-	      }
     }
     
     private float calculatePlayerMoney(PlayerWithBLOBs player){
@@ -111,10 +94,9 @@ public class PlayerManager {
     	PlayerManager stmgr = PlayerManager.getInstance();
     	//stmgr.updateToplist();
     	ToplistService toplistService = new ToplistService();
-    	Toplist list = toplistService.findByPlayerId(3, 0);
-    	list.setZan(17);
-    	toplistService.updateZan(list);
-    	int  a = 10;
+    	List<Toplist> list = toplistService.findByType(0);
+    	int a = toplistService.findCountByGreaterMoney(39,0,0);
+    	a = 10;
     	//int b = toplistService.findCountByGreaterMoney(0,199);
     }
 }

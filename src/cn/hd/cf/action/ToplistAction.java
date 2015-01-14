@@ -17,7 +17,7 @@ public class ToplistAction extends BaseAction {
 	
 	public String list(){
 		List<Toplist> weeklist = toplistService.findByType(0);
-		List<Toplist> monthlist = toplistService.findMonth();
+		List<Toplist> monthlist = toplistService.findByType(1);
 		JSONArray jsonObject = new JSONArray();
 		jsonObject.add(weeklist);
 		jsonObject.add(monthlist);
@@ -36,7 +36,7 @@ public class ToplistAction extends BaseAction {
 	}
 	
 	public String zan(){
-		Toplist toplist2 = toplistService.findByPlayerId(toplist.getPlayerid(),0);
+		Toplist toplist2 = toplistService.findByPlayerId(toplist.getPlayerid());
 		System.out.println("toplist zan: playerid="+toplist.getPlayerid()+",zan="+toplist.getZan());
 		if (toplist2!=null){
 			toplist2.setZan(toplist.getZan());

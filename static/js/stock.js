@@ -48,15 +48,17 @@ Stock.prototype.load = function(data)
 Stock.prototype.loadPageLastQuote = function(ids)
 {
 	var jids = "stockids="+JSON.stringify(ids);
+	//g_msg.tip("load start");
 	try  {
 		$.ajax({type:"post",url:"/cf/stock_pagelastquotes.do",data:jids,success:function(data){
 			var lastquotes = cfeval(data);
 			g_stock.lastquotes = lastquotes;
+			//g_msg.tip("load back");
 			for (itemid in lastquotes){
-				var pitem = g_player.getStockItem(itemid);
 				var quote = ForDight(lastquotes[itemid]);
 				var tagps = document.getElementById(g_stock.name+"_ps"+itemid);
 				tagps.innerHTML = quote;
+				var pitem = g_player.getStockItem(itemid);
 				if (pitem.qty<=00)continue;
 				
 				var tagpr = document.getElementById(g_stock.name+"_pr"+itemid);
@@ -182,6 +184,7 @@ Stock.prototype.buildPage = function(page)
 		 
 		this.currPage = page;
         content += this.buildPaging(page,rids.length);
+        this.currPageIds = pageids;
         this.loadPageLastQuote(pageids);
 	}
      
@@ -325,9 +328,7 @@ Stock.prototype.findQuotes = function(stockid,fromServer,price)
 
 Stock.prototype.stockChange = function()
 {
-	if (g_player.stockids.length<=0||this.queryChange==true) return;
-	
-	this.queryChange = true;
+	if (g_player.stockids.length<=0) return;
 	
 	var jids = "stockids="+JSON.stringify(g_player.stockids);
 	try  {
@@ -355,7 +356,6 @@ Stock.prototype.stockChange = function()
 				g_player.buyItem(g_stock.name,key,closeIds[key].qty,closeIds[key].price);
 			}
 			g_player.currStockAmounts = floatAmounts;
-			this.queryChange = false;
 			//g_msg.tip("取得当前盈亏:"+floatAmounts);
 		}});
 	}   catch  (e)   {
@@ -401,8 +401,9 @@ Stock.prototype.update_self = function(){
 		sec = "0"+sec;
 	tag.innerHTML = "0"+min+":"+sec;
 	if (rebuild){
-		store.remove(this.quotename);		//清空本地行情;
-		this.buildPage(this.currPage);
+		//store.remove(this.quotename);		//清空本地行情;
+		//this.buildPage(this.currPage);
+		this.loadPageLastQuote(this.currPageIds);
 	}
 }
 
