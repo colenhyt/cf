@@ -91,7 +91,7 @@ Insure.prototype.buildPage = function(page)
 				if (pitem.qty<=0)
 					buyDesc = "尚未购买";
 				else {
-					buyDesc = "已购买 <span style='color:yellow'>"+pitem.qty+"</span>份,总盈亏:<span style='color:red'>"+ForDight(item.profit*pitem.qty)+"</span>";
+					buyDesc = "已购买 <span style='color:yellow'>"+pitem.qty+"</span>份,总盈亏:<span style='color:red'>"+parseInt(item.profit*pitem.qty)+"</span>";
 				}			
 			}
 			

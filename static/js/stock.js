@@ -63,7 +63,7 @@ Stock.prototype.loadPageLastQuote = function(ids)
 				
 				var tagpr = document.getElementById(g_stock.name+"_pr"+itemid);
 				var pr = pitem.qty*quote - pitem.amount;
-				tagpr.innerHTML = ForDight(pr);
+				tagpr.innerHTML = parseInt(pr);
 				if (pr>0)
 					tagpr.style.color = "red";
 				else
@@ -213,7 +213,7 @@ Stock.prototype.showDetail = function(id,isflush){
 		var psColor = "red";
 		if (profit<0)
 			psColor = "green"   
-   	 strPro = "盈亏:<span style='color:"+psColor+"'>"+ForDight(profit)+"</span>";
+   	 strPro = "盈亏:<span style='color:"+psColor+"'>"+parseInt(profit)+"</span>";
    }
    
     var amount = g_player.saving[1].amount;
@@ -241,8 +241,8 @@ Stock.prototype.showDetail = function(id,isflush){
 	 content += "               <td>"+canBuyQty+"手</td>"
 	content += "              </tr>"
 	 content += "             <tr>"
-	 content += "               <td colspan='2'><input type='button' class='cf_bt_green' value='减持100股' onclick='g_stock.countBuy("+id+",-100,"+ps+")'></td>"
-	 content += "               <td colspan='2'><input type='button' class='cf_bt_green right' value='增持100股' onclick='g_stock.countBuy("+id+",100,"+ps+")'></td>"
+	 content += "               <td colspan='2'><input type='button' class='cf_bt_green' value='卖出100股' onclick='g_stock.countBuy("+id+",-100,"+ps+")'></td>"
+	 content += "               <td colspan='2'><input type='button' class='cf_bt_green right' value='买入100股' onclick='g_stock.countBuy("+id+",100,"+ps+")'></td>"
 	content += "              </tr>"
 	content += "          </table>     "
 	content += "           </div>  "
@@ -276,6 +276,14 @@ Stock.prototype.countBuy = function(stockid,count,price)
 	this.waitStockid = stockid;
 	if (this.waitCount==null)
 		this.waitCount = 0;
+		
+   var pitem = g_player.getStockItem(stockid);
+   var count2 = this.waitCount+ count;
+   if (count2<0&&pitem.qty<(0-count2)){
+   		g_msg.tip("卖出数量不能大于你持有数量!");	
+   		return;
+   }
+   		
 	this.waitCount += count;
 	this.buyPrice = price;
 	var tag = document.getElementById('stockBudyCount');
@@ -284,14 +292,14 @@ Stock.prototype.countBuy = function(stockid,count,price)
 
 Stock.prototype.doBuy = function()
 {
-	if (this.waitCount==null||this.waitCount==0){
-		g_msg.tip("请减持或者增持");
-		return;
-	}
 	if (!this.isStockOpen()){
 		g_msg.tip("现在休市，不能交易");
 		return;
 	}	
+	if (this.waitCount==null||this.waitCount==0){
+		g_msg.tip("请买入或者卖出");
+		return;
+	}
 	//alert(this.waitCount);
 	this.confirmBuy(this.waitStockid,this.waitCount,this.buyPrice);
 	this.waitCount = 0;

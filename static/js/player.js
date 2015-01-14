@@ -99,7 +99,7 @@ Player.prototype.getTotal = function(data) {
 	for (key in floatStock){
 			stock += floatStock[key];
 	}
-	return {saving:ForDight(saving),saving2:ForDight(saving2),insure:ForDight(insure),stock:ForDight(stock)};
+	return {saving:parseInt(saving),saving2:parseInt(saving2),insure:parseInt(insure),stock:parseInt(stock)};
 }
 
 Player.prototype.getTotalMoney = function() {
@@ -114,7 +114,7 @@ Player.prototype.getTotalMoney = function() {
 
 Player.prototype.flushPageview = function() {
     var tag = document.getElementById("tagsaving");
-    tag.innerHTML = "存款: " +ForDight(this.saving[1].amount);	
+    tag.innerHTML = "存款: " +parseInt(this.saving[1].amount);	
     var strTop = "";
     if (this.data.weektop>0){
     	strTop = this.data.weektop;

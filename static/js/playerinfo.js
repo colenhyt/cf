@@ -43,7 +43,7 @@ Playerinfo.prototype.showInfo = function(jsondata){
     content += " </div>"
     
 	var data = g_player.getTotal(jsondata);
-	var total = ForDight(data.saving+data.insure+data.stock);
+	var total = parseInt(data.saving+data.insure+data.stock);
     
 	content += "<div class='cfplayer_info'>"
 	content += "<table>"
