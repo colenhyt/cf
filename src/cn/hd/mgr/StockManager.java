@@ -44,13 +44,15 @@ public class StockManager {
 	   	for (int i=0;i<stockData.size();i++){
     		Stockdata  stock = stockData.get(i);
     		int fre = stock.getFreq();
-    		fre = 1;
     		STOCK_QUOTE_PERIOD = fre*60*1000/EventManager.TICK_PERIOD;
 //    		STOCK_QUOTE_PERIOD = 5;
 	    		String json = new String(stock.getQuotes());
 	    		JSONArray array = JSONArray.fromObject(json);
 	    		List<Quote> quotes = JSONArray.toList(array, Quote.class);
-	    		if (quotes.size()==0) continue;
+	    		if (quotes.size()==0) {
+	    			System.out.println("该股票无行情:"+stock.getName());
+	    			continue;
+	    		}
 	    		LinkedList<Quote> qquotes = new LinkedList<Quote>();
 	    		for(int j=0;j<quotes.size();j++){
 	    			quotes.get(j).setStockid(stock.getId());
@@ -80,14 +82,8 @@ public class StockManager {
     	List<Quote> quotes = new ArrayList<Quote>();
     	if (stockid>=0){
     		LinkedList<Quote> q = quoteMap.get(stockid);
-    		quotes.add(q.peekLast());
-  		
-    	}else {		//all last quotes
-	    	Iterator<Integer> iter = quoteMap.keySet().iterator();
-	    	while (iter.hasNext()){
-	    		LinkedList<Quote> q = quoteMap.get(iter.next());
-	    		quotes.add(q.peekLast());
-	    	}
+    		if (q!=null&&q.size()>0)
+    		 quotes.add(q.peekLast());
     	}
     	return quotes;
     }
@@ -146,7 +142,8 @@ public class StockManager {
 //    	String a = "{'id':3,'name':'万科A','desc':'最大房地产股','price':18.7,'unit':100}";
 //    	JSONObject obj = JSONObject.fromObject(a);
     	StockManager stmgr = StockManager.getInstance();
-    	stmgr.update();
+    	stmgr.getLastQuotes(8);
+    	//stmgr.update();
 
     }
 }

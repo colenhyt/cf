@@ -1,6 +1,7 @@
 Stock = function(){
     this.name = "stock";
     this.quotename = "quote";
+    this.pagequote = "pageq";
     this.cname = "股票";
     this.pageCount = 4;
     this.currPage = 0;
@@ -45,7 +46,7 @@ Stock.prototype.load = function(data)
 	store.set(this.quotename,qdata);
 }
 
-Stock.prototype.loadPageLastQuote = function(ids)
+Stock.prototype.loadPageLastQuote = function(ids,page)
 {
 	var jids = "stockids="+JSON.stringify(ids);
 	//g_msg.tip("load start");
@@ -53,16 +54,20 @@ Stock.prototype.loadPageLastQuote = function(ids)
 		$.ajax({type:"post",url:"/cf/stock_pagelastquotes.do",data:jids,success:function(data){
 			var lastquotes = cfeval(data);
 			g_stock.lastquotes = lastquotes;
-			//g_msg.tip("load back");
+			var pname = g_stock.pagequote+page;
+			//g_msg.tip("load back save quote:"+pname);
+			store.set(pname,lastquotes);
 			for (itemid in lastquotes){
-				var quote = ForDight(lastquotes[itemid]);
 				var tagps = document.getElementById(g_stock.name+"_ps"+itemid);
-				tagps.innerHTML = quote;
+				if (!tagps) continue;
+				
+				var lastps = ForDight(lastquotes[itemid]);
+				tagps.innerHTML = lastps;
 				var pitem = g_player.getStockItem(itemid);
-				if (pitem.qty<=00)continue;
+				if (pitem.qty<=0)continue;
 				
 				var tagpr = document.getElementById(g_stock.name+"_pr"+itemid);
-				var pr = pitem.qty*quote - pitem.amount;
+				var pr = pitem.qty*lastps - pitem.amount;
 				tagpr.innerHTML = parseInt(pr);
 				if (pr>0)
 					tagpr.style.color = "red";
@@ -159,19 +164,37 @@ Stock.prototype.buildPage = function(page)
 		  content += "<div class='cfpanel_body'>"
 		  
 		var pageids = []
+		var pageps = store.get(this.pagequote+page);
+		if (!pageps){
+			pageps = {};
+		}
 		for (var i=start;i<end;i++){
 			var item = tdata[rids[i]];
 			var itemid = rids[i];
 			pageids.push(itemid);
 			var pitem = g_player.getStockItem(itemid);
+			var ps = 0;
+			var profit = 0;
+			var psColor = "none";
+			if (pageps[itemid]){
+				ps = ForDight(pageps[itemid]);
+				if (pitem.qty>0){
+				profit = parseInt(pitem.qty*ps - pitem.amount);
+				if (profit>0)
+					psColor = "red"  	
+				else
+				  psColor = "green" 	
+				}		
+				//g_msg.tip('取本地:')
+			}
 		     content += "<div class='cfpanel' ID='"+this.name+"_d"+itemid+"' onclick='g_stock.showDetail("+itemid+")'>"
 		     content += "<span class='cfpanel_title'>"+item.name+"</span>"
 		     content += "<span class='cfpanel_text right'>目前持有<span style='color:yellow'> "+pitem.qty/100+"</span> 手</span>"
 			 content += "	<div>" 
 			 content += "<span class='cfpanel_text'>当前价格: ￥"
-			 content += "<span id='"+this.name+"_ps"+itemid+"'>0</span></span>"
+			 content += "<span id='"+this.name+"_ps"+itemid+"'>"+ps+"</span></span>"
 			 content += "<span class='cfpanel_text right'>总盈亏: "
-			 content += "<span id='"+this.name+"_pr"+itemid+"'>0</span></span>"
+			 content += "<span id='"+this.name+"_pr"+itemid+"' style='color:"+psColor+"'>"+profit+"</span></span>"
 			content += "     </div>"
       		content += "</div>"
 		}
@@ -185,7 +208,7 @@ Stock.prototype.buildPage = function(page)
 		this.currPage = page;
         content += this.buildPaging(page,rids.length);
         this.currPageIds = pageids;
-        this.loadPageLastQuote(pageids);
+        this.loadPageLastQuote(pageids,page);
 	}
      
 	var tag = document.getElementById(this.pagename);
@@ -412,9 +435,7 @@ Stock.prototype.update_self = function(){
 		sec = "0"+sec;
 	tag.innerHTML = "0"+min+":"+sec;
 	if (rebuild){
-		//store.remove(this.quotename);		//清空本地行情;
-		//this.buildPage(this.currPage);
-		this.loadPageLastQuote(this.currPageIds);
+		this.loadPageLastQuote(this.currPageIds,this.currPage);
 	}
 }
 

@@ -6,9 +6,9 @@ var MsgDuration = 200;	//消息刷帧频率(ms)
 
 var StockDuration = 1000;	//股票刷帧频率(ms)
 
-var QUOTETIME = 30;		//行情跳动时间(秒)
+var QUOTETIME = 300;		//行情跳动时间(秒)
 
-var EventTriggerTime = 250000;	//随机事件跳动;
+var EventTriggerTime = 5*120;	//随机事件跳动;*UpdateDuration/1000 秒
 
 var Panel_ClickColor = "#123123";
 

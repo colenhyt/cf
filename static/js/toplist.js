@@ -123,7 +123,6 @@ Toplist.prototype.showToplist = function(type,page)
 				item.top = i+1;
 				items.push(item);
 			}
-						 
 		var start = page* this.pageCount;
 		var end = (page+1)* this.pageCount;
 		if (end>items.length)
@@ -157,7 +156,7 @@ Toplist.prototype.showToplist = function(type,page)
                 content += "</div>";
 
 		this.currPage = page;
-        content += this.buildPaging(page,tdata.length,"g_toplist.showToplist",type);
+        content += this.buildPaging(page,items.length,"g_toplist.showToplist",type);
 	}
      
 	var tag = document.getElementById(this.pagename);

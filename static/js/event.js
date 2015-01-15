@@ -71,6 +71,7 @@ Event.prototype.badEvent = function(item){
 		content += desc +"<br>"
 		content += "减少损失:"+tip
 		content += "</div>"
+		//alert('成功避开意外')
 		g_msg.open2(item.name,content);
 	}else{
 		g_player.prize(pp);
