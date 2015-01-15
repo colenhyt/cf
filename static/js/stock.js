@@ -48,8 +48,8 @@ Stock.prototype.load = function(data)
 
 Stock.prototype.loadPageLastQuote = function(ids,page)
 {
+	
 	var jids = "stockids="+JSON.stringify(ids);
-	//g_msg.tip("load start");
 	try  {
 		$.ajax({type:"post",url:"/cf/stock_pagelastquotes.do",data:jids,success:function(data){
 			var lastquotes = cfeval(data);

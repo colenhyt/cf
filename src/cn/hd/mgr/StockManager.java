@@ -82,8 +82,9 @@ public class StockManager {
     	List<Quote> quotes = new ArrayList<Quote>();
     	if (stockid>=0){
     		LinkedList<Quote> q = quoteMap.get(stockid);
-    		if (q!=null&&q.size()>0)
-    		 quotes.add(q.peekLast());
+    		if (q!=null&&q.size()>0){
+       		 quotes.add(q.peekLast());
+    		}
     	}
     	return quotes;
     }

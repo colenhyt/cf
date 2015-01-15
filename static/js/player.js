@@ -426,8 +426,8 @@ Player.prototype.find = function(playerid){
 	return serverPlayer;
 }
 
-//store.remove("player");
-//store.remove("playerlog");
+store.remove("player");
+store.remove("playerlog");
 var g_playerlog = new Playerlog()
 g_playerlog.init();
 var g_player = new Player();

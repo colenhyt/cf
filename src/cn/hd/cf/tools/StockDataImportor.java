@@ -217,11 +217,11 @@ public class StockDataImportor extends Base{
 
 	public static void main(String[] args) {	
 		StockDataImportor importor2 = new StockDataImportor("stockdata.xlsx");
-		//importor2.importStockdata();
+		importor2.importStockdata();
 		
 		DataImportor importor3 = new DataImportor("stockdata.xlsx");
 		String name = "stockdata";
-		importor3.outputJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);		
+		//importor3.outputMapJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);	
 		
 	}
 
