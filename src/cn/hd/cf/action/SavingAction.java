@@ -36,17 +36,19 @@ public class SavingAction extends BaseAction {
 
 	public String add()
 	{
+		System.out.println("取钱:11");
 		if (saving.getItemid()==1){
 			return null;
 		}
 		float inAmount = 0 - saving.getAmount();
+		System.out.println("取钱:22");
 		//先设活期:
 		int ret = updateLiveSaving(saving.getPlayerid(), inAmount);
 		if (ret!=RetMsg.MSG_OK){
 			super.writeMsg(ret);
 			return null;
 		}
-		
+		System.out.println("取钱:33");
 		boolean exec = false;
 		//取钱:
 		if (saving.getAmount()<0){

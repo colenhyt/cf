@@ -75,6 +75,7 @@ public class StockService extends BaseService {
 				stockMapper.deleteByPrimaryKey(ss.getId());
 			}else {
 				ss.setQty(ss.getQty()-needRemoveQty);
+				ss.setAmount(ss.getQty()*ss.getPrice());
 				needRemoveQty = 0;
 				stockMapper.updateByPrimaryKey(ss);
 			}

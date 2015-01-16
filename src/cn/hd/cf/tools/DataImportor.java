@@ -489,7 +489,7 @@ public class DataImportor extends Base{
 		//importor.importData(name);
 //		importor.outputMapJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);
 
-		name = "initdata";
+		name = "eventdata";
 		importor.importData(name);
 		importor.outputJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);
 		
