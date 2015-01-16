@@ -69,7 +69,6 @@ Player = function(){
     this.syncDuration = 5;
     this.data = {};
     this.stockids = [];
-    this.currStockAmounts = {};
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
     this.pageheader = this.tagname+"header";
@@ -95,9 +94,11 @@ Player.prototype.getTotal = function(data) {
 		insure += data.insure[key].amount;
 	}
 	var stock = 0;
-	var floatStock = this.currStockAmounts;
-	for (key in floatStock){
-			stock += floatStock[key];
+	for (key in data.stock){
+		var items = data.stock[key];
+		for (var i=0;i<items.length;i++){
+		 stock += items[i].qty*items[i].price;
+		}
 	}
 	total = parseInt(saving+saving2+insure+stock);
 	return {saving:parseInt(saving),saving2:parseInt(saving2),insure:parseInt(insure),stock:parseInt(stock),total:total};
@@ -316,6 +317,15 @@ Player.prototype.getStockItem = function(itemid) {
 	}
 	return {qty:qty,amount:amount};
 }
+ 
+Player.prototype.setStockItemPs = function(itemid,newps) {
+	var pitems = this.stock[itemid];
+	if (!pitems) return;
+	
+	for (var i=0;i<pitems.length;i++){
+	 pitems[i].price = newps;
+	}
+}
 
 Player.prototype.getSavingItem = function(itemid) {
 	var pitem = this.saving[itemid];
@@ -340,14 +350,12 @@ Player.prototype.buyItem = function(tname,id,qty,ps){
 	if (item==null) return false;
 	
 	var cash = this.saving[1].amount;
-	var amount = ps * qty;
+	var amount = parseInt(ps * qty);
 	if (cash<amount){
 		 g_msg.tip('你的钱不够');
 		return;
 	}
 
-	amount = ForDight(amount);
-		
 	var tgoods = {itemid:id,playerid:this.data.playerid,
 			qty:qty,price:ps,amount:amount};
 			
@@ -368,18 +376,26 @@ Player.prototype.buyItem = function(tname,id,qty,ps){
 			pitems[id].profit = 0;
 		}else
 			pitems[id] = null;
-	}else {
+	}else if (tname==g_stock.name) {
 		if (!pitems[id])
 			pitems[id] = [];
-		pitems[id].push(tgoods);
-		if (tname==g_stock.name){
-			g_player.setStockIds();
+		if (qty>0){
+		 pitems[id].push(tgoods);
+		}else {
+		 var needRemoveQty = 0 - qty;
+		 for (var i=0;i<pitems[id].length;i++){
+		   if (pitems[id][i].qty<=needRemoveQty){
+		    needRemoveQty -= pitems[id][i].qty;
+		    pitems[id].splice(i,1);
+		    i--;
+		   }else {
+		    pitems[id][i].qty -= needRemoveQty;
+		    pitems[id][i].amount = pitems[id][i].qty*pitems[id][i].price;
+		    break;
+		   }
+		 }
 		}
-		var newamount = 0;
-		for (var i=0;i<pitems[id].length;i++){
-			newamount += pitems[id][i].amount;
-		}
-		this.currStockAmounts[id]=newamount;
+		g_player.setStockIds();
 	}
 				
 	cash -= amount;

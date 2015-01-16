@@ -166,7 +166,7 @@ Map.prototype.removeImg = function(img)
 	for (var i=0;i<this.m_imgs.length;i++)
 	{
 		if (this.m_imgs[i].name==img.name){
-			this.m_imgs.slice(i,1);
+			this.m_imgs.splice(i,1);
 			break;
 		}
 	}

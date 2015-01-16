@@ -129,7 +129,6 @@ Stock.prototype.show = function(){
 		var ms = myDate.getMilliseconds();		
 		this.buildPage(0);
 		this.isOpen = true;
-		//this.hasTip = false;
         $('#'+this.tagname).modal({position:getSizes().PageTop,show: true});    
         var myDate22 = new Date();
 		var ss2 = myDate22.getSeconds(); 
@@ -223,6 +222,7 @@ Stock.prototype.showDetail = function(id,isflush){
    var item = tdata[id];
    if (item==null) return;
         
+   this.waitCount = 0;
    var strPro = "尚未持有";
  	var quote = this.lastquotes[id];
 	var ps = 0;
@@ -371,27 +371,21 @@ Stock.prototype.stockChange = function()
 			g_stock.lastquotes = lastquotes;
 			var floatAmounts = {};
 			var closeIds = {};
+			var prs = 0;
 			for (itemid in lastquotes){
 				var pitem = g_player.getStockItem(itemid);
 				if (pitem.qty<=0) continue;
-				var newps = lastquotes[itemid];
+				var newps = ForDight(lastquotes[itemid]);
 				floatAmounts[itemid] = pitem.qty*newps; 
-				var pr = pitem.qty*newps - pitem.amount;
-				//涨:
-				if (pr>0)
-				{
-					this.hasTip = true;
-					//alert("价格涨:"+itemid);
-				}else if (newps<=0.1){		//斩仓
-					closeIds[itemid]={qty:0-pitem.qty,price:newps};
-				}
+				prs += pitem.qty*newps - pitem.amount;
+				g_player.setStockItemPs(itemid,newps);
+				this.hasTip = true;
 			}
 			for (key in closeIds)
 			{
 				g_player.buyItem(g_stock.name,key,closeIds[key].qty,closeIds[key].price);
 			}
-			g_player.currStockAmounts = floatAmounts;
-			g_msg.tip("股票资产变化:"+floatAmounts);
+			g_msg.tip("股票资产盈亏变化:"+prs);
 		}});
 	}   catch  (e)   {
 	    logerr(e.name);
