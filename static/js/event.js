@@ -23,9 +23,7 @@ Event.prototype.triggerEvent = function(){
 	var tdata = store.get(this.name);
 	var index = Math.floor(Math.random()*tdata.length);
 	var item = tdata[index]; 
-	//g_msg.tip("event trigger:"+item.id);
 	
-	//this.isTrigger = true;
 	if (item.type==1){
 		this.badEvent(item);
 	}else {
@@ -42,8 +40,7 @@ Event.prototype.goodEvent = function(item){
 	var content = ""
 	//if (found==true)
 	{
-			var pp = cfeval(item.prize);
-			g_player.prize(pp);
+	var pp = cfeval(item.prize);
 			var targetInsure = store.get(g_insure.name)[item.itemid];
 			var iname = targetInsure?targetInsure.name:"";
 			content = "<div>"
@@ -54,7 +51,7 @@ Event.prototype.goodEvent = function(item){
 			content += "获得: "+itemStr2(pp,",");
 			content += "</div>"
 	}
-	g_msg.open2(item.name,content);
+	g_msg.openModal(item.name,content,"g_event.eventOkCallback",item.itemid);
 	
 }
 
@@ -62,9 +59,9 @@ Event.prototype.badEvent = function(item){
 	var insures = g_player.insure;
 	var pp = cfeval(item.prize);
 	var tip = itemStr2(pp,",");
-	if (insures[itemid]!=null){
-		var desc = "成功避开意外:"+item.name;
-		var content = "<div>"
+	if (insures[item.itemid]!=null){
+		var desc = "成功避开意外<span style='color:yellow'>"+item.descs;
+		var content = "</span><div>"
 		content += "<img src='static/img/icon_good.png'>"
 		content += "</div>"
 		content += "<div>"
@@ -72,9 +69,8 @@ Event.prototype.badEvent = function(item){
 		content += "减少损失:"+tip
 		content += "</div>"
 		//alert('成功避开意外')
-		g_msg.open2(item.name,content);
+		g_msg.openModal(item.name,content);
 	}else{
-		g_player.prize(pp);
 		var targetInsure = store.get(g_insure.name)[item.itemid];
 		var iname = targetInsure?targetInsure.name:"";
 		var content = "<div>"
@@ -83,13 +79,28 @@ Event.prototype.badEvent = function(item){
 		content += "<div>"
 		content += item.descs +"<br>"
 		content += "损失: "+ tip+"<br>"
-		content += "提示:购买<span style='color:red'>"+iname+"</span>可避免该类意外"
+		content += "(你可购买<span style='color:red'>"+iname+"</span>来避免该意外)"
 		content += "</div>"
-		g_msg.open2(item.name,content);
+		g_msg.openModal(item.name,content,"g_event.eventOkCallback",item.itemid);
 	}
 
 }
 
+Event.prototype.eventOkCallback = function(itemid){
+	var tdata = store.get(this.name);
+	var item;
+	for (var i=0;i<tdata.length;i++){
+		if (tdata[i].itemid==itemid){
+			item = tdata[i];
+			break;
+		}
+	}
+	if (item){
+	   var pp = cfeval(item.prize);
+	   g_player.prize(pp);
+	}
+	g_msg.hide();
+}
 //
 Event.prototype.update = function(){
 	this.tick++;

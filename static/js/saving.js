@@ -106,8 +106,9 @@ content += "             </div>"
 Saving.prototype.countBuy = function(id,count){
     var tag = document.getElementById('saving_amount');
     var currCount = parseInt(tag.value);
-    if (currCount+count<=0) {
-	currCount = 1;
+    if (currCount+count<=100) {
+	 g_msg.tip("定期存款不能少于100")
+	 return;
     }else
 	currCount += count;
     tag.value = currCount;
@@ -132,6 +133,10 @@ Saving.prototype.buy = function(id){
    if (pitem.amount==0) {
 	    var tag = document.getElementById('saving_amount');
 	    amount = parseInt(tag.value);
+	    if (amount<=100) {
+		 g_msg.tip("定期存款不能少于100")
+		 return;
+	    }	    
     }else 
     	amount = 0 - pitem.amount;
     	
@@ -140,7 +145,7 @@ Saving.prototype.buy = function(id){
     	//tip:
 		var desc;
 		if (amount>0)
-			desc = "存入<span style='color:red'>"+item.name+"</span>成功,金额:"+amount;
+			desc = "定期存入<span style='color:red'>"+item.name+"</span>成功,金额:"+amount;
 		else 
 			desc = "取出<span style='color:red'>"+item.name+"</span>成功,金额:"+(0-amount);
 			

@@ -99,17 +99,8 @@ Player.prototype.getTotal = function(data) {
 	for (key in floatStock){
 			stock += floatStock[key];
 	}
-	return {saving:parseInt(saving),saving2:parseInt(saving2),insure:parseInt(insure),stock:parseInt(stock)};
-}
-
-Player.prototype.getTotalMoney = function() {
-	var data = {};
-	data.saving = cfeval(this.data.saving);
-	data.saving2 = cfeval(this.data.saving2);
-	data.insure = cfeval(this.data.insure);
-	data.stock = cfeval(this.data.stock);
-	var moneys = this.getTotal(data);
-	return ForDight(moneys.saving+moneys.saving2+moneys.insure+moneys.stock);
+	total = parseInt(saving+saving2+insure+stock);
+	return {saving:parseInt(saving),saving2:parseInt(saving2),insure:parseInt(insure),stock:parseInt(stock),total:total};
 }
 
 Player.prototype.flushPageview = function() {
@@ -426,8 +417,8 @@ Player.prototype.find = function(playerid){
 	return serverPlayer;
 }
 
-store.remove("player");
-store.remove("playerlog");
+//store.remove("player");
+//store.remove("playerlog");
 var g_playerlog = new Playerlog()
 g_playerlog.init();
 var g_player = new Player();

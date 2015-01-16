@@ -91,7 +91,7 @@ Insure.prototype.buildPage = function(page)
 				if (pitem.qty<=0)
 					buyDesc = "尚未购买";
 				else {
-					buyDesc = "已购买 <span style='color:yellow'>"+pitem.qty+"</span>份,总盈亏:<span style='color:red'>"+parseInt(item.profit*pitem.qty)+"</span>";
+					buyDesc = "已购买 <span style='color:yellow'>"+pitem.qty+"</span>份,预计盈亏:<span style='color:red'>"+parseInt(item.profit*pitem.qty)+"</span>";
 				}			
 			}
 			
@@ -131,21 +131,14 @@ Insure.prototype.clickDetail = function(id,type){
    	g_insure.show_finandetail(id)
 }
 
-Insure.prototype.showDetail = function(title,desc,okCallback,cbParam1,cbParam2,cbParam3,confmText){
+Insure.prototype.showDetail = function(title,desc,okCallback,itemid,qty,confmText){
 	var content =      "        <div class='cfinsure_content'>"
 	content += "<div class='cfmsg_h2'>"+title+"</div>"
 	content += "<img src='static/img/pop_line.png'>"
 	content += "            <div class='cfmsg_text'>"+desc+"</div>"
-		content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>"
-	if (confmText!=null){
-		if (cbParam1==null)
-			cbParam1 = "1";
-		if (cbParam2==null)
-			cbParam2 = "1";
-		if (cbParam3==null)
-			cbParam3 = "1";
-		content += "          <button class='cf_bt' onclick='"+okCallback+"("+cbParam1+","+cbParam2+","+cbParam3+")'>"+confmText+"</button>"
-	}
+	content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>"
+	if (confmText)
+	content += "          <button class='cf_bt' onclick='"+okCallback+"("+itemid+","+qty+")'>"+confmText+"</button>"
 	content += "             </div>"
 	var tag = document.getElementById(this.pagedetailname);
 	tag.innerHTML = content;
@@ -183,7 +176,7 @@ Insure.prototype.show_insuredetail = function(id){
 	var confirm;
 	if (pitem.qty<=0)
 		confirm = "购买";		
-    this.showDetail(item.name,content,"g_insure.preBuy",id,1,0,confirm);
+    this.showDetail(item.name,content,"g_insure.preBuy",id,1,confirm);
 	
 }
 
@@ -224,7 +217,7 @@ content += "           </div>  "
 	var confirm;
 	if (pitem.qty<=0)
 		confirm = "购买";		
-    this.showDetail(item.name,content,"g_insure.preBuy",id,0,0,confirm);
+    this.showDetail(item.name,content,"g_insure.preBuy",id,0,confirm);
 }
 
 Insure.prototype.countBuy = function(count) {

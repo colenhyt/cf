@@ -373,6 +373,7 @@ Stock.prototype.stockChange = function()
 			var closeIds = {};
 			for (itemid in lastquotes){
 				var pitem = g_player.getStockItem(itemid);
+				if (pitem.qty<=0) continue;
 				var newps = lastquotes[itemid];
 				floatAmounts[itemid] = pitem.qty*newps; 
 				var pr = pitem.qty*newps - pitem.amount;
@@ -390,7 +391,7 @@ Stock.prototype.stockChange = function()
 				g_player.buyItem(g_stock.name,key,closeIds[key].qty,closeIds[key].price);
 			}
 			g_player.currStockAmounts = floatAmounts;
-			//g_msg.tip("取得当前盈亏:"+floatAmounts);
+			g_msg.tip("股票资产变化:"+floatAmounts);
 		}});
 	}   catch  (e)   {
 	    logerr(e.name);

@@ -226,7 +226,7 @@ Login.prototype.login = function(){
 	for (var i=0;i<loginMsg.length;i++){
 		var msg = loginMsg[i];
 		if (msg.type==g_saving.name){
-			var ppf = ForDight(msg.profit);
+			var ppf = parseInt(msg.profit);
 			if (msg.t==0)
 				g_msg.tip("获得"+msg.name+"利息:"+ppf);
 			else
@@ -235,7 +235,7 @@ Login.prototype.login = function(){
 			if (msg.profit==-1){
 				g_msg.tip("你的"+msg.name+"已到期");
 			}else
-				g_msg.tip("你的"+msg.name+"已到期,获得收益:"+msg.profit);
+				g_msg.tip("你的"+msg.name+"已到期,获得收益:"+parseInt(msg.profit));
 		}
 	}
 	

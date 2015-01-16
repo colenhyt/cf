@@ -64,6 +64,28 @@ Msg.prototype.createtip = function(desc)
 }
 
 //title自定义：
+Msg.prototype.openModal = function(title,desc,okCallback,param)
+{
+	var content =      "        <div style='margin: auto;text-align:center;'>"
+	content += "<div class='cfmsg_h2'>"+title+"</div>"
+	content += "<img src='static/img/pop_line.png'>"
+	content += "            <div class='cfmsg_text'>"+desc+"</div>"
+	if (okCallback==null){
+		content += "          <button class='cf_bt' data-dismiss='modal'>确认</button>"	
+	}else {
+		var okParam = ""
+		if (param)
+			okParam = param
+		content += "          <button class='cf_bt' onclick='"+okCallback+"("+okParam+")'>确认</button>"
+	}
+		content += "             </div>"
+		var tag = document.getElementById(this.pagename);
+		tag.innerHTML = content;
+		
+		 $('#'+this.tagname).modal({backdrop:'static',position:getSizes().MsgTop,show: true});  
+}
+
+//title自定义：
 Msg.prototype.open2 = function(title,desc,okCallback,cbParam1,cbParam2,cbParam3,confmText,cancelCallback)
 {
 	var content =      "        <div style='margin: auto;text-align:center;'>"
@@ -102,7 +124,7 @@ Msg.prototype.open = function(desc,okCallback,cbParam1,cbParam2,cbParam3)
 Msg.prototype.update = function()
 {
 	this.count++;
-	//if (this.count%5==0)
+	if (this.count%5==0)
 	{
 		while (this.intips.length>0){
 			var desc = g_msg.intips.shift();

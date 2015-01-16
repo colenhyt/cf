@@ -253,9 +253,12 @@ itemStr2 = function(items,split){
     	if (vv<0)
     		vv = 0-vv;
     	if (item.t==ITEM_TYPE.CASH)
-    		itemDesc += vv+"现金"+split;
+    		itemDesc += vv+"现金";
     	else if (item.t==ITEM_TYPE.EXP)
-    		itemDesc += vv+"经验"+split;
+    		itemDesc += vv+"经验";
+    		
+    	if (i!=items.length-1)
+    	 itemDesc += split;
     }
     return itemDesc;
 }

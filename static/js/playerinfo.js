@@ -43,7 +43,6 @@ Playerinfo.prototype.showInfo = function(jsondata){
     content += " </div>"
     
 	var data = g_player.getTotal(jsondata);
-	var total = parseInt(data.saving+data.insure+data.stock);
     
 	content += "<div class='cfplayer_info'>"
 	content += "<table>"
@@ -53,7 +52,7 @@ Playerinfo.prototype.showInfo = function(jsondata){
 	content +=	"<div class='cfprop p2'>投资股票<br>"+data.stock+"</div>"
 	content +=	"<div class='cfprop p3'>投资保险<br>"+data.insure+"</div>"
 	content +=	"<div class='cfprop p4'>活期存款<br>"+data.saving+"</div>"
-	content +=	"<div class='cfprop p5'>总资产值<br>"+total+"</div>"
+	content +=	"<div class='cfprop p5'>总资产值<br>"+data.total+"</div>"
 	content += "</td>"
 	content += "   <td>"
 	content += "<div id='"+this.graphName+"' class='cfplayer_pie'></div>"
