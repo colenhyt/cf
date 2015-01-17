@@ -158,10 +158,9 @@ public class LoginAction extends SavingAction {
 			fMm = playerBlob.getMoney().floatValue();
 		int top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),0,fMm);
 		playerBlob.setWeektop(top+1);
-//		top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),1,fMm);
-//		playerBlob.setMonthtop(top+1);
+		top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),1,fMm);
+		playerBlob.setMonthtop(top+1);
 		float margin = StockManager.getInstance().getMarginSec();
-		System.out.println("价格跳动:"+margin);
 		playerBlob.setQuotetime(margin);
 		playerBlob.setLastlogin(new Date());
 		//List<Integer> dataIds = findUpdateDataIds(player.getVersions());
