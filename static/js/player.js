@@ -231,9 +231,9 @@ Player.prototype.prize = function(prizes) {
      
      if (cashUpdate==true){
  		try  {
-			var obj = {id:this.saving[1].id,amount:this.saving[1].amount};
+			var obj = {id:this.saving[1].id,amount:this.saving[1].amount,playerid:this.data.playerid};
 			var updateStr = obj2ParamStr("saving",obj);
-			$.ajax({type:"post",url:"/cf/saving_update.do",data:updateStr,success:this.syncCallback});
+			$.ajax({type:"post",url:"/cf/saving_updatelive.do",data:updateStr,success:this.syncCallback});
 		}   catch  (e)   {
 	   	 logerr(e.name);
 		}     	

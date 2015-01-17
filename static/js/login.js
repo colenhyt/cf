@@ -179,10 +179,10 @@ Login.prototype.loadData = function(obj){
 	var idata = cfeval(obj.insure);
 	for (itemid in idata){
 		var item = store.get(g_insure.name)[itemid];
-		//没到期
+		
 		if (idata[itemid].profit==0)
 		  g_player.insure[itemid]= idata[itemid];
-		 else {
+		 else { //保险产品到期
 			msg.push({type:g_insure.name,t:parseInt(item.type),name:item.name,profit:idata[itemid].profit});
 		 }
 	}
