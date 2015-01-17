@@ -43,63 +43,6 @@ public class SavingService extends BaseService {
 		return savingMapper.selectByExample(example);
 	}
 	
-	//
-	public Map<Integer,Saving> findUpdatedSavings(int playerId)
-	{
-		Date currDate = new Date();
-        Calendar cCurr = Calendar.getInstance(); 
-        cCurr.setTime(currDate);
-        Calendar c2 = Calendar.getInstance(); 
-		
-		List<Saving> savings = this.findByPlayerId(playerId);
-		
-		Map<Integer,Saving>	 mdata = new HashMap<Integer,Saving>();
-		Saving liveSaving = null;
-		for (int i=0;i<savings.size();i++){
-			Saving saving = savings.get(i);
-			if (saving.getType()==0)
-				liveSaving = saving;
-			float inter = 0;
-	        c2.setTime(saving.getUpdatetime());
-	        float diffdd = super.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
-	        float periodMinutes = saving.getPeriod()*60;
-			System.out.println("利息到期时间:"+diffdd+","+periodMinutes);
-			if ((diffdd-periodMinutes)>0.001)
-			{
-				//活期
-				if (saving.getType()==0)
-				{
-					long diff = (long)(diffdd/periodMinutes);
-					inter = diff * saving.getAmount()*saving.getRate()/100;
-					saving.setAmount(saving.getAmount()+inter);
-					saving.setUpdatetime(currDate);
-					update(saving);
-				}else //定期，取出来,跟利息一起放回到活期
-				{
-					inter = saving.getAmount()*saving.getRate()/100;
-					float newsaving = saving.getAmount()+inter;
-					if (liveSaving!=null){
-						liveSaving.setAmount(liveSaving.getAmount()+newsaving);
-						update(liveSaving);
-						remove(playerId,saving.getItemid());
-						Saving ll = mdata.get(liveSaving.getItemid());
-						if (ll!=null)
-							ll.setAmount(liveSaving.getAmount());
-					}
-				}
-			}
-			
-			Saving usaving = new Saving();
-			usaving.setAmount(saving.getAmount());
-			usaving.setCreatetime(saving.getCreatetime());
-			usaving.setQty(saving.getQty());
-			usaving.setProfit(inter);
-			System.out.println("得到利息: "+inter);
-			mdata.put(saving.getItemid(), usaving);
-		}
-		return mdata;
-	}
-	
 	public Saving findLivingSavingByPlayerId(int playerId)
 	{
 		SavingExample example = new SavingExample();
@@ -152,29 +95,7 @@ public class SavingService extends BaseService {
 		return true;
 	}	
 	
-	public boolean addAmountToLiveSaving(int playerId,float amount)
-	{
-		SavingExample example = new SavingExample();
-		Criteria criteria = example.createCriteria();
-		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
-		List<Saving> savings = savingMapper.selectByExample(example);
-		Saving liveSaving = null;
-		for (int i=0;i<savings.size();i++){
-			if (savings.get(i).getType()==0){
-				liveSaving = savings.get(i);
-				break;
-			}
-		}
-		if (liveSaving!=null)
-		{
-			liveSaving.setAmount(liveSaving.getAmount()+amount); 
-			update(liveSaving);
-		}
-		
-		return true;
-	}
-	
-	public boolean update(Saving record)
+	public boolean updateLive(Saving record)
 	{
 		try {
 			savingMapper.updateByPrimaryKeySelective(record);
@@ -185,4 +106,6 @@ public class SavingService extends BaseService {
 		}				
 		return true;
 	}
+	
+	
 }

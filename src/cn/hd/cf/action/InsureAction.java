@@ -16,7 +16,6 @@ public class InsureAction extends SavingAction {
 		this.insure = insure;
 	}
 
-	private InsureService insureService;
 	private InsuredataService insuredataService;
 	
 	public InsuredataService getInsuredataService() {
@@ -27,15 +26,11 @@ public class InsureAction extends SavingAction {
 		this.insuredataService = insuredataService;
 	}
 
-	public InsureService getInsureService() {
-		return insureService;
-	}
-
 	public String add()
 	{
 		float inAmount = 0 - insure.getAmount();
 		//先扣钱:
-		int ret = super.updateLiveSaving(insure.getPlayerid(), inAmount);
+		int ret = super.pushLive(insure.getPlayerid(), inAmount);
 		if (ret==0){
 			insure.setCreatetime(new Date());
 			insure.setUpdatetime(new Date());
@@ -45,7 +40,7 @@ public class InsureAction extends SavingAction {
 			boolean add = insureService.add(insure);	
 			if (add==false){
 				//钱放回去:
-				super.updateLiveSaving(insure.getPlayerid(),  insure.getAmount());
+				super.pushLive(insure.getPlayerid(),  insure.getAmount());
 				ret = RetMsg.MSG_SQLExecuteError;
 			}
 		}
@@ -59,12 +54,8 @@ public class InsureAction extends SavingAction {
 		return null;
 	}
 	
-	public void setInsureService(InsureService insureService) {
-		this.insureService = insureService;
-	}
-
 	public InsureAction(){
-		init("insureService","insuredataService");
+		init("insuredataService");
 	}
 	
 }

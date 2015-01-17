@@ -125,12 +125,12 @@ public class ToplistService extends BaseService {
 		this.toplistMapper = toplistMapper;
 	}
 
-	public boolean updateCurrData(PlayerWithBLOBs playerBlob,double money){
-		Toplist toplist = findByPlayerId(playerBlob.getPlayerid());
+	public boolean updateToplist(int playerid,String playerName,double money){
+		Toplist toplist = findByPlayerId(playerid);
 		if (toplist==null){
 			Toplist newtop = new Toplist();
-			newtop.setPlayerid(playerBlob.getPlayerid());
-			newtop.setPlayername(playerBlob.getPlayername());
+			newtop.setPlayerid(playerid);
+			newtop.setPlayername(playerName);
 			newtop.setCreatetime(new Date());
 			newtop.setUpdatetime(new Date());
 			newtop.setMoney(BigDecimal.valueOf(money));
@@ -141,7 +141,7 @@ public class ToplistService extends BaseService {
 			System.out.println("增加最新排行榜记录: "+newtop.getPlayername()+":"+newtop.getMoney());
 		}else {
 			double topMoney = toplist.getMoney().doubleValue();
-			if ((money-topMoney)>0.01){
+			if (Math.abs(money-topMoney)>0.01){
 				toplist.setMoney(BigDecimal.valueOf(money));
 				toplist.setUpdatetime(new Date());
 				updateByKey(toplist);

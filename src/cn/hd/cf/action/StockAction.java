@@ -18,16 +18,7 @@ import cn.hd.mgr.StockManager;
 
 public class StockAction extends SavingAction {
 	private StockManager stockMgr;
-	private StockService stockService;
 	private Stock	stock;
-	
-	public StockService getStockService() {
-		return stockService;
-	}
-
-	public void setStockService(StockService stockService) {
-		this.stockService = stockService;
-	}
 	
 	public Stock getStock() {
 		return stock;
@@ -38,7 +29,7 @@ public class StockAction extends SavingAction {
 	}
 
 	public StockAction(){
-		init("stockService");
+		init();
 		stockMgr = StockManager.getInstance();
 	}
 	
@@ -113,7 +104,7 @@ public class StockAction extends SavingAction {
 		}
 		float inAmount = 0 - stock.getAmount();
 		//先扣钱:
-		int ret = super.updateLiveSaving(stock.getPlayerid(), inAmount);
+		int ret = super.pushLive(stock.getPlayerid(), inAmount);
 		if (ret==0){
 			boolean exec = false;	
 			if (stock.getQty()>0){
@@ -127,7 +118,7 @@ public class StockAction extends SavingAction {
 			}
 			if (exec==false){
 				//钱放回去:
-				super.updateLiveSaving(stock.getPlayerid(),  stock.getAmount());
+				super.pushLive(stock.getPlayerid(),  stock.getAmount());
 				ret = RetMsg.MSG_SQLExecuteError;
 			}
 		}

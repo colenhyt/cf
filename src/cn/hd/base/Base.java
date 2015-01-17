@@ -104,7 +104,7 @@ public class Base {
 		else if (type==2)	//day
 			t *= 60*60*24;
 		
-		System.out.println("时间相差: "+l2+","+l1+","+t);
+		//System.out.println("时间相差: "+l2+","+l1+","+t);
 		return (float)((l2 - l1)) / t;
 	}
 }

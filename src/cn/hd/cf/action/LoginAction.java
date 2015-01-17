@@ -3,11 +3,11 @@ package cn.hd.cf.action;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONObject;
-import cn.hd.base.BaseAction;
 import cn.hd.cf.model.Init;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Message;
@@ -17,41 +17,33 @@ import cn.hd.cf.model.Signindata;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.InitdataService;
-import cn.hd.cf.service.InsureService;
+import cn.hd.cf.service.InsuredataService;
 import cn.hd.cf.service.PlayerService;
-import cn.hd.cf.service.SavingService;
 import cn.hd.cf.service.SavingdataService;
 import cn.hd.cf.service.SignindataService;
-import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.ToplistService;
 import cn.hd.mgr.EventManager;
+import cn.hd.mgr.PlayerManager;
 import cn.hd.mgr.StockManager;
 import cn.hd.util.MD5;
 import cn.hd.util.StringUtil;
 
 import com.alibaba.fastjson.JSON;
 
-public class LoginAction extends BaseAction {
+public class LoginAction extends SavingAction {
 	private PlayerWithBLOBs player;
 	private PlayerService playerService;
-	private SavingService savingService;
-	private InsureService insureService;
-	public InsureService getInsureService() {
-		return insureService;
-	}
-
-	public void setInsureService(InsureService insureService) {
-		this.insureService = insureService;
-	}
-	private StockService stockService;
-	public StockService getStockService() {
-		return stockService;
-	}
-
-	public void setStockService(StockService stockService) {
-		this.stockService = stockService;
-	}
+	
 	private SavingdataService savingdataService;
+	private InsuredataService insuredataService;
+	public InsuredataService getInsuredataService() {
+		return insuredataService;
+	}
+
+	public void setInsuredataService(InsuredataService insuredataService) {
+		this.insuredataService = insuredataService;
+	}
+
 	public SavingdataService getSavingdataService() {
 		return savingdataService;
 	}
@@ -68,24 +60,8 @@ public class LoginAction extends BaseAction {
 		this.initdataService = initdataService;
 	}
 
-	public SavingService getSavingService() {
-		return savingService;
-	}
-
-	public void setSavingService(SavingService savingService) {
-		this.savingService = savingService;
-	}
 	private SignindataService signindataService;
-	private ToplistService	toplistService;
 	
-	public ToplistService getToplistService() {
-		return toplistService;
-	}
-
-	public void setToplistService(ToplistService toplistService) {
-		this.toplistService = toplistService;
-	}
-
 	public SignindataService getSignindataService() {
 		return signindataService;
 	}
@@ -95,8 +71,8 @@ public class LoginAction extends BaseAction {
 	}
 
 	public LoginAction(){
-		init("playerService","signindataService","toplistService","savingService","initdataService"
-				,"insureService","stockService","savingdataService");
+		init("playerService","signindataService","initdataService"
+				,"insuredataService","savingdataService");
 		EventManager.getInstance().start();
 	}
 	
@@ -141,6 +117,7 @@ public class LoginAction extends BaseAction {
 			super.writeMsg(RetMsg.MSG_SQLExecuteError);
 			return null;
 		}
+		PlayerManager.getInstance().addPlayer(playerBlob);
 		//活期存款:
 		if (init!=null&&init.getMoney()>0){
 			Saving savingCfg = savingdataService.findSaving(1);
@@ -166,9 +143,9 @@ public class LoginAction extends BaseAction {
 	
 	public String getPlayerJsonData(PlayerWithBLOBs playerBlob)
 	{
-		Map<Integer,Insure> insures = insureService.findUpdatedInsures(playerBlob.getPlayerid());
+		Map<Integer,Insure> insures = findUpdatedInsures(playerBlob.getPlayerid());
 		playerBlob.setInsure(JSON.toJSONString(insures));			
-		Map<Integer,Saving> savings = savingService.findUpdatedSavings(playerBlob.getPlayerid());
+		Map<Integer,Saving> savings = findUpdatedSavings(playerBlob.getPlayerid());
 		playerBlob.setSaving(JSON.toJSONString(savings));
 		Map<Integer,List<Stock>> stocks = stockService.findMapByPlayerId(playerBlob.getPlayerid());
 		playerBlob.setStock(JSON.toJSONString(stocks));	
@@ -181,8 +158,8 @@ public class LoginAction extends BaseAction {
 			fMm = playerBlob.getMoney().floatValue();
 		int top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),0,fMm);
 		playerBlob.setWeektop(top+1);
-		top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),1,fMm);
-		playerBlob.setMonthtop(top+1);
+//		top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),1,fMm);
+//		playerBlob.setMonthtop(top+1);
 		float margin = StockManager.getInstance().getMarginSec();
 		System.out.println("价格跳动:"+margin);
 		playerBlob.setQuotetime(margin);
@@ -195,6 +172,121 @@ public class LoginAction extends BaseAction {
 	}
 	
 	
+	private Map<Integer,Insure> findUpdatedInsures(int playerId)
+	{
+		Date curr = new Date();
+	
+	    Calendar cCurr = Calendar.getInstance(); 
+	    cCurr.setTime(curr);
+	    Calendar c2 = Calendar.getInstance(); 
+		
+		List<Insure> insures = insureService.findByPlayerId(playerId);
+		
+		Map<Integer,Insure>	mdata = new HashMap<Integer,Insure>();
+		
+		try {		
+		for (int i=0;i<insures.size();i++){
+			Insure insure = insures.get(i);
+			float inter = 0;	// 0表明未到期
+	        c2.setTime(insure.getUpdatetime());
+			float diffdd = super.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
+			float periodMinutes = insure.getPeriod()*60;
+			periodMinutes = 2;
+			//到期:
+			if ((diffdd-periodMinutes)>0.001)
+			{
+				//理财产品,得到收益:
+				if (insure.getType()!=null&&insure.getType()==1){
+				
+					Insure incfg = insuredataService.findInsure(insure.getItemid());
+					inter = incfg.getProfit()*insure.getQty();
+					super.pushLive(playerId, insure.getAmount()+inter);
+				}else {		//保险到期，移除
+					inter = -1;
+				}
+				//删除产品
+				insureService.delete(insure.getId());
+			}
+			
+			Insure uinsure = new Insure();
+			uinsure.setAmount(insure.getAmount());
+			uinsure.setCreatetime(insure.getCreatetime());
+			uinsure.setQty(insure.getQty());
+			uinsure.setProfit(inter);
+			mdata.put(insure.getItemid(), uinsure);
+		}
+		}catch (Exception e){
+			e.printStackTrace();
+			return mdata;
+		}	
+		
+		return mdata;
+	}
+
+	//
+	private Map<Integer,Saving> findUpdatedSavings(int playerId)
+	{
+		Date currDate = new Date();
+	    Calendar cCurr = Calendar.getInstance(); 
+	    cCurr.setTime(currDate);
+	    Calendar c2 = Calendar.getInstance(); 
+		
+		List<Saving> savings = savingService.findByPlayerId(playerId);
+		
+		Map<Integer,Saving>	 mdata = new HashMap<Integer,Saving>();
+		Saving liveSaving = null;
+		boolean liveUpdate = false;
+		for (int i=0;i<savings.size();i++){
+			Saving saving = savings.get(i);
+			if (saving.getType()==0)
+				liveSaving = saving;
+			float inter = 0;
+	        c2.setTime(saving.getUpdatetime());
+	        float diffdd = super.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
+	        float periodMinutes = saving.getPeriod()*60;
+	        periodMinutes = 5;
+			//System.out.println("利息到期时间:"+diffdd+","+periodMinutes);
+			if ((diffdd-periodMinutes)>0.001)
+			{
+				liveUpdate = true;
+				//活期
+				if (saving.getType()==0)
+				{
+					long diff = (long)(diffdd/periodMinutes);
+					inter = diff * saving.getAmount()*saving.getRate()/100;
+					saving.setAmount(saving.getAmount()+inter);
+				}else //定期，取出来,跟利息一起放回到活期
+				{
+					inter = saving.getAmount()*saving.getRate()/100;
+					float newsaving = saving.getAmount()+inter;
+					if (liveSaving!=null){
+						liveSaving.setAmount(liveSaving.getAmount()+newsaving);
+						savingService.remove(playerId,saving.getItemid());
+						Saving ll = mdata.get(liveSaving.getItemid());
+						if (ll!=null)
+							ll.setAmount(liveSaving.getAmount());
+					}
+				}
+				System.out.println(saving.getItemid()+"存款到期, 得到利息: "+inter);
+			}
+			
+			Saving usaving = new Saving();
+			usaving.setAmount(saving.getAmount());
+			usaving.setCreatetime(saving.getCreatetime());
+			usaving.setQty(saving.getQty());
+			usaving.setProfit(inter);
+			mdata.put(saving.getItemid(), usaving);
+		}
+		
+		if (liveUpdate==true){
+			liveSaving.setUpdatetime(currDate);
+			savingService.updateLive(liveSaving);
+			super.playerTopUpdate(playerId);			
+		}
+		
+		return mdata;
+	}
+
 	public String login()
 	{
 		PlayerWithBLOBs playerBlob = playerService.find(player.getPlayerid(),player.getPwd());

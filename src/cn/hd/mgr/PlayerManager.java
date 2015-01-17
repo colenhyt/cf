@@ -1,30 +1,23 @@
 package cn.hd.mgr;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import cn.hd.cf.model.Insure;
+import cn.hd.cf.action.SavingAction;
 import cn.hd.cf.model.PlayerWithBLOBs;
-import cn.hd.cf.model.Quote;
-import cn.hd.cf.model.Saving;
-import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Toplist;
-import cn.hd.cf.service.InsureService;
 import cn.hd.cf.service.PlayerService;
-import cn.hd.cf.service.SavingService;
-import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.ToplistService;
 
 public class PlayerManager {
 	private int WEEK_UPDATE_PERIOD = 20;		//20*60: 一小时
-	private SavingService savingService;
-	private StockService stockService;
 	private ToplistService toplistService;
-	private InsureService insureService;
 	private PlayerService playerService;
+	private Map<Integer,PlayerWithBLOBs> playerMap;
+	public SavingAction saveAction;
 	private int tick = 0;
 	
     private static PlayerManager uniqueInstance = null;  
@@ -38,9 +31,8 @@ public class PlayerManager {
     
     public PlayerManager(){
     	playerService = new PlayerService();
-    	savingService = new SavingService();
-    	insureService = new InsureService();
-    	stockService = new StockService();
+    	saveAction = new SavingAction();
+    	playerMap = new HashMap<Integer,PlayerWithBLOBs>();
     	toplistService = new ToplistService();
     	updateToplist();
      }
@@ -50,48 +42,42 @@ public class PlayerManager {
 	      Calendar cl = Calendar. getInstance();
 	      cl.setTime(d1);
 	      cl.setFirstDayOfWeek(Calendar.MONDAY);
-	      System.out.println("更新排行榜财富和数据");
+	      System.out.println("装载玩家数据到内存");
 	      
 	      //更新全部人最新的财富值:
 	      List<PlayerWithBLOBs> all = playerService.findAll();
 	      for (int i=0;i<all.size();i++){
     		PlayerWithBLOBs pp = all.get(i);
-    		float money = this.calculatePlayerMoney(pp);
-    		pp.setMoney(money);
-    		toplistService.updateCurrData(pp,money);
+	    	  playerMap.put(pp.getPlayerid(), pp);
+//    		float money = saveAction.calculatePlayerMoney(pp.getPlayerid());
+//    		pp.setMoney(money);
+//    		toplistService.updateCurrData(pp.getPlayerid(),pp.getPlayername(),money);
     	  }
     }
     
-    private float calculatePlayerMoney(PlayerWithBLOBs player){
-    	float amount = 0;
-    	List<Saving> saving = savingService.findByPlayerId(player.getPlayerid());
-    	for (int i=0;i<saving.size();i++){
-    		amount += saving.get(i).getAmount();
-    	}
-    	List<Insure> insure = insureService.findByPlayerId(player.getPlayerid());
-    	for (int i=0;i<insure.size();i++){
-    		amount += insure.get(i).getAmount();
-    	}
-    	List<Stock> stock = stockService.findByPlayerId(player.getPlayerid());
-    	for (int i=0;i<stock.size();i++){
-    		Stock ps = stock.get(i);
-    		if (ps==null) continue;
-    		List<Quote> qq = StockManager.getInstance().getLastQuotes(ps.getItemid());
-    		if (qq.size()>0)
-    			amount += qq.get(0).getPrice()*ps.getQty();
-    	}   	
-    	
-    	return amount;
+    public PlayerWithBLOBs findPlayer(int playerid){
+    	PlayerWithBLOBs pp = playerMap.get(playerid);
+    	return pp;
     }
+    
+    public boolean addPlayer(PlayerWithBLOBs player){
+    	boolean exist = playerMap.containsKey(player.getPlayerid());
+    	if (exist==false)
+    		playerMap.put(player.getPlayerid(), player);
+    	
+    	return true;
+    }
+    
     public void update(){
     	tick ++;
-    	if (tick%WEEK_UPDATE_PERIOD==0){
-    		updateToplist();
-    	}
+//    	if (tick%WEEK_UPDATE_PERIOD==0){
+//    		updateToplist();
+//    	}
 	}
     
     public static void main(String[] args) {
     	PlayerManager stmgr = PlayerManager.getInstance();
+    	stmgr.saveAction.pushLive(47, 10000);
     	//stmgr.updateToplist();
     	ToplistService toplistService = new ToplistService();
     	List<Toplist> list = toplistService.findByType(0);

@@ -65,7 +65,6 @@ public class PlayerService extends BaseService {
 		try {
 		playerMapper.insertSelective(record);
 		DBCommit();
-		DBCommit();
 		}catch (Exception e){
 			e.printStackTrace();
 			return false;
