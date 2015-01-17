@@ -132,19 +132,29 @@ Toplist.prototype.showToplist = function(type,page)
 			var item = items[i];
 			if (i==0)
 			{
-			var topStr = "无";
-			if (item.top>0)
+			 var topStr = "无";
+			 var hasImg = false;
+			 if (item.top>0){
 				topStr = item.top;
+				if (item.top<=3)
+				 hasImg = true
+			 }
 			 content += "             <tr>"
 			 content += "               <td class='cftoplist_content' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.playername.substring(0,8)+"</div></td>"
 			 content += "               <td class='cftoplist_c5' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+parseInt(item.money)+"</div></td>"
+			 if (hasImg==true)
+			 content += "               <td class='cftoplist_c4' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'><img class='cftoplist_top' src='static/img/icon_top_"+topStr+".png></div></td>"
+			 else
 			 content += "               <td class='cftoplist_c4' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+topStr+"</div></td>"
 			 content += "               <td class='cftoplist_c3' style='color:yellow'><div onclick='g_toplist.zan("+page+","+item.playerid+")'<input type='button' class='cf_top_zan'/><span class='cftoplist_c6'>*<span id='zan_"+item.playerid+"'>"+item.zan+"</span></span></div></td>"
-			content += "              </tr>"			
+			 content += "              </tr>"			
 			}else {
 			 content += "             <tr>"
 			 content += "               <td class='cftoplist_content'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.playername.substring(0,8)+"</div></td>"
 			 content += "               <td class='cftoplist_c5'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+parseInt(item.money)+"</div></td>"
+			 if (item.top<=3)
+			 content += "               <td class='cftoplist_c4'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'><img class='cftoplist_top' src='static/img/icon_top_"+item.top+".png'></div></td>"
+			 else
 			 content += "               <td class='cftoplist_c4'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.top+"</div></td>"
 			 content += "               <td class='cftoplist_c3'><div onclick='g_toplist.zan("+page+","+item.playerid+")'<input type='button' class='cf_top_zan'/><span class='cftoplist_c6'>*<span id='zan_"+item.playerid+"'>"+item.zan+"</span></span></div></td>"
 			content += "              </tr>"
