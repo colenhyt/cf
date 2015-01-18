@@ -430,6 +430,27 @@ width:200px;
 height:308px;
 }
 
+.cfbank_div {
+position:absolute;
+left:70px;
+top:448px;
+z-index:10;
+}
+
+.cfstock_div {
+position:absolute;
+left:385px;
+top:207px;
+z-index:10;
+}
+
+.cfinsure_div {
+position:absolute;
+left:342px;
+top:622px;
+z-index:10;
+}
+
 .cfstock_clickon {
 width:214px;
 height:390px;
@@ -624,6 +645,31 @@ border:none;
 background:url('../../static/img/top_title_bg.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;    
+}
+
+.cfsignin_prize {
+position:absolute;
+display:block; 
+left:250px;
+top:70px;
+z-index:3000;
+}
+
+.cfsignin_prize.exp {
+left:130px;
+}
+
+.cfsignin_mmdesc {
+padding-left:30px;
+}
+
+.cfevent_prize {
+position:absolute;
+display:block; 
+color:yellow;
+left:300px;
+top:130px;
+z-index:3000;
 }
 
 .cf_top_zan{

@@ -38,10 +38,6 @@ var game_imgs = [
 	{name:"saving",src:"static/img/icon_saving.png",x:150,y:15,hasDiv:true},
 	{name:"weektop",src:"static/img/icon_weektop.png",x:365,y:15,hasDiv:true},
 	{name:"level",src:"static/img/icon_level.png",x:-5,y:103,hasDiv:true},
-	{name:"car1",src:"static/img/icon_car1.png",x:-45,y:338,hasDiv:true},
-	{name:"car2",src:"static/img/icon_car2.png",x:625,y:243,hasDiv:true},
-	{name:"car3",src:"static/img/icon_car3.png",x:585,y:843,hasDiv:true},
-	{name:"car4",src:"static/img/icon_car2.png",x:585,y:603,hasDiv:true},
 ];
 
 var head_imgs = [
@@ -111,27 +107,29 @@ var Screen_Nav_Height = 88;
 var Scene_Height = 1236 - Screen_Status_Height - Screen_Nav_Height;
 
 var PageSizes = {
-	"960":{SceneWidth:640,SceneHeight:1108,PieWidth:350,
-	PieHeight:400,PageWidth:"580px",PieFontSize:30,PageHeight:"637px",PageTop:80,
-	DetailPageTop:100,MsgTop:120,
-	StockView:[540,420,480,280,22]},
-
 	"640":{SceneWidth:640,SceneHeight:1108,PieWidth:350,
 	PieHeight:400,PageWidth:"580px",PieFontSize:30,PageHeight:"637px",PageTop:80,
 	DetailPageTop:100,MsgTop:120,
-	StockView:[540,420,480,280,22]},
+	StockView:[540,420,480,280,22]
+	,EventMoney:["120px","390px"]
+	,SigninMoney:["90px","50px","210px"]
+	,QuestMoney:["120px","390px"]
+	},
 	
 	"480":{SceneWidth:640,SceneHeight:1108,PieWidth:260,PieFontSize:24,
 	PieHeight:280,PageWidth:"432px",PageHeight:"477px",PageTop:60,
-	DetailPageTop:80,MsgTop:100,StockView:[410,350,400,230,18]},
+	DetailPageTop:80,MsgTop:100,
+	StockView:[410,350,400,230,18],EventMoney:["120px","390px"]},
 	
 	"360":{SceneWidth:640,SceneHeight:1108,PieWidth:200,PieFontSize:20,
 	PieHeight:220,PageWidth:"328px",PageHeight:"477px",PageTop:40,
-	DetailPageTop:50,MsgTop:50,StockView:[300,300,280,190,15]},
+	DetailPageTop:50,MsgTop:50,
+	StockView:[300,300,280,190,15],EventMoney:["120px","390px"]},
 
 	"320":{SceneWidth:640,SceneHeight:1108,PieWidth:180,PieFontSize:16,
 	PieHeight:190,PageWidth:"290px",PageHeight:"477px",PageTop:50,
-	DetailPageTop:60,MsgTop:40,StockView:[270,220,260,120,15]},
+	DetailPageTop:60,MsgTop:40,
+	StockView:[270,220,260,120,15],EventMoney:["120px","390px"]},
 }
 
 var SCREENKEY = 640;

@@ -213,28 +213,12 @@ Map.prototype.draw = function(){
 }
 
 Map.prototype.update = function(){
-
+	return;
 	if (!g_game.enter) return;
 	
 	for (var i=0;i<this.m_imgs.length;i++){
 		var name = this.m_imgs[i].name;
-		if (name=="car1"){
-			if (this.m_imgs[i].x>=355){
-			 this.m_imgs[i].x = -45;
-			 this.m_imgs[i].y = 338;
-			}else {
-			this.m_imgs[i].x += 5;
-			this.m_imgs[i].y += 3;
-			}
-		}else if (name=="car2"){
-			if (this.m_imgs[i].x<=303){
-			 this.m_imgs[i].x = 625;
-			 this.m_imgs[i].y = 243;
-			}else{
-			this.m_imgs[i].x -= 5;
-			this.m_imgs[i].y += 3;
-			}
-		}else if (name=="car3"){
+		if (name=="car3"){
 			if (this.m_imgs[i].x<=205){
 			 this.m_imgs[i].x = 585;
 			 this.m_imgs[i].y = 843;
@@ -330,6 +314,28 @@ Game.prototype.onEnter = function(){
 	g_insure.onEnter();
 	g_stock.onEnter();
 	g_bank.onEnter();
+	
+  var bankDiv=document.createElement("div");
+  bankDiv.className="cfbank_div";
+  bankDiv.innerHTML = "<img src='static/img/icon_bank.png' onclick='g_bank.onclick()'>"
+  document.body.appendChild(bankDiv);   
+
+	
+  var stockDiv=document.createElement("div");
+  stockDiv.className="cfstock_div";
+  stockDiv.innerHTML = "<img src='static/img/icon_stock.png' onclick='g_stock.onclick()'>"
+  document.body.appendChild(stockDiv);   
+	
+  var insureDiv=document.createElement("div");
+  insureDiv.className="cfinsure_div";
+  insureDiv.innerHTML = "<img src='static/img/icon_insure.png' onclick='g_insure.onclick()'>"
+  document.body.appendChild(insureDiv);   
+
+  	
+carAni1();
+carAni2();
+carAni3();
+	
 	this.register(g_event);
 }
 

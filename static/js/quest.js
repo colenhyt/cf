@@ -166,6 +166,7 @@ Quest.prototype.getQuetPrize = function(id){
    var item = this.findItem(id);
    if (item==null) return;
    
+   
    var pz = cfeval(item.prize);
    g_player.prize(pz);
    //移除:

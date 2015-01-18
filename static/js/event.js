@@ -23,7 +23,7 @@ Event.prototype.triggerEvent = function(){
 	var tdata = store.get(this.name);
 	var index = Math.floor(Math.random()*tdata.length);
 	var item = tdata[index]; 
-	
+
 	if (item.type==1){
 		this.badEvent(item);
 	}else {
@@ -41,6 +41,7 @@ Event.prototype.goodEvent = function(item){
 	//if (found==true)
 	{
 	var pp = cfeval(item.prize);
+	var money = itemValue(pp,ITEM_TYPE.CASH);
 			var targetInsure = store.get(g_insure.name)[item.itemid];
 			var iname = targetInsure?targetInsure.name:"";
 			content = "<div>"
@@ -48,7 +49,8 @@ Event.prototype.goodEvent = function(item){
 			content += "</div>"
 			content += "<div>"
 			content += item.descs+"<br>"
-			content += "获得: "+itemStr2(pp,",");
+			content += "获得金钱: "
+			content += "<span id='cfevent_prize' class='cfevent_prize'>"+ money+"</span>"
 			content += "</div>"
 	}
 	g_msg.openModal(item.name,content,"g_event.eventOkCallback",item.itemid);
@@ -71,6 +73,7 @@ Event.prototype.badEvent = function(item){
 		//alert('成功避开意外')
 		g_msg.openModal(item.name,content);
 	}else{
+		var money = 0-itemValue(pp,ITEM_TYPE.CASH);
 		var targetInsure = store.get(g_insure.name)[item.itemid];
 		var iname = targetInsure?targetInsure.name:"";
 		var content = "<div>"
@@ -78,7 +81,9 @@ Event.prototype.badEvent = function(item){
 		content += "</div>"
 		content += "<div>"
 		content += item.descs +"<br>"
-		content += "损失: "+ tip+"<br>"
+		content += "损失金钱: "
+		content += "<span id='cfevent_prize' class='cfevent_prize'>"+ money+"</span>"
+		content += "<br>"
 		content += "(你可购买<span style='color:red'>"+iname+"</span>来避免该意外)"
 		content += "</div>"
 		g_msg.openModal(item.name,content,"g_event.eventOkCallback",item.itemid);
@@ -95,12 +100,26 @@ Event.prototype.eventOkCallback = function(itemid){
 			break;
 		}
 	}
-	if (item){
+	
+  var div=$("#cfevent_prize");
+  div.animate({fontSize:'2.5em'},300);
+  div.animate({left:'-='+getSizes().EventMoney[0],top:'-='+getSizes().EventMoney[1]},1000);
+  div.animate({fontSize:'1em'},300,function(){
+    div.remove();
+ 	if (item){
 	   var pp = cfeval(item.prize);
 	   g_player.prize(pp);
 	}
 	g_msg.hide();
+   });
+  
 }
+
+Event.prototype.aniCallback = function(){
+var div=$("#cfevent_prize");
+ div.remove();
+}
+
 //
 Event.prototype.update = function(){
 	this.tick++;

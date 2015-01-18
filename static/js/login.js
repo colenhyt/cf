@@ -172,7 +172,7 @@ Login.prototype.loadData = function(obj){
 			g_player.saving[itemid] = sdata[itemid];
 		//存款利息提示:
 		if (sdata[itemid].profit>0){
-			msg.push({type:g_saving.name,t:parseInt(item.type),name:item.name,profit:sdata[itemid].profit});
+			msg.push({type:g_saving.name,t:parseInt(item.type),name:item.name,profit:parseInt(sdata[itemid].profit)});
 		}
 	}
 	g_player.insure = {};
@@ -183,7 +183,7 @@ Login.prototype.loadData = function(obj){
 		if (idata[itemid].profit==0)
 		  g_player.insure[itemid]= idata[itemid];
 		 else { //保险产品到期
-			msg.push({type:g_insure.name,t:parseInt(item.type),name:item.name,profit:idata[itemid].profit});
+			msg.push({type:g_insure.name,t:parseInt(item.type),name:item.name,profit:parseInt(idata[itemid].profit)});
 		 }
 	}
 	g_player.stock = cfeval(obj.stock);
