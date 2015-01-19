@@ -34,7 +34,7 @@ Playerinfo.prototype.showInfo = function(jsondata){
     content += "昵            称: <span style='color:yellow'>"+jsondata.data.playername.substring(0,10)+"</span><br>"	
     content += "当前等级: <span style='color:yellow'>"+lv+"</span> "+g_title.getData(lv).name+"<br>"	
     content += "下一等级: <span style='color:yellow'>"+(lv+1)+"</span> "+g_title.getData(lv+1).name+"<br>"
-    content += "经            验: <span style='color:yellow'>"+g_title.getData(lv).exp+"</span>/"+jsondata.data.exp	+"<br>"
+    content += "经            验: <span style='color:yellow'>"+jsondata.data.exp+"</span>/"+g_title.getData(lv+1).exp+"<br>"
     content += "当周排名: <span style='color:yellow'>"+jsondata.data.weektop+"</span><br>"	
     content +=            " </div>"
 	content += "</td>"
