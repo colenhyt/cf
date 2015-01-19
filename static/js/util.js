@@ -343,7 +343,7 @@ function carAni1(){
 
  var divName = "divcar1";
 var anis=[
-['+=410px','+=240px',6200,'icon_car1.png',"-50px","338px"],
+['+=410px','+=240px',11000,'icon_car1.png',"-50px","338px"],
 ['-=100px','+=80px',2500,'icon_car1_2.png'],
 ]
 
@@ -382,11 +382,11 @@ function carAni2(){
 
  var divName = "divcar2";
 var anis=[
-['-=350px','+=230px',5000,'icon_car2.png',"605px","234px"],
-['+=280px','+=170px',5500,'icon_car2_2.png'],
-['-=80px','+=80px',2500,'icon_car2.png'],
-['+=120px','+=120px',3500,'icon_car2_2.png'],
-['-=380px','+=240px',10000,'icon_car2.png'],
+['-=350px','+=230px',8000,'icon_car2.png',"605px","234px"],
+['+=280px','+=170px',7500,'icon_car2_2.png'],
+['-=80px','+=80px',3500,'icon_car2.png'],
+['+=120px','+=120px',4500,'icon_car2_2.png'],
+['-=360px','+=225px',11000,'icon_car2.png'],
 ]
 
  var tag = document.getElementById(divName);
@@ -400,6 +400,7 @@ var anis=[
  var div=$("#"+divName);
  div.fadeIn("fast");
  div.attr("src","static/img/"+anis[0][3]);
+ div.css("z-index",0);
  div.css("left",anis[0][4]);
  div.css("top",anis[0][5]);
  
@@ -441,9 +442,9 @@ function carAni3(){
 
  var divName = "divcar3";
 var anis=[
-['-=150px','+=120px',3500,'icon_car3.png',"585px","603px"],
-['+=155px','+=115px',4000,'icon_car3_2.png'],
-['-=380px','+=255px',10000,'icon_car3.png'],
+['-=150px','+=120px',4500,'icon_car3.png',"585px","603px"],
+['+=155px','+=115px',4500,'icon_car3_2.png'],
+['-=330px','+=230px',10000,'icon_car3.png'],
 ]
 
  var tag = document.getElementById(divName);
@@ -457,6 +458,7 @@ var anis=[
  var div=$("#"+divName);
  div.fadeIn("fast");
  div.attr("src","static/img/"+anis[0][3]);
+ div.css("z-index",5);
  div.css("left",anis[0][4]);
  div.css("top",anis[0][5]);
  
