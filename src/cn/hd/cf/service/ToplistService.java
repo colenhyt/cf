@@ -42,7 +42,8 @@ public class ToplistService extends BaseService {
 	
 	public int findCountByGreaterMoney(int playerid,int type,float fPMoney){
 		Toplist top = findByPlayerId(playerid);
-		BigDecimal fMoney = BigDecimal.valueOf(fPMoney);
+		int intMoney = Float.valueOf(fPMoney).intValue();
+		BigDecimal fMoney = BigDecimal.valueOf(intMoney);
 		if (top!=null){
 			fMoney = top.getMoney();
 			Calendar cl = Calendar.getInstance();
