@@ -337,6 +337,10 @@ color:yellow;
 font-weight:bold;
 }
 
+.cfpanel_title.small{
+font-size:32px;
+}
+
 .cfpanel_text{
 position:relative;
 float:left;

@@ -83,7 +83,7 @@ Insure.prototype.buildPage = function(page)
 				if (pitem.qty<=0)
 					buyDesc = "尚未购买";
 				else
-					buyDesc = "购买 <span style='color:yellow'>"+pitem.qty+"</span> 份";
+					buyDesc = "已购 <span style='color:yellow'>"+pitem.qty+"</span> 份";
 			}else {
 				var psColor = "green";
 				if (pitem.profit<0)
@@ -91,12 +91,15 @@ Insure.prototype.buildPage = function(page)
 				if (pitem.qty<=0)
 					buyDesc = "尚未购买";
 				else {
-					buyDesc = "已购买 <span style='color:yellow'>"+pitem.qty+"</span>份,预计盈亏:<span style='color:red'>"+parseInt(item.profit*pitem.qty)+"</span>";
+					buyDesc = "已购 <span style='color:yellow'>"+pitem.qty+"</span>份,预计盈亏:<span style='color:red'>"+parseInt(item.profit*pitem.qty)+"</span>";
 				}			
 			}
 			
 		  content += "<div class='cfpanel' ID='"+this.name+"_d"+itemid+"' onclick='g_insure.clickDetail("+itemid+","+item.type+")'>"
-		     content += "<span class='cfpanel_title'>"+item.name+"</span>"
+		     if (item.name.length>=5&&pitem.qty>0)
+		      content += "<span class='cfpanel_title small'>"+item.name+"</span>"
+		     else
+		      content += "<span class='cfpanel_title'>"+item.name+"</span>"
 			 content += "<span class='cfpanel_text right'>"+buyDesc+"</span>"
 			 content += "	<div>"
 			 content += "<span class='cfpanel_text'>价格: ￥"+ForDight(item.price)+"</span>"
