@@ -112,6 +112,10 @@ Toplist.prototype.showToplist = function(type,page)
 			 var me = tdata[tdata.length-1];
 			 var amount = g_player.getTotal(g_player);
 			 me.money = amount.total;
+			 if (type==0&&me.top!=g_player.data.weektop){
+			  g_player.data.weektop=me.top;
+			  g_player.flushPageview();
+			 }
 			
 			var items = []
 			items.push(me);

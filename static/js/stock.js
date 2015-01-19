@@ -385,7 +385,7 @@ Stock.prototype.stockChange = function()
 			{
 				g_player.buyItem(g_stock.name,key,closeIds[key].qty,closeIds[key].price);
 			}
-			g_msg.tip("股票资产盈亏变化:"+parseInt(prs));
+			//g_msg.tip("股票资产盈亏变化:"+parseInt(prs));
 		}});
 	}   catch  (e)   {
 	    logerr(e.name);
