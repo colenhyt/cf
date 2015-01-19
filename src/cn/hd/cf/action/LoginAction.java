@@ -189,7 +189,7 @@ public class LoginAction extends SavingAction {
 	        c2.setTime(insure.getUpdatetime());
 			float diffdd = super.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
 			float periodMinutes = insure.getPeriod()*60;
-			periodMinutes = 2;
+			periodMinutes = 5;
 			//到期:
 			if ((diffdd-periodMinutes)>0.001)
 			{

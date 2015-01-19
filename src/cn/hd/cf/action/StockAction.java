@@ -121,6 +121,7 @@ public class StockAction extends SavingAction {
 				super.pushLive(stock.getPlayerid(),  stock.getAmount());
 				ret = RetMsg.MSG_SQLExecuteError;
 			}
+			super.playerTopUpdate(stock.getPlayerid());
 		}
 		writeMsg(ret);
 		return null;
