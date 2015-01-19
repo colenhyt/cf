@@ -277,9 +277,12 @@ itemStr2 = function(items,split){
 calculateTimeout = function(pitem,item){
     var ctime = pitem.createtime;
     var now = Date.parse(new Date());
-    var diffMinuts = (now - ctime)/(1000*60*60*24);
+    var diffDays = (now - ctime)/(1000*60*60*24);
     var periodTime = item.period*pitem.qty;
-    return ForDight(periodTime - diffMinuts);
+    var days = ForDight(periodTime - diffDays);
+    if (days<0)
+     days = 0;
+    return days;
 }
 
 randomItems = function(items,existItems,count){
