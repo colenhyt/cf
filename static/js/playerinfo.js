@@ -90,7 +90,7 @@ Playerinfo.prototype.showPie = function(data,divName){
 		sub_option:{
 					mini_label_threshold_angle : 0,//迷你label的阀值,单位:角度
 					mini_label:{//迷你label配置项
-						fontsize:10,
+						fontsize:getSizes().PieFontSize2,
 						fontweight:600,
 						color : '#000000'
 					},
