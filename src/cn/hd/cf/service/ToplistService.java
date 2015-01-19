@@ -172,7 +172,11 @@ public class ToplistService extends BaseService {
 		}
 		//week
 		if (type==0){
-			int weekday = cl.get(Calendar.WEDNESDAY)-1;
+			int weekday = cl.get(Calendar.DAY_OF_WEEK);
+			if (weekday==Calendar.SUNDAY)
+				weekday = 6;
+			else
+				weekday -= 2;
 			cl.add(Calendar.DAY_OF_YEAR, 0-weekday);
 			Date weekDate=cl.getTime();
 			int diff = weekDate.compareTo(firstDate);

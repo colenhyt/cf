@@ -43,6 +43,7 @@ public class InsureAction extends SavingAction {
 				super.pushLive(insure.getPlayerid(),  insure.getAmount());
 				ret = RetMsg.MSG_SQLExecuteError;
 			}
+			super.playerTopUpdate(insure.getPlayerid());
 		}
 		writeMsg(ret);
 		return null;

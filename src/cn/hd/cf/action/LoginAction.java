@@ -102,8 +102,6 @@ public class LoginAction extends SavingAction {
 		Init init = initdataService.findInit();
 		if (init!=null){
 			playerBlob.setExp(init.getExp());
-			if (init.getMoney()>0)
-				playerBlob.setMoney(Float.valueOf(init.getMoney().intValue()));
 		}
 		
 //		String ipAddr = getHttpRequest().getRemoteAddr();
@@ -133,6 +131,7 @@ public class LoginAction extends SavingAction {
 			saving.setAmount(Float.valueOf(init.getMoney().intValue()));
 			saving.setCreatetime(time);
 			savingService.add(saving);
+			super.playerTopUpdate(playerBlob.getPlayerid());
 		}
 		
 		JSONObject obj = JSONObject.fromObject(playerBlob);
@@ -150,12 +149,12 @@ public class LoginAction extends SavingAction {
 		Map<Integer,List<Stock>> stocks = stockService.findMapByPlayerId(playerBlob.getPlayerid());
 		playerBlob.setStock(JSON.toJSONString(stocks));	
 		Toplist toplist = toplistService.findByPlayerId(playerBlob.getPlayerid());
-		if (toplist!=null)
-			playerBlob.setZan(toplist.getZan());
-		
 		float fMm = 0;
-		if (playerBlob.getMoney()!=null)
-			fMm = playerBlob.getMoney().floatValue();
+		if (toplist!=null){
+			fMm = toplist.getMoney().floatValue();
+			System.out.println("取得排行榜金钱:"+fMm);
+			playerBlob.setZan(toplist.getZan());
+		}
 		int top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),0,fMm);
 		playerBlob.setWeektop(top+1);
 		top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),1,fMm);
