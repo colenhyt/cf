@@ -109,16 +109,13 @@ Toplist.prototype.showToplist = function(type,page)
 			content += "          </table>"
 			 content += "        <table id='toplist1_tab'>"
   
-			 var me = g_player.data;
-			 me.top = me.weektop;
+			 var me = tdata[tdata.length-1];
 			 var amount = g_player.getTotal(g_player);
 			 me.money = amount.total;
-			 if (type==1) 
-			  me.top = me.monthtop;
 			
 			var items = []
 			items.push(me);
-			for (var i=0;i<tdata.length;i++){
+			for (var i=0;i<tdata.length-1;i++){
 				var item = tdata[i];
 				if (item.playerid==me.playerid)continue;
 				item.top = i+1;
@@ -143,7 +140,7 @@ Toplist.prototype.showToplist = function(type,page)
 			 content += "               <td class='cftoplist_content' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.playername.substring(0,8)+"</div></td>"
 			 content += "               <td class='cftoplist_c5' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+parseInt(item.money)+"</div></td>"
 			 if (hasImg==true)
-			 content += "               <td class='cftoplist_c4' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'><img class='cftoplist_top' src='static/img/icon_top_"+topStr+".png></div></td>"
+			 content += "               <td class='cftoplist_c4' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'><img class='cftoplist_top' src='static/img/icon_top_"+topStr+".png'></div></td>"
 			 else
 			 content += "               <td class='cftoplist_c4' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+topStr+"</div></td>"
 			 content += "               <td class='cftoplist_c3' style='color:yellow'><div onclick='g_toplist.zan("+page+","+item.playerid+")'<input type='button' class='cf_top_zan'/><span class='cftoplist_c6'>*<span id='zan_"+item.playerid+"'>"+item.zan+"</span></span></div></td>"
@@ -256,7 +253,8 @@ Toplist.prototype.syncCallback=function(dataobj){
 
 Toplist.prototype.syncData2 = function(){
 	try  {
-		$.ajax({type:"post",url:"/cf/toplist_list.do",success:this.syncCallback});
+		var data= "toplist.playerid="+g_player.data.playerid;
+		$.ajax({type:"post",url:"/cf/toplist_list.do",data:data,success:this.syncCallback});
 	}   catch  (e)   {
 	    logerr(e.name);
 	}   
