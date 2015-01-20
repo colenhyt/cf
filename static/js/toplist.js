@@ -123,6 +123,12 @@ Toplist.prototype.showToplist = function(type,page)
 				var item = tdata[i];
 				if (item.playerid==me.playerid)continue;
 				item.top = i+1;
+				for (j=0;j<items.length;j++){
+				 if (items[j].money==item.money){
+				  item.top = items[j].top;
+				  break;
+				 }
+				}
 				items.push(item);
 			}
 		var start = page* this.pageCount;
