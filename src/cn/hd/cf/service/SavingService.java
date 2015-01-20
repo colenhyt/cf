@@ -98,7 +98,11 @@ public class SavingService extends BaseService {
 	public boolean updateLive(Saving record)
 	{
 		try {
-			savingMapper.updateByPrimaryKeySelective(record);
+			SavingExample example = new SavingExample();
+			Criteria criteria = example.createCriteria();
+			criteria.andPlayeridEqualTo(record.getPlayerid());
+			criteria.andItemidEqualTo(1);			
+			savingMapper.updateByExampleSelective(record, example);
 			DBCommit();
 		}catch (Exception e){
 			e.printStackTrace();
