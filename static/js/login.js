@@ -261,7 +261,7 @@ Login.prototype.login = function(){
     	   
 	if (dlog[1]==true)
 	{
-		g_signin.start(0);
+		g_signin.show();
 	}else {
 		g_game.onEnter();
 	}

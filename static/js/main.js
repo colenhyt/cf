@@ -18,7 +18,7 @@ Main.prototype.init = function(){
 	//loadStyle('static/css/cf.css');
 	//outputCssFiles(360);
 	//return;
-	
+
     var canvas = document.createElement("canvas");
     canvas.width = getSizes().SceneWidth;
     canvas.height = getSizes().SceneHeight;

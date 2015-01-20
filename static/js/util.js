@@ -220,6 +220,19 @@ myajax = function(url,dataParam,async){
 	}	
 }
 
+findSigninLog = function(logdata){
+ var now = new Date();
+ var signinDays = 0;
+ for (var i=0;i<7;i++){
+  if (logdata[now.toDateString()])
+   signinDays++;
+  else
+   break;
+  now.setDate(now.getDate()-1);
+ }
+ return signinDays;
+}
+
 obj2ParamStr = function(objName,objProp)
 {
 	var str = "";

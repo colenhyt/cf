@@ -654,7 +654,7 @@ background:url('../../static/img/top_title_bg.png') no-repeat;
 .cfsignin_prize {
 position:absolute;
 display:block; 
-left:250px;
+left:270px;
 top:70px;
 z-index:3000;
 }
@@ -664,7 +664,7 @@ left:130px;
 }
 
 .cfsignin_mmdesc {
-padding-left:30px;
+padding-left:40px;
 }
 
 .cfevent_prize {

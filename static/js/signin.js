@@ -38,44 +38,46 @@ Signin.prototype.buildPage = function(page)
 
 }
 
-Signin.prototype.start = function(startDay){
+Signin.prototype.findPrize = function(days){
 	 
-    var signin = this;    
-    var vstartDay = startDay + 1;	//
+    var prize = {currPz:[],toPz:[]};
     
     var data = store.get(this.name);
     if (data!=null)
     {
-    	signin.data = [];
-    	signin.data_to = [];
     	for (var i=0;i<data.length;i++)
     	{
     		var item = data[i];
     		var item2 ={"t":item.type,"v":item.value};
-    		if (item.day==vstartDay){
-    			signin.data.push(item2);
-    		}else if (item.day==vstartDay+1){
-    			signin.data_to.push(item2);
+    		if (item.day==days){
+    			prize.currPz.push(item2);
+    		}else if (item.day==days+1){
+    			prize.toPz.push(item2);
     		}
     	} 
-    	if (signin.data.length>0)   
-        	signin.show();
     }
+    
+    return prize;
  }
 
 Signin.prototype.show = function(){
+	var data = store.get(g_playerlog.name);
+	var signindays = findSigninLog(data);
+	if (signindays<=0) return;
+	
+	var prize = this.findPrize(signindays);
 	
     var signin = this;    
     var get = document.getElementById("signin_gettoday");
     var todayget = "<br>"
-    var cash = itemValue(this.data,0);
-    var exp = itemValue(this.data,1);
+    var cash = itemValue(prize.currPz,0);
+    var exp = itemValue(prize.currPz,1);
     todayget += "经验:<span class='cfsignin_mmdesc'>,金钱:</span><span class='cfsignin_prize exp' id='cfsignin_prize_exp'>"+exp+"</span>"
     todayget += "<span class='cfsignin_prize' id='cfsignin_prize'>"+cash+"</span>"
     get.innerHTML = todayget;
  
     get = document.getElementById("signin_gettomorrow");
-    get.innerHTML = "<br>"+itemStr(this.data_to,",");
+    get.innerHTML = "<br>"+itemStr(prize.toPz,",");
 
     var tagfeel = document.getElementById("signin_feeling");
     
@@ -99,6 +101,8 @@ Signin.prototype.show = function(){
  	  }
  	context += "</tr>"
  	context += "</table>     "
+    
+    this.currPrize = prize.currPz;
     
     tagfeel.innerHTML = context;
     
@@ -129,8 +133,9 @@ Signin.prototype.clickFeeling = function(feelingId){
   div.animate({fontSize:'1em'},300,function(){
    var div=$("#cfsignin_prize");
     div.remove();
-	   g_player.prize(g_signin.data);
-	   $('#'+g_signin.tagname).modal('hide'); 
+	   g_player.prize(this.currPrize);
+	   this.currPrize = null;
+	   $('#'+this.tagname).modal('hide'); 
 	    g_playerlog.updateSignin(feelingId);
 	   g_game.onEnter(); 
    });
