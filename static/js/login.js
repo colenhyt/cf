@@ -4,10 +4,11 @@ Login = function(){
     this.count = 0;
     this.syncDuration = 5;
     this.data = {};
+    this.loginPlayerid = -1;
     this.isLogin = false;
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
-       this.pageheader = this.tagname+"header";
+    this.pageheader = this.tagname+"header";
 }
 
 Login.prototype = new Datamgr();
@@ -15,12 +16,19 @@ Login.prototype = new Datamgr();
 Login.prototype.init = function(){
     var isRe = false;
     var ret = true;
+ 	var tdata = store.get(this.name);
+	if (tdata==null)
+	{
+		store.set(this.name,[]);
+	} 
     this.draw();
 }
 
 Login.prototype.draw = function()
 {
-	var tdata = store.get(g_player.name);
+	var localdata = store.get(this.name);
+	var tdata = localdata[localdata.length-1];
+	tdata = store.get(g_player.name);
 	for (var i=0;i<login_imgs.length;i++){
 		var img = login_imgs[i];
    	 	g_game.addImg(img);
@@ -43,6 +51,7 @@ Login.prototype.draw = function()
 		    document.body.appendChild(div);     	
    	if (tdata!=null){
    		this.drawChoseBorder(tdata.sex,100,100);
+   		this.loginPlayerid = tdata.playerid;
    	}
 }
 
@@ -90,7 +99,7 @@ Login.prototype.onImgClick = function(image)
 {
 	var tdata = store.get(g_player.name);
 	if (image.name=="chosegirl"||image.name=="choseboy"){
-		if (tdata!=null)
+		if (tdata!=null&&tdata.playerid==this.loginPlayerid)
 			return;
 		
 		var sex = 0;
@@ -109,7 +118,7 @@ Login.prototype.onImgClick = function(image)
 			return;
 		}
 		var canLogin = true;
-		if (tdata==null)
+		if (tdata==null||tdata.playerid!=this.loginPlayerid)
 			canLogin = this.register();
 		if (canLogin){
 			var tagerm = document.getElementById("inputnickdiv");
@@ -154,7 +163,10 @@ Login.prototype.register = function(){
 		this.msg('注册失败: '+ERR_MSG[retcode]);
 		return false;
 	}
-	
+	var logindata = store.get(this.name);
+	var lastPlayer = logindata[logindata.length-1];
+	if (lastPlayer==null||lastPlayer.playerid!=player.playerid)
+	 logindata.push(player);
 	store.set(g_player.name,player);
 	
 	return true;

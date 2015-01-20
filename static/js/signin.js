@@ -133,9 +133,9 @@ Signin.prototype.clickFeeling = function(feelingId){
   div.animate({fontSize:'1em'},300,function(){
    var div=$("#cfsignin_prize");
     div.remove();
-	   g_player.prize(this.currPrize);
-	   this.currPrize = null;
-	   $('#'+this.tagname).modal('hide'); 
+	   g_player.prize(g_signin.currPrize);
+	   g_signin.currPrize = null;
+	   $('#'+g_signin.tagname).modal('hide'); 
 	    g_playerlog.updateSignin(feelingId);
 	   g_game.onEnter(); 
    });
