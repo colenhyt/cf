@@ -60,7 +60,7 @@ Event.prototype.goodEvent = function(item){
 Event.prototype.badEvent = function(item){
 	var insures = g_player.insure;
 	var pp = cfeval(item.prize);
-	var tip = itemStr2(pp,",");
+	var money = 0-itemValue(pp,ITEM_TYPE.CASH);
 	if (insures[item.itemid]!=null){
 		var desc = "成功避开意外<span style='color:yellow'>"+item.descs;
 		var content = "</span><div>"
@@ -68,12 +68,10 @@ Event.prototype.badEvent = function(item){
 		content += "</div>"
 		content += "<div>"
 		content += desc +"<br>"
-		content += "减少损失:"+tip
+		content += "避免损失金钱:<span style='color:red'>"+money+"</span>"
 		content += "</div>"
-		//alert('成功避开意外')
 		g_msg.openModal(item.name,content);
 	}else{
-		var money = 0-itemValue(pp,ITEM_TYPE.CASH);
 		var targetInsure = store.get(g_insure.name)[item.itemid];
 		var iname = targetInsure?targetInsure.name:"";
 		var content = "<div>"
