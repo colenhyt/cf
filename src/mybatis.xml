@@ -7,7 +7,8 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 
 	<settings>
 		<setting name="defaultExecutorType" value="REUSE" />
-		<setting name="defaultStatementTimeout" value="30000" />
+		<setting name="cacheEnabled" value="true"/>
+		<setting name="defaultStatementTimeout" value="300000" />
 	</settings>
 
 	<!-- <plugins>
@@ -34,8 +35,8 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 				<property name="url" value="${mysql.url}" />
 				<property name="username" value="${mysql.username}" />
 				<property name="password" value="${mysql.password}" />
-				<property name="poolMaximumIdleConnections" value="0" />
-				<property name="poolMaximumActiveConnections" value="10" />
+				<property name="poolMaximumIdleConnections" value="10" />
+				<property name="poolMaximumActiveConnections" value="100" />
 			</dataSource>
 		</environment>
 	</environments>

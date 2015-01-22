@@ -85,8 +85,13 @@ public class PlayerService extends BaseService {
 	}
 	
 	public boolean have(String playerName){
+		if (playerName==null)
+			System.out.println("客户端提交用户名为空!!");
+		else
+			System.out.println("客户端提交:"+playerName);
 		PlayerExample example = new PlayerExample();
 		Criteria criteria=example.createCriteria();
+		
 		criteria.andPlayernameEqualTo(playerName);
 		List<Player> players = playerMapper.selectByExample(example);
 		return players.size()>0;	

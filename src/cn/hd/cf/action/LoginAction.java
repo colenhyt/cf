@@ -21,7 +21,7 @@ import cn.hd.cf.service.InsuredataService;
 import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.service.SavingdataService;
 import cn.hd.cf.service.SignindataService;
-import cn.hd.cf.service.ToplistService;
+import cn.hd.mgr.DataManager;
 import cn.hd.mgr.EventManager;
 import cn.hd.mgr.PlayerManager;
 import cn.hd.mgr.StockManager;
@@ -173,7 +173,6 @@ public class LoginAction extends SavingAction {
 	private Map<Integer,Insure> findUpdatedInsures(int playerId)
 	{
 		Date curr = new Date();
-	
 	    Calendar cCurr = Calendar.getInstance(); 
 	    cCurr.setTime(curr);
 	    Calendar c2 = Calendar.getInstance(); 
@@ -293,7 +292,6 @@ public class LoginAction extends SavingAction {
 			System.out.println("no player found:playerid:"+player.getPlayerid());
 			return null;
 		}
-	
 	
 		String pdata = getPlayerJsonData(playerBlob);
 	
