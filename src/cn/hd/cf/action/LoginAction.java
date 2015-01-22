@@ -16,11 +16,11 @@ import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Signindata;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Toplist;
-import cn.hd.cf.service.InitdataService;
-import cn.hd.cf.service.InsuredataService;
 import cn.hd.cf.service.PlayerService;
-import cn.hd.cf.service.SavingdataService;
-import cn.hd.cf.service.SignindataService;
+import cn.hd.cf.tools.InitdataService;
+import cn.hd.cf.tools.InsuredataService;
+import cn.hd.cf.tools.SavingdataService;
+import cn.hd.cf.tools.SignindataService;
 import cn.hd.mgr.DataManager;
 import cn.hd.mgr.EventManager;
 import cn.hd.mgr.PlayerManager;
@@ -32,7 +32,6 @@ import com.alibaba.fastjson.JSON;
 
 public class LoginAction extends SavingAction {
 	private PlayerWithBLOBs player;
-	private PlayerService playerService;
 	
 	private SavingdataService savingdataService;
 	private InsuredataService insuredataService;
@@ -71,7 +70,7 @@ public class LoginAction extends SavingAction {
 	}
 
 	public LoginAction(){
-		init("playerService","signindataService","initdataService"
+		init("signindataService","initdataService"
 				,"insuredataService","savingdataService");
 		EventManager.getInstance().start();
 	}
@@ -360,11 +359,5 @@ public class LoginAction extends SavingAction {
 	}
 	public void setPlayer(PlayerWithBLOBs player) {
 		this.player = player;
-	}
-	public PlayerService getPlayerService() {
-		return playerService;
-	}
-	public void setPlayerService(PlayerService playerService) {
-		this.playerService = playerService;
 	}
 }

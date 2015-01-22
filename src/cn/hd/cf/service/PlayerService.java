@@ -1,11 +1,13 @@
 package cn.hd.cf.service;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import cn.hd.base.BaseService;
 import cn.hd.base.Bean;
 import cn.hd.cf.dao.PlayerMapper;
+import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Player;
 import cn.hd.cf.model.PlayerExample;
 import cn.hd.cf.model.PlayerExample.Criteria;
@@ -50,11 +52,6 @@ public class PlayerService extends BaseService {
 		nextPlayerId++;
 		return nextPlayerId;
 	}
-	public List<PlayerWithBLOBs> findAll(){
-		PlayerExample example = new PlayerExample();
-		return playerMapper.selectByExampleWithBLOBs(example);
-	}
-	
 	public PlayerWithBLOBs find(int playerid,String strPwd){
 		PlayerWithBLOBs player = null;
 		String jsonObj = jedis.hget(ITEM_KEY,Integer.valueOf(playerid).toString());
@@ -125,15 +122,24 @@ public class PlayerService extends BaseService {
 	}
 	
 	public boolean have(String playerName){
-		if (playerName==null)
-			System.out.println("客户端提交用户名为空!!");
-		else
-			System.out.println("客户端提交:"+playerName);
-		PlayerExample example = new PlayerExample();
-		Criteria criteria=example.createCriteria();
+		Collection<String> l = jedis.hgetAll(ITEM_KEY).values();
+		boolean exist = false;
+		for (Iterator<String> iter = l.iterator(); iter.hasNext();) {
+			  String str = (String)iter.next();
+			  PlayerWithBLOBs player = (PlayerWithBLOBs)Bean.toBean(str,PlayerWithBLOBs.class);
+			  if (player.getPlayername().equals(playerName)){
+				  exist = true;
+				  break;
+			  }
+		}		
+		jedis.close();
+		return exist;
 		
-		criteria.andPlayernameEqualTo(playerName);
-		List<Player> players = playerMapper.selectByExample(example);
-		return players.size()>0;	
+//		PlayerExample example = new PlayerExample();
+//		Criteria criteria=example.createCriteria();
+//		
+//		criteria.andPlayernameEqualTo(playerName);
+//		List<Player> players = playerMapper.selectByExample(example);
+//		return players.size()>0;	
 	}
 }

@@ -23,8 +23,6 @@ import cn.hd.base.Base;
 import cn.hd.base.BaseService;
 import cn.hd.cf.model.Quotedata;
 import cn.hd.cf.model.Stock;
-import cn.hd.cf.service.QuotedataService;
-import cn.hd.cf.service.StockdataService;
 
 public class DataImportor extends Base{
 	private String cfg_file;

@@ -101,7 +101,7 @@ public class DataManager {
     public static void main(String[] args) {
     	DataManager stmgr = DataManager.getInstance();
     	stmgr.init();
-    	Map<Integer,List<Stock>> stocks = stmgr.getStockService().findMapByPlayerId(44);
-    	System.out.println(stocks.get(new Integer(1).toString()));
+    	boolean ex = stmgr.getPlayerService().have("啊啊啊");
+    	System.out.println(ex);
     }
 }

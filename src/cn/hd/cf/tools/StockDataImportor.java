@@ -18,8 +18,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import cn.hd.base.Base;
 import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Stockdata;
-import cn.hd.cf.service.QuotedataService;
-import cn.hd.cf.service.StockdataService;
 
 public class StockDataImportor extends Base{
 	private String cfg_file;

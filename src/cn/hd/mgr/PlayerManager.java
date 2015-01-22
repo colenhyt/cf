@@ -42,7 +42,6 @@ public class PlayerManager {
     	playerMap = new HashMap<Integer,PlayerWithBLOBs>();
     	playerHashMap = new ConcurrentHashMap<Long, PlayerWithBLOBs>();
     	toplistService = new ToplistService();
-    	updateToplist();
      }
   
     public long assignPlayerId(){
@@ -59,29 +58,6 @@ public class PlayerManager {
     	newPlayerIds.remove(0);
     	}
     	return nextPlayerId;
-    }
-    
-    public void updateToplist(){
-		Date d1 = new Date();
-	      Calendar cl = Calendar. getInstance();
-	      cl.setTime(d1);
-	      cl.setFirstDayOfWeek(Calendar.MONDAY);
-	      System.out.println("装载玩家数据到内存");
-	      
-	      //更新全部人最新的财富值:
-	      List<PlayerWithBLOBs> all = playerService.findAll();
-	      for (int i=0;i<all.size();i++){
-    		PlayerWithBLOBs pp = all.get(i);
-	    	  playerMap.put(pp.getPlayerid(), pp);
-//    		float money = saveAction.calculatePlayerMoney(pp.getPlayerid());
-//    		pp.setMoney(money);
-//    		toplistService.updateCurrData(pp.getPlayerid(),pp.getPlayername(),money);
-    	  }
-    }
-    
-    public PlayerWithBLOBs findPlayer(int playerid){
-    	PlayerWithBLOBs pp = playerMap.get(playerid);
-    	return pp;
     }
     
     public boolean addPlayer(PlayerWithBLOBs player){

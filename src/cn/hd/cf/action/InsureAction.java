@@ -4,7 +4,7 @@ import java.util.Date;
 
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.service.InsureService;
-import cn.hd.cf.service.InsuredataService;
+import cn.hd.cf.tools.InsuredataService;
 
 public class InsureAction extends SavingAction {
 	private Insure		insure;

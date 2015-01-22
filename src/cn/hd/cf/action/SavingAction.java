@@ -10,10 +10,11 @@ import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.service.InsureService;
+import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.service.SavingService;
-import cn.hd.cf.service.SavingdataService;
 import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.ToplistService;
+import cn.hd.cf.tools.SavingdataService;
 import cn.hd.mgr.PlayerManager;
 import cn.hd.mgr.StockManager;
 
@@ -40,7 +41,16 @@ public class SavingAction extends BaseAction {
 	protected InsureService insureService;
 	protected StockService stockService;
 	protected ToplistService toplistService;
+	protected PlayerService playerService;
 	
+	public PlayerService getPlayerService() {
+		return playerService;
+	}
+
+	public void setPlayerService(PlayerService playerService) {
+		this.playerService = playerService;
+	}
+
 	public ToplistService getToplistService() {
 		return toplistService;
 	}
@@ -144,12 +154,11 @@ public class SavingAction extends BaseAction {
 		System.out.println("活期存款更新:"+saving.getPlayerid()+";value="+saving.getAmount());
 		 playerTopUpdate(saving.getPlayerid());
 		//更新排行榜金钱:
-		
 		return u;
 	}
 	
 	protected boolean playerTopUpdate(int playerid){
-		PlayerWithBLOBs player = PlayerManager.getInstance().findPlayer(playerid);
+		PlayerWithBLOBs player = playerService.findByPlayerId(playerid);
 		if (player!=null){
 			float money = calculatePlayerMoney(playerid);
 			 toplistService.updateToplist(playerid,player.getPlayername(),money);			
@@ -187,7 +196,7 @@ public class SavingAction extends BaseAction {
 	}
 
 	public SavingAction(){
-		init("savingService","savingdataService",
+		init("savingService","savingdataService","playerService",
 				"insureService","stockService","toplistService");
 	}
 	

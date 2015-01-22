@@ -1,4 +1,4 @@
-package cn.hd.cf.service;
+package cn.hd.cf.tools;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
@@ -12,6 +12,7 @@ import cn.hd.cf.model.Initdata;
 import cn.hd.cf.model.InitdataExample;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.InitdataExample.Criteria;
+import cn.hd.cf.service.SavingService;
 
 public class InitdataService extends BaseService {
 	private InitdataMapper	initdataMapper;

@@ -107,13 +107,6 @@ public class ToplistService extends BaseService {
 		return 0;
 	}
 	
-	public List<Toplist> findAll(){
-		ToplistExample example=new ToplistExample();
-		example.setOrderByClause("money desc");
-		List<Toplist> list = toplistMapper.selectByExample(example);
-		return list;
-	}
-	
 	public ToplistService(){
 		initMapper("toplistMapper");
 	}
@@ -191,7 +184,6 @@ public class ToplistService extends BaseService {
 		Date firstDate = getFirstDate(type);
 		ToplistExample example=new ToplistExample();
 		Criteria criteria=example.createCriteria();		
-		criteria.andTypeEqualTo(0);
 		criteria.andUpdatetimeGreaterThan(firstDate);
 		 example.setOrderByClause("money desc");
 		List<Toplist> list = toplistMapper.selectByExample(example);

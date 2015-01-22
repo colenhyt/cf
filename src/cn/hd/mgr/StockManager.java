@@ -15,8 +15,8 @@ import org.apache.log4j.Logger;
 
 import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Stockdata;
-import cn.hd.cf.service.StockdataService;
 import cn.hd.cf.service.ToplistService;
+import cn.hd.cf.tools.StockdataService;
 
 public class StockManager {
 	private static Logger logger = Logger.getLogger(StockManager.class); 
