@@ -65,5 +65,7 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/poi-scratchpad-3.11-beta3-20141111.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/xmlbeans-2.6.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/fastjson-1.2.0.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jedis-2.4.1.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/commons-pool2-2.3.jar"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>
