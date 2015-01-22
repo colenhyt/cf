@@ -88,7 +88,7 @@ public class SavingAction extends BaseAction {
 		//取钱:
 		if (saving.getAmount()<0){
 			System.out.println("取钱:"+saving.getPlayerid()+":itemid="+saving.getItemid());
-			exec = savingService.remove(saving.getPlayerid(),saving.getItemid());	
+			exec = savingService.remove(saving);	
 		}else {
 			Saving savingCfg = savingdataService.findSaving(saving.getItemid());
 			System.out.println("存钱:"+saving.getPlayerid()+":itemid="+saving.getItemid());

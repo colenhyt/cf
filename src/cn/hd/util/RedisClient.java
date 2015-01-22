@@ -16,9 +16,9 @@ import redis.clients.jedis.SortingParams;
 
 public class RedisClient {
 
-    private Jedis jedis;//非切片额客户端连接
+	public Jedis jedis;//非切片额客户端连接
     private JedisPool jedisPool;//非切片连接池
-    private ShardedJedis shardedJedis;//切片额客户端连接
+    public ShardedJedis shardedJedis;//切片额客户端连接
     private ShardedJedisPool shardedJedisPool;//切片连接池
     
     public RedisClient() 
@@ -27,8 +27,6 @@ public class RedisClient {
         initialShardedPool(); 
         shardedJedis = shardedJedisPool.getResource(); 
         jedis = jedisPool.getResource(); 
-        
-        
     } 
  
     /**
@@ -66,12 +64,12 @@ public class RedisClient {
     public void show() {     
     	String aav = jedis.get("aa");
     	System.out.println(aav);
-//    	KeyOperate(); 
-//    	StringOperate(); 
-//        ListOperate(); 
-//        SetOperate();
-//        SortedSetOperate();
-//        HashOperate();    	
+    	KeyOperate(); 
+    	StringOperate(); 
+        ListOperate(); 
+        SetOperate();
+        SortedSetOperate();
+        HashOperate();    	
         jedisPool.returnResource(jedis);
         shardedJedisPool.returnResource(shardedJedis);
     } 
@@ -84,7 +82,8 @@ public class RedisClient {
         System.out.println("判断key999键是否存在："+shardedJedis.exists("key999")); 
         System.out.println("新增key001,value001键值对："+shardedJedis.set("key001", "value001")); 
         System.out.println("判断key001是否存在："+shardedJedis.exists("key001"));
-        // 输出系统中所有的key
+        jedis.close();
+       // 输出系统中所有的key
         System.out.println("新增key002,value002键值对："+shardedJedis.set("key002", "value002"));
         System.out.println("系统中所有键如下：");
         Set<String> keys = jedis.keys("*"); 

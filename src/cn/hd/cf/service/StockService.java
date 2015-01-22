@@ -1,11 +1,14 @@
 package cn.hd.cf.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import cn.hd.base.BaseService;
+import cn.hd.base.Bean;
 import cn.hd.cf.dao.StockMapper;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.StockExample;
@@ -13,6 +16,7 @@ import cn.hd.cf.model.StockExample.Criteria;
 
 public class StockService extends BaseService {
 	private StockMapper	stockMapper;
+	public static String ITEM_KEY = "stock";
 	
 	public StockMapper getStockMapper() {
 		return stockMapper;
@@ -25,12 +29,7 @@ public class StockService extends BaseService {
 	public StockService()
 	{
 		initMapper("stockMapper");
-	}
-	
-	public List<Stock> findAll()
-	{
-		StockExample example = new StockExample();
-		return stockMapper.selectByExample(example);
+		initData();
 	}
 	
 	public List<Stock> findByPlayerId(int playerId)
@@ -43,21 +42,54 @@ public class StockService extends BaseService {
 	
 	public Map<Integer,List<Stock>> findMapByPlayerId(int playerId)
 	{
-		StockExample example = new StockExample();
-		Criteria criteria = example.createCriteria();
-		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
-		List<Stock> ss = stockMapper.selectByExample(example);
 		Map<Integer,List<Stock>> smap = new HashMap<Integer,List<Stock>>();
-		for (int i=0;i<ss.size();i++){
-			List<Stock> list = smap.get(ss.get(i).getItemid());
+		String key = playerId+ITEM_KEY;
+		Collection<String> l = jedis.hgetAll(key).values();
+		for (Iterator<String> iter = l.iterator(); iter.hasNext();) {
+			  String str = (String)iter.next();
+			Stock stock =(Stock)Bean.toBean(str, Stock.class);
+			List<Stock> list = smap.get(stock.getItemid());
 			if (list==null){
 				list = new ArrayList<Stock>();
-				smap.put(ss.get(i).getItemid(), list);
+				smap.put(stock.getItemid(), list);
 			}
-			list.add(ss.get(i));
-		}
+			list.add(stock);
+		}		
+		jedis.close();
+//		StockExample example = new StockExample();
+//		Criteria criteria = example.createCriteria();
+//		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
+//		List<Stock> ss = stockMapper.selectByExample(example);
+//		for (int i=0;i<ss.size();i++){
+//			List<Stock> list = smap.get(ss.get(i).getItemid());
+//			if (list==null){
+//				list = new ArrayList<Stock>();
+//				smap.put(ss.get(i).getItemid(), list);
+//			}
+//			list.add(ss.get(i));
+//		}
+		
 		return smap;
 	}	
+	
+	public boolean remove(Stock record)
+	{
+		String key = record.getPlayerid()+ITEM_KEY;
+		jedis.hdel(key, record.getItemid().toString());
+		jedis.close();
+		System.out.println("删除stock记录:"+record.toString());
+		
+		try {
+			stockMapper.deleteByPrimaryKey(record.getId());
+			DBCommit();	
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}		
+		
+		return true;
+	}
+	
 	public boolean removeStock(int playerId,int stockId,int qty)
 	{
 		StockExample example = new StockExample();
@@ -72,12 +104,12 @@ public class StockService extends BaseService {
 			Stock ss = list.get(i);
 			if (ss.getQty()<=needRemoveQty){
 				needRemoveQty -= ss.getQty();
-				stockMapper.deleteByPrimaryKey(ss.getId());
+				remove(ss);
 			}else {
 				ss.setQty(ss.getQty()-needRemoveQty);
 				ss.setAmount(ss.getQty()*ss.getPrice());
 				needRemoveQty = 0;
-				stockMapper.updateByPrimaryKey(ss);
+				update(ss);
 			}
 			if (needRemoveQty==0) {
 				DBCommit();
@@ -88,18 +120,13 @@ public class StockService extends BaseService {
 		return exec;
 	}
 	
-	public boolean updateStocks(List<Stock> stocks)
-	{
-		for (int i=0;i<stocks.size();i++){
-			Stock record = stocks.get(i);
-			stockMapper.updateByPrimaryKey(record);
-		}
-		DBCommit();
-		return true;
-	}
-	
 	public boolean add(Stock record)
 	{
+		String key = record.getPlayerid()+ITEM_KEY;
+		jedis.hset(key, record.getItemid().toString(), record.toString());
+		jedis.close();
+		System.out.println("增加stock记录:"+record.toString());
+		
 		try {
 			stockMapper.insertSelective(record);
 			DBCommit();
@@ -112,6 +139,10 @@ public class StockService extends BaseService {
 	
 	public boolean update(Stock record)
 	{
+		String key = record.getPlayerid()+ITEM_KEY;
+		jedis.hset(key, record.getItemid().toString(), record.toString());
+		jedis.close();
+		
 		try {
 			stockMapper.updateByPrimaryKeySelective(record);
 			DBCommit();
@@ -120,5 +151,21 @@ public class StockService extends BaseService {
 			return false;
 		}			
 		return true;
+	}
+
+	public void initData(){
+		StockExample example = new StockExample();
+		List<Stock> stocks = stockMapper.selectByExample(example);
+		for (int i=0; i<stocks.size();i++){
+			Stock stock = stocks.get(i);
+			String key = stock.getPlayerid()+ITEM_KEY;
+			 jedis.del(key);
+		}
+		for (int i=0; i<stocks.size();i++){
+			Stock record = stocks.get(i);
+			String key = record.getPlayerid()+ITEM_KEY;
+			jedis.hset(key, record.getItemid().toString(),record.toString());
+		}	
+		jedis.close();
 	}
 }

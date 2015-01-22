@@ -49,12 +49,6 @@ public class InsureAction extends SavingAction {
 		return null;
 	}
 	
-	public String update()
-	{
-		insureService.update(insure);		
-		return null;
-	}
-	
 	public InsureAction(){
 		init("insuredataService");
 	}

@@ -202,7 +202,7 @@ public class LoginAction extends SavingAction {
 					inter = -1;
 				}
 				//删除产品
-				insureService.delete(insure.getId());
+				insureService.delete(insure);
 			}
 			
 			Insure uinsure = new Insure();
@@ -243,7 +243,7 @@ public class LoginAction extends SavingAction {
 	        float periodMinutes = saving.getPeriod()*60;
 	        periodMinutes = 5;
 			//System.out.println("利息到期时间:"+diffdd+","+periodMinutes);
-			if ((diffdd-periodMinutes)>0.001)
+			//if ((diffdd-periodMinutes)>0.001)
 			{
 				liveUpdate = true;
 				//活期
@@ -258,7 +258,7 @@ public class LoginAction extends SavingAction {
 					float newsaving = saving.getAmount()+inter;
 					if (liveSaving!=null){
 						liveSaving.setAmount(liveSaving.getAmount()+newsaving);
-						savingService.remove(playerId,saving.getItemid());
+						savingService.remove(saving);
 						Saving ll = mdata.get(liveSaving.getItemid());
 						if (ll!=null)
 							ll.setAmount(liveSaving.getAmount());
@@ -289,7 +289,7 @@ public class LoginAction extends SavingAction {
 		PlayerWithBLOBs playerBlob = playerService.find(player.getPlayerid(),player.getPwd());
 		if (playerBlob==null)
 		{
-			System.out.println("no player found:playerid:"+player.getPlayerid());
+			System.out.println("no player found:playerid:"+player.getPwd());
 			return null;
 		}
 	

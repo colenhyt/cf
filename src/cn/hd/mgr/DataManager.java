@@ -1,17 +1,23 @@
 package cn.hd.mgr;
 
 import java.util.List;
+import java.util.Map;
 
-import cn.hd.cf.model.Event;
-import cn.hd.cf.model.Toplist;
+import redis.clients.jedis.ShardedJedis;
+import cn.hd.cf.model.PlayerWithBLOBs;
+import cn.hd.cf.model.Saving;
+import cn.hd.cf.model.Stock;
 import cn.hd.cf.service.InsureService;
 import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.service.SavingService;
 import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.ToplistService;
+import cn.hd.util.RedisClient;
 
 public class DataManager {
 	private int UPDATE_PERIOD = 2;		//20*60: 一小时
+	public ShardedJedis jedis;
+	private RedisClient redisClient;	
 	private ToplistService toplistService;
 	private PlayerService playerService;
 	private SavingService savingService;
@@ -29,13 +35,17 @@ public class DataManager {
      } 
     
     public DataManager(){
+		redisClient = new RedisClient();
+		jedis = redisClient.shardedJedis;
+     }
+  
+    public void init(){
     	playerService = new PlayerService();
     	toplistService = new ToplistService();
     	savingService = new SavingService();
     	insureService = new InsureService();
-    	stockService = new StockService();
-     }
-  
+    	stockService = new StockService();    	
+    }
     public ToplistService getToplistService() {
 		return toplistService;
 	}
@@ -90,19 +100,8 @@ public class DataManager {
     
     public static void main(String[] args) {
     	DataManager stmgr = DataManager.getInstance();
-//    	for (int i=0;i<1000;i++){
-//    		long id = stmgr.assignPlayerId();
-//    		System.out.println("申请ID:"+id);
-//    	}
-    	Event aa = new Event();
-    	aa.setDesc("qqqqqqqqq");
-    	System.out.println("申请ID:"+aa.toString());
-    	//stmgr.saveAction.pushLive(47, 10000);
-    	//stmgr.updateToplist();
-    	ToplistService toplistService = new ToplistService();
-    	List<Toplist> list = toplistService.findByType(0);
-    	int a = toplistService.findCountByGreaterMoney(39,0,0);
-    	a = 10;
-    	//int b = toplistService.findCountByGreaterMoney(0,199);
+    	stmgr.init();
+    	Map<Integer,List<Stock>> stocks = stmgr.getStockService().findMapByPlayerId(44);
+    	System.out.println(stocks.get(new Integer(1).toString()));
     }
 }

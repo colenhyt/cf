@@ -8,7 +8,9 @@ import java.util.Queue;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import redis.clients.jedis.Jedis;
 import cn.hd.util.MybatisSessionFactory;
+import cn.hd.util.RedisClient;
 
 
 /**
@@ -17,6 +19,8 @@ import cn.hd.util.MybatisSessionFactory;
  * 2011-6-14
  */
 public class BaseService extends Base{
+	protected Jedis jedis;
+	private RedisClient redisClient;
 	public static byte DATA_STATUS_INACTIVE = 0;
 	public static byte DATA_STATUS_ACTIVE = 1;
 	
@@ -25,6 +29,9 @@ public class BaseService extends Base{
 	 * @param objs 需要初始化变量列表
 	 */
 	protected  void initMapper(String...objs){
+		//jedis = DataManager.getInstance().jedis;
+		redisClient = new RedisClient();
+		jedis = redisClient.jedis;		
 		try {
 			for(String obj:objs){
 				if(obj!=null && obj.trim().length()>0){
