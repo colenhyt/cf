@@ -138,7 +138,7 @@ Insure.prototype.showDetail = function(title,desc,okCallback,itemid,qty,confmTex
 	var content =      "        <div class='cfinsure_content'>"
 	content += "<div class='cfmsg_h2'>"+title+"</div>"
 	content += "<img src='static/img/pop_line.png'>"
-	content += "            <div class='cfmsg_text'>"+desc+"</div>"
+	content += "            <div class='cfmsg_text insure'>"+desc+"</div>"
 	content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>"
 	if (confmText)
 	content += "          <button class='cf_bt' onclick='"+okCallback+"("+itemid+","+qty+")'>"+confmText+"</button>"
@@ -160,20 +160,24 @@ Insure.prototype.show_insuredetail = function(id){
        
 	var pitem = g_player.getInsureItem(id);
        
-	 var content = "            <div>"+item.descs+"</div>"
- 	if (pitem.qty>0){
-	     var timeout = calculateTimeout(pitem,item);
-      	content += "已购买该保险,  还有<span style='color:red'>"+timeout+"</span>天到期";
- 	}
-	 content += "           <div>  "
-	 content += "        <table id='toplist1_tab'>"
+	 var content = "            <div>"
+	 content += "        <table class='cfinsure_tabl'>"
 	 content += "             <tr>"
-	 content += "               <td class='td-c-name'>价格: </td>"
-	 content += "               <td class='td-c-value'>￥"+item.price+"</td>"
-	 content += "               <td class='td-c-name'> 周期: </td>"
-	 content += "               <td class='td-c-value'>"+item.period+"天</td>"
+	 content += "               <td width='30%' ><div class='cfplayer_head_bg insure'><img src='static/img/insure_"+id+".png' class='cfinsure_img'></div></td>"
+	 content += "               <td>"+item.descs+" </td>"
 	content += "              </tr>"
 	content += "          </table>     "
+	content += "           </div>  "
+	content += "<br> "
+	 content += "<div>  "
+	 content += "<table class='cfinsure_tabl2'>"
+	 content += "<tr><td>价格: ￥"+item.price+" </td></tr>"
+	 content += "<tr><td>周期: "+item.period+"天 </td></tr>"
+	content += "</table>"
+	if (pitem.qty>0){
+	     var timeout = calculateTimeout(pitem,item);
+      	content += "(已购买该保险,  还有<span style='color:red'>"+timeout+"</span>天到期)";
+ 	}
 	content += "           </div>  "
 
 	var confirm;
@@ -190,31 +194,33 @@ Insure.prototype.show_finandetail = function(id){
         
 	var pitem = g_player.getInsureItem(id);
 
- var content = "            <div>"+item.descs+"</div>"
+	 var content = "            <div>"
+	 content += "        <table class='cfinsure_tabl'>"
+	 content += "             <tr>"
+	 content += "               <td width='30%' ><div class='cfplayer_head_bg insure'><img src='static/img/insure_"+id+".png' class='cfinsure_img'></div></td>"
+	 content += "               <td>"+item.descs+" </td>"
+	content += "              </tr>"
+	content += "          </table>     "
+	content += "           </div>  "
  content += "           <div class='cfinsure_finan'>  "
+ content += "<table class='cfinsure_tabl2'>"
+ content += "<tr><td>价格: ￥"+item.price+"</td></tr>"
+ content += "<tr><td>收益: ￥"+item.profit+"/份</td></tr>"
+ content += "<tr><td>周期 "+item.period+"天</td></tr>"
+content += "</table>     "
  	if (pitem.qty>0){
 	     var timeout = calculateTimeout(pitem,item);
       	content += "已购买  <span style='color:red'>"+pitem.qty+"</span>份, 还有<span style='color:red'>"+timeout+"</span>天到期";
  	}
- content += "        <table id='toplist1_tab'>"
- content += "           <thead>"
- content += "             <tr>"
- content += "               <td class='td-c-name'>价格:</td>"
- content += "               <td class='td-c-value'>￥"+item.price+" </td>"
- content += "               <td class='td-c-name'> 收益</td>"
- content += "               <td class='td-c-value'>￥"+item.profit+"/份 </td>"
- content += "               <td class='td-c-name'> 周期</td>"
- content += "               <td class='td-c-value'>"+item.period+"天</td>"
-content += "              </tr>"
  	if (pitem.qty<=0){
+ content += "        <table class='cfinsure_tabl'>"
 	 content += "             <tr>"
-	 content += "               <td colspan='2' class='td-c-name'><input type='button' class='cf_count' onclick='g_insure.countBuy(-1)'></td>"
-	 content += "               <td colspan='2' class='td-c-name'><input type='text' id='finan_count' value='1' class='cfinsure_finalcount'></td>"
-	 content += "               <td colspan='2' class='td-c-name'><input type='button' class='cf_count add' onclick='g_insure.countBuy(1)'></td>"
+	 content += "               <td><input type='button' class='cf_count' onclick='g_insure.countBuy(-1)'></td>"
+	 content += "               <td><input type='text' id='finan_count' value='1' class='cfinsure_finalcount'></td>"
+	 content += "              <td> <input type='button' class='cf_count add' onclick='g_insure.countBuy(1)'></td>"
 	content += "              </tr>"
-}
-content += "            </thead>"
 content += "          </table>     "
+}
 content += "           </div>  "
 	
 	var confirm;

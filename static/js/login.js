@@ -180,6 +180,7 @@ Login.prototype.loadData = function(obj){
 	var sdata = cfeval(obj.saving);
 	for (itemid in sdata){
 		var item = store.get(g_saving.name)[itemid];
+		if (!item) continue;
 		if (item.type==0||sdata[itemid].profit<=0)
 			g_player.saving[itemid] = sdata[itemid];
 		//存款利息提示:
@@ -191,6 +192,7 @@ Login.prototype.loadData = function(obj){
 	var idata = cfeval(obj.insure);
 	for (itemid in idata){
 		var item = store.get(g_insure.name)[itemid];
+		if (!item) continue;
 		
 		if (idata[itemid].profit==0)
 		  g_player.insure[itemid]= idata[itemid];

@@ -100,9 +100,9 @@ Event.prototype.eventOkCallback = function(itemid){
 	}
 	
   var div=$("#cfevent_prize");
-  div.animate({fontSize:'2.5em'},300);
-  div.animate({left:'-='+getSizes().EventMoney[0],top:'-='+getSizes().EventMoney[1]},1000);
-  div.animate({fontSize:'1em'},300,function(){
+  div.animate({fontSize:'2.5em'},150);
+  div.animate({left:'-='+getSizes().EventMoney[0],top:'-='+getSizes().EventMoney[1]},700);
+  div.animate({fontSize:'1em'},150,function(){
     div.remove();
  	if (item){
 	   var pp = cfeval(item.prize);

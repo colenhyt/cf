@@ -120,9 +120,9 @@ Signin.prototype.clickFeeling = function(feelingId){
     
 
   var div=$("#cfsignin_prize_exp");
-  div.animate({fontSize:'2.5em'},300);
-  div.animate({left:'-='+getSizes().SigninMoney[0],top:'-='+getSizes().SigninMoney[2]},1300);
-  div.animate({fontSize:'1em'},300,function(){
+  div.animate({fontSize:'2.5em'},150);
+  div.animate({left:'-='+getSizes().SigninMoney[0],top:'-='+getSizes().SigninMoney[2]},800);
+  div.animate({fontSize:'1em'},150,function(){
     var div=$("#cfsignin_prize_exp");
     div.remove();
    });    

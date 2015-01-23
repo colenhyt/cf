@@ -59,7 +59,7 @@ Msg.prototype.createtip = function(desc)
 	tag.className = "cfmsg";
 	tag.innerHTML = desc;
     document.body.appendChild(tag);
-	$('#'+tagname).animate({marginTop:-340},2500,MsgTipCallback);
+	$('#'+tagname).animate({marginTop:-340},1800,MsgTipCallback);
 	return tagname;
 }
 
@@ -124,7 +124,7 @@ Msg.prototype.open = function(desc,okCallback,cbParam1,cbParam2,cbParam3)
 Msg.prototype.update = function()
 {
 	this.count++;
-	if (this.count%5==0)
+	if (this.count%3==0)
 	{
 		while (this.intips.length>0){
 			var desc = g_msg.intips.shift();

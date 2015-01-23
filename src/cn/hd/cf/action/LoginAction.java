@@ -267,6 +267,8 @@ public class LoginAction extends SavingAction {
 			}
 			
 			Saving usaving = new Saving();
+			usaving.setId(saving.getId());
+			usaving.setItemid(saving.getItemid());
 			usaving.setAmount(saving.getAmount());
 			usaving.setCreatetime(saving.getCreatetime());
 			usaving.setQty(saving.getQty());

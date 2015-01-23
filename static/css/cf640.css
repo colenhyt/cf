@@ -246,6 +246,10 @@ vertical-align: bottom;
     background-size:100% 100%;  
 }
 
+.cfplayer_head_bg.insure{
+margin-left:30px;
+}
+
 .cfplayer_head_bg.uplevel{
 margin-left:180px;
 }
@@ -362,6 +366,10 @@ font-size:28px;
 height:260px;
 }
 
+.cfmsg_text.insure{
+height:360px;
+}
+
 .cfmsg_text.uplevel{
 position:relative;
 text-align:center;
@@ -419,9 +427,30 @@ color:blue;
   height:940px;
 }
 
+.cfpagedetail.insure
+{
+  height:550px;
+}
+
 .cfhelp_clickon{
 width:165px;
 height:170px;
+}
+
+.cfinsure_tabl{
+width:500px;
+align:center;
+}
+
+.cfinsure_tabl2{
+width:300px;
+margin-left:100px;
+border:2px;
+}
+
+.cfinsure_img{
+width:120px;
+height:120px;
 }
 
 .cfinsure_clickon{
@@ -694,18 +723,15 @@ background:url('../../static/img/zan.png') no-repeat;
     background-size:100% 100%;    
 }
 .cf_count {
-position:relative;
-float:left;
-margin-left:20px;
-padding-top:3px;
-padding-bottom:3px;
 width:80px;
 height:58px;
+margin-top:9px;
 border:none;
 background:url('../../static/img/bt_minus.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
 }
+
 
 .cf_count.add {
 background:url('../../static/img/bt_add.png') no-repeat;
@@ -860,7 +886,10 @@ margin-top:10px;margin-bottom:30px;height:150px;
 }
 
 .cfinsure_finalcount {
-width:150px;text-align:center;height:58px;font-size:32px;
+width:340px;
+text-align:center;
+height:58px;
+font-size:32px;
 }
 
 .cfmsg {
