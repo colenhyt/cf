@@ -3,7 +3,7 @@ img{ max-width:100%;}
 
 body {
   font-size:36px;
-  color:#ffffff;
+  color:rgb(255, 255, 255);
 }
 
 .cfpage
@@ -18,6 +18,32 @@ body {
   background:url('../../static/img/pop_big.png') no-repeat;
   -moz-background-size:100% 100%;  
     background-size:100% 100%;  
+}
+
+.cfinfo_tabl{
+line-height:40px;
+}
+
+.cfinfo_exp_bg{
+width:223px;
+height:48px;
+text-align:center;
+  background:url('../../static/img/icon_exp_bg.png') no-repeat;
+  -moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
+
+.cfinfo_exp_img{
+height:48px;
+  background:url('../../static/img/icon_exp.png') no-repeat;
+}
+
+.cfinfo_exp{
+position:relative;
+margin-top:-45px;
+width:223px;
+height:48px;
+text-align:center;
 }
 
 .cfpage.player

@@ -21,6 +21,8 @@ Playerinfo.prototype.show = function(){
 Playerinfo.prototype.showInfo = function(jsondata){
 	var texp = store.get("exp");
 	var lv = g_title.getLevel();
+	var expPer = jsondata.data.exp/g_title.getData(lv+1).exp;
+	expPer = parseInt(expPer*100);
 	var content = "<div class='cfplayer_panel'>"
 	content += "<table>"
 	content += " <tr>"
@@ -31,13 +33,16 @@ Playerinfo.prototype.showInfo = function(jsondata){
 	content += "</td>"
 	content += "   <td>"
     content +=            " <div class='cfplayer_panel_text'> "
-    content += "昵            称: <span style='color:yellow'>"+jsondata.data.playername.substring(0,10)+"</span><br>"	
-    content += "当前等级: <span style='color:yellow'>"+lv+"</span> "+g_title.getData(lv).name+"<br>"	
-    content += "下一等级: <span style='color:yellow'>"+(lv+1)+"</span> "+g_title.getData(lv+1).name+"<br>"
-    content += "经            验: <span style='color:yellow'>"+jsondata.data.exp+"</span>/"+g_title.getData(lv+1).exp+"<br>"
-    content += "当周排名: <span style='color:yellow'>"+jsondata.data.weektop+"</span><br>"	
+      content += "<table class='cfinfo_tabl'>"
+     content += "<tr><td>昵&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp称: </td><td> <span style='color:yellow'>"+jsondata.data.playername.substring(0,10)+"</span>	</td></tr>"	
+     content += "<tr><td>当前等级: </td><td> <span style='color:yellow'>"+lv+"</span> "+g_title.getData(lv).name+"</td></tr>"	
+     content += "<tr><td>下一等级: </td><td> <span style='color:yellow'>"+(lv+1)+"</span> "+g_title.getData(lv+1).name+"</td></tr>"	
+     content += "<tr><td> 经&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp验: </td><td><div class='cfinfo_exp_bg'><div class='cfinfo_exp_img' id='cfinfo_exp_img' style='width:"+expPer+"%'></div>"
+     content += "<div class='cfinfo_exp'><span style='color:yellow'>"+jsondata.data.exp+"</span>/"+g_title.getData(lv+1).exp+"</div></div></td></tr>"	
+     content += "<tr><td>当周排名: </td><td> <span style='color:yellow'>"+jsondata.data.weektop+"</span></td></tr>"	
+    content += " </table>"	
     content +=            " </div>"
-	content += "</td>"
+    content += "</td>"
 	content += " </tr>"
 	content += "</table>"
     content += " </div>"
