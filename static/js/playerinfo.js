@@ -20,9 +20,11 @@ Playerinfo.prototype.show = function(){
 
 Playerinfo.prototype.showInfo = function(jsondata){
 	var texp = store.get("exp");
-	var lv = g_title.getLevel();
+	var lv = g_title.getLevel(jsondata.data.exp);
 	var expPer = jsondata.data.exp/g_title.getData(lv+1).exp;
 	expPer = parseInt(expPer*100);
+	if (expPer>100)
+	 expPer = 100;
 	var content = "<div class='cfplayer_panel'>"
 	content += "<table>"
 	content += " <tr>"

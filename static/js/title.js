@@ -17,8 +17,10 @@ store.remove(this.name);
 	} 
 }
 
-Title.prototype.getLevel = function(){
+Title.prototype.getLevel = function(exp){
 	var pexp = g_player.data.exp;
+	if (exp&&exp>0)
+	 pexp = exp;
 	var lv = 0;
 	var tdata = store.get(this.name);
 	for (var i=0;i<tdata.length;i++){
