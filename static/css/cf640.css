@@ -936,6 +936,16 @@ background:url('../../static/img/tip_back.png') no-repeat;
 z-index:2000;
 }
 
+.cfmsg.load{
+padding-top:25px;
+}
+
+.cfmsg_loadimg{
+position:relative;
+left:0px;
+top:0px;
+}
+
 .td_right {
 position:right;
 }

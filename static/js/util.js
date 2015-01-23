@@ -331,6 +331,15 @@ randomItems = function(items,existItems,count){
 	return ritems;
 }
 
+function sleep(numberMillis) { 
+   var now = new Date();
+   var exitTime = now.getTime() + numberMillis;  
+   while (true) { 
+       now = new Date(); 
+       if (now.getTime() > exitTime)    return;
+    }
+}
+
 function rotateImg(ctx,px,py,width,height){
 // 取得这个图片的数据，图片与当前页面必须同域，否则会出错
 	    var img_data = ctx.getImageData(px, py, width, height);
@@ -497,4 +506,83 @@ var anis=[
   div.fadeOut(1500,function(){
    carAni3();
   });
+}
+
+function loadAni(){
+ var tag = document.getElementById(g_msg.loadname);
+ if (!tag) return;
+ 
+  var div=$("#msg_load1");
+  div.animate({top:"-10px"},50);  
+  
+  div.animate({top:"-10px"},50,function(){
+   loadAni2();
+  });  
+  
+  div.animate({top:"0px"},100);  
+  
+}
+
+function loadAni2(){
+  var div=$("#msg_load2");
+  div.animate({top:"-10px"},50);  
+  
+  div.animate({top:"-10px"},50,function(){
+   loadAni3();
+  }); 
+  
+  div.animate({top:"0px"},100);     
+}
+
+function loadAni3(){
+  var div=$("#msg_load3");
+  div.animate({top:"-10px"},50);  
+  
+  div.animate({top:"-10px"},50,function(){
+   loadAni4();
+  });  
+  
+  div.animate({top:"0px"},100);    
+}
+
+function loadAni4(){
+  var div=$("#msg_load4");
+  div.animate({top:"-10px"},50);  
+  
+  div.animate({top:"-10px"},50,function(){
+   loadAni5();
+  });  
+  
+  div.animate({top:"0px"},100);     
+}
+
+function loadAni5(){
+  var div=$("#msg_load5");
+  div.animate({top:"-15px"},75);  
+  
+  div.animate({top:"-15px"},75,function(){
+   loadAni6();
+  });  
+  
+  div.animate({top:"0px"},150);      
+}
+
+function loadAni6(){
+  var div=$("#msg_load6");
+  div.animate({top:"-15px"},75);  
+  
+  div.animate({top:"-15px"},75,function(){
+   loadAni7();
+  });  
+  div.animate({top:"0px"},150);       
+}
+
+function loadAni7(){
+  var div=$("#msg_load7");
+  div.animate({top:"-30px"},150);  
+  
+  div.animate({top:"0px"},150,function(){
+   sleep(800);
+   loadAni();
+  });  
 }

@@ -10,6 +10,7 @@ var MSG = {
 Msg = function(){
 	this.name ="msg";
 	this.tipname ="msgtip";
+	this.loadname ="msgload";
 	this.count = 0;
 	this.tips = [];
 	this.intips = [];
@@ -61,6 +62,38 @@ Msg.prototype.createtip = function(desc)
     document.body.appendChild(tag);
 	$('#'+tagname).animate({marginTop:-340},1800,MsgTipCallback);
 	return tagname;
+}
+
+Msg.prototype.showload = function()
+{
+  this.destroyload();
+	
+	tag = document.createElement("DIV");
+	tag.id = this.loadname;
+	tag.className = "cfmsg load";
+
+	var content = ""
+content += "<img id='msg_load1' class='cfmsg_loadimg' src='static/img/load_1.png'>"
+content += "<img id='msg_load2' class='cfmsg_loadimg' src='static/img/load_2.png'>"
+content += "<img id='msg_load3' class='cfmsg_loadimg' src='static/img/load_3.png'>"
+content += "<img id='msg_load4' class='cfmsg_loadimg' src='static/img/load_4.png'>"
+content += "<img id='msg_load5' class='cfmsg_loadimg' src='static/img/load_0.png'>"
+content += "<img id='msg_load6' class='cfmsg_loadimg' src='static/img/load_0.png'>"
+content += "<img id='msg_load7' class='cfmsg_loadimg' src='static/img/load_0.png'>"
+content += "</div>"
+
+tag.innerHTML = content;
+
+    document.body.appendChild(tag);
+    
+    loadAni();
+}
+
+Msg.prototype.destroyload = function()
+{
+ var div=$("#"+this.loadname);
+ if (div)
+  div.remove();
 }
 
 //title自定义：

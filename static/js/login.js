@@ -207,35 +207,14 @@ Login.prototype.loadData = function(obj){
 	return msg;
 }
 
-Login.prototype.login = function(){
-     var player = store.get(g_player.name);
-     if (player==null){
-     	alert("本地数据缺失，登录失败");
-     	return;
-     }
-     
+Login.prototype.loginCallback = function(obj){
 	//进入场景:
 	g_game.m_scene.m_map.enter();
 	
+     var player = store.get(g_player.name);
      g_player.data = player;
-     var loginMsg = [];
-     var ppobj = {playerid:player.playerid,pwd:player.pwd,playername:player.playername}
-   	var dataParam = obj2ParamStr("player",ppobj);
-    var serverPlayer;
-	var dataobj = $.ajax({type:"post",url:"/cf/login_login.do",data:dataParam,async:false});
-	try    {
-		if (dataobj!=null&&dataobj.responseText.length>0) {
-			var obj = cfeval(dataobj.responseText);
-			if (obj!=null&&obj.playerid!=null){
-				loginMsg = this.loadData(obj);
-			}else {
-				logerr("数据错误: "+obj);
-			}
-		}
-	}   catch  (e)   {
-	    logerr(e.name  +   " :  "   +  dataobj.responseText);
-	   return false;
-	}	
+
+     var loginMsg = this.loadData(cfeval(obj));
 
 	for (var i=0;i<loginMsg.length;i++){
 		var msg = loginMsg[i];
@@ -255,7 +234,7 @@ Login.prototype.login = function(){
 	
     //head img:
     var head_img = head_imgs[player.sex];
-    head_img.name = g_player.name;
+    head_img.name = player.playername;
     g_game.addImg(head_img);
     
     g_playerlog.addlog();
@@ -270,6 +249,7 @@ Login.prototype.login = function(){
 	        }
     }
     
+    
     //player props
     g_player.flushPageview();
     	   
@@ -279,6 +259,30 @@ Login.prototype.login = function(){
 	}else {
 		g_game.onEnter();
 	}
+}
+
+Login.prototype.login = function(){
+	g_msg.showload();
+	
+     var player = store.get(g_player.name);
+     if (player==null){
+     	alert("本地数据缺失，登录失败");
+     	return;
+     }
+     
+     var ppobj = {playerid:player.playerid,pwd:player.pwd,playername:player.playername}
+   	var dataParam = obj2ParamStr("player",ppobj);
+    var serverPlayer;
+	try    {
+		$.ajax({type:"post",url:"/cf/login_login.do",data:dataParam,success:function(data){
+		 g_login.loginCallback(data);
+         g_msg.destroyload();
+		}});
+	}   catch  (e)   {
+	    logerr(e.name  +   " :  "   +  dataobj.responseText);
+	   return false;
+	}	
+
 	
    return true;
 }
