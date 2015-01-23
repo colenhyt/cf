@@ -95,7 +95,7 @@ Playerinfo.prototype.showPie = function(data,divName){
 			color:'#ffffff'
 		},
 		sub_option:{
-					mini_label_threshold_angle : 0,//迷你label的阀值,单位:角度
+					mini_label_threshold_angle : 20,//迷你label的阀值,单位:角度
 					mini_label:{//迷你label配置项
 						fontsize:getSizes().PieFontSize2,
 						fontweight:600,
@@ -109,7 +109,7 @@ Playerinfo.prototype.showPie = function(data,divName){
 							enable:false,
 							color:'#666666'
 						},
-						fontsize:10,
+						fontsize:getSizes().PieFontSize2,
 						fontweight:600,
 						color : '#000000'
 					},
@@ -121,11 +121,11 @@ Playerinfo.prototype.showPie = function(data,divName){
 		background_color: "#275868",
 		showpercent:true,
 		animation:true,
-		decimalsnum:2,
+		decimalsnum:0,
+		offset_angle:70,//顺时针偏移120度
 		width : getSizes().PieWidth,
 		height : getSizes().PieHeight,
 		radius:140,
-		offset_angle:12,
 	}).draw();	
 }
 
