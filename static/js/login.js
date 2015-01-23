@@ -121,10 +121,6 @@ Login.prototype.onImgClick = function(image)
 		if (tdata==null||tdata.playerid!=this.loginPlayerid)
 			canLogin = this.register();
 		if (canLogin){
-			var tagerm = document.getElementById("inputnickdiv");
-			document.body.removeChild(tagerm);
-			tagerm = document.getElementById("errmsg");
-			document.body.removeChild(tagerm);
 			this.login();
 		}
 	}
@@ -211,6 +207,9 @@ Login.prototype.loginCallback = function(obj){
 	//进入场景:
 	g_game.m_scene.m_map.enter();
 	
+	$('#inputnickdiv').remove();
+	$('#errmsg').remove();
+	
      var player = store.get(g_player.name);
      g_player.data = player;
 
@@ -273,6 +272,9 @@ Login.prototype.login = function(){
      var ppobj = {playerid:player.playerid,pwd:player.pwd,playername:player.playername}
    	var dataParam = obj2ParamStr("player",ppobj);
     var serverPlayer;
+    var now = new Date();
+    g_msg.loadreq = {callback:"g_login.login",start:now.getTime()};
+    
 	try    {
 		$.ajax({type:"post",url:"/cf/login_login.do",data:dataParam,success:function(data){
 		 g_login.loginCallback(data);

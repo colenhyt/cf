@@ -302,7 +302,6 @@ Game.prototype.init = function(canvas){
 	this.register(g_toplist);
 	this.register(g_stock);
 	this.register(g_bank);
-	this.register(g_msg);
 	this.register(g_help);
 	this.register(g_login);
 	

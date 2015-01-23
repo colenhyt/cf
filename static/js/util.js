@@ -197,6 +197,13 @@ cfeval = function(jsonStr){
     return eval ("(" + jsonStr + ")");
 }
 
+cfrun = function(func){  
+		alert(func);
+	if (func==null||func.length<=0)return;
+	
+    eval ("(" + func + "())");
+}
+
 mapIDs = function(map){  
 	var ids = []
 	for(key in map){

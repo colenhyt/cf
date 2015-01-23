@@ -25,6 +25,11 @@ Msg.prototype.init = function()
 {
 
 	this.buildHTML();
+	
+	setInterval(function(){
+	   g_msg.update();
+	  },MsgDuration
+	);	
 }
 
 Msg.prototype.buildHTML = function()
@@ -91,6 +96,8 @@ tag.innerHTML = content;
 
 Msg.prototype.destroyload = function()
 {
+ this.loadreq = null;
+
  var div=$("#"+this.loadname);
  if (div)
   div.remove();
@@ -154,10 +161,36 @@ Msg.prototype.open = function(desc,okCallback,cbParam1,cbParam2,cbParam3)
 	this.open2("提示",desc,okCallback,cbParam1,cbParam2,cbParam3);
 }
 
+Msg.prototype.openNetMsg = function(reqCallback)
+{
+	var desc = "网络异常，请确认网络畅通后重试";
+	
+	var content =      "        <div style='margin: auto;text-align:center;'>"
+	var	confmText = "重连";
+	content += "<div class='cfmsg_h2'>提示</div>"
+	content += "<img src='static/img/pop_line.png'>"
+	content += "            <div class='cfmsg_text'>"+desc+"</div>"
+	content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>"
+	content += "          <button class='cf_bt' onclick='g_msg.requestAgain("+reqCallback+")'>"+confmText+"</button>"
+	content += "             </div>"
+		
+	var tag = document.getElementById(this.pagename);
+	tag.innerHTML = content;
+	
+	 $('#'+this.tagname).modal({position:getSizes().MsgTop,show: true});  
+		 	
+}
+
+Msg.prototype.requestAgain = function(reqCallback){
+	this.hide();
+	reqCallback();
+}
+
+
 Msg.prototype.update = function()
 {
 	this.count++;
-	if (this.count%3==0)
+	if (this.count%5==0)
 	{
 		while (this.intips.length>0){
 			var desc = g_msg.intips.shift();
@@ -166,6 +199,17 @@ Msg.prototype.update = function()
 			break;
 		}
 	}
+	
+	//net callback
+	if (this.loadreq)
+	{
+	var now = new Date();
+	var dura = now.getTime() - this.loadreq.start;
+	if (dura<NetReqWait) return;
+	 
+		this.openNetMsg(this.loadreq.callback);
+		this.destroyload();
+	}	
 }
 
 var g_msg = new Msg()
