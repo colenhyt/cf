@@ -269,9 +269,6 @@ Insure.prototype.requestBuy = function(id,qty,amount) {
  
  if (id){
  var item = store.get(g_insure.name)[id];
-  g_insure.buyId = id;
-  g_insure.buyQty = qty;
-  g_insure.buyAmount = amount;
   g_insure.buyItem = {itemid:id,playerid:g_player.data.playerid,
 			qty:qty,price:item.price,amount:amount};  
  }
@@ -315,9 +312,7 @@ Insure.prototype.buyCallback = function(ret){
 	g_quest.onBuyItem(this.name,item,1);
 				   
 	//tip:
-	g_msg.tip("你购买"+g_insure.buyQty+"份<span style='color:red'>"+item.name+"</span>成功");
-	
-	this.closeDetail();
+	g_msg.tip("你购买"+buyitem.qty+"份<span style='color:red'>"+item.name+"</span>成功");
 	
 	this.hide(this.tagdetailname);
 	//刷新list 页面:

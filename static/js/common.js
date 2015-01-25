@@ -202,10 +202,10 @@ Datamgr.prototype = {
 	    	
 	    }
 
-		this.buy(id,qty,ps);
+		this.reqBuy(id,qty,ps);
 		return;
-	},
-	
+	},	
+
 	buy:function(id,qty,ps){
 	    var ret = g_player.buyItem(this.name,id,qty,ps);
 	    if (ret.ret==true){

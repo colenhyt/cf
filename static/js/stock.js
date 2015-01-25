@@ -333,9 +333,105 @@ Stock.prototype.doBuy = function()
 		g_msg.tip("请买入或者卖出");
 		return;
 	}
+	
+   var item = store.get(this.name)[this.waitStockid];
+   if (!item){
+   		g_msg.tip("找不到"+this.name+"数据");
+   		return;
+   }
+	   
+   var ps = this.buyPrice;
+    
+   if (this.waitCount>0){
+	    var needCash = ps * this.waitCount;
+	    var cash = g_player.saving[1].amount;
+	    if (cash<needCash){
+		    g_msg.tip("你的现金不够，购买失败!");
+		    return;
+	    }		
+    }else {
+	   var pitem = g_player.getStockItem(this.waitStockid);
+	   if (pitem.qty<(0-this.waitCount)){
+	   		g_msg.tip("持有数量少于你抛售数量!");	
+	   		return;
+	   }
+    }
+	
 	//alert(this.waitCount);
-	this.confirmBuy(this.waitStockid,this.waitCount,this.buyPrice);
-	this.waitCount = 0;
+	this.requestBuy(this.waitStockid,this.waitCount,this.buyPrice);
+}
+
+Stock.prototype.requestBuy = function(id,qty,ps) {
+ g_msg.showload("g_stock.requestBuy");
+ 
+ if (id){
+  g_stock.buyItem = {itemid:id,playerid:g_player.data.playerid,
+			qty:qty,price:ps,amount:parseInt(ps*qty)};  
+ }
+ 
+ if (!g_stock.buyItem) return false; 
+ 
+	var dataParam = obj2ParamStr(g_stock.name,g_stock.buyItem);
+	try    {
+		$.ajax({type:"post",url:"/cf/stock_add.do",data:dataParam,success:function(data){
+		 g_stock.buyCallback(cfeval(data));
+         g_msg.destroyload();
+		}});
+	}   catch  (e)   {
+	    logerr(e.name  +   " :  "   +  dataobj.responseText);
+	   return false;
+	}	 
+}
+
+	
+Stock.prototype.buyCallback = function(ret){
+    if (ret.code) return;
+
+   var buyitem = this.buyItem;
+	var id = buyitem.itemid;
+	var qty = buyitem.qty;
+   var item = store.get(this.name)[id];
+   if (item==null) return;
+   
+   var amount = buyitem.amount;
+   
+   var pitems = g_player.getData(this.name);
+	if (!pitems[id])
+		pitems[id] = [];
+	if (qty>0){
+	 pitems[id].push(tgoods);
+	}else {
+	 var needRemoveQty = 0 - qty;
+	 for (var i=0;i<pitems[id].length;i++){
+	   if (pitems[id][i].qty<=needRemoveQty){
+	    needRemoveQty -= pitems[id][i].qty;
+	    pitems[id].splice(i,1);
+	    i--;
+	   }else {
+	    pitems[id][i].qty -= needRemoveQty;
+	    pitems[id][i].amount = pitems[id][i].qty*pitems[id][i].price;
+	    break;
+	   }
+	 }
+	}
+	g_player.setStockIds();
+	
+		
+	var cash = g_player.saving[1].amount;	   
+	cash -= amount;
+	var pupdate = {"cash":cash};
+	g_player.updateData(pupdate);
+	g_quest.onBuyItem(this.name,item,1);
+				   
+	//tip:
+	if (qty>0)
+		g_msg.tip("购买<span style='color:red'>"+item.name+"</span>成功,金额:"+buyitem.amount);
+	else
+		g_msg.tip("抛售<span style='color:red'>"+item.name+"</span>成功,金额:"+(0-buyitem.amount));
+	
+	this.showDetail(id,true);
+	//刷新list 页面:
+	this.buildPage(this.currPage);
 }
 
 Stock.prototype.findQuotes = function()
@@ -354,6 +450,8 @@ Stock.prototype.findQuotes = function()
 //		return squotes;
 //	}
 
+	if (!g_stock.currShowStockId) return;
+
 	try  {
 		$.ajax({type:"post",url:"/cf/stock_quotes.do",data:"stock.id="+g_stock.currShowStockId,success:function(dataobj){
 			squotes =cfeval(dataobj);
@@ -362,6 +460,7 @@ Stock.prototype.findQuotes = function()
 			store.set(g_stock.quotename,qdatas);
 			//alert('from server');
 			g_stockdetail.drawQuote(g_stock.currShowStockId,g_stock.currStockPs,squotes,g_stock.graphName);
+			g_stock.currShowStockId = null;
 			g_msg.destroyload();
 		}});
 
