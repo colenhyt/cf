@@ -65,6 +65,12 @@ Toplist.prototype.buildHTML2 = function()
 
 Toplist.prototype.buildPage = function(page)
 {
+    var  header = "<button class='cf_title_bg moff' onclick='g_toplist.showToplist(1,0)'></button>"
+    header += "<button class='cf_title_bg won'></button>"
+       	
+	var tagHeader = document.getElementById(this.pageheader);
+	tagHeader.innerHTML = header;
+	
 	this.syncData2();
 	this.currPage = page;
 }
@@ -76,16 +82,13 @@ Toplist.prototype.showToplist = function(type,page)
 		
 	var tdata;
         var   header ="";
-        var desc = "";
 	if (type==0) {
 	    tdata = store.get(this.tagtab1);
-            desc = "本周排名";
             header += "<button class='cf_title_bg moff' onclick='g_toplist.showToplist(1,0)'></button>"
             header += "<button class='cf_title_bg won'></button>"
 	}
 	else if (type==1){
 		tdata = store.get(this.tagtab2);
-            desc = "本月排名";
            header += "<button class='cf_title_bg woff' onclick='g_toplist.showToplist(0,0)'></button>"
             header += "<button class='cf_title_bg mon'></button>"
         }        	
@@ -251,20 +254,16 @@ Toplist.prototype.updateData = function(data){
 	
 }
 
-Toplist.prototype.syncCallback=function(dataobj){
-	try    {
-		var obj = eval ("(" + dataobj + ")");
-		g_toplist.updateData(obj);
-	}   catch  (e)   {
-	    logerr(e.name  +   " :  "   +  dataobj);
-	}   
-	
-}
-
 Toplist.prototype.syncData2 = function(){
+	g_msg.showload("g_toplist.syncData2");
+	
 	try  {
 		var data= "toplist.playerid="+g_player.data.playerid;
-		$.ajax({type:"post",url:"/cf/toplist_list.do",data:data,success:this.syncCallback});
+		$.ajax({type:"post",url:"/cf/toplist_list.do",data:data,success:function(data){
+		 var obj = cfeval (data);
+		 g_toplist.updateData(obj);
+         g_msg.destroyload();
+		}});
 	}   catch  (e)   {
 	    logerr(e.name);
 	}   

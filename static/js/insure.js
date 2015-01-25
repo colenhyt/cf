@@ -251,15 +251,28 @@ Insure.prototype.preBuy = function(id,qty) {
 	this.confirmBuy(id,qty);
 }
 
+Insure.prototype.existTimeout = function() {
+	var tdata = store.get(this.name);
+	var hasTip = false;
+	for (itemid in g_player.insure){
+	 pitem = g_player.insure[itemid];
+     var item = tdata[itemid];
+	 var timeout = calculateTimeout(pitem,item);
+	 if (timeout<0.5){
+	  hasTip = true;
+	  break;
+	 }
+	}
+	
+	return hasTip;
+}
+
 Insure.prototype.update = function(){
 	this.count++;
 	if (this.count%25==0){
-		var ids = g_player.getOfftimeInsure();
-		if (ids.length>0)
-			this.hasTip = true;
+	  this.hasTip = this.existTimeout();
 	}
 	
-	this.hasTip = true;
 	if (!this.hasTip||!g_game.enter) return;
 	
 	var tag = document.getElementById("tag2"+this.name);

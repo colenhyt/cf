@@ -1,6 +1,7 @@
 // JavaScript Document
 Bank = function(){
 	this.name = "bank"
+    this.count = 0;
     this.pageCount = 5;
     this.currPage = 0;
 	this.tagname = "my"+this.name
@@ -170,8 +171,27 @@ Bank.prototype.showDetail = function(id){
 	g_saving.showDetail(id);
 }
 
+Bank.prototype.existTimeout = function() {
+	var tdata = store.get(this.name);
+	var hasTip = false;
+	for (itemid in g_player.saving){
+	 pitem = g_player.saving[itemid];
+     var item = tdata[itemid];
+	 var timeout = calculateTimeout(pitem,item);
+	 if (itemid!=1&&timeout<0.5){
+	  hasTip = true;
+	  break;
+	 }
+	}
+	
+	return hasTip;
+}
 Bank.prototype.update = function(){
-this.hasTip = true;
+	this.count++;
+	if (this.count%25==0){
+	  this.hasTip = this.existTimeout();
+	}
+	
 	if (!this.hasTip||!g_game.enter) return;
 	
 	var tag = document.getElementById("tag2"+this.name);

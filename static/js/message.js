@@ -69,9 +69,9 @@ Msg.prototype.createtip = function(desc)
 	return tagname;
 }
 
-Msg.prototype.showload = function()
+Msg.prototype.showload = function(callback)
 {
-  this.destroyload();
+    this.destroyload();
 	
 	tag = document.createElement("DIV");
 	tag.id = this.loadname;
@@ -90,6 +90,9 @@ content += "</div>"
 tag.innerHTML = content;
 
     document.body.appendChild(tag);
+
+    var now = new Date();
+	this.loadreq = {callback:callback,start:now.getTime()};
     
     loadAni();
 }
@@ -166,7 +169,7 @@ Msg.prototype.openNetMsg = function(reqCallback)
 	var desc = "网络异常，请确认网络畅通后重试";
 	
 	var content =      "        <div style='margin: auto;text-align:center;'>"
-	var	confmText = "重连";
+	var	confmText = "重试";
 	content += "<div class='cfmsg_h2'>提示</div>"
 	content += "<img src='static/img/pop_line.png'>"
 	content += "            <div class='cfmsg_text'>"+desc+"</div>"

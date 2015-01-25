@@ -121,8 +121,8 @@ Playerinfo.prototype.showPie = function(data,divName){
 		background_color: "#275868",
 		showpercent:true,
 		animation:true,
-		decimalsnum:0,
-		offset_angle:70,//顺时针偏移120度
+		decimalsnum:1,
+		offset_angle:75,//顺时针偏移120度
 		width : getSizes().PieWidth,
 		height : getSizes().PieHeight,
 		radius:140,

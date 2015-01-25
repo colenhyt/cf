@@ -46,15 +46,18 @@ Stock.prototype.load = function(data)
 	store.set(this.quotename,qdata);
 }
 
-Stock.prototype.loadPageLastQuote = function(ids,page)
+Stock.prototype.loadPageLastQuote = function()
 {
+	g_msg.showload("g_stock.loadPageLastQuote");
 	
-	var jids = "stockids="+JSON.stringify(ids);
+	if (!this.currPageIds) return;
+	
+	var jids = "stockids="+JSON.stringify(this.currPageIds);
 	try  {
 		$.ajax({type:"post",url:"/cf/stock_pagelastquotes.do",data:jids,success:function(data){
 			var lastquotes = cfeval(data);
 			g_stock.lastquotes = lastquotes;
-			var pname = g_stock.pagequote+page;
+			var pname = g_stock.pagequote+g_stock.currPage;
 			//g_msg.tip("load back save quote:"+pname);
 			store.set(pname,lastquotes);
 			for (itemid in lastquotes){
@@ -74,6 +77,7 @@ Stock.prototype.loadPageLastQuote = function(ids,page)
 				else
 					tagpr.style.color = "green";
 			}
+			g_msg.destroyload();
 		}});
 	}   catch  (e)   {
 	    logerr(e.name);
@@ -207,7 +211,7 @@ Stock.prototype.buildPage = function(page)
 		this.currPage = page;
         content += this.buildPaging(page,rids.length);
         this.currPageIds = pageids;
-        this.loadPageLastQuote(pageids,page);
+        this.loadPageLastQuote();
 	}
      
 	var tag = document.getElementById(this.pagename);
@@ -277,7 +281,10 @@ Stock.prototype.showDetail = function(id,isflush){
 	var tag = document.getElementById(this.pagedetailname);
 	tag.innerHTML = content;
 	
-	var quotes = this.findQuotes(id,false,ps);
+	this.currShowStockId = id;
+	this.currStockPs = ps;
+	
+	var quotes = this.findQuotes();
 	if (quotes)
     	g_stockdetail.drawQuote(id,ps,quotes,this.graphName);
         
@@ -331,28 +338,31 @@ Stock.prototype.doBuy = function()
 	this.waitCount = 0;
 }
 
-Stock.prototype.findQuotes = function(stockid,fromServer,price)
+Stock.prototype.findQuotes = function()
 {
-	var qdata = store.get(this.quotename);
-	if (qdata==null){
-		qdata = {};
-		store.set(this.quotename,qdata);
-	}
+	g_msg.showload("g_stock.findQuotes");
 	
-	var squotes = qdata[stockid];
-	if (squotes!=null&&fromServer!=true){
-	//alert('from local');
-		return squotes;
-	}
-	
+//	var qdata = store.get(this.quotename);
+//	if (qdata==null){
+//		qdata = {};
+//		store.set(this.quotename,qdata);
+//	}
+//	
+//	var squotes = qdata[stockid];
+//	if (squotes!=null&&fromServer!=true){
+//	//alert('from local');
+//		return squotes;
+//	}
+
 	try  {
-		$.ajax({type:"post",url:"/cf/stock_quotes.do",data:"stock.id="+stockid,success:function(dataobj){
+		$.ajax({type:"post",url:"/cf/stock_quotes.do",data:"stock.id="+g_stock.currShowStockId,success:function(dataobj){
 			squotes =cfeval(dataobj);
 			var qdatas = store.get(g_stock.quotename);		
 			qdatas[stockid] = squotes;		
 			store.set(g_stock.quotename,qdatas);
 			//alert('from server');
-			g_stockdetail.drawQuote(stockid,price,squotes,g_stock.graphName);
+			g_stockdetail.drawQuote(g_stock.currShowStockId,g_stock.currStockPs,squotes,g_stock.graphName);
+			g_msg.destroyload();
 		}});
 
 	}   catch  (e)   {
@@ -430,7 +440,7 @@ Stock.prototype.update_self = function(){
 		sec = "0"+sec;
 	tag.innerHTML = "0"+min+":"+sec;
 	if (rebuild){
-		this.loadPageLastQuote(this.currPageIds,this.currPage);
+		this.loadPageLastQuote();
 	}
 }
 

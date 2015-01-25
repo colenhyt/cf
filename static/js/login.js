@@ -261,7 +261,7 @@ Login.prototype.loginCallback = function(obj){
 }
 
 Login.prototype.login = function(){
-	g_msg.showload();
+	g_msg.showload("g_login.login");
 	
      var player = store.get(g_player.name);
      if (player==null){
@@ -273,7 +273,6 @@ Login.prototype.login = function(){
    	var dataParam = obj2ParamStr("player",ppobj);
     var serverPlayer;
     var now = new Date();
-    g_msg.loadreq = {callback:"g_login.login",start:now.getTime()};
     
 	try    {
 		$.ajax({type:"post",url:"/cf/login_login.do",data:dataParam,success:function(data){
