@@ -183,7 +183,7 @@ Insure.prototype.show_insuredetail = function(id){
 	var confirm;
 	if (pitem.qty<=0)
 		confirm = "购买";		
-    this.showDetail(item.name,content,"g_insure.preBuy",id,1,confirm);
+    this.showDetail(item.name,content,"g_insure.doBuy",id,1,confirm);
 	
 }
 
@@ -226,7 +226,7 @@ content += "           </div>  "
 	var confirm;
 	if (pitem.qty<=0)
 		confirm = "购买";		
-    this.showDetail(item.name,content,"g_insure.preBuy",id,0,confirm);
+    this.showDetail(item.name,content,"g_insure.doBuy",id,0,confirm);
 }
 
 Insure.prototype.countBuy = function(count) {
@@ -240,7 +240,7 @@ var tag = document.getElementById('finan_count');
 }
 
 
-Insure.prototype.preBuy = function(id,qty) {
+Insure.prototype.doBuy = function(id,qty) {
 	var item = store.get(this.name)[id];
 	if (!item) return;
 	if (item.type==1){
@@ -248,7 +248,80 @@ Insure.prototype.preBuy = function(id,qty) {
 		if (tag!=null)
 			qty = tag.value;	
 	}
-	this.confirmBuy(id,qty);
+	if (qty==0){
+	    g_msg.tip(this.cname+"购买","份数不能为零!");
+	    return;
+	}	
+	
+	var ps = item.price;
+    var amount = ps * qty;
+    var cash = g_player.saving[1].amount;
+    if (cash<amount){
+	    g_msg.tip("你的现金不够，购买失败!");
+	    return;
+    }
+    	
+	this.requestBuy(id,qty,amount);
+}
+
+Insure.prototype.requestBuy = function(id,qty,amount) {
+ g_msg.showload("g_insure.requestBuy");
+ 
+ if (id){
+ var item = store.get(g_insure.name)[id];
+  g_insure.buyId = id;
+  g_insure.buyQty = qty;
+  g_insure.buyAmount = amount;
+  g_insure.buyItem = {itemid:id,playerid:g_player.data.playerid,
+			qty:qty,price:item.price,amount:amount};  
+ }
+ 
+ if (!g_insure.buyItem) return false; 
+ 
+	var dataParam = obj2ParamStr(g_insure.name,g_insure.buyItem);
+	try    {
+		$.ajax({type:"post",url:"/cf/insure_add.do",data:dataParam,success:function(data){
+		 g_insure.buyCallback(cfeval(data));
+         g_msg.destroyload();
+		}});
+	}   catch  (e)   {
+	    logerr(e.name  +   " :  "   +  dataobj.responseText);
+	   return false;
+	}	 
+}
+	
+Insure.prototype.buyCallback = function(ret){
+    if (ret.code) return;
+
+   var buyitem = this.buyItem;
+	var id = buyitem.itemid;
+   var item = store.get(this.name)[id];
+   if (item==null) return;
+   
+   var amount = buyitem.amount;
+   
+   var pitems = g_player.getData(this.name);
+   if (amount>0){
+	pitems[id] = buyitem;
+	pitems[id].createtime = Date.parse(new Date());
+	pitems[id].profit = 0;
+   }else
+	pitems[id] = null;
+		
+	var cash = g_player.saving[1].amount;	   
+	cash -= amount;
+	var pupdate = {"cash":cash};
+	g_player.updateData(pupdate);
+	g_quest.onBuyItem(this.name,item,1);
+				   
+	//tip:
+	g_msg.tip("你购买"+g_insure.buyQty+"份<span style='color:red'>"+item.name+"</span>成功");
+	
+	this.closeDetail();
+	
+	this.hide(this.tagdetailname);
+	//刷新list 页面:
+	this.buildPage(this.currPage);
 }
 
 Insure.prototype.existTimeout = function() {

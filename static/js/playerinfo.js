@@ -151,6 +151,7 @@ Playerinfo.prototype.showOneInfo = function(playerid){
 					serverPlayer.stock = cfeval(obj.stock);
 				if (obj.insure)
 					serverPlayer.insure = cfeval(obj.insure);
+				g_playerinfo.showPlayerId = null;
 				g_playerinfo.showInfo(serverPlayer);
 			}
          g_msg.destroyload();

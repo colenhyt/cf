@@ -66,7 +66,7 @@ content += "              </tr>"
 content += "          </table>     "
 		content += "             </div>"
 	content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>      "  
-	content += "          <button class='cf_bt' onclick='g_saving.buy("+id+")'>确认</button>"
+	content += "          <button class='cf_bt' onclick='g_saving.doBuy("+id+")'>确认</button>"
 content += "             </div>"
  
  	return content;
@@ -97,7 +97,7 @@ content += "              </tr>"
 content += "          </table>     "
 		content += "             </div>"
 	content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>      "  
-	content += "          <button class='cf_bt' onclick='g_saving.buy("+id+")'>取出</button>"
+	content += "          <button class='cf_bt' onclick='g_saving.doBuy("+id+")'>取出</button>"
 content += "             </div>"
  	return content;
  	
@@ -120,6 +120,93 @@ Saving.prototype.countBuy = function(id,count){
     var tag2 = document.getElementById('savingprofit');
     tag2.innerHTML = ForDight(tag.value * (item.rate/100));
     //alert(tag.value);
+}
+
+Saving.prototype.doBuy = function(id){
+   var item = store.get(this.name)[id];
+   if (item==null) return;
+   
+   var pitem = g_player.getSavingItem(id);
+   
+    var amount = 0;
+   //存钱:
+   if (pitem.amount==0) {
+	    var tag = document.getElementById('saving_amount');
+	    amount = parseInt(tag.value);
+	    if (amount<=100) {
+		 g_msg.tip("定期存款不能少于100")
+		 return;
+	    }	    
+    }else 
+    	amount = 0 - pitem.amount;
+    
+    this.requestBuy(id,1,amount);
+}
+	
+Saving.prototype.requestBuy = function(id,qty,amount){
+ g_msg.showload("g_saving.requestBuy");
+ 
+	 if (id){
+		g_saving.buyItem = {itemid:id,playerid:g_player.data.playerid,
+			qty:qty,price:amount,amount:amount};
+	 }
+
+	 if (!g_saving.buyItem) return false;
+	
+	 var cash = g_player.saving[1].amount;
+	 if (cash<g_saving.buyItem.amount){
+		 g_msg.tip('你没有这么多钱存入');
+		return;
+	 }	
+	 
+	var dataParam = obj2ParamStr(g_saving.name,g_saving.buyItem);
+	try    {
+		$.ajax({type:"post",url:"/cf/saving_add.do",data:dataParam,success:function(data){
+		 g_saving.buyCallback(cfeval(data));
+         g_msg.destroyload();
+		}});
+	}   catch  (e)   {
+	    logerr(e.name  +   " :  "   +  dataobj.responseText);
+	   return false;
+	}	
+}
+	
+Saving.prototype.buyCallback = function(ret){
+    if (ret.code) return;
+
+   var buyitem = this.buyItem;
+	var id = buyitem.itemid;
+   var item = store.get(this.name)[id];
+   if (item==null) return;
+   
+   var amount = buyitem.amount;
+   
+   var pitems = g_player.getData(this.name);
+   if (amount>0){
+	pitems[id] = buyitem;
+	pitems[id].createtime = Date.parse(new Date());
+	pitems[id].profit = 0;
+   }else
+	pitems[id] = null;
+			   
+	var cash = g_player.saving[1].amount;	   
+	cash -= amount;
+	var pupdate = {"cash":cash};
+	g_player.updateData(pupdate);
+	g_quest.onBuyItem(this.name,item,1);
+				   
+	//tip:
+	var desc;
+	if (amount>0)
+		desc = "定期存入<span style='color:red'>"+item.name+"</span>成功,金额:"+amount;
+	else 
+		desc = "取出<span style='color:red'>"+item.name+"</span>成功,金额:"+(0-amount);
+		
+	g_msg.tip(desc);
+	
+	this.hide(this.tagdetailname);
+	//刷新list 页面:
+	g_bank.buildPage(g_bank.currPage);
 }
 
 Saving.prototype.buy = function(id){
