@@ -130,8 +130,36 @@ Playerinfo.prototype.showPie = function(data,divName){
 }
 
 Playerinfo.prototype.showOneInfo = function(playerid){
-	var jsondata = g_player.find(playerid);
-	this.showInfo(jsondata);
+	g_msg.showload("g_playerinfo.showOneInfo");
+	
+	if (playerid)
+	 g_playerinfo.showPlayerId = playerid;
+	 
+	if (!g_playerinfo.showPlayerId) return;
+	
+	try    { 
+			$.ajax({url:"/cf/login_get.do?player.playerid="+g_playerinfo.showPlayerId,success:function(data){
+			var obj = cfeval(data);
+			if (obj!=null){
+			    var serverPlayer = {};
+				serverPlayer.data = obj;
+				if (obj.saving)
+					serverPlayer.saving = cfeval(obj.saving);
+				if (obj.quest)
+					serverPlayer.data.quest = cfeval(obj.quest);
+				if (obj.stock)
+					serverPlayer.stock = cfeval(obj.stock);
+				if (obj.insure)
+					serverPlayer.insure = cfeval(obj.insure);
+				g_playerinfo.showInfo(serverPlayer);
+			}
+         g_msg.destroyload();
+		}});
+	}   catch  (e)   {
+	    logerr(e.name  +   " :  "   +  dataobj.responseText);
+	   return false;
+	}			
+	
 }
 
 var g_playerinfo = new Playerinfo();

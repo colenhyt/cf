@@ -50,9 +50,9 @@ Stock.prototype.loadPageLastQuote = function()
 {
 	g_msg.showload("g_stock.loadPageLastQuote");
 	
-	if (!this.currPageIds) return;
+	if (!g_stock.currPageIds) return;
 	
-	var jids = "stockids="+JSON.stringify(this.currPageIds);
+	var jids = "stockids="+JSON.stringify(g_stock.currPageIds);
 	try  {
 		$.ajax({type:"post",url:"/cf/stock_pagelastquotes.do",data:jids,success:function(data){
 			var lastquotes = cfeval(data);

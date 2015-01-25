@@ -407,32 +407,6 @@ Player.prototype.buyItem = function(tname,id,qty,ps){
 	return {ret:true,item:tgoods};
 		
 }
-
-Player.prototype.find = function(playerid){
-     var serverPlayer = {};
-	var dataobj = $.ajax({url:"/cf/login_get.do?player.playerid="+playerid,async:false});
-	try    {
-		if (dataobj!=null&&dataobj.responseText.length>0) {
-			var obj = cfeval(dataobj.responseText);
-			if (obj!=null){
-				serverPlayer.data = obj;
-				if (obj.saving)
-					serverPlayer.saving = cfeval(obj.saving);
-				if (obj.quest)
-					serverPlayer.data.quest = cfeval(obj.quest);
-				if (obj.stock)
-					serverPlayer.stock = cfeval(obj.stock);
-				if (obj.insure)
-					serverPlayer.insure = cfeval(obj.insure);
-			}
-		}
-	}   catch  (e)   {
-	    logerr(e.name  +   " :  "   +  dataobj.responseText);
-	   // return false;
-	}
-	return serverPlayer;
-}
-
 //store.remove("player");
 //store.remove("playerlog");
 var g_playerlog = new Playerlog()
