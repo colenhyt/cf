@@ -418,7 +418,7 @@ var anis=[
 ['+=280px','+=170px',7500,'icon_car2_2.png'],
 ['-=80px','+=80px',3500,'icon_car2.png'],
 ['+=120px','+=120px',4500,'icon_car2_2.png'],
-['-=360px','+=225px',11000,'icon_car2.png'],
+['-=200px','+=125px',9000,'icon_car2.png'],
 ]
 
  var tag = document.getElementById(divName);
@@ -476,7 +476,7 @@ function carAni3(){
 var anis=[
 ['-=150px','+=120px',4500,'icon_car3.png',"585px","603px"],
 ['+=155px','+=115px',4500,'icon_car3_2.png'],
-['-=330px','+=230px',10000,'icon_car3.png'],
+['-=170px','+=125px',7500,'icon_car3.png'],
 ]
 
  var tag = document.getElementById(divName);
@@ -520,76 +520,76 @@ function loadAni(){
  if (!tag) return;
  
   var div=$("#msg_load1");
-  div.animate({top:"-10px"},50);  
+  div.animate({top:"-10px"},30);  
   
-  div.animate({top:"-10px"},50,function(){
+  div.animate({top:"-10px"},30,function(){
    loadAni2();
   });  
   
-  div.animate({top:"0px"},100);  
+  div.animate({top:"0px"},60);  
   
 }
 
 function loadAni2(){
   var div=$("#msg_load2");
-  div.animate({top:"-10px"},50);  
+  div.animate({top:"-10px"},30);  
   
-  div.animate({top:"-10px"},50,function(){
+  div.animate({top:"-10px"},30,function(){
    loadAni3();
   }); 
   
-  div.animate({top:"0px"},100);     
+  div.animate({top:"0px"},60);     
 }
 
 function loadAni3(){
   var div=$("#msg_load3");
-  div.animate({top:"-10px"},50);  
+  div.animate({top:"-10px"},30);  
   
-  div.animate({top:"-10px"},50,function(){
+  div.animate({top:"-10px"},30,function(){
    loadAni4();
   });  
   
-  div.animate({top:"0px"},100);    
+  div.animate({top:"0px"},60);    
 }
 
 function loadAni4(){
   var div=$("#msg_load4");
-  div.animate({top:"-10px"},50);  
+  div.animate({top:"-10px"},30);  
   
-  div.animate({top:"-10px"},50,function(){
+  div.animate({top:"-10px"},30,function(){
    loadAni5();
   });  
   
-  div.animate({top:"0px"},100);     
+  div.animate({top:"0px"},60);     
 }
 
 function loadAni5(){
   var div=$("#msg_load5");
-  div.animate({top:"-15px"},75);  
+  div.animate({top:"-15px"},30);  
   
-  div.animate({top:"-15px"},75,function(){
+  div.animate({top:"-15px"},30,function(){
    loadAni6();
   });  
   
-  div.animate({top:"0px"},150);      
+  div.animate({top:"0px"},60);      
 }
 
 function loadAni6(){
   var div=$("#msg_load6");
-  div.animate({top:"-15px"},75);  
+  div.animate({top:"-15px"},50);  
   
-  div.animate({top:"-15px"},75,function(){
+  div.animate({top:"-15px"},50,function(){
    loadAni7();
   });  
-  div.animate({top:"0px"},150);       
+  div.animate({top:"0px"},100);       
 }
 
 function loadAni7(){
   var div=$("#msg_load7");
-  div.animate({top:"-30px"},150);  
+  div.animate({top:"-30px"},100);  
   
-  div.animate({top:"0px"},150,function(){
-   sleep(800);
+  div.animate({top:"0px"},100,function(){
+   sleep(400);
    loadAni();
   });  
 }

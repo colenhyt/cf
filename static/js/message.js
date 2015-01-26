@@ -72,6 +72,8 @@ Msg.prototype.createtip = function(desc)
 Msg.prototype.showload = function(callback,type)
 {
     this.destroyload();
+    
+   	this.netmsgWait = NetReqWait;
 	
 	tag = document.createElement("DIV");
 	tag.id = this.loadname;
@@ -213,7 +215,7 @@ Msg.prototype.update = function()
 	{
 	var now = new Date();
 	var dura = now.getTime() - this.loadreq.start;
-	if (dura<NetReqWait) return;
+	if (dura<this.netmsgWait) return;
 	 
 		this.openNetMsg(this.loadreq.callback);
 		this.destroyload();

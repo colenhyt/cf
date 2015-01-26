@@ -24,6 +24,11 @@ Stock.prototype.init = function(){
 	{
 		store.set(this.name,data_stockdata);
 	}
+ 	var tquotedata = store.get(this.quotename);
+ 	if (!tquotedata){
+    	store.set(this.quotename,{});
+ 	}
+	
     this.buildHTML();
     
 	setInterval(function(){
@@ -34,16 +39,6 @@ Stock.prototype.init = function(){
 
 Stock.prototype.onEnter = function(){
 	this.stockChange();
-}
-
-Stock.prototype.load = function(data)
-{
-	store.set(this.name,data);
-	var qdata = {};
-	for (var i=0;i<data.length;i++){
-		qdata[data[i].id] = eval ("(" + data[i].jsonquotes + ")");
-	}
-	store.set(this.quotename,qdata);
 }
 
 Stock.prototype.loadPageLastQuote = function()
@@ -438,28 +433,24 @@ Stock.prototype.findQuotes = function()
 {
 	g_msg.showload("g_stock.findQuotes");
 	
-//	var qdata = store.get(this.quotename);
-//	if (qdata==null){
-//		qdata = {};
-//		store.set(this.quotename,qdata);
-//	}
-//	
-//	var squotes = qdata[stockid];
-//	if (squotes!=null&&fromServer!=true){
-//	//alert('from local');
-//		return squotes;
-//	}
+	var stockid = g_stock.currShowStockId;
+	if (!stockid) return;
 
-	if (!g_stock.currShowStockId) return;
+	var lsec = g_stock.findQuoteLostTime();
+	var islocal = Math.abs(lsec-QUOTETIME)<QUOTETIME/3;
+	var qdatas = store.get(this.quotename);
+	var squotes = qdatas[stockid];
+	if (islocal&&squotes){
+	alert('from local');
+		return squotes;
+	}
 
 	try  {
-		$.ajax({type:"post",url:"/cf/stock_quotes.do",data:"stock.id="+g_stock.currShowStockId,success:function(dataobj){
+		$.ajax({type:"post",url:"/cf/stock_quotes.do",data:"stock.id="+stockid,success:function(dataobj){
 			squotes =cfeval(dataobj);
-			var qdatas = store.get(g_stock.quotename);		
-			qdatas[stockid] = squotes;		
+			qdatas[stockid] = squotes;	
 			store.set(g_stock.quotename,qdatas);
-			//alert('from server');
-			g_stockdetail.drawQuote(g_stock.currShowStockId,g_stock.currStockPs,squotes,g_stock.graphName);
+			g_stockdetail.drawQuote(stockid,g_stock.currStockPs,squotes,g_stock.graphName);
 			g_stock.currShowStockId = null;
 			g_msg.destroyload();
 		}});
@@ -514,16 +505,23 @@ Stock.prototype.onClose = function()
 	//alert(this.name+"close");
 }
 
-//股票更新:
-Stock.prototype.update_self = function(){
-	if (!g_player.data||!g_player.data.lastlogin) return;
+Stock.prototype.findQuoteLostTime = function(){
+	if (!g_player.data||!g_player.data.lastlogin) return 0;
 	
 	var now = Date.parse(new Date());
 	var enterTime = (now - g_player.data.lastlogin.time)/1000;		//进入系统时间(秒);
 	var quotePassTime = parseInt(enterTime+g_player.data.quotetime);
 	var mm = quotePassTime%QUOTETIME;
 	var lsec = QUOTETIME - mm;
-	var rebuild = false;
+	return lsec;
+}
+
+//股票更新:
+Stock.prototype.update_self = function(){
+	if (!g_player.data||!g_player.data.lastlogin) return;
+	
+	var lsec = this.findQuoteLostTime();
+	var rebuild = false
 	if (lsec==QUOTETIME){
 		this.stockChange();	//股票涨跌获取通知:
 		rebuild = true;

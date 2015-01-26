@@ -46,8 +46,10 @@ Event.prototype.goodEvent = function(item){
 			var targetInsure = store.get(g_insure.name)[item.itemid];
 			var iname = targetInsure?targetInsure.name:"";
 			content = "<div style='cfevent_content'>"
-			content += "<div class='cfplayer_head_bg event'><img src='static/img/event_1.png'></div>"
-			content += "<div class='cfevent_desc'>"+item.descs+"</div>"
+		content += "<table><tr>"
+		content += "<td><div class='cfplayer_head_bg event'><img src='static/img/event_1.png'></div></td>"
+		content += "<td style='text-align:center'>"+item.descs+"</td>"
+		content += "</tr></table>"
 			content += "</div>"
 			content += "<div class='cfevent_get'>"
 			content += "获得金钱: "
@@ -77,8 +79,10 @@ Event.prototype.badEvent = function(item){
 		var iname = targetInsure?targetInsure.name:"";
 		var content = ""
 		content += "<div style='cfevent_content'>"
-		content += "<div class='cfplayer_head_bg event'><img src='static/img/event_"+item.itemid+".png'></div>"
-		content += "<div class='cfevent_desc'>"+item.descs+"</div>"
+		content += "<table><tr>"
+		content += "<td><div class='cfplayer_head_bg event'><img src='static/img/event_"+item.itemid+".png'></div></td>"
+		content += "<td style='text-align:center'>"+item.descs+"</td>"
+		content += "</tr></table>"
 		content += "</div>"
 		content += "<div class='cfevent_get'>"
 		content += "损失金钱: "

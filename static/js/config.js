@@ -109,12 +109,12 @@ var Screen_Nav_Height = 88;
 var Scene_Height = 1236 - Screen_Status_Height - Screen_Nav_Height;
 
 var PageSizes = {
-	"640":{SceneWidth:640,SceneHeight:1108,PieWidth:350,
+	"640":{SceneWidth:640,SceneHeight:1008,PieWidth:350,
 	PieHeight:400,PageWidth:"580px",PieFontSize:30,PieFontSize2:23,
 	PageHeight:"637px",PageTop:80,
 	DetailPageTop:100,MsgTop:120,
 	StockView:[540,420,480,280,22]
-	,EventMoney:["40px","420px"]
+	,EventMoney:["70px","410px"]
 	,SigninMoney:["90px","50px","210px"]
 	,QuestMoney:["120px","390px"]
 	},

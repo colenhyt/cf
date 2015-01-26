@@ -299,7 +299,8 @@ top:-120px;
 
 .cfevent_get{
 position:relative;
-left:-100px;
+margin-top:30px;
+left:-50px;
 }
 
 .cfplayer_panel_text{
@@ -464,7 +465,7 @@ height:150px;
   padding: 20px;
   margin: 0 0 15px;
   width:580px;
-color:blue;
+color:rgb(39,88,104);
  background:url('../../static/img/popd_big.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
