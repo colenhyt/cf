@@ -45,10 +45,10 @@ Event.prototype.goodEvent = function(item){
 	var money = itemValue(pp,ITEM_TYPE.CASH);
 			var targetInsure = store.get(g_insure.name)[item.itemid];
 			var iname = targetInsure?targetInsure.name:"";
-			content = "<div style='cfevent_content'>"
+		var	content = "<div style='cfevent_content'>"
 		content += "<table><tr>"
 		content += "<td><div class='cfplayer_head_bg event'><img src='static/img/event_1.png'></div></td>"
-		content += "<td style='text-align:center'>"+item.descs+"</td>"
+		content += "<td><div class='cfevent_desc'>"+item.descs+"</div></td>"
 		content += "</tr></table>"
 			content += "</div>"
 			content += "<div class='cfevent_get'>"
@@ -64,13 +64,16 @@ Event.prototype.badEvent = function(item){
 	var insures = g_player.insure;
 	var pp = cfeval(item.prize);
 	var money = 0-itemValue(pp,ITEM_TYPE.CASH);
-	if (insures[item.itemid]!=null){
-		var desc = "成功避开意外<span style='color:yellow'>"+item.descs;
-		var content = "</span><div>"
-		content += "<img src='static/img/icon_good.png'>"
+	if (insures[item.itemid]){
+		var	content = "<div style='cfevent_content'>"
+		content += "<table><tr>"
+		content += "<td><div class='cfplayer_head_bg event'><img src='static/img/event_1.png'></div></td>"
+		content += "<td><div class='cfevent_desc'>";
+		content += "成功避开意外:<br><span style='color:green'>"+item.descs+"</span></div></td>"
+		content += "</tr></table>"
 		content += "</div>"
 		content += "<div>"
-		content += desc +"<br>"
+		content += "<br>"
 		content += "避免损失金钱:<span style='color:red'>"+money+"</span>"
 		content += "</div>"
 		g_msg.openModal(item.name,content);
@@ -81,7 +84,7 @@ Event.prototype.badEvent = function(item){
 		content += "<div style='cfevent_content'>"
 		content += "<table><tr>"
 		content += "<td><div class='cfplayer_head_bg event'><img src='static/img/event_"+item.itemid+".png'></div></td>"
-		content += "<td style='text-align:center'>"+item.descs+"</td>"
+		content += "<td><div class='cfevent_desc'>"+item.descs+"</div></td>"
 		content += "</tr></table>"
 		content += "</div>"
 		content += "<div class='cfevent_get'>"

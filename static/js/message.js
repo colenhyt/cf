@@ -72,8 +72,11 @@ Msg.prototype.createtip = function(desc)
 Msg.prototype.showload = function(callback,type)
 {
     this.destroyload();
-    
    	this.netmsgWait = NetReqWait;
+    var index = callback.indexOf("findQuotes");
+   	if (index>0){
+   	 	this.netmsgWait = 8000;
+   	}
 	
 	tag = document.createElement("DIV");
 	tag.id = this.loadname;

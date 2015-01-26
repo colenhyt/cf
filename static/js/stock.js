@@ -441,7 +441,6 @@ Stock.prototype.findQuotes = function()
 	var qdatas = store.get(this.quotename);
 	var squotes = qdatas[stockid];
 	if (islocal&&squotes){
-	alert('from local');
 		return squotes;
 	}
 

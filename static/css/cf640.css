@@ -291,10 +291,8 @@ height:140px;
 
 .cfevent_desc{
 position:relative;
-width:200px;
-left:180px;
-height:80px;
-top:-120px;
+margin-left:20px;
+width:280px;
 }
 
 .cfevent_get{
