@@ -114,7 +114,7 @@ var PageSizes = {
 	PageHeight:"637px",PageTop:80,
 	DetailPageTop:100,MsgTop:120,
 	StockView:[540,420,480,280,22]
-	,EventMoney:["120px","390px"]
+	,EventMoney:["40px","420px"]
 	,SigninMoney:["90px","50px","210px"]
 	,QuestMoney:["120px","390px"]
 	},

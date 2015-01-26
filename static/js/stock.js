@@ -362,7 +362,7 @@ Stock.prototype.doBuy = function()
 }
 
 Stock.prototype.requestBuy = function(id,qty,ps) {
- g_msg.showload("g_stock.requestBuy");
+ g_msg.showload("g_stock.requestBuy",true);
  
  if (id){
   g_stock.buyItem = {itemid:id,playerid:g_player.data.playerid,
@@ -399,7 +399,7 @@ Stock.prototype.buyCallback = function(ret){
 	if (!pitems[id])
 		pitems[id] = [];
 	if (qty>0){
-	 pitems[id].push(tgoods);
+	 pitems[id].push(buyitem);
 	}else {
 	 var needRemoveQty = 0 - qty;
 	 for (var i=0;i<pitems[id].length;i++){

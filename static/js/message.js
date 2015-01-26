@@ -69,7 +69,7 @@ Msg.prototype.createtip = function(desc)
 	return tagname;
 }
 
-Msg.prototype.showload = function(callback)
+Msg.prototype.showload = function(callback,type)
 {
     this.destroyload();
 	
@@ -80,8 +80,13 @@ Msg.prototype.showload = function(callback)
 	var content = ""
 content += "<img id='msg_load1' class='cfmsg_loadimg' src='static/img/load_1.png'>"
 content += "<img id='msg_load2' class='cfmsg_loadimg' src='static/img/load_2.png'>"
+if (!type){
 content += "<img id='msg_load3' class='cfmsg_loadimg' src='static/img/load_3.png'>"
 content += "<img id='msg_load4' class='cfmsg_loadimg' src='static/img/load_4.png'>"
+}else{
+content += "<img id='msg_load3' class='cfmsg_loadimg' src='static/img/load_5.png'>"
+content += "<img id='msg_load4' class='cfmsg_loadimg' src='static/img/load_6.png'>"
+}
 content += "<img id='msg_load5' class='cfmsg_loadimg' src='static/img/load_0.png'>"
 content += "<img id='msg_load6' class='cfmsg_loadimg' src='static/img/load_0.png'>"
 content += "<img id='msg_load7' class='cfmsg_loadimg' src='static/img/load_0.png'>"

@@ -144,7 +144,7 @@ Saving.prototype.doBuy = function(id){
 }
 	
 Saving.prototype.requestBuy = function(id,qty,amount){
- g_msg.showload("g_saving.requestBuy");
+ g_msg.showload("g_saving.requestBuy",true);
  
 	 if (id){
 		g_saving.buyItem = {itemid:id,playerid:g_player.data.playerid,

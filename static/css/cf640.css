@@ -276,8 +276,30 @@ vertical-align: bottom;
 margin-left:30px;
 }
 
+.cfplayer_head_bg.event{
+left:30px;
+margin-left:30px;
+}
+
 .cfplayer_head_bg.uplevel{
 margin-left:180px;
+}
+
+.cfevent_content{
+height:140px;
+}
+
+.cfevent_desc{
+position:relative;
+width:200px;
+left:180px;
+height:80px;
+top:-120px;
+}
+
+.cfevent_get{
+position:relative;
+left:-100px;
 }
 
 .cfplayer_panel_text{
@@ -727,7 +749,7 @@ position:absolute;
 display:block; 
 color:red;
 left:300px;
-top:130px;
+top:0px;
 z-index:3000;
 }
 

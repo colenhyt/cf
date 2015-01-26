@@ -265,7 +265,7 @@ Insure.prototype.doBuy = function(id,qty) {
 }
 
 Insure.prototype.requestBuy = function(id,qty,amount) {
- g_msg.showload("g_insure.requestBuy");
+ g_msg.showload("g_insure.requestBuy",true);
  
  if (id){
  var item = store.get(g_insure.name)[id];

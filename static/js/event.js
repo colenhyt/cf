@@ -26,7 +26,8 @@ Event.prototype.triggerEvent = function(){
 
 	if (item.type==1){
 		this.badEvent(item);
-	}else {
+	}else 
+	{
 		this.goodEvent(item);
 	}
 }
@@ -44,11 +45,11 @@ Event.prototype.goodEvent = function(item){
 	var money = itemValue(pp,ITEM_TYPE.CASH);
 			var targetInsure = store.get(g_insure.name)[item.itemid];
 			var iname = targetInsure?targetInsure.name:"";
-			content = "<div>"
-			content += "<img src='static/img/icon_good.png'>"
+			content = "<div style='cfevent_content'>"
+			content += "<div class='cfplayer_head_bg event'><img src='static/img/event_1.png'></div>"
+			content += "<div class='cfevent_desc'>"+item.descs+"</div>"
 			content += "</div>"
-			content += "<div>"
-			content += item.descs+"<br>"
+			content += "<div class='cfevent_get'>"
 			content += "获得金钱: "
 			content += "<span id='cfevent_prize' class='cfevent_prize'>"+ money+"</span>"
 			content += "</div>"
@@ -74,16 +75,16 @@ Event.prototype.badEvent = function(item){
 	}else{
 		var targetInsure = store.get(g_insure.name)[item.itemid];
 		var iname = targetInsure?targetInsure.name:"";
-		var content = "<div>"
-		content += "<img src='static/img/icon_bad.png'>"
+		var content = ""
+		content += "<div style='cfevent_content'>"
+		content += "<div class='cfplayer_head_bg event'><img src='static/img/event_"+item.itemid+".png'></div>"
+		content += "<div class='cfevent_desc'>"+item.descs+"</div>"
 		content += "</div>"
-		content += "<div>"
-		content += item.descs +"<br>"
+		content += "<div class='cfevent_get'>"
 		content += "损失金钱: "
 		content += "<span id='cfevent_prize' class='cfevent_prize'>"+ money+"</span>"
-		content += "<br>"
-		content += "(你可购买<span style='color:red'>"+iname+"</span>来避免该意外)"
 		content += "</div>"
+		content += "(你可购买<span style='color:red'>"+iname+"</span>来避免该意外)"
 		g_msg.openModal(item.name,content,"g_event.eventOkCallback",item.itemid);
 	}
 

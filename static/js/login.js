@@ -258,6 +258,8 @@ Login.prototype.loginCallback = function(obj){
 	}else {
 		g_game.onEnter();
 	}
+	
+	g_event.triggerEvent();
 }
 
 Login.prototype.login = function(){
