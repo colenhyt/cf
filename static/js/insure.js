@@ -137,8 +137,7 @@ Insure.prototype.clickDetail = function(id,type){
 Insure.prototype.showDetail = function(title,desc,okCallback,itemid,qty,confmText){
 	var content =      "        <div class='cfinsure_content'>"
 	content += "<div class='cfmsg_h2'>"+title+"</div>"
-	content += "<img src='static/img/pop_line.png'>"
-	content += "            <div class='cfmsg_text insure'>"+desc+"</div>"
+	content += "<br><div class='cfmsg_text insure'>"+desc+"</div>"
 	content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>"
 	if (confmText)
 	content += "          <button class='cf_bt' onclick='"+okCallback+"("+itemid+","+qty+")'>"+confmText+"</button>"
@@ -168,6 +167,7 @@ Insure.prototype.show_insuredetail = function(id){
 	content += "              </tr>"
 	content += "          </table>     "
 	content += "           </div>  "
+	content += "<img src='static/img/pop_line.png'>"
 	content += "<br> "
 	 content += "<div>  "
 	 content += "<table class='cfinsure_tabl2'>"
@@ -176,7 +176,7 @@ Insure.prototype.show_insuredetail = function(id){
 	content += "</table>"
 	if (pitem.qty>0){
 	     var timeout = calculateTimeout(pitem,item);
-      	content += "(已购买该保险,  还有<span style='color:red'>"+timeout+"</span>天到期)";
+      	content += "<br>(已购买该保险,  还有<span style='color:red'>"+timeout+"</span>天到期)";
  	}
 	content += "           </div>  "
 
@@ -194,30 +194,35 @@ Insure.prototype.show_finandetail = function(id){
         
 	var pitem = g_player.getInsureItem(id);
 
+	var per = "100%"
+	if (item.descs.length>35){
+	 per = "80%"
+	}
 	 var content = "            <div>"
 	 content += "        <table class='cfinsure_tabl'>"
 	 content += "             <tr>"
 	 content += "               <td width='30%' ><div class='cfplayer_head_bg insure'><img src='static/img/insure_"+id+".png' class='cfinsure_img'></div></td>"
-	 content += "               <td>"+item.descs+" </td>"
+	 content += "               <td><span style='font-size:"+per+"'>"+item.descs+"</span></td>"
 	content += "              </tr>"
 	content += "          </table>     "
 	content += "           </div>  "
+	content += "<img src='static/img/pop_line.png'>"
  content += "           <div class='cfinsure_finan'>  "
  content += "<table class='cfinsure_tabl2'>"
  content += "<tr><td>价格: ￥"+item.price+"</td></tr>"
  content += "<tr><td>收益: ￥"+item.profit+"/份</td></tr>"
- content += "<tr><td>周期 "+item.period+"天</td></tr>"
+ content += "<tr><td>周期: "+item.period+"天</td></tr>"
 content += "</table>     "
  	if (pitem.qty>0){
 	     var timeout = calculateTimeout(pitem,item);
-      	content += "已购买  <span style='color:red'>"+pitem.qty+"</span>份, 还有<span style='color:red'>"+timeout+"</span>天到期";
+      	content += "<br>已购买  <span style='color:red'>"+pitem.qty+"</span>份, 还有<span style='color:red'>"+timeout+"</span>天到期";
  	}
  	if (pitem.qty<=0){
  content += "        <table class='cfinsure_tabl'>"
 	 content += "             <tr>"
-	 content += "               <td><input type='button' class='cf_count' onclick='g_insure.countBuy(-1)'></td>"
+	 content += "               <td><input type='button' class='cf_count insure' onclick='g_insure.countBuy(-1)'></td>"
 	 content += "               <td><input type='text' id='finan_count' value='1' class='cfinsure_finalcount'></td>"
-	 content += "              <td> <input type='button' class='cf_count add' onclick='g_insure.countBuy(1)'></td>"
+	 content += "              <td> <input type='button' class='cf_count add insure' onclick='g_insure.countBuy(1)'></td>"
 	content += "              </tr>"
 content += "          </table>     "
 }

@@ -45,7 +45,7 @@ public class DataImportor extends Base{
 	public void importData(String dataName)
 	{
 		try {
-			String strClassName = "cn.hd.cf.service."+dataName.substring(0,1).toUpperCase()+dataName.substring(1,dataName.length());
+			String strClassName = "cn.hd.cf.tools."+dataName.substring(0,1).toUpperCase()+dataName.substring(1,dataName.length());
 			strClassName += "Service";
 			Object serviceOjb = Class.forName(strClassName).newInstance();
 			Method serviceMethod=serviceOjb.getClass().getMethod("findActive",null) ;
@@ -483,13 +483,13 @@ public class DataImportor extends Base{
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		DataImportor importor = new DataImportor("cfdata.xlsx");
-		String name = "titledata";
-		//importor.importData(name);
-//		importor.outputMapJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);
-
-		name = "questdata";
+		String name = "initdata";
 		importor.importData(name);
-		importor.outputJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);
+		importor.outputMapJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);
+
+//		name = "questdata";
+//		importor.importData(name);
+//		importor.outputJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);
 		
 		name = "eventdata";
 	//	importor.importData(name);

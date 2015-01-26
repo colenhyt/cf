@@ -38,7 +38,9 @@ Datamgr.prototype = {
         
         var pagedetail = new PageUtil(this.tagdetailname);
         var psubclass = "";
-        if (this.name=="event"||this.name=="saving")
+        if (this.name=="saving")
+           psubclass = "small saving"
+        else if (this.name=="event")
         	psubclass = "small";
         else
         	psubclass = this.name;

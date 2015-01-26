@@ -321,8 +321,8 @@ Stock.prototype.countBuy = function(stockid,count,price)
 Stock.prototype.doBuy = function()
 {
 	if (!this.isStockOpen()){
-		g_msg.tip("现在休市，不能交易");
-		return;
+		//g_msg.tip("现在休市，不能交易");
+		//return;
 	}	
 	if (this.waitCount==null||this.waitCount==0){
 		g_msg.tip("请买入或者卖出");
@@ -416,7 +416,7 @@ Stock.prototype.buyCallback = function(ret){
 	cash -= amount;
 	var pupdate = {"cash":cash};
 	g_player.updateData(pupdate);
-	g_quest.onBuyItem(this.name,item,1);
+	g_quest.onBuyItem(this.name,item,qty);
 				   
 	//tip:
 	if (qty>0)
@@ -431,8 +431,6 @@ Stock.prototype.buyCallback = function(ret){
 
 Stock.prototype.findQuotes = function()
 {
-	g_msg.showload("g_stock.findQuotes");
-	
 	var stockid = g_stock.currShowStockId;
 	if (!stockid) return;
 
@@ -443,6 +441,8 @@ Stock.prototype.findQuotes = function()
 	if (islocal&&squotes){
 		return squotes;
 	}
+	
+	g_msg.showload("g_stock.findQuotes");
 
 	try  {
 		$.ajax({type:"post",url:"/cf/stock_quotes.do",data:"stock.id="+stockid,success:function(dataobj){

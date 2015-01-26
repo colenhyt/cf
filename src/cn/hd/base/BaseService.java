@@ -30,8 +30,8 @@ public class BaseService extends Base{
 	 */
 	protected  void initMapper(String...objs){
 		//jedis = DataManager.getInstance().jedis;
-		redisClient = new RedisClient();
-		jedis = redisClient.jedis;		
+//		redisClient = new RedisClient();
+//		jedis = redisClient.jedis;		
 		try {
 			for(String obj:objs){
 				if(obj!=null && obj.trim().length()>0){

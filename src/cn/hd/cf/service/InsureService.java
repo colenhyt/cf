@@ -30,36 +30,37 @@ public class InsureService extends BaseService {
 	public InsureService()
 	{
 		initMapper("insureMapper");
-		initData();
+		//initData();
 	}
 	
 	public List<Insure> findByPlayerId(int playerId)
 	{
 		List<Insure> insures = new ArrayList<Insure>();
-		String key = playerId+ITEM_KEY;
-		Map<String,String> mapJsons = jedis.hgetAll(key);
-		Collection<String> l = mapJsons.values();
-		for (Iterator<String> iter = l.iterator(); iter.hasNext();) {
-			  String str = (String)iter.next();
-			  System.out.println(str);
-			  insures.add((Insure)Bean.toBean(str,Insure.class));
-		}
-		jedis.close();
+//		String key = playerId+ITEM_KEY;
+//		Map<String,String> mapJsons = jedis.hgetAll(key);
+//		Collection<String> l = mapJsons.values();
+//		for (Iterator<String> iter = l.iterator(); iter.hasNext();) {
+//			  String str = (String)iter.next();
+//			  System.out.println(str);
+//			  insures.add((Insure)Bean.toBean(str,Insure.class));
+//		}
+//		jedis.close();
+		
 		System.out.println("哈哈"+insures.size());
 
-//		InsureExample example = new InsureExample();
-//		Criteria criteria = example.createCriteria();
-//		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
-//		insures = insureMapper.selectByExample(example);
+		InsureExample example = new InsureExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
+		insures = insureMapper.selectByExample(example);
 		
 		return insures;
 	}
 	
 	public boolean add(Insure record)
 	{
-		String key = record.getPlayerid()+ITEM_KEY;
-		jedis.hset(key, record.getItemid().toString(), record.toString());
-		jedis.close();
+//		String key = record.getPlayerid()+ITEM_KEY;
+//		jedis.hset(key, record.getItemid().toString(), record.toString());
+//		jedis.close();
 		System.out.println("增加记录:"+record.toString());
 		
 		try {
@@ -74,9 +75,9 @@ public class InsureService extends BaseService {
 	
 	public boolean delete(Insure record)
 	{
-		String key = record.getPlayerid()+ITEM_KEY;
-		jedis.hdel(key, record.getItemid().toString());
-		jedis.close();
+//		String key = record.getPlayerid()+ITEM_KEY;
+//		jedis.hdel(key, record.getItemid().toString());
+//		jedis.close();
 		System.out.println("删除记录:"+record.toString());
 		
 		try {

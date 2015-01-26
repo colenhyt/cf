@@ -256,11 +256,15 @@ color:red;
 }
 
 .cfsaving_content {
-text-align:left;line-height:60px
+text-align:left;
+line-height:60px
 }
 
 .cfsaving_qty {
-width:160px;text-align:center;height:58px;font-size:30px
+width:220px;
+text-align:center;
+height:58px;
+font-size:30px
 }
 
 .cfplayer_head_bg{
@@ -280,6 +284,11 @@ margin-left:30px;
 left:30px;
 margin-left:30px;
 }
+
+.cfplayer_head_bg.event.bad{
+  background:url('../../static/img/player_head_bg2.png') no-repeat;
+}
+
 
 .cfplayer_head_bg.uplevel{
 margin-left:180px;
@@ -414,7 +423,7 @@ height:260px;
 }
 
 .cfmsg_text.insure{
-height:360px;
+height:410px;
 }
 
 .cfmsg_text.uplevel{
@@ -471,12 +480,19 @@ color:rgb(39,88,104);
 
 .cfpagedetail.stock
 {
+  position: relative;
+  padding: 20px;
+  margin: 0 0 15px;
+  background:url('../../static/img/popd_big2.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;    
+  width:580px;
   height:940px;
 }
 
 .cfpagedetail.insure
 {
-  height:550px;
+  height:600px;
 }
 
 .cfhelp_clickon{
@@ -485,14 +501,16 @@ height:170px;
 }
 
 .cfinsure_tabl{
+margin-left:10px;
 width:500px;
 align:center;
 }
 
 .cfinsure_tabl2{
 width:300px;
-margin-left:100px;
+margin-left:180px;
 border:2px;
+text-align:left;
 }
 
 .cfinsure_img{
@@ -560,11 +578,20 @@ height:200px;
 {
 margin-left:30px;
 margin-top:30px;
-width:516px;
+width:520px;
 height:457px;
  background:url('../../static/img/popd_small.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
+}
+
+.cfpagedetail.small.saving
+{
+ background:url('../../static/img/popd_small2.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+width:516px;
+height:457px;
 }
 
 .cfpagedetail.uplevel
@@ -621,6 +648,7 @@ background:url('../../static/img/prop_bg5.png') no-repeat;
 }
 .cfmsg_h2 {
 margin-top:-5px;
+color:#ffffff;
 }
 
 .cf_line {
@@ -772,18 +800,25 @@ background:url('../../static/img/zan.png') no-repeat;
 .cf_count {
 width:80px;
 height:58px;
-margin-top:9px;
+margin-top:0px;
 border:none;
 background:url('../../static/img/bt_minus.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
 }
 
+.cf_count.insure{
+margin-top:0px;
+}
 
 .cf_count.add {
 background:url('../../static/img/bt_add.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;  
+}
+
+.cf_count.add.insure {
+margin-top:0px;
 }
 
 .cf_title_close{

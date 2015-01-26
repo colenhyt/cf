@@ -28,7 +28,7 @@ public class SavingService extends BaseService {
 	public SavingService()
 	{
 		initMapper("savingMapper");
-		initData();
+		//initData();
 	}
 	
 	public void initData(){
@@ -49,36 +49,48 @@ public class SavingService extends BaseService {
 	public List<Saving> findByPlayerId(int playerId)
 	{
 		List<Saving> savings = new ArrayList<Saving>();
-		String key = playerId+ITEM_KEY;
-		Map<String,String> mapJsons = jedis.hgetAll(key);
-		Collection<String> l = mapJsons.values();
-		for (Iterator<String> iter = l.iterator(); iter.hasNext();) {
-			  String str = (String)iter.next();
-			  System.out.println(str);
-			  savings.add((Saving)Bean.toBean(str,Saving.class));
-		}
-		jedis.close();
+//		String key = playerId+ITEM_KEY;
+//		Map<String,String> mapJsons = jedis.hgetAll(key);
+//		Collection<String> l = mapJsons.values();
+//		for (Iterator<String> iter = l.iterator(); iter.hasNext();) {
+//			  String str = (String)iter.next();
+//			  System.out.println(str);
+//			  savings.add((Saving)Bean.toBean(str,Saving.class));
+//		}
+//		jedis.close();
 		
-//		SavingExample example = new SavingExample();
-//		Criteria criteria = example.createCriteria();
-//		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
-//		savings = savingMapper.selectByExample(example);
+		SavingExample example = new SavingExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
+		savings = savingMapper.selectByExample(example);
 		
 		return savings;
 	}
 	
 	public Saving findLivingSavingByPlayerId(int playerId)
 	{
-		String key = playerId+ITEM_KEY;
-		String strJson = jedis.hget(key, new Integer(1).toString());
-		return (Saving)Bean.toBean(strJson, Saving.class);
+//		String key = playerId+ITEM_KEY;
+//		String strJson = jedis.hget(key, new Integer(1).toString());
+//		return (Saving)Bean.toBean(strJson, Saving.class);
+		
+		List<Saving> savings = new ArrayList<Saving>();
+		SavingExample example = new SavingExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andPlayeridEqualTo(playerId);
+		criteria.andItemidEqualTo(1);
+		
+		savings = savingMapper.selectByExample(example);
+		if (savings.size()>0)
+			return savings.get(0);
+		
+		return null;
 	}
 	
 	public boolean add(Saving record)
 	{
-		String key = record.getPlayerid()+ITEM_KEY;
-		jedis.hset(key, record.getItemid().toString(), record.toString());
-		jedis.close();
+//		String key = record.getPlayerid()+ITEM_KEY;
+//		jedis.hset(key, record.getItemid().toString(), record.toString());
+//		jedis.close();
 		//System.out.println("增加存款记录:"+record.toString());
 		
 		try {
@@ -93,9 +105,9 @@ public class SavingService extends BaseService {
 	
 	public boolean remove(Saving record)
 	{
-		String key = record.getPlayerid()+ITEM_KEY;
-		jedis.hdel(key, record.getItemid().toString());
-		jedis.close();
+//		String key = record.getPlayerid()+ITEM_KEY;
+//		jedis.hdel(key, record.getItemid().toString());
+//		jedis.close();
 		//System.out.println("删除saving记录:"+record.toString());
 		
 		try {
@@ -114,9 +126,9 @@ public class SavingService extends BaseService {
 	
 	public boolean updateLive(Saving record)
 	{
-		String key = record.getPlayerid()+ITEM_KEY;
-		jedis.hset(key, new Integer(1).toString(), record.toString());		
-		jedis.close();
+//		String key = record.getPlayerid()+ITEM_KEY;
+//		jedis.hset(key, new Integer(1).toString(), record.toString());		
+//		jedis.close();
 		
 		try {
 			SavingExample example = new SavingExample();

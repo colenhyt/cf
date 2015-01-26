@@ -29,7 +29,7 @@ public class StockService extends BaseService {
 	public StockService()
 	{
 		initMapper("stockMapper");
-		initData();
+		//initData();
 	}
 	
 	public List<Stock> findByPlayerId(int playerId)
@@ -43,40 +43,41 @@ public class StockService extends BaseService {
 	public Map<Integer,List<Stock>> findMapByPlayerId(int playerId)
 	{
 		Map<Integer,List<Stock>> smap = new HashMap<Integer,List<Stock>>();
-		String key = playerId+ITEM_KEY;
-		Collection<String> l = jedis.hgetAll(key).values();
-		for (Iterator<String> iter = l.iterator(); iter.hasNext();) {
-			  String str = (String)iter.next();
-			Stock stock =(Stock)Bean.toBean(str, Stock.class);
-			List<Stock> list = smap.get(stock.getItemid());
-			if (list==null){
-				list = new ArrayList<Stock>();
-				smap.put(stock.getItemid(), list);
-			}
-			list.add(stock);
-		}		
-		jedis.close();
-//		StockExample example = new StockExample();
-//		Criteria criteria = example.createCriteria();
-//		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
-//		List<Stock> ss = stockMapper.selectByExample(example);
-//		for (int i=0;i<ss.size();i++){
-//			List<Stock> list = smap.get(ss.get(i).getItemid());
+//		String key = playerId+ITEM_KEY;
+//		Collection<String> l = jedis.hgetAll(key).values();
+//		for (Iterator<String> iter = l.iterator(); iter.hasNext();) {
+//			  String str = (String)iter.next();
+//			Stock stock =(Stock)Bean.toBean(str, Stock.class);
+//			List<Stock> list = smap.get(stock.getItemid());
 //			if (list==null){
 //				list = new ArrayList<Stock>();
-//				smap.put(ss.get(i).getItemid(), list);
+//				smap.put(stock.getItemid(), list);
 //			}
-//			list.add(ss.get(i));
-//		}
+//			list.add(stock);
+//		}		
+//		jedis.close();
+		
+		StockExample example = new StockExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
+		List<Stock> ss = stockMapper.selectByExample(example);
+		for (int i=0;i<ss.size();i++){
+			List<Stock> list = smap.get(ss.get(i).getItemid());
+			if (list==null){
+				list = new ArrayList<Stock>();
+				smap.put(ss.get(i).getItemid(), list);
+			}
+			list.add(ss.get(i));
+		}
 		
 		return smap;
 	}	
 	
 	public boolean remove(Stock record)
 	{
-		String key = record.getPlayerid()+ITEM_KEY;
-		jedis.hdel(key, record.getItemid().toString());
-		jedis.close();
+//		String key = record.getPlayerid()+ITEM_KEY;
+//		jedis.hdel(key, record.getItemid().toString());
+//		jedis.close();
 		System.out.println("删除stock记录:"+record.toString());
 		
 		try {
@@ -122,9 +123,9 @@ public class StockService extends BaseService {
 	
 	public boolean add(Stock record)
 	{
-		String key = record.getPlayerid()+ITEM_KEY;
-		jedis.hset(key, record.getItemid().toString(), record.toString());
-		jedis.close();
+//		String key = record.getPlayerid()+ITEM_KEY;
+//		jedis.hset(key, record.getItemid().toString(), record.toString());
+//		jedis.close();
 		System.out.println("增加stock记录:"+record.toString());
 		
 		try {
@@ -139,9 +140,9 @@ public class StockService extends BaseService {
 	
 	public boolean update(Stock record)
 	{
-		String key = record.getPlayerid()+ITEM_KEY;
-		jedis.hset(key, record.getItemid().toString(), record.toString());
-		jedis.close();
+//		String key = record.getPlayerid()+ITEM_KEY;
+//		jedis.hset(key, record.getItemid().toString(), record.toString());
+//		jedis.close();
 		
 		try {
 			stockMapper.updateByPrimaryKeySelective(record);

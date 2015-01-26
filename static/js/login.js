@@ -259,7 +259,7 @@ Login.prototype.loginCallback = function(obj){
 		g_game.onEnter();
 	}
 	
-	g_event.triggerEvent();
+	//g_event.triggerEvent();
 }
 
 Login.prototype.login = function(){

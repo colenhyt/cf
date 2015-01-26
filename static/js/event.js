@@ -83,7 +83,7 @@ Event.prototype.badEvent = function(item){
 		var content = ""
 		content += "<div style='cfevent_content'>"
 		content += "<table><tr>"
-		content += "<td><div class='cfplayer_head_bg event'><img src='static/img/event_"+item.itemid+".png'></div></td>"
+		content += "<td><div class='cfplayer_head_bg event bad'><img src='static/img/event_"+item.itemid+".png'></div></td>"
 		content += "<td><div class='cfevent_desc'>"+item.descs+"</div></td>"
 		content += "</tr></table>"
 		content += "</div>"

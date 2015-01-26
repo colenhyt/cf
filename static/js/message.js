@@ -121,7 +121,7 @@ Msg.prototype.openModal = function(title,desc,okCallback,param)
 {
 	var content =      "        <div style='margin: auto;text-align:center;'>"
 	content += "<div class='cfmsg_h2'>"+title+"</div>"
-	content += "<img src='static/img/pop_line.png'>"
+	content += "<br>"
 	content += "            <div class='cfmsg_text'>"+desc+"</div>"
 	if (okCallback==null){
 		content += "          <button class='cf_bt' data-dismiss='modal'>确认</button>"	
@@ -181,7 +181,7 @@ Msg.prototype.openNetMsg = function(reqCallback)
 	var content =      "        <div style='margin: auto;text-align:center;'>"
 	var	confmText = "重试";
 	content += "<div class='cfmsg_h2'>提示</div>"
-	content += "<img src='static/img/pop_line.png'>"
+	content += "<br>"
 	content += "            <div class='cfmsg_text'>"+desc+"</div>"
 	content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>"
 	content += "          <button class='cf_bt' onclick='g_msg.requestAgain("+reqCallback+")'>"+confmText+"</button>"

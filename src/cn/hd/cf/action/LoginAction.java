@@ -186,7 +186,7 @@ public class LoginAction extends SavingAction {
 	        c2.setTime(insure.getUpdatetime());
 			float diffdd = super.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
 			float periodMinutes = insure.getPeriod()*60*60*24; //天:分钟
-			periodMinutes = 5;
+//			periodMinutes = 5;
 			//到期:
 			if ((diffdd-periodMinutes)>0.001)
 			{
@@ -239,9 +239,9 @@ public class LoginAction extends SavingAction {
 	        c2.setTime(saving.getUpdatetime());
 	        float diffdd = super.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
 	        float periodMinutes = saving.getPeriod()*60*60*24;//天:分钟
-	        periodMinutes = 5;
+//	        periodMinutes = 5;
 			//log.debug("利息到期时间:"+diffdd+","+periodMinutes);
-			//if ((diffdd-periodMinutes)>0.001)
+			if ((diffdd-periodMinutes)>0.001)
 			{
 				liveUpdate = true;
 				//活期
