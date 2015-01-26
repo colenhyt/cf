@@ -56,10 +56,11 @@ public class StockAction extends SavingAction {
 	}
 	
 	public String quotes(){
+		System.out.println("request quotes");
 		LinkedList<Quote> lquotes = StockManager.getInstance().getQuotes(stock.getId());
 		JSONArray jsonObject = JSONArray.fromObject(lquotes);
 		write(jsonObject.toString(),"utf-8");		
-		System.out.println(stock.getId()+" found stocks quote:"+jsonObject.toString().length());
+		log.debug(stock.getId()+" found stocks quote:"+jsonObject.toString().length());
 		return null;
 	}
 	

@@ -6,7 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import cn.hd.util.MybatisSessionFactory;
-
+import org.apache.log4j.Logger;  
 
 
 /**
@@ -15,7 +15,8 @@ import cn.hd.util.MybatisSessionFactory;
  * 2011-6-14
  */
 public class Base {
-
+	protected Logger  log = Logger.getLogger(getClass()); 
+	
 	/**
 	 * 初始化指定变量
 	 * @param objs 需要初始化变量列表

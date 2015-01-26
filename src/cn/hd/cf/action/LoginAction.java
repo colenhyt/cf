@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONObject;
+
 import cn.hd.cf.model.Init;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Message;
@@ -16,12 +17,10 @@ import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Signindata;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Toplist;
-import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.tools.InitdataService;
 import cn.hd.cf.tools.InsuredataService;
 import cn.hd.cf.tools.SavingdataService;
 import cn.hd.cf.tools.SignindataService;
-import cn.hd.mgr.DataManager;
 import cn.hd.mgr.EventManager;
 import cn.hd.mgr.PlayerManager;
 import cn.hd.mgr.StockManager;
@@ -87,7 +86,7 @@ public class LoginAction extends SavingAction {
 		boolean bExist = playerService.have(player.getPlayername());
 		if (bExist)
 		{
-			System.out.println("account exist :name:"+player.getPlayername());
+			log.debug("account exist :name:"+player.getPlayername());
 			Message msg = new Message();
 			msg.setCode(RetMsg.MSG_PlayerNameIsExist);		//重名
 			JSONObject obj = JSONObject.fromObject(msg);
@@ -134,7 +133,7 @@ public class LoginAction extends SavingAction {
 		}
 		
 		JSONObject obj = JSONObject.fromObject(playerBlob);
-		System.out.println("register player: "+obj.toString());
+		log.debug("register player: "+obj.toString());
 		write(obj.toString(),"utf-8");
 		return null;
 	}
@@ -151,7 +150,7 @@ public class LoginAction extends SavingAction {
 		float fMm = 0;
 		if (toplist!=null){
 			fMm = toplist.getMoney().floatValue();
-			System.out.println("取得排行榜金钱:"+fMm);
+			log.debug("取得排行榜金钱:"+fMm);
 			playerBlob.setZan(toplist.getZan());
 		}
 		int top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),0,fMm);
@@ -241,7 +240,7 @@ public class LoginAction extends SavingAction {
 	        float diffdd = super.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
 	        float periodMinutes = saving.getPeriod()*60*60*24;//天:分钟
 	        periodMinutes = 5;
-			//System.out.println("利息到期时间:"+diffdd+","+periodMinutes);
+			//log.debug("利息到期时间:"+diffdd+","+periodMinutes);
 			//if ((diffdd-periodMinutes)>0.001)
 			{
 				liveUpdate = true;
@@ -263,7 +262,7 @@ public class LoginAction extends SavingAction {
 							ll.setAmount(liveSaving.getAmount());
 					}
 				}
-				System.out.println(saving.getItemid()+"存款到期, 得到利息: "+inter);
+				log.debug(saving.getItemid()+"存款到期, 得到利息: "+inter);
 			}
 			
 			Saving usaving = new Saving();
@@ -290,7 +289,7 @@ public class LoginAction extends SavingAction {
 		PlayerWithBLOBs playerBlob = playerService.find(player.getPlayerid(),player.getPwd());
 		if (playerBlob==null)
 		{
-			System.out.println("no player found:playerid:"+player.getPwd());
+			log.debug("no player found:playerid:"+player.getPwd());
 			return null;
 		}
 	
@@ -303,7 +302,7 @@ public class LoginAction extends SavingAction {
 			
 		write(pdata,"utf-8");
 		
-		System.out.println("player("+pdata+") login success");
+		log.debug("player("+pdata+") login success");
 		return null;
 	}
 	
@@ -312,12 +311,12 @@ public class LoginAction extends SavingAction {
 		PlayerWithBLOBs playerBlob = playerService.findByPlayerId(player.getPlayerid());
 		if (playerBlob==null)
 		{
-			System.out.println("no player found:playerid:"+player.getPlayerid());
+			log.debug("no player found:playerid:"+player.getPlayerid());
 			return null;
 		}
 		String pdata = getPlayerJsonData(playerBlob);
 		write(pdata,"utf-8");
-		System.out.println("player("+pdata+") found");
+		log.debug("player("+pdata+") found");
 		return null;
 	}
 	
@@ -328,12 +327,12 @@ public class LoginAction extends SavingAction {
 		PlayerWithBLOBs playerBlob = (PlayerWithBLOBs)JSONObject.toBean(ppObj,PlayerWithBLOBs.class);
 		if (playerBlob==null)
 		{
-			System.out.println("no player found:playerid:"+player.getPlayerid());
+			log.debug("no player found:playerid:"+player.getPlayerid());
 			return null;
 		}
 		boolean ret = playerService.updateByKey(playerBlob);
 		
-		System.out.println("update player("+ppObj.toString()+"):ret: "+ret);
+		log.debug("update player("+ppObj.toString()+"):ret: "+ret);
 		writeMsg(RetMsg.MSG_OK);
 		return null;
 	}
