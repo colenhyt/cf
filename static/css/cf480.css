@@ -10,7 +10,7 @@ body{color:rgb(255, 255, 255);font-size:27px;}
 
 .cfinfo_exp_img{background:url('../../static/img/icon_exp.png') no-repeat;height:36px;width:167px;}
 
-.divcar1{height:26px;width:39px;}
+.divcar1{border:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:26px;width:39px;}
 
 .divcar2{height:30px;width:33px;}
 
@@ -140,7 +140,7 @@ td{font-size:21px;font-weight:bold;}
 
 .cfpanel_text.right{float:right;position:relative;}
 
-.cfmsg_text{font-size:21px;height:195px;position:relative;text-align:center;}
+.cfmsg_text{font-size:21px;height:206px;position:relative;text-align:center;}
 
 .cfmsg_text.insure{height:307px;}
 
@@ -186,7 +186,7 @@ td{font-size:21px;font-weight:bold;}
 
 .cfstock_content{height:150px;}
 
-.cfpagedetail.small{background:url('../../static/img/popd_small.png') no-repeat;background-size:100%;height:342px;margin-left:22px;margin-top:22px;width:390px;}
+.cfpagedetail.small{background:url('../../static/img/popd_small.png') no-repeat;background-size:100%;height:357px;margin-left:22px;margin-top:22px;width:390px;}
 
 .cfpagedetail.small.saving{background:url('../../static/img/popd_small2.png') no-repeat;background-size:100%;height:342px;width:387px;}
 
