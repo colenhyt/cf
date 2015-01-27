@@ -94,7 +94,9 @@ td{font-size:21px;font-weight:bold;}
 
 .cfplayer_head_bg.event{left:22px;margin-left:22px;}
 
-.cfplayer_head_bg.event.bad{background:url('../../static/img/player_head_bg2.png') no-repeat;}
+.cfplayer_head_bg.event.bad{background:url('../../static/img/player_head_bg2.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  }
 
 .cfplayer_head_bg.uplevel{margin-left:135px;}
 
