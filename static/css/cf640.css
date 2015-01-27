@@ -507,6 +507,37 @@ color:rgb(39,88,104);
   height:940px;
 }
 
+.cfpagedetail.small
+{
+margin-left:30px;
+margin-top:30px;
+width:520px;
+height:477px;
+ background:url('../../static/img/popd_small.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
+
+.cfpagedetail.small.saving
+{
+ background:url('../../static/img/popd_small2.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+width:516px;
+height:457px;
+}
+
+.cfpagedetail.uplevel
+{
+margin-top:-300px;
+margin-left:65px;
+width:516px;
+height:457px;
+ background:url('../../static/img/popd_small.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
+
 .cfpagedetail.insure
 {
   height:600px;
@@ -595,37 +626,6 @@ text-align:center;
 
 .cfstock_content {
 height:200px;
-}
-
-.cfpagedetail.small
-{
-margin-left:30px;
-margin-top:30px;
-width:520px;
-height:477px;
- background:url('../../static/img/popd_small.png') no-repeat;
--moz-background-size:100% 100%;  
-    background-size:100% 100%;  
-}
-
-.cfpagedetail.small.saving
-{
- background:url('../../static/img/popd_small2.png') no-repeat;
--moz-background-size:100% 100%;  
-    background-size:100% 100%;  
-width:516px;
-height:457px;
-}
-
-.cfpagedetail.uplevel
-{
-margin-top:-300px;
-margin-left:65px;
-width:516px;
-height:457px;
- background:url('../../static/img/popd_small.png') no-repeat;
--moz-background-size:100% 100%;  
-    background-size:100% 100%;  
 }
 
 .cpgapedetail_h2 {
@@ -1025,6 +1025,10 @@ left:0px;
 top:0px;
 width:40px;
 height:40px;
+}
+
+.cfmsg_loadimg.pp{
+width:16px;
 }
 
 .td_right {
