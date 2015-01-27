@@ -154,9 +154,25 @@ td{font-size:21px;font-weight:bold;}
 
 .cfpanel_body{height:390px;}
 
-.cfpagedetail{background:url('../../static/img/popd_big.png') no-repeat;background-size:100%;color:rgb(39, 88, 104);margin:0px;margin-bottom:11px;margin-left:0px;margin-right:0px;margin-top:0px;padding:15px;padding-bottom:15px;padding-left:15px;padding-right:15px;padding-top:15px;position:relative;width:435px;}
+.cfpagedetail{background:url('../../static/img/popd_big.png') no-repeat;background-size:100%;color:rgb(39, 88, 104);margin:0px;margin-bottom:11px;margin-left:0px;margin-right:0px;margin-top:0px;padding:15px;padding-bottom:15px;padding-left:15px;padding-right:15px;padding-top:15px;position:relative;width:435px;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  }
 
-.cfpagedetail.stock{background:url('../../static/img/popd_big2.png') no-repeat;background-size:100%;height:705px;margin:0px;margin-bottom:11px;margin-left:0px;margin-right:0px;margin-top:0px;padding:15px;padding-bottom:15px;padding-left:15px;padding-right:15px;padding-top:15px;position:relative;width:435px;}
+.cfpagedetail.stock{background:url('../../static/img/popd_big2.png') no-repeat;background-size:100%;height:705px;margin:0px;margin-bottom:11px;margin-left:0px;margin-right:0px;margin-top:0px;padding:15px;padding-bottom:15px;padding-left:15px;padding-right:15px;padding-top:15px;position:relative;width:435px;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  }
+
+.cfpagedetail.small{background:url('../../static/img/popd_small.png') no-repeat;background-size:100%;height:357px;margin-left:22px;margin-top:22px;width:390px;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  }
+
+.cfpagedetail.small.saving{background:url('../../static/img/popd_small2.png') no-repeat;background-size:100%;height:342px;width:387px;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  }
+
+.cfpagedetail.uplevel{background:url('../../static/img/popd_small.png') no-repeat;background-size:100%;height:342px;margin-left:48px;margin-top:-225px;width:387px;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  }
 
 .cfpagedetail.insure{height:450px;}
 
@@ -185,12 +201,6 @@ td{font-size:21px;font-weight:bold;}
 .cfstock_qtime{background:yellow;background-color:yellow;font-size:15px;height:22px;position:relative;text-align:center;}
 
 .cfstock_content{height:150px;}
-
-.cfpagedetail.small{background:url('../../static/img/popd_small.png') no-repeat;background-size:100%;height:357px;margin-left:22px;margin-top:22px;width:390px;}
-
-.cfpagedetail.small.saving{background:url('../../static/img/popd_small2.png') no-repeat;background-size:100%;height:342px;width:387px;}
-
-.cfpagedetail.uplevel{background:url('../../static/img/popd_small.png') no-repeat;background-size:100%;height:342px;margin-left:48px;margin-top:-225px;width:387px;}
 
 .cpgapedetail_h2{font-size:26px;margin-bottom:-3px;margin-left:3px;margin-top:3px;}
 
@@ -323,5 +333,7 @@ td{font-size:21px;font-weight:bold;}
 .cfmsg.load{padding-top:18px;}
 
 .cfmsg_loadimg{height:30px;left:0px;position:relative;top:0px;width:30px;}
+
+.cfmsg_loadimg.pp{width:12px;}
 
 .td_right{}
