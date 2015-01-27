@@ -131,7 +131,7 @@ Player.prototype.updateData = function(prop) {
 			this.data[key] = prop[key];
     }
      var newLevel = g_title.getLevel();
-     //if (newLevel>oldLevel)
+     if (newLevel>oldLevel)
      	g_uplevel.open();
  	this.flushPageview();
 	this.syncData2();
