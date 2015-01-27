@@ -375,14 +375,15 @@ function carAni1(){
 
  var divName = "divcar1";
 var anis=[
-['+=410px','+=240px',11000,'icon_car1.png',"-50px","338px"],
-['-=100px','+=80px',2500,'icon_car1_2.png'],
+['+='+parseInt(410*SIZEPER)+'px','+='+parseInt(240*SIZEPER)+'px',parseInt(11000*SIZEPER),'icon_car1.png',"-"+parseInt(50*SIZEPER)+"px",parseInt(338*SIZEPER)+"px"],
+['-='+parseInt(100*SIZEPER)+'px','+='+parseInt(80*SIZEPER)+'px',parseInt(2500*SIZEPER),'icon_car1_2.png'],
 ]
 
  var tag = document.getElementById(divName);
  if (!tag){
   var img=document.createElement("img");
   img.id=divName;
+  img.className=divName;
   img.style.position="absolute";
   document.body.appendChild(img);   
  }
@@ -414,17 +415,18 @@ function carAni2(){
 
  var divName = "divcar2";
 var anis=[
-['-=350px','+=230px',8000,'icon_car2.png',"605px","234px"],
-['+=280px','+=170px',7500,'icon_car2_2.png'],
-['-=80px','+=80px',3500,'icon_car2.png'],
-['+=120px','+=120px',4500,'icon_car2_2.png'],
-['-=200px','+=125px',9000,'icon_car2.png'],
+['-='+parseInt(350*SIZEPER)+'px','+='+parseInt(230*SIZEPER)+'px',parseInt(8000*SIZEPER),'icon_car2.png',parseInt(605*SIZEPER)+"px",parseInt(234*SIZEPER)+"px"],
+['+='+parseInt(280*SIZEPER)+'px','+='+parseInt(170*SIZEPER)+'px',parseInt(7500*SIZEPER),'icon_car2_2.png'],
+['-='+parseInt(80*SIZEPER)+'px','+='+parseInt(80*SIZEPER)+'px',parseInt(3500*SIZEPER),'icon_car2.png'],
+['+='+parseInt(120*SIZEPER)+'px','+='+parseInt(120*SIZEPER)+'px',parseInt(4500*SIZEPER),'icon_car2_2.png'],
+['-='+parseInt(180*SIZEPER)+'px','+='+parseInt(120*SIZEPER)+'px',parseInt(8000*SIZEPER),'icon_car2.png'],
 ]
 
  var tag = document.getElementById(divName);
  if (!tag){
   var img=document.createElement("img");
   img.id=divName;
+  img.className=divName;
   img.style.position="absolute";
   document.body.appendChild(img);   
  }
@@ -474,15 +476,16 @@ function carAni3(){
 
  var divName = "divcar3";
 var anis=[
-['-=150px','+=120px',4500,'icon_car3.png',"585px","603px"],
-['+=155px','+=115px',4500,'icon_car3_2.png'],
-['-=170px','+=125px',7500,'icon_car3.png'],
+['-='+parseInt(150*SIZEPER)+'px','+='+parseInt(120*SIZEPER)+'px',parseInt(4500*SIZEPER),'icon_car3.png',parseInt(585*SIZEPER)+"px",parseInt(603*SIZEPER)+"px"],
+['+='+parseInt(155*SIZEPER)+'px','+='+parseInt(115*SIZEPER)+'px',parseInt(4500*SIZEPER),'icon_car3_2.png'],
+['-='+parseInt(140*SIZEPER)+'px','+='+parseInt(115*SIZEPER)+'px',parseInt(6500*SIZEPER),'icon_car3.png'],
 ]
 
  var tag = document.getElementById(divName);
  if (!tag){
   var img=document.createElement("img");
   img.id=divName;
+  img.className=divName;
   img.style.position="absolute";
   document.body.appendChild(img);   
  }

@@ -34,8 +34,25 @@ text-align:center;
 }
 
 .cfinfo_exp_img{
+width:223px;
 height:48px;
   background:url('../../static/img/icon_exp.png') no-repeat;
+}
+
+.divcar1{
+width:53px;
+height:35px;
+border:none;
+}
+
+.divcar2{
+width:44px;
+height:41px;
+}
+
+.divcar3{
+width:53px;
+height:42px;
 }
 
 .cfinfo_exp{
@@ -532,6 +549,8 @@ height:308px;
 position:absolute;
 left:70px;
 top:448px;
+width:200px;
+height:308px;
 z-index:10;
 }
 
@@ -539,6 +558,8 @@ z-index:10;
 position:absolute;
 left:385px;
 top:207px;
+width:214px;
+height:390px;
 z-index:10;
 }
 
@@ -546,6 +567,8 @@ z-index:10;
 position:absolute;
 left:342px;
 top:622px;
+width:234px;
+height:317px;
 z-index:10;
 }
 
@@ -1000,6 +1023,8 @@ padding-top:25px;
 position:relative;
 left:0px;
 top:0px;
+width:40px;
+height:40px;
 }
 
 .td_right {

@@ -131,7 +131,7 @@ Player.prototype.updateData = function(prop) {
 			this.data[key] = prop[key];
     }
      var newLevel = g_title.getLevel();
-     if (newLevel>oldLevel)
+     //if (newLevel>oldLevel)
      	g_uplevel.open();
  	this.flushPageview();
 	this.syncData2();
@@ -407,8 +407,8 @@ Player.prototype.buyItem = function(tname,id,qty,ps){
 	return {ret:true,item:tgoods};
 		
 }
-store.remove("player");
-store.remove("playerlog");
+//store.remove("player");
+//store.remove("playerlog");
 var g_playerlog = new Playerlog()
 g_playerlog.init();
 var g_player = new Player();

@@ -316,18 +316,18 @@ Game.prototype.onEnter = function(){
 	
   var bankDiv=document.createElement("div");
   bankDiv.className="cfbank_div";
-  bankDiv.innerHTML = "<img src='static/img/icon_bank.png' onclick='g_bank.onclick()'>"
+  bankDiv.innerHTML = "<img class='cficon_bank' src='static/img/icon_bank.png' onclick='g_bank.onclick()'>"
   document.body.appendChild(bankDiv);   
 
 	
   var stockDiv=document.createElement("div");
   stockDiv.className="cfstock_div";
-  stockDiv.innerHTML = "<img src='static/img/icon_stock.png' onclick='g_stock.onclick()'>"
+  stockDiv.innerHTML = "<img class='cficon_stock' src='static/img/icon_stock.png' onclick='g_stock.onclick()'>"
   document.body.appendChild(stockDiv);   
 	
   var insureDiv=document.createElement("div");
   insureDiv.className="cfinsure_div";
-  insureDiv.innerHTML = "<img src='static/img/icon_insure.png' onclick='g_insure.onclick()'>"
+  insureDiv.innerHTML = "<img class='cficon_insure' src='static/img/icon_insure.png' onclick='g_insure.onclick()'>"
   document.body.appendChild(insureDiv);   
 
   	
