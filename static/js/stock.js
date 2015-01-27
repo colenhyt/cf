@@ -168,6 +168,7 @@ Stock.prototype.buildPage = function(page)
 		}
 		for (var i=start;i<end;i++){
 			var item = tdata[rids[i]];
+			if (!item)continue;
 			var itemid = rids[i];
 			pageids.push(itemid);
 			var pitem = g_player.getStockItem(itemid);

@@ -39,7 +39,7 @@ Playerinfo.prototype.showInfo = function(jsondata){
      content += "<tr><td>昵&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp称: </td><td> <span style='color:yellow'>"+jsondata.data.playername.substring(0,10)+"</span>	</td></tr>"	
      content += "<tr><td>当前等级: </td><td> <span style='color:yellow'>"+lv+"</span> "+g_title.getData(lv).name+"</td></tr>"	
      content += "<tr><td>下一等级: </td><td> <span style='color:yellow'>"+(lv+1)+"</span> "+g_title.getData(lv+1).name+"</td></tr>"	
-     content += "<tr><td> 经&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp验: </td><td><div class='cfinfo_exp_bg'><div class='cfinfo_exp_img' id='cfinfo_exp_img' style='width:"+expPer+"%'></div>"
+     content += "<tr><td> 经&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp验: </td><td><div class='cfinfo_exp_bg'><div class='cfinfo_exp_img' id='cfinfo_exp_img' style='background-size:"+expPer+"% 100%'></div>"
      content += "<div class='cfinfo_exp'><span style='color:yellow'>"+jsondata.data.exp+"</span>/"+g_title.getData(lv+1).exp+"</div></div></td></tr>"	
      content += "<tr><td>当周排名: </td><td> <span style='color:yellow'>"+jsondata.data.weektop+"</span></td></tr>"	
     content += " </table>"	

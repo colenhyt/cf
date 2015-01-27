@@ -92,9 +92,9 @@ content += "<img id='msg_load4' class='cfmsg_loadimg' src='static/img/load_4.png
 content += "<img id='msg_load3' class='cfmsg_loadimg' src='static/img/load_5.png'>"
 content += "<img id='msg_load4' class='cfmsg_loadimg' src='static/img/load_6.png'>"
 }
-content += "<img id='msg_load5' class='cfmsg_loadimg' src='static/img/load_0.png'>"
-content += "<img id='msg_load6' class='cfmsg_loadimg' src='static/img/load_0.png'>"
-content += "<img id='msg_load7' class='cfmsg_loadimg' src='static/img/load_0.png'>"
+content += "<img id='msg_load5' class='cfmsg_loadimg pp' src='static/img/load_0.png'>"
+content += "<img id='msg_load6' class='cfmsg_loadimg pp' src='static/img/load_0.png'>"
+content += "<img id='msg_load7' class='cfmsg_loadimg pp' src='static/img/load_0.png'>"
 content += "</div>"
 
 tag.innerHTML = content;

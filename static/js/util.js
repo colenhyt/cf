@@ -100,10 +100,6 @@ function outputCssStyles(css_file_name,per) {
 	 	content += style.selectorText.toLowerCase()+"{"
 	 	for (param in style.style){
 			var value = style.style[param];
-			if (param=='background-repeat')
-			{
-				var a = 0;
-			}
 	 		if (isLegalName(param)&&isLegalValue(value)){
 	 		 value = value.replace('(http://localhost:8080/cf/',"('../../");
 	 		 value = value.replace('.png)',".png')");
@@ -114,7 +110,13 @@ function outputCssStyles(css_file_name,per) {
 			  //g_msg.tip(pxva);
 			 }
 	 			//content += param+":"+value+";";
-	 			content += uncamelize(param,'-')+":"+value+";";
+			if (param=='backgroundSize')
+			{
+				content += uncamelize(param,'-')+":100% 100%;";
+	 			content += "-moz-background-size:100% 100%;";
+			}else
+				content += uncamelize(param,'-')+":"+value+";";
+				 			
 //		 		if (param=='backgroundOrigin'){
 //		 			alert(style.style[param]);
 //		 		}
