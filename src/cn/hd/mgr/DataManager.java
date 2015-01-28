@@ -67,6 +67,7 @@ public class DataManager {
     	stockService.initData(jedis);
     	
     	toplistService = new ToplistService();
+    	toplistService.initData(jedis);
     }
     public ToplistService getToplistService() {
 		return toplistService;
