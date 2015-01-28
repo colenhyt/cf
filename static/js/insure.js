@@ -102,7 +102,7 @@ Insure.prototype.buildPage = function(page)
 		      content += "<span class='cfpanel_title'>"+item.name+"</span>"
 			 content += "<span class='cfpanel_text right'>"+buyDesc+"</span>"
 			 content += "	<div>"
-			 content += "<span class='cfpanel_text'>价格: ￥"+ForDight(item.price)+"</span>"
+			 content += "<span class='cfpanel_text'>价格: <img class='cficon_money' src='static/img/money.png'/>"+ForDight(item.price)+"</span>"
 			 if (pitem.qty<=0)
 			 	content += "<span class='cfpanel_text right'>期限:"+item.period+"天</span>"
 			 else {
@@ -137,7 +137,7 @@ Insure.prototype.clickDetail = function(id,type){
 Insure.prototype.showDetail = function(title,desc,okCallback,itemid,qty,confmText){
 	var content =      "        <div class='cfinsure_content'>"
 	content += "<div class='cfmsg_h2'>"+title+"</div>"
-	content += "<br><div class='cfmsg_text insure'>"+desc+"</div>"
+	content += "<div class='cfmsg_text insure'>"+desc+"</div>"
 	content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>"
 	if (confmText)
 	content += "          <button class='cf_bt' onclick='"+okCallback+"("+itemid+","+qty+")'>"+confmText+"</button>"
@@ -163,7 +163,7 @@ Insure.prototype.show_insuredetail = function(id){
 	 content += "        <table class='cfinsure_tabl'>"
 	 content += "             <tr>"
 	 content += "               <td width='30%' ><div class='cfplayer_head_bg insure'><img src='static/img/insure_"+id+".png' class='cfinsure_img'></div></td>"
-	 content += "               <td>"+item.descs+" </td>"
+	 content += "               <td><div class='cfinsure_desc'>"+item.descs+"</div> </td>"
 	content += "              </tr>"
 	content += "          </table>     "
 	content += "           </div>  "
@@ -171,7 +171,7 @@ Insure.prototype.show_insuredetail = function(id){
 	content += "<br> "
 	 content += "<div>  "
 	 content += "<table class='cfinsure_tabl2'>"
-	 content += "<tr><td>价格: ￥"+item.price+" </td></tr>"
+	 content += "<tr><td>价格: <img class='cficon_money' src='static/img/money.png'/> "+item.price+" </td></tr>"
 	 content += "<tr><td>周期: "+item.period+"天 </td></tr>"
 	content += "</table>"
 	if (pitem.qty>0){
@@ -202,15 +202,15 @@ Insure.prototype.show_finandetail = function(id){
 	 content += "        <table class='cfinsure_tabl'>"
 	 content += "             <tr>"
 	 content += "               <td width='30%' ><div class='cfplayer_head_bg insure'><img src='static/img/insure_"+id+".png' class='cfinsure_img'></div></td>"
-	 content += "               <td><span style='font-size:"+per+"'>"+item.descs+"</span></td>"
+	 content += "               <td><div class='cfinsure_desc'><span style='font-size:"+per+"'>"+item.descs+"</span></div></td>"
 	content += "              </tr>"
 	content += "          </table>     "
 	content += "           </div>  "
 	content += "<img src='static/img/pop_line.png' style='width:95%'>"
  content += "           <div class='cfinsure_finan'>  "
  content += "<table class='cfinsure_tabl2'>"
- content += "<tr><td>价格: ￥"+item.price+"</td></tr>"
- content += "<tr><td>收益: ￥"+item.profit+"/份</td></tr>"
+ content += "<tr><td>价格: <img class='cficon_money' src='static/img/money.png'/> "+item.price+"</td></tr>"
+ content += "<tr><td>收益: <img class='cficon_money' src='static/img/money.png'/> "+item.profit+"/份</td></tr>"
  content += "<tr><td>周期: "+item.period+"天</td></tr>"
 content += "</table>     "
  	if (pitem.qty>0){

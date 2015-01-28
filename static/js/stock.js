@@ -190,7 +190,7 @@ Stock.prototype.buildPage = function(page)
 		     content += "<span class='cfpanel_title'>"+item.name+"</span>"
 		     content += "<span class='cfpanel_text right'>目前持有<span style='color:yellow'> "+pitem.qty/100+"</span> 手</span>"
 			 content += "	<div>" 
-			 content += "<span class='cfpanel_text'>当前价格: ￥"
+			 content += "<span class='cfpanel_text'>当前价格: <img class='cficon_money' src='static/img/money.png'/>"
 			 content += "<span id='"+this.name+"_ps"+itemid+"'>"+ps+"</span></span>"
 			 content += "<span class='cfpanel_text right'>总盈亏: "
 			 content += "<span id='"+this.name+"_pr"+itemid+"' style='color:"+psColor+"'>"+profit+"</span></span>"

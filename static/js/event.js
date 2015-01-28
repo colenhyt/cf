@@ -52,7 +52,7 @@ Event.prototype.goodEvent = function(item){
 		content += "</tr></table>"
 			content += "</div>"
 			content += "<div class='cfevent_get'>"
-			content += "获得金钱: "
+			content += "获得 <img class='cficon_money' src='static/img/money.png'/>"
 			content += "<span id='cfevent_prize' class='cfevent_prize'>"+ money+"</span>"
 			content += "</div>"
 	}
@@ -74,7 +74,7 @@ Event.prototype.badEvent = function(item){
 		content += "</div>"
 		content += "<div>"
 		content += "<br>"
-		content += "避免损失金钱:<span style='color:red'>"+money+"</span>"
+		content += "避免损失<img class='cficon_money' src='static/img/money.png'/>:<span style='color:red'>"+money+"</span>"
 		content += "</div>"
 		g_msg.openModal(item.name,content);
 	}else{
@@ -88,7 +88,7 @@ Event.prototype.badEvent = function(item){
 		content += "</tr></table>"
 		content += "</div>"
 		content += "<div class='cfevent_get'>"
-		content += "损失金钱: "
+		content += "损失 <img class='cficon_money' src='static/img/money.png'/> "
 		content += "<span id='cfevent_prize' class='cfevent_prize'>"+ money+"</span>"
 		content += "</div>"
 		content += "(你可购买<span style='color:red'>"+iname+"</span>来避免该意外)"

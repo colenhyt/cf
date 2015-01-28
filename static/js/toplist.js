@@ -102,7 +102,7 @@ Toplist.prototype.showToplist = function(type,page)
       	  content += "</div>"
 	}else {
 			 content += "<div class='cf_top'>";
- 			 content += "        <table id='toplist1_tab' class='cf_top_header'>"
+ 			 content += "        <table class='cf_top_header'>"
 			 content += "             <tr>"
 			 content += "               <td class='cftoplist_content'>姓名</td>"
 			 content += "               <td class='cftoplist_content'>资产</td>"
@@ -110,7 +110,7 @@ Toplist.prototype.showToplist = function(type,page)
 			 content += "               <td class='cftoplist_c3'>赞</td>"
 			content += "              </tr>"
 			content += "          </table>"
-			 content += "        <table id='toplist1_tab'>"
+			 content += "        <table>"
   
 			 var me = tdata[tdata.length-1];
 			 var amount = g_player.getTotal(g_player);
@@ -151,7 +151,7 @@ Toplist.prototype.showToplist = function(type,page)
 			 }
 			 content += "             <tr>"
 			 content += "               <td class='cftoplist_content' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.playername.substring(0,8)+"</div></td>"
-			 content += "               <td class='cftoplist_c5' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+parseInt(item.money)+"</div></td>"
+			 content += "               <td class='cftoplist_c5' style='color:yellow'><div class='cficon_money toplist' onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+parseInt(item.money)+"</div></td>"
 			 if (hasImg==true)
 			 content += "               <td class='cftoplist_c4' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'><img class='cftoplist_top' src='static/img/icon_top_"+topStr+".png'></div></td>"
 			 else
@@ -161,7 +161,7 @@ Toplist.prototype.showToplist = function(type,page)
 			}else {
 			 content += "             <tr>"
 			 content += "               <td class='cftoplist_content'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.playername.substring(0,8)+"</div></td>"
-			 content += "               <td class='cftoplist_c5'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+parseInt(item.money)+"</div></td>"
+			 content += "               <td class='cftoplist_c5'><div class='cficon_money toplist' onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+parseInt(item.money)+"</div></td>"
 			 if (item.top<=3)
 			 content += "               <td class='cftoplist_c4'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'><img class='cftoplist_top' src='static/img/icon_top_"+item.top+".png'></div></td>"
 			 else
@@ -178,6 +178,8 @@ Toplist.prototype.showToplist = function(type,page)
 
 		this.currPage = page;
         content += this.buildPaging(page,items.length,"g_toplist.showToplist",type);
+        
+        //content += "<div class='cftoplist_desc'>每天只能点赞3次，一天只能对一个人点赞</div>"
 	}
      
 	var tag = document.getElementById(this.pagename);

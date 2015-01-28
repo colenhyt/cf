@@ -20,6 +20,25 @@ body {
     background-size:100% 100%;  
 }
 
+.cficon_money{
+  width:56px;
+  height:36px;
+  background:url('../../static/img/money.png') no-repeat;  
+  -moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
+
+.cficon_money.toplist{
+ padding-left:60px;
+}
+
+.cficon_exp{
+  width:52px;
+  height:38px;
+  -moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+}
+
 .cfinfo_tabl{
 line-height:40px;
 }
@@ -324,6 +343,7 @@ height:140px;
 position:relative;
 margin-left:20px;
 width:280px;
+text-align:left;
 }
 
 .cfevent_get{
@@ -445,7 +465,8 @@ height:275px;
 }
 
 .cfmsg_text.insure{
-height:410px;
+margin-top:40px;
+height:420px;
 }
 
 .cfmsg_text.uplevel{
@@ -559,7 +580,11 @@ height:170px;
 .cfinsure_tabl{
 margin-left:10px;
 width:500px;
-align:center;
+text-align:left;
+}
+
+.cfinsure_desc{
+margin-left:30px;
 }
 
 .cfinsure_tabl2{
@@ -789,17 +814,17 @@ background:url('../../static/img/top_title_bg.png') no-repeat;
 .cfsignin_prize {
 position:absolute;
 display:block; 
-left:270px;
+left:250px;
 top:70px;
 z-index:3000;
 }
 
 .cfsignin_prize.exp {
-left:130px;
+left:135px;
 }
 
 .cfsignin_mmdesc {
-padding-left:40px;
+padding-left:30px;
 }
 
 .cfevent_prize {
@@ -925,6 +950,13 @@ text-align:center;
 width:160px;
 }
 
+.cftoplist_desc{
+margin-left:-200px;
+text-align:left;
+font-size:24px;
+width:500px;
+}
+
 .cftoplist_top{
 width:48px;
 height:55px;
@@ -941,11 +973,11 @@ width:60px;
 
 .cftoplist_c4 {
 text-align:center;
-width:120px;
+width:100px;
 }
 
 .cftoplist_c5 {
-width:160px;
+width:190px;
 }
 
 .cftoplist_c6 {
@@ -995,7 +1027,7 @@ margin-top:-10px;text-align:center;
 }
 
 .cfinsure_finan {
-margin-top:10px;margin-bottom:30px;height:150px;
+margin-top:-10px;margin-bottom:30px;height:150px;
 }
 
 .cfinsure_finalcount {

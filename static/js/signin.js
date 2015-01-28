@@ -72,12 +72,14 @@ Signin.prototype.show = function(){
     var todayget = "<br>"
     var cash = itemValue(prize.currPz,0);
     var exp = itemValue(prize.currPz,1);
-    todayget += "经验:<span class='cfsignin_mmdesc'>,金钱:</span><span class='cfsignin_prize exp' id='cfsignin_prize_exp'>"+exp+"</span>"
+    todayget += "<img class='cficon_exp' src='static/img/exp.png'/>X<span class='cfsignin_mmdesc'> <img class='cficon_money' src='static/img/money.png'/>X</span><span class='cfsignin_prize exp' id='cfsignin_prize_exp'>"+exp+"</span>"
     todayget += "<span class='cfsignin_prize' id='cfsignin_prize'>"+cash+"</span>"
     get.innerHTML = todayget;
  
+    var cashto = itemValue(prize.toPz,0);
+    var expto = itemValue(prize.toPz,1); 
     get = document.getElementById("signin_gettomorrow");
-    get.innerHTML = "<br>"+itemStr(prize.toPz,",");
+    get.innerHTML = "<br>"+"<img class='cficon_exp' src='static/img/exp.png'/>X"+expto+" <img class='cficon_money' src='static/img/money.png'/>X"+cashto;
 
     var tagfeel = document.getElementById("signin_feeling");
     
@@ -120,17 +122,17 @@ Signin.prototype.clickFeeling = function(feelingId){
     
 
   var div=$("#cfsignin_prize_exp");
-  div.animate({fontSize:'2.5em'},150);
+  div.animate({fontSize:'2.5em'},100);
   div.animate({left:'-='+getSizes().SigninMoney[0],top:'-='+getSizes().SigninMoney[2]},800);
-  div.animate({fontSize:'1em'},150,function(){
+  div.animate({fontSize:'1em'},100,function(){
     var div=$("#cfsignin_prize_exp");
     div.remove();
    });    
     
   var div=$("#cfsignin_prize");
-  div.animate({fontSize:'2.5em'},300);
-  div.animate({left:'-='+getSizes().SigninMoney[1],top:'-='+getSizes().SigninMoney[2]},1300);
-  div.animate({fontSize:'1em'},300,function(){
+  div.animate({fontSize:'2.5em'},100);
+  div.animate({left:'-='+getSizes().SigninMoney[1],top:'-='+getSizes().SigninMoney[2]},800);
+  div.animate({fontSize:'1em'},100,function(){
    var div=$("#cfsignin_prize");
     div.remove();
 	   g_player.prize(g_signin.currPrize);

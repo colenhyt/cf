@@ -101,13 +101,13 @@ Bank.prototype.showSaving = function(){
 	var sdata = store.get(g_saving.name);
 	var rate = sdata[1].rate;
 	var content = "<div class='cfpanel bank'>"
-	content +=	"<div> 活期存款: <span style='color:yellow'> ¥"+data.saving+"</span></div>"
-	content +=	"<div> 定期存款: <span style='color:yellow'> ¥"+data.saving2+"</span></div>"
-	content +=	"<div> 存款总额: <span style='color:yellow'> ¥"+total+"</span></div>"
+	content +=	"<div> 活期存款: <span style='color:yellow'> <img class='cficon_money' src='static/img/money.png'/> "+data.saving+"</span></div>"
+	content +=	"<div> 定期存款: <span style='color:yellow'> <img class='cficon_money' src='static/img/money.png'/> "+data.saving2+"</span></div>"
+	content +=	"<div> 存款总额: <span style='color:yellow'> <img class='cficon_money' src='static/img/money.png'/> "+total+"</span></div>"
     content +=            " </div>"
     content +=	"</div>"
     content +=            " <div class='cf-bank-feeling'>"
-    content +=            "     <div>每2小时结算利息<div>  "
+    content +=            "     <div>两小时后将获得利息<img class='cficon_money' src='static/img/money.png'/><div>  "
     content +=            "     <div><span>当前活期利率: "+rate+"% </span><div>  "
     content +=       " </div>"
     content +=            " </div>"

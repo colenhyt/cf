@@ -407,8 +407,11 @@ Player.prototype.buyItem = function(tname,id,qty,ps){
 	return {ret:true,item:tgoods};
 		
 }
-//store.remove("player");
-//store.remove("playerlog");
+if (LoginMode==1){
+store.remove("player");
+store.remove("playerlog");
+}
+
 var g_playerlog = new Playerlog()
 g_playerlog.init();
 var g_player = new Player();

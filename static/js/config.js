@@ -1,5 +1,7 @@
 var g_game;
 
+var LoginMode = 0;	//1为注册模式，0为登陆模式
+
 var UpdateDuration = 200;	//刷帧频率(ms)
 
 var MsgDuration = 100;	//消息刷帧频率(ms)
@@ -115,7 +117,7 @@ var PageSizes = {
 	DetailPageTop:100,MsgTop:120,
 	StockView:[540,420,480,280,22]
 	,EventMoney:["70px","410px"]
-	,SigninMoney:["90px","50px","210px"]
+	,SigninMoney:["90px","20px","210px"]
 	,QuestMoney:["120px","390px"]
 	},
 	
