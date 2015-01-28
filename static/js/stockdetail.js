@@ -81,7 +81,7 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
         
         
 		var labels = ["9:00"];
-		if (g_stock.isStockOpen()){
+		if (!g_stock.isStockOpen()){
 			labels = ["9:00","11:00","13:00","15:00","17:00","19:00","21:00"];
 		}else{
         var startDate = new Date();
