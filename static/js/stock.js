@@ -292,7 +292,7 @@ Stock.prototype.isStockOpen = function()
 {
 	var open = false;
 	var now = new Date();
-	if (now.getHours()>=9&&now.getHours()<=20)
+	if (now.getHours()>=9&&now.getHours()<21)
 		open = true;
 	return open;
 }
@@ -322,8 +322,8 @@ Stock.prototype.countBuy = function(stockid,count,price)
 Stock.prototype.doBuy = function()
 {
 	if (!this.isStockOpen()){
-		//g_msg.tip("现在休市，不能交易");
-		//return;
+		g_msg.tip("现在休市，不能交易");
+		return;
 	}	
 	if (this.waitCount==null||this.waitCount==0){
 		g_msg.tip("请买入或者卖出");
@@ -457,6 +457,21 @@ Stock.prototype.findQuotes = function()
 
 	}   catch  (e)   {
 	    logerr(e.name);
+	} 
+}
+
+Stock.prototype.playerStockQuoteCallback = function(data)
+{
+}
+
+Stock.prototype.queryStockLastQuote = function(stockids,callback)
+{
+	var jids = "stockids="+JSON.stringify(stockids);
+	try  {
+		$.ajax({type:"post",url:"/cf/stock_pagelastquotes.do",data:jids,success:callback});
+	}   catch  (e)   {
+	    logerr(e.name);
+	    return;
 	} 
 }
 

@@ -79,7 +79,29 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 		         	}
 		         ];
         
-		var labels = ["9:30","10:30","11:30","13:00","14:00","15:00"];
+        
+		var labels = ["9:00"];
+		if (g_stock.isStockOpen()){
+			labels = ["9:00","11:00","13:00","15:00","17:00","19:00","21:00"];
+		}else{
+        var startDate = new Date();
+        startDate.setHours(9);
+        startDate.setMinutes(0);
+        startDate.setSeconds(0);
+        
+        var split = 5;
+        var now = new Date();
+        
+        var diff = Date.parse(now)-Date.parse(startDate);
+        diff = diff/split;
+        for (var i=1;i<split+1;i++){
+         var date = new Date();
+         date.setTime(startDate.getTime()+i*diff);
+         date.setSeconds(0);
+         var dateStr = date.getHours()+":"+date.getMinutes();
+         labels.push(dateStr);
+        }
+		}
 		
 		var chart = new iChart.LineBasic2D({
 			render : divName,
