@@ -96,7 +96,7 @@ public class Base {
 	 * 获得两个时间相差天数
 	 * @param type:0:分钟，1:小时,2:天
 	 */	
-	public float findDayMargin(long l2,long l1,int type){
+	public static float findDayMargin(long l2,long l1,int type){
 		int t = 1000;
 		if (type==0)	//minute
 			t *= 60;

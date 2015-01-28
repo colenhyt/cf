@@ -1,9 +1,9 @@
 package cn.hd.mgr;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -13,16 +13,17 @@ import net.sf.json.JSONArray;
 
 import org.apache.log4j.Logger;
 
+import cn.hd.base.Base;
 import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Stockdata;
-import cn.hd.cf.service.ToplistService;
 import cn.hd.cf.tools.StockdataService;
 
 public class StockManager {
+	protected Logger  log = Logger.getLogger(getClass()); 
 	private static Logger logger = Logger.getLogger(StockManager.class); 
 	public int STOCK_QUOTE_PERIOD = 5;
 	private int STOCK_SAVE_PERIOD = 5;
-	private StockdataService stockdataService;
+	private Date lastUpdateDate;
 	private long lastQuoteTime;
 	private Map<Integer,LinkedList<Quote>> quoteMap;
 	private int tick = 0;
@@ -38,7 +39,8 @@ public class StockManager {
     
     public StockManager(){
 		lastQuoteTime = System.currentTimeMillis();
-		stockdataService = new StockdataService();
+		lastUpdateDate = null;
+		StockdataService stockdataService = new StockdataService();
 		stockData = stockdataService.findActive();
 		quoteMap = new HashMap<Integer,LinkedList<Quote>>();
 	   	for (int i=0;i<stockData.size();i++){
@@ -64,13 +66,9 @@ public class StockManager {
 				
      }
   
-    public List<Stockdata> getStockDatas(){
-    	return stockData;
-    }
-    
     public float getMarginSec(){
     	long curr = System.currentTimeMillis();
-		float diffdd = stockdataService.findDayMargin(curr,lastQuoteTime,-1);
+		float diffdd = Base.findDayMargin(curr,lastQuoteTime,-1);
 		return diffdd;
     }
         
@@ -89,12 +87,35 @@ public class StockManager {
     	return quotes;
     }
     
+    private boolean isStockOpen(){
+		Date now = new Date();
+		Calendar cl = Calendar.getInstance();
+		cl.setTime(now);
+		int hour = cl.get(Calendar.HOUR_OF_DAY);
+		if (hour>=9&&hour<21)
+			return true;
+		return false;
+    }
+    
     public void update(){
     	tick ++;
  		//stock price update:
 		if (tick%STOCK_QUOTE_PERIOD==0){
+			boolean isOpen = isStockOpen();
+			if (isOpen!=true) return;
+			
+    		Date now = new Date();
+    		boolean isNewDay = false;
+			if (lastUpdateDate!=null){
+				Calendar cl = Calendar.getInstance();
+				cl.setTime(now);
+				int day = cl.get(Calendar.DAY_OF_MONTH);
+				cl.setTime(lastUpdateDate);
+				int hisday = cl.get(Calendar.DAY_OF_MONTH);
+				isNewDay = hisday!=day; 
+			}
+    		lastUpdateDate = new Date();
 			lastQuoteTime = System.currentTimeMillis();
-			System.out.println("条款时间:"+STOCK_QUOTE_PERIOD);
 			for (int i=0;i<stockData.size();i++){
 	    		Stockdata  stock = stockData.get(i);
 	 			LinkedList<Quote> lquote = quoteMap.get(stock.getId());
@@ -111,6 +132,12 @@ public class StockManager {
 		    			ps += ps*per;
 		    		else
 		    			ps -= ps*per;
+
+					//假如前一天，取休市价，并清空行情价格
+		    		if (isNewDay){
+		    			//lquote.clear();
+		    			log.debug("清空昨天价格");
+		    		}
 		    		
 		    		lquote.poll();
 		    		Quote newq = new Quote();
@@ -131,8 +158,9 @@ public class StockManager {
 	 			if (lquote==null||lquote.size()==0) continue;
 	 			stock.setCreatetime(new Date());
 	 			stock.setJsonquotes("");
-	 			//stock.setQuotes(stockdataService.beanQueueToJson(lquote, Quote.class).getBytes());
-	    		//stockdataService.updateByKey(stock);
+	 			StockdataService stockdataService = new StockdataService();
+//	 			stock.setQuotes(stockdataService.beanQueueToJson(lquote, Quote.class).getBytes());
+//	    		stockdataService.updateByKey(stock);
 			}
 		}		
 		//数据库保存:
@@ -143,8 +171,9 @@ public class StockManager {
 //    	String a = "{'id':3,'name':'万科A','desc':'最大房地产股','price':18.7,'unit':100}";
 //    	JSONObject obj = JSONObject.fromObject(a);
     	StockManager stmgr = StockManager.getInstance();
-    	stmgr.getLastQuotes(8);
+    	//stmgr.getLastQuotes(8);
     	//stmgr.update();
+    	stmgr.isStockOpen();
 
     }
 }

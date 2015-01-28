@@ -33,28 +33,6 @@ public class StockAction extends SavingAction {
 		stockMgr = StockManager.getInstance();
 	}
 	
-	public String list(){
-		List<Stockdata> list = stockMgr.getStockDatas();
-		List<Stockdata> list2 = new ArrayList<Stockdata>();
-		for (int i=0;i<list.size();i++){
-			Stockdata data = list.get(i);
-			Stockdata data2 = new Stockdata();
-			data2.setDescs(data.getDescs());
-			data2.setName(data.getName());
-			data2.setId(data.getId());
-			data2.setType(data.getType());
-			LinkedList<Quote> lquotes = StockManager.getInstance().getQuotes(data.getId());
-			JSONArray jsonquotes = JSONArray.fromObject(lquotes);
-			data2.setJsonquotes(jsonquotes.toString());
-			list2.add(data2);
-			System.out.println(data.getName()+"发现行情: "+jsonquotes.toString().length());
-		}
-		JSONArray jsonObject = JSONArray.fromObject(list2);
-		System.out.println("found stocks:"+jsonObject.toString().length());
-		write(jsonObject.toString(),"utf-8");
-		return null;
-	}
-	
 	public String quotes(){
 		System.out.println("request quotes");
 		LinkedList<Quote> lquotes = StockManager.getInstance().getQuotes(stock.getId());
@@ -71,15 +49,6 @@ public class StockAction extends SavingAction {
 		System.out.println("上次行情过去时间比例:"+margin);
 		return null;
 	}
-	
-	public String lastquote(){
-		int stockid = stock.getId();
-		List<Quote> list = stockMgr.getLastQuotes(stockid);
-		JSONArray jsonObject = JSONArray.fromObject(list);
-		write(jsonObject.toString(),"utf-8");		
-		//System.out.println("found stocks quote:"+jsonObject.toString());
-		return null;
-	}	
 	
 	public String pagelastquotes(){
 		String pp = getHttpRequest().getParameter("stockids");
@@ -125,13 +94,6 @@ public class StockAction extends SavingAction {
 			super.playerTopUpdate(stock.getPlayerid());
 		}
 		writeMsg(ret);
-		return null;
-	}	
-	
-	
-	public String update()
-	{
-		stockService.update(stock);		
 		return null;
 	}	
 }

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONObject;
-
+import cn.hd.base.Base;
 import cn.hd.cf.model.Init;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Message;
@@ -21,7 +21,6 @@ import cn.hd.cf.tools.InitdataService;
 import cn.hd.cf.tools.InsuredataService;
 import cn.hd.cf.tools.SavingdataService;
 import cn.hd.cf.tools.SignindataService;
-import cn.hd.mgr.EventManager;
 import cn.hd.mgr.PlayerManager;
 import cn.hd.mgr.StockManager;
 import cn.hd.util.MD5;
@@ -183,7 +182,7 @@ public class LoginAction extends SavingAction {
 			Insure insure = insures.get(i);
 			float inter = 0;	// 0表明未到期
 	        c2.setTime(insure.getUpdatetime());
-			float diffdd = super.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
+			float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
 			float periodMinutes = insure.getPeriod()*60*60*24; //天:分钟
 //			periodMinutes = 5;
 			//到期:
@@ -236,7 +235,7 @@ public class LoginAction extends SavingAction {
 				liveSaving = saving;
 			float inter = 0;
 	        c2.setTime(saving.getUpdatetime());
-	        float diffdd = super.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
+	        float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
 	        float periodMinutes = saving.getPeriod()*60*60*24;//天:分钟
 //	        periodMinutes = 5;
 			//log.debug("利息到期时间:"+diffdd+","+periodMinutes);
