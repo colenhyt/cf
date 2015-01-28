@@ -1,13 +1,10 @@
 package cn.hd.cf.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
+import redis.clients.jedis.Jedis;
 import cn.hd.base.BaseService;
-import cn.hd.base.Bean;
 import cn.hd.cf.dao.SavingMapper;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.SavingExample;
@@ -28,23 +25,25 @@ public class SavingService extends BaseService {
 	public SavingService()
 	{
 		initMapper("savingMapper");
-		//initData();
 	}
 	
-	public void initData(){
+	public void initData(Jedis jedis2){
+		if (jedis2==null)
+			return;
+		
 		SavingExample example = new SavingExample();
 		List<Saving> savings = savingMapper.selectByExample(example);
 		for (int i=0; i<savings.size();i++){
 			Saving saving = savings.get(i);
 			String key = saving.getPlayerid()+ITEM_KEY;
-			 jedis.del(key);
+			jedis2.del(key);
 		}
 		for (int i=0; i<savings.size();i++){
 			Saving record = savings.get(i);
 			String key = record.getPlayerid()+ITEM_KEY;
-			 jedis.hset(key, record.getItemid().toString(),record.toString());
+			jedis2.hset(key, record.getItemid().toString(),record.toString());
 		}		
-		jedis.close();
+		jedis2.close();
 	}	
 	public List<Saving> findByPlayerId(int playerId)
 	{
@@ -88,9 +87,11 @@ public class SavingService extends BaseService {
 	
 	public boolean add(Saving record)
 	{
-//		String key = record.getPlayerid()+ITEM_KEY;
-//		jedis.hset(key, record.getItemid().toString(), record.toString());
-//		jedis.close();
+		if (jedis!=null){
+		String key = record.getPlayerid()+ITEM_KEY;
+		jedis.hset(key, record.getItemid().toString(), record.toString());
+		jedis.close();
+		}
 		//System.out.println("增加存款记录:"+record.toString());
 		
 		try {
@@ -105,9 +106,11 @@ public class SavingService extends BaseService {
 	
 	public boolean remove(Saving record)
 	{
-//		String key = record.getPlayerid()+ITEM_KEY;
-//		jedis.hdel(key, record.getItemid().toString());
-//		jedis.close();
+		if (jedis!=null){
+		String key = record.getPlayerid()+ITEM_KEY;
+		jedis.hdel(key, record.getItemid().toString());
+		jedis.close();
+		}
 		//System.out.println("删除saving记录:"+record.toString());
 		
 		try {
@@ -126,9 +129,11 @@ public class SavingService extends BaseService {
 	
 	public boolean updateLive(Saving record)
 	{
-//		String key = record.getPlayerid()+ITEM_KEY;
-//		jedis.hset(key, new Integer(1).toString(), record.toString());		
-//		jedis.close();
+		if (jedis!=null){
+		String key = record.getPlayerid()+ITEM_KEY;
+		jedis.hset(key, new Integer(1).toString(), record.toString());		
+		jedis.close();
+		}
 		
 		try {
 			SavingExample example = new SavingExample();

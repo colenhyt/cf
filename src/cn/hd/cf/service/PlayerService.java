@@ -4,19 +4,19 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import redis.clients.jedis.Jedis;
 import cn.hd.base.BaseService;
 import cn.hd.base.Bean;
 import cn.hd.cf.dao.PlayerMapper;
-import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Player;
 import cn.hd.cf.model.PlayerExample;
 import cn.hd.cf.model.PlayerExample.Criteria;
 import cn.hd.cf.model.PlayerWithBLOBs;
+import cn.hd.mgr.DataManager;
 
 public class PlayerService extends BaseService {
 	public static String ITEM_KEY = "player";
 	private PlayerMapper playerMapper;
-	private int nextPlayerId;
 	
 	public PlayerMapper getPlayerMapper() {
 		return playerMapper;
@@ -28,14 +28,11 @@ public class PlayerService extends BaseService {
 
 	public PlayerService()
 	{
-		nextPlayerId = 0;
-		
 		initMapper("playerMapper");
-		
-		initData();
 	}
 	
-	public void initData(){
+	public int initData(Jedis jedis2){
+		int nextPlayerId = 0;
 		PlayerExample example = new PlayerExample();
 		List<PlayerWithBLOBs> players = playerMapper.selectByExampleWithBLOBs(example);
 		for (int i=0; i<players.size();i++){
@@ -43,25 +40,27 @@ public class PlayerService extends BaseService {
 			if (player.getPlayerid()>nextPlayerId)
 				nextPlayerId = player.getPlayerid();
 			
-//			jedis.hset(ITEM_KEY, player.getPlayerid().toString(), player.toString());
+			if (jedis2!=null)
+			 jedis2.hset(ITEM_KEY, player.getPlayerid().toString(), player.toString());
 		}
-//		jedis.close();
-	}
-	
-	public int assignNextId(){
-		nextPlayerId++;
+		if (jedis2!=null)
+		 jedis2.close();
+		
 		return nextPlayerId;
 	}
 	
 	public PlayerWithBLOBs find(int playerid,String strPwd){
 		PlayerWithBLOBs player = null;
-//		String jsonObj = jedis.hget(ITEM_KEY,Integer.valueOf(playerid).toString());
-//		if (jsonObj!=null){
-//			player = (PlayerWithBLOBs)Bean.toBean(jsonObj, PlayerWithBLOBs.class);
-//			if (!player.getPwd().equals(strPwd))
-//				return null;
-//		}
-//		jedis.close();
+		if (jedis!=null){
+		String jsonObj = jedis.hget(ITEM_KEY,Integer.valueOf(playerid).toString());
+		if (jsonObj!=null){
+			player = (PlayerWithBLOBs)Bean.toBean(jsonObj, PlayerWithBLOBs.class);
+			if (!player.getPwd().equals(strPwd))
+				return null;
+		}
+		jedis.close();
+		return player;
+		}
 		
 		PlayerExample example = new PlayerExample();
 		Criteria criteria=example.createCriteria();
@@ -76,11 +75,14 @@ public class PlayerService extends BaseService {
 	
 	public PlayerWithBLOBs findByPlayerId(int playerid){
 		PlayerWithBLOBs player = null;
-//		String jsonObj = jedis.hget(ITEM_KEY,Integer.valueOf(playerid).toString());
-//		if (jsonObj!=null){
-//			player = (PlayerWithBLOBs)Bean.toBean(jsonObj, PlayerWithBLOBs.class);
-//		}
-//		jedis.close();
+		if (jedis!=null){
+		String jsonObj = jedis.hget(ITEM_KEY,Integer.valueOf(playerid).toString());
+		if (jsonObj!=null){
+			player = (PlayerWithBLOBs)Bean.toBean(jsonObj, PlayerWithBLOBs.class);
+		}
+		jedis.close();
+		return player;
+		}
 		
 		PlayerExample example = new PlayerExample();
 		Criteria criteria=example.createCriteria();
@@ -94,9 +96,11 @@ public class PlayerService extends BaseService {
 	
 	public boolean add(PlayerWithBLOBs record)
 	{
-		record.setPlayerid(assignNextId());
-//		jedis.hset(ITEM_KEY,Integer.valueOf(record.getPlayerid()).toString(),record.toString());
-//		jedis.close();
+		record.setPlayerid(DataManager.getInstance().assignNextId());
+		if (jedis!=null){
+		jedis.hset(ITEM_KEY,Integer.valueOf(record.getPlayerid()).toString(),record.toString());
+		jedis.close();
+		}
 		
 		try {
 		playerMapper.insertSelective(record);
@@ -110,8 +114,10 @@ public class PlayerService extends BaseService {
 	
 	public boolean updateByKey(PlayerWithBLOBs record)
 	{
-//		jedis.hset(ITEM_KEY,Integer.valueOf(record.getPlayerid()).toString(),record.toString());
-//		jedis.close();
+		if (jedis!=null){
+		jedis.hset(ITEM_KEY,Integer.valueOf(record.getPlayerid()).toString(),record.toString());
+		jedis.close();
+		}
 		
 		try {
 			playerMapper.updateByPrimaryKeySelective(record);
@@ -124,18 +130,20 @@ public class PlayerService extends BaseService {
 	}
 	
 	public boolean have(String playerName){
-//		Collection<String> l = jedis.hgetAll(ITEM_KEY).values();
-//		boolean exist = false;
-//		for (Iterator<String> iter = l.iterator(); iter.hasNext();) {
-//			  String str = (String)iter.next();
-//			  PlayerWithBLOBs player = (PlayerWithBLOBs)Bean.toBean(str,PlayerWithBLOBs.class);
-//			  if (player.getPlayername().equals(playerName)){
-//				  exist = true;
-//				  break;
-//			  }
-//		}		
-//		jedis.close();
-//		return exist;
+		if (jedis!=null){
+		Collection<String> l = jedis.hgetAll(ITEM_KEY).values();
+		boolean exist = false;
+		for (Iterator<String> iter = l.iterator(); iter.hasNext();) {
+			  String str = (String)iter.next();
+			  PlayerWithBLOBs player = (PlayerWithBLOBs)Bean.toBean(str,PlayerWithBLOBs.class);
+			  if (player.getPlayername().equals(playerName)){
+				  exist = true;
+				  break;
+			  }
+		}		
+		jedis.close();
+		return exist;
+		}
 		
 		PlayerExample example = new PlayerExample();
 		Criteria criteria=example.createCriteria();

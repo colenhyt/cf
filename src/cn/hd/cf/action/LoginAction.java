@@ -71,7 +71,6 @@ public class LoginAction extends SavingAction {
 	public LoginAction(){
 		init("signindataService","initdataService"
 				,"insuredataService","savingdataService");
-		EventManager.getInstance().start();
 	}
 	
 	public String connect(){

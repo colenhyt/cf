@@ -3,6 +3,7 @@ package cn.hd.mgr;
 import java.util.List;
 import java.util.Map;
 
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ShardedJedis;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
@@ -16,7 +17,8 @@ import cn.hd.util.RedisClient;
 
 public class DataManager {
 	private int UPDATE_PERIOD = 2;		//20*60: 一小时
-	public ShardedJedis jedis;
+	public boolean useJedis;
+	public Jedis jedis;
 	private RedisClient redisClient;	
 	private ToplistService toplistService;
 	private PlayerService playerService;
@@ -24,6 +26,7 @@ public class DataManager {
 	private InsureService insureService;
 	private StockService stockService;
 	private int tick = 0;
+	private int nextPlayerId;
 	
     private static DataManager uniqueInstance = null;  
 	
@@ -35,16 +38,35 @@ public class DataManager {
      } 
     
     public DataManager(){
-		redisClient = new RedisClient();
-		jedis = redisClient.shardedJedis;
+    	nextPlayerId = 0;
+    	jedis = null;
      }
-  
+	
+	public int assignNextId(){
+		nextPlayerId++;
+		return nextPlayerId;
+	}
+	
     public void init(){
-    	playerService = new PlayerService();
-    	toplistService = new ToplistService();
+    	useJedis = false;
+    	if (useJedis==true){
+    		redisClient = new RedisClient();
+    		jedis = redisClient.jedis;
+    	}
+		
+		playerService = new PlayerService();
+		nextPlayerId = playerService.initData(jedis);
+		
     	savingService = new SavingService();
+    	savingService.initData(jedis);
+    	
     	insureService = new InsureService();
+    	insureService.initData(jedis);
+    	
     	stockService = new StockService();    	
+    	stockService.initData(jedis);
+    	
+    	toplistService = new ToplistService();
     }
     public ToplistService getToplistService() {
 		return toplistService;
