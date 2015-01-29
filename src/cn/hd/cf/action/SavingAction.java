@@ -15,7 +15,6 @@ import cn.hd.cf.service.SavingService;
 import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.ToplistService;
 import cn.hd.cf.tools.SavingdataService;
-import cn.hd.mgr.PlayerManager;
 import cn.hd.mgr.StockManager;
 
 public class SavingAction extends BaseAction {
