@@ -47,7 +47,6 @@ public class StockManager {
     		Stockdata  stock = stockData.get(i);
     		int fre = stock.getFreq();
     		STOCK_QUOTE_PERIOD = fre*60*1000/EventManager.TICK_PERIOD;
-//    		STOCK_QUOTE_PERIOD = 5;
 	    		String json = new String(stock.getQuotes());
 	    		JSONArray array = JSONArray.fromObject(json);
 	    		List<Quote> quotes = JSONArray.toList(array, Quote.class);
@@ -72,8 +71,15 @@ public class StockManager {
 		return diffdd;
     }
         
-    public LinkedList<Quote> getQuotes(int stockid){
-    	return quoteMap.get(stockid);
+    public List<Quote> getBigQuotes(int stockid){
+    	LinkedList<Quote> details = quoteMap.get(stockid);
+    	List<Quote> quotes = new ArrayList<Quote>();
+    	for (int i=0;i<details.size();i+=3){
+    		if (details.size()>i){
+    			quotes.add(details.get(i));
+    		}
+    	}
+    	return quotes;
     }
     
     public List<Quote> getLastQuotes(int stockid){
@@ -102,6 +108,7 @@ public class StockManager {
  		//stock price update:
 		if (tick%STOCK_QUOTE_PERIOD==0){
 			boolean isOpen = isStockOpen();
+			//System.out.println("stock update"+isOpen);
 			if (isOpen!=true) return;
 			
     		Date now = new Date();
@@ -139,7 +146,8 @@ public class StockManager {
 		    			log.debug("清空昨天价格");
 		    		}
 		    		
-		    		lquote.poll();
+		    		//lquote.poll();	//不删除行情数据:
+		    		
 		    		Quote newq = new Quote();
 		    		newq.setPrice(ps);
 		    		newq.setStockid(stock.getId());
@@ -147,7 +155,8 @@ public class StockManager {
 		    		newq.setQty(quote.getQty());
 		    		newq.setUpprice(quote.getUpprice());
 		    		lquote.offer(newq);
-		    		System.out.println("股票价格变化: "+stock.getName()+",涨跌幅:"+stock.getPer()+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
+		    		//System.out.println("行情价格个数"+lquote.size());
+		    		//System.out.println("股票价格变化: "+stock.getName()+",涨跌幅:"+stock.getPer()+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
 		    }	
 		}
 		    	
