@@ -30,21 +30,7 @@
 		</init-param>
 	</filter>
 
-	<filter-mapping>
-		<filter-name>setCharacterEncodingFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-	<filter>
-		<filter-name>basePathFilter</filter-name>
-		<filter-class>
-			cn.hd.filter.BasePathFilter
-		</filter-class>
-	</filter>
 
-	<filter-mapping>
-		<filter-name>basePathFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
     <filter>
         <filter-name>struts2</filter-name>
         <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
