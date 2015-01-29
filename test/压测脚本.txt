@@ -1,0 +1,35 @@
+web_url("index",
+        "URL=http://localhost:8080/cf/index.html",
+        "Resource=0",
+        "RecContentType=text/html",
+        "Referer=",
+        "Snapshot=t3.inf",
+        "Mode=HTML",
+        EXTRARES,
+         LAST);
+
+lr_start_transaction("login_register");
+web_submit_data("register","Action=http://localhost:8080/cf/login_register.do", 
+"Method=POST",
+"Snapshot=t19.inf", 
+"Mode=HTTP",
+ITEMDATA,   
+"Name=player.playername", "Value=steve", ENDITEM,  
+"Name=player.accountid", "Value=421", ENDITEM, 
+LAST);  
+
+lr_end_transaction("login_register",LR_AUTO);
+
+lr_start_transaction("login_login");
+web_submit_data("login","Action=http://localhost:8080/cf/login_login.do", 
+"Method=POST",
+"Snapshot=t19.inf", 
+"Mode=HTTP",
+ITEMDATA,   
+"Name=player.playerid", "Value=55", ENDITEM,  
+LAST);  
+
+lr_end_transaction("login_login",LR_AUTO);
+
+
+	return 0;
