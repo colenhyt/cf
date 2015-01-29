@@ -439,9 +439,9 @@ Stock.prototype.findQuotes = function()
 	var islocal = Math.abs(lsec-QUOTETIME)<QUOTETIME/3;
 	var qdatas = store.get(this.quotename);
 	var squotes = qdatas[stockid];
-	if (islocal&&squotes){
-		return squotes;
-	}
+//	if (islocal&&squotes){
+//		return squotes;
+//	}
 	
 	g_msg.showload("g_stock.findQuotes");
 
