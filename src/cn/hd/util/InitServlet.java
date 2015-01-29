@@ -12,8 +12,8 @@ public class InitServlet extends HttpServlet{
 	protected Logger  log = Logger.getLogger(getClass()); 
 	
 	public void init() throws ServletException {
-		DataManager.getInstance().init();
-		EventManager.getInstance().start();
+//		DataManager.getInstance().init();
+//		EventManager.getInstance().start();
 		log.info("pingan moneylife init successful!");
 	}
 }

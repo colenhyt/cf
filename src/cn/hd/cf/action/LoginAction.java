@@ -81,6 +81,7 @@ public class LoginAction extends SavingAction {
 	}
 	
 	public String register(){
+		log.debug("玩家注册:"+player.getPlayername());
 		boolean bExist = playerService.have(player.getPlayername());
 		if (bExist)
 		{
@@ -138,26 +139,25 @@ public class LoginAction extends SavingAction {
 	
 	public String getPlayerJsonData(PlayerWithBLOBs playerBlob)
 	{
-		Map<Integer,Insure> insures = findUpdatedInsures(playerBlob.getPlayerid());
-		playerBlob.setInsure(JSON.toJSONString(insures));			
-		Map<Integer,Saving> savings = findUpdatedSavings(playerBlob.getPlayerid());
-		playerBlob.setSaving(JSON.toJSONString(savings));
-		Map<Integer,List<Stock>> stocks = stockService.findMapByPlayerId(playerBlob.getPlayerid());
-		playerBlob.setStock(JSON.toJSONString(stocks));	
-		Toplist toplist = toplistService.findByPlayerId(playerBlob.getPlayerid());
-		float fMm = 0;
-		if (toplist!=null){
-			fMm = toplist.getMoney().floatValue();
-			log.debug("取得排行榜金钱:"+fMm);
-			playerBlob.setZan(toplist.getZan());
-		}
-		int top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),0,fMm);
-		playerBlob.setWeektop(top+1);
-		top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),1,fMm);
-		playerBlob.setMonthtop(top+1);
-		float margin = StockManager.getInstance().getMarginSec();
-		playerBlob.setQuotetime(margin);
-		playerBlob.setLastlogin(new Date());
+//		Map<Integer,Insure> insures = findUpdatedInsures(playerBlob.getPlayerid());
+//		playerBlob.setInsure(JSON.toJSONString(insures));			
+//		Map<Integer,Saving> savings = findUpdatedSavings(playerBlob.getPlayerid());
+//		playerBlob.setSaving(JSON.toJSONString(savings));
+//		Map<Integer,List<Stock>> stocks = stockService.findMapByPlayerId(playerBlob.getPlayerid());
+//		playerBlob.setStock(JSON.toJSONString(stocks));	
+//		Toplist toplist = toplistService.findByPlayerId(playerBlob.getPlayerid());
+//		float fMm = 0;
+//		if (toplist!=null){
+//			fMm = toplist.getMoney().floatValue();
+//			playerBlob.setZan(toplist.getZan());
+//		}
+//		int top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),0,fMm);
+//		playerBlob.setWeektop(top+1);
+//		top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),1,fMm);
+//		playerBlob.setMonthtop(top+1);
+//		float margin = StockManager.getInstance().getMarginSec();
+//		playerBlob.setQuotetime(margin);
+//		playerBlob.setLastlogin(new Date());
 		//List<Integer> dataIds = findUpdateDataIds(player.getVersions());
 		//取需要更新的模块id
 		JSONObject obj = JSONObject.fromObject(playerBlob);	
@@ -284,24 +284,28 @@ public class LoginAction extends SavingAction {
 
 	public String login()
 	{
-		PlayerWithBLOBs playerBlob = playerService.find(player.getPlayerid(),player.getPwd());
-		if (playerBlob==null)
-		{
-			log.debug("no player found:playerid:"+player.getPwd());
-			return null;
-		}
-	
-		String pdata = getPlayerJsonData(playerBlob);
-	
-		PlayerWithBLOBs p2 = new PlayerWithBLOBs();
-		p2.setPlayerid(player.getPlayerid());
-		p2.setLastlogin(playerBlob.getLastlogin());
-		playerService.updateByKey(p2);
-			
-		write(pdata,"utf-8");
-		
-		log.debug("player("+pdata+") login success");
+		System.out.println("playerxxx");
 		return null;
+//		
+//		PlayerWithBLOBs playerBlob = playerService.find(player.getPlayerid());
+//		if (playerBlob==null)
+//		{
+//			log.debug("no player found:playerid:"+player.getPwd());
+//			return null;
+//		}
+//	
+//		String pdata = getPlayerJsonData(playerBlob);
+//	
+//		PlayerWithBLOBs p2 = new PlayerWithBLOBs();
+//		p2.setPlayerid(player.getPlayerid());
+//		p2.setLastlogin(playerBlob.getLastlogin());
+//		playerService.updateByKey(p2);
+//			
+//		playerService.DBConnClose();
+//		write(pdata,"utf-8");
+//		
+//		System.out.println("player("+playerBlob.getPlayername()+") login success");
+//		return null;
 	}
 	
 	public String get()

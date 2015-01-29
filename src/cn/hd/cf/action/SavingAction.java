@@ -162,7 +162,7 @@ public class SavingAction extends BaseAction {
 		if (player!=null){
 			float money = calculatePlayerMoney(playerid);
 			 toplistService.updateToplist(playerid,player.getPlayername(),money);			
-				System.out.println("排行榜金钱更新:"+playerid+";money="+money);
+				//System.out.println("排行榜金钱更新:"+playerid+";money="+money);
 			return true;
 		}
 		

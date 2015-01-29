@@ -49,8 +49,6 @@ public class InsureService extends BaseService {
 			jedis.close();			
 		}
 
-		System.out.println("哈哈"+insures.size());
-
 		InsureExample example = new InsureExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));

@@ -110,7 +110,6 @@ public class ToplistService extends BaseService {
 		criteria.andMoneyGreaterThan(fMoney);
 		criteria.andUpdatetimeGreaterThan(fristDate);
 		int cc = toplistMapper.countByExample(example);
-		System.out.println("zhaodao :"+fMoney+":"+cc);
 		return cc;
 	}	
 	
@@ -201,14 +200,14 @@ public class ToplistService extends BaseService {
 			newtop.setWeek(-1);
 			newtop.setZan(0);
 			add(newtop);				
-			System.out.println("增加最新排行榜记录: "+newtop.getPlayername()+":"+newtop.getMoney());
+			//System.out.println("增加最新排行榜记录: "+newtop.getPlayername()+":"+newtop.getMoney());
 		}else {
 			double topMoney = toplist.getMoney().doubleValue();
 			if (Math.abs(money-topMoney)>0.01){
 				toplist.setMoney(BigDecimal.valueOf(money));
 				toplist.setUpdatetime(new Date());
 				updateByKey(toplist);
-				System.out.println("更新排行榜财富: "+toplist.getPlayername()+":"+topMoney+","+toplist.getMoney());
+				//System.out.println("更新排行榜财富: "+toplist.getPlayername()+":"+topMoney+","+toplist.getMoney());
 			}
 		}
 		return true;		
@@ -271,7 +270,7 @@ public class ToplistService extends BaseService {
 			if (i>=20) break;
 			tops.add(list.get(i));
 		}
-		System.out.println("取排行榜(type:"+type+"):开始时间:"+firstDate.toString()+",记录数:"+tops.size());
+		//System.out.println("取排行榜(type:"+type+"):开始时间:"+firstDate.toString()+",记录数:"+tops.size());
 		return tops;
 	}
 }

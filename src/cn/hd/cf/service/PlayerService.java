@@ -49,14 +49,14 @@ public class PlayerService extends BaseService {
 		return nextPlayerId;
 	}
 	
-	public PlayerWithBLOBs find(int playerid,String strPwd){
+	public PlayerWithBLOBs find(int playerid){
 		PlayerWithBLOBs player = null;
 		if (jedis!=null){
 		String jsonObj = jedis.hget(ITEM_KEY,Integer.valueOf(playerid).toString());
 		if (jsonObj!=null){
 			player = (PlayerWithBLOBs)Bean.toBean(jsonObj, PlayerWithBLOBs.class);
-			if (!player.getPwd().equals(strPwd))
-				return null;
+//			if (!player.getPwd().equals(strPwd))
+//				return null;
 		}
 		jedis.close();
 		return player;
@@ -65,7 +65,7 @@ public class PlayerService extends BaseService {
 		PlayerExample example = new PlayerExample();
 		Criteria criteria=example.createCriteria();
 		criteria.andPlayeridEqualTo(Integer.valueOf(playerid));
-		criteria.andPwdEqualTo(strPwd);
+//		criteria.andPwdEqualTo(strPwd);
 		List<PlayerWithBLOBs> players = playerMapper.selectByExampleWithBLOBs(example);
 		if (players.size()>0)
 			player = players.get(0);

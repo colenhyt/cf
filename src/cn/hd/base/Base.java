@@ -85,6 +85,12 @@ public class Base {
 		MybatisSessionFactory.getSession().commit();
 	}
 	/**
+	 * 数据库连接关闭
+	 */
+	public void DBConnClose() {
+		MybatisSessionFactory.getSession().close();
+	}	
+	/**
 	 * 数据库操作出现异常时的处理
 	 * @param e
 	 */

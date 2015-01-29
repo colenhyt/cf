@@ -52,7 +52,7 @@ public class ToplistAction extends BaseAction {
 		JSONArray jsonObject = new JSONArray();
 		jsonObject.add(weeklist);
 		jsonObject.add(monthlist);
-		System.out.println("取得排行榜数据:week:"+weeklist.size()+",month:"+monthlist.size());
+		//System.out.println("取得排行榜数据:week:"+weeklist.size()+",month:"+monthlist.size());
 		write(jsonObject.toString(),"utf-8");
 		return null;
 	}
