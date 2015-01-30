@@ -62,6 +62,7 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 				lowps = ps;
 			flow.push(ps);
 		}
+		flow.push(currPs);
 		var diff = upps - lowps;
 		var unit = diff/quotes.length;
 		unit *= 3;
@@ -89,16 +90,21 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
         startDate.setMinutes(0);
         startDate.setSeconds(0);
         
-        var split = 5;
+        var split = 8;
         var now = new Date();
         
         var diff = Date.parse(now)-Date.parse(startDate);
         diff = diff/split;
         for (var i=1;i<split+1;i++){
          var date = new Date();
-         date.setTime(startDate.getTime()+i*diff);
+         if (date.getTime()>startDate.getTime()+i*diff)
+          date.setTime(startDate.getTime()+i*diff);
          date.setSeconds(0);
-         var dateStr = date.getHours()+":"+date.getMinutes();
+         var dateStr = date.getHours()+":";
+          if (date.getMinutes()>9)
+           dateStr += date.getMinutes();
+          else
+           dateStr += "0"+date.getMinutes();
          labels.push(dateStr);
         }
 		}
@@ -120,7 +126,7 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 				color:color
 			},
 			animation:true,
-			offsetx: 15,
+			offsetx: 5,
 			width : getSizes().StockView[0],
 			height : getSizes().StockView[1],
 			border:{

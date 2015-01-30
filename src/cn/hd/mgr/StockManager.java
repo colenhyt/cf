@@ -74,7 +74,7 @@ public class StockManager {
     public List<Quote> getBigQuotes(int stockid){
     	LinkedList<Quote> details = quoteMap.get(stockid);
     	List<Quote> quotes = new ArrayList<Quote>();
-    	for (int i=0;i<details.size();i+=3){
+    	for (int i=0;i<details.size();i+=2){
     		if (details.size()>i){
     			quotes.add(details.get(i));
     		}

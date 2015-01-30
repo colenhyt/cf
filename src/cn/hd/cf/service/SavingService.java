@@ -138,10 +138,10 @@ public class SavingService extends BaseService {
 		try {
 			SavingExample example = new SavingExample();
 			Criteria criteria = example.createCriteria();
+			criteria.andIdEqualTo(record.getId());
 			criteria.andPlayeridEqualTo(record.getPlayerid());
-			criteria.andItemidEqualTo(1);			
+			criteria.andItemidEqualTo(1);		
 			savingMapper.updateByExampleSelective(record, example);
-//			savingMapper.updateByPrimaryKey(record);
 			DBCommit();
 		}catch (Exception e){
 			e.printStackTrace();
