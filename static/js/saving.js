@@ -74,7 +74,7 @@ content += "             </div>"
 
 Saving.prototype.outContent = function(id,item,pitem){
    var dftProfit = ForDight(pitem.amount * (item.rate/100));
-   var timeout = calculateTimeout(pitem,item);
+   var timeout = timeoutDesc(pitem,item);
  	   
 	var content =      "        <div class='cfsaving_div'>"
  content += "        <div><span class='cpgapedetail_h2 left'>"+item.name+"取款</span>"
@@ -86,7 +86,7 @@ Saving.prototype.outContent = function(id,item,pitem){
  content += "               <td>利率: "+item.rate+"%</td>"
 content += "              </tr>"
 content += "             <tr>"
- content += "               <td>当前存入: <span id='savingprofit' style='color:red'>"+pitem.amount+"</span> 到期:<span style='color:red'>"+timeout+"</span> 天</td>"
+ content += "               <td>当前存入: <span id='savingprofit' style='color:red'>"+pitem.amount+"</span> "+timeout+"</td>"
 content += "              </tr>"
 content += "             <tr>"
  content += "               <td>预计利息: <span>"+dftProfit+"</span></td>"

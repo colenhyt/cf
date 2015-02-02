@@ -425,7 +425,9 @@ Stock.prototype.buyCallback = function(ret){
 	else
 		g_msg.tip("抛售<span style='color:red'>"+item.name+"</span>成功,金额:"+(0-buyitem.amount));
 	
-	this.showDetail(id,true);
+	$('#'+this.tagdetailname).modal("hide");  
+	
+	//this.showDetail(id,true);
 	//刷新list 页面:
 	this.buildPage(this.currPage);
 }

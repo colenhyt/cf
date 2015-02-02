@@ -106,8 +106,8 @@ Insure.prototype.buildPage = function(page)
 			 if (pitem.qty<=0)
 			 	content += "<span class='cfpanel_text right'>期限:"+item.period+"天</span>"
 			 else {
-			 	var timeout = calculateTimeout(pitem,item);
-			 	content += "<span class='cfpanel_text right'>到期:<span style='color:red'>"+timeout+"</span>天</span>"
+			 	var timeout = timeoutDesc(pitem,item);
+			 	content += "<span class='cfpanel_text right'>"+timeout+"</span>"
 			 }
 			content += "     </div>"
       		content += "</div>"
@@ -175,8 +175,8 @@ Insure.prototype.show_insuredetail = function(id){
 	 content += "<tr><td>周期: "+item.period+"天 </td></tr>"
 	content += "</table>"
 	if (pitem.qty>0){
-	     var timeout = calculateTimeout(pitem,item);
-      	content += "<br>(已购买该保险,  还有<span style='color:red'>"+timeout+"</span>天到期)";
+	     var timeout = timeoutDesc(pitem,item);
+      	content += "<br>(已购买该保险,  "+timeout+")";
  	}
 	content += "           </div>  "
 
@@ -214,8 +214,8 @@ Insure.prototype.show_finandetail = function(id){
  content += "<tr><td>周期: "+item.period+"天</td></tr>"
 content += "</table>     "
  	if (pitem.qty>0){
-	     var timeout = calculateTimeout(pitem,item);
-      	content += "<br>已购买  <span style='color:red'>"+pitem.qty+"</span>份, 还有<span style='color:red'>"+timeout+"</span>天到期";
+	     var timeout = timeoutDesc(pitem,item);
+      	content += "<br>已购买  <span style='color:red'>"+pitem.qty+"</span>份, "+timeout;
  	}
  	if (pitem.qty<=0){
  content += "        <table class='cfinsure_tabl'>"

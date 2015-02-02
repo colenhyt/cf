@@ -99,6 +99,7 @@ Bank.prototype.showSaving = function(){
 	var total = data.saving+data.saving2;
 	
 	var sdata = store.get(g_saving.name);
+	var tt = ForDight0(0.083 * data.saving);
 	var rate = sdata[1].rate;
 	var content = "<div class='cfpanel bank'>"
 	content +=	"<div> 活期存款: <span style='color:yellow'> <img class='cficon_money' src='static/img/money.png'/> "+data.saving+"</span></div>"
@@ -107,7 +108,7 @@ Bank.prototype.showSaving = function(){
     content +=            " </div>"
     content +=	"</div>"
     content +=            " <div class='cf-bank-feeling'>"
-    content +=            "     <div>两小时后将获得利息<img class='cficon_money' src='static/img/money.png'/><div>  "
+    content +=            "     <div>两小时后将获得利息<img class='cficon_money' src='static/img/money.png'/>"+tt+"<div>  "
     content +=            "     <div><span>当前活期利率: "+rate+"% </span><div>  "
     content +=       " </div>"
     content +=            " </div>"
@@ -150,8 +151,8 @@ Bank.prototype.showSaving2 = function(page){
 			 if (pitem.amount<=0)
 			 	content += "<span class='cfpanel_text right'>尚未存入</span>"
 			 else {
-			 	var timeout = calculateTimeout(pitem,item);
-			 	content += "<span class='cfpanel_text right'>到期 <span style='color:red'>"+timeout+"</span> 天</span>"
+			 	var timeout = timeoutDesc(pitem,item);
+			 	content += "<span class='cfpanel_text right'>"+timeout+"</span>"
 			 }
 			content += "     </div>"
       		content += "</div>"

@@ -187,9 +187,14 @@ logerr = function(text){
 
 ForDight = function(Dight,point){  
 	var pp = 2;
-	if (point>pp)
+	if (point)
 		pp = point;
     Dight = Math.round(Dight*Math.pow(10,pp))/Math.pow(10,pp);  
+    return Dight;  
+}
+
+ForDight0 = function(Dight){  
+    Dight = Math.round(Dight*Math.pow(10,0))/Math.pow(10,0);  
     return Dight;  
 }
 
@@ -295,7 +300,7 @@ itemStr2 = function(items,split){
     }
     return itemDesc;
 }
-//天
+
 calculateTimeout = function(pitem,item){
     var ctime = pitem.createtime;
     var now = Date.parse(new Date());
@@ -306,6 +311,40 @@ calculateTimeout = function(pitem,item){
      days = 0;
     return days;
 }
+
+//天,小时，分
+timeoutDesc = function(pitem,item){
+	var tt = "已到期";
+    var ctime = pitem.createtime;
+    var now = Date.parse(new Date());
+    var diff = (now - ctime)/1000;
+    var periodTime = item.period*pitem.qty*60*60*24;
+    var diffSec = periodTime - diff;
+    
+    if (diffSec<=0){
+     return tt;
+    }
+    else if (diffSec<(60*60))	//分钟
+    {
+     tt = "到期:<span style='color:red'>"+ForDight0(diffSec/60)+"</span>分钟";
+    }
+    else if (diffSec<(60*60*24))	//小时
+    {
+     tt = "到期:<span style='color:red'>"+ForDight0(diffSec/(60*60))+"</span>小时";
+    }else{		//天
+     tt = "到期:<span style='color:red'>"+ForDight0(diffSec/(60*60*24))+"</span>天";
+    }
+    
+    return tt;
+}
+
+var pp = Date.parse(new Date());
+pp -= 1000*60*60*24;
+var pitem = {createtime:pp,qty:1};
+var item = {period:1};
+
+var tt = calculateTimeout(pitem,item);
+//alert(tt);
 
 randomItems = function(items,existItems,count){
 	var ritems = [];
