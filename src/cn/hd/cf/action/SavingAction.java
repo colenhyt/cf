@@ -80,25 +80,27 @@ public class SavingAction extends BaseAction {
 
 	public String add()
 	{
-		System.out.println("取钱:11");
 		if (saving.getItemid()==1){
 			return null;
 		}
-		float inAmount = 0 - saving.getAmount();
+		
 		System.out.println("取钱:22");
-		//先设活期:
-		int ret = pushLive(saving.getPlayerid(), inAmount);
-		if (ret!=RetMsg.MSG_OK){
-			super.writeMsg(ret);
-			return null;
-		}
-		System.out.println("取钱:33");
 		boolean exec = false;
 		//取钱:
 		if (saving.getAmount()<0){
 			System.out.println("取钱:"+saving.getPlayerid()+":itemid="+saving.getItemid());
+			float inAmount = 0 - saving.getAmount();
+			if (saving.getStatus()==1)		//已到期的存款:
+			{
+				float inter = saving.getAmount()*saving.getRate()/100;
+				inAmount += inter;				
+			}
+			pushLive(saving.getPlayerid(), inAmount);		//放回活期;
 			exec = savingService.remove(saving);	
 		}else {
+			
+			pushLive(saving.getPlayerid(), 0 - saving.getAmount());
+			
 			Saving savingCfg = savingdataService.findSaving(saving.getItemid());
 			System.out.println("存钱:"+saving.getPlayerid()+":itemid="+saving.getItemid());
 			saving.setName(savingCfg.getName());
@@ -112,7 +114,7 @@ public class SavingAction extends BaseAction {
 		}
 		
 		if (exec==false){
-			pushLive(saving.getPlayerid(),  saving.getAmount());
+			pushLive(saving.getPlayerid(), saving.getAmount() );
 			super.writeMsg(RetMsg.MSG_SQLExecuteError);
 		}else {
 			super.writeMsg(RetMsg.MSG_OK);

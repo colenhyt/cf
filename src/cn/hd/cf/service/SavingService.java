@@ -151,4 +151,19 @@ public class SavingService extends BaseService {
 	}
 	
 	
+	public boolean update(Saving record)
+	{
+		try {
+			SavingExample example = new SavingExample();
+			Criteria criteria = example.createCriteria();
+			criteria.andPlayeridEqualTo(record.getPlayerid());
+			criteria.andItemidEqualTo(record.getItemid());			
+			savingMapper.updateByExampleSelective(record, example);
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}				
+		return true;
+	}	
 }

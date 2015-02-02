@@ -242,17 +242,10 @@ public class LoginAction extends SavingAction {
 					long diff = (long)(diffdd/periodMinutes);
 					inter = diff * saving.getAmount()*saving.getRate()/100;
 					saving.setAmount(saving.getAmount()+inter);
-				}else //定期，取出来,跟利息一起放回到活期
+				}else //定期，设置状态，由玩家取
 				{
-					inter = saving.getAmount()*saving.getRate()/100;
-					float newsaving = saving.getAmount()+inter;
-					if (liveSaving!=null){
-						liveSaving.setAmount(liveSaving.getAmount()+newsaving);
-						savingService.remove(saving);
-						Saving ll = mdata.get(liveSaving.getItemid());
-						if (ll!=null)
-							ll.setAmount(liveSaving.getAmount());
-					}
+					saving.setStatus((byte)1);
+					savingService.update(saving);
 				}
 				log.debug(saving.getItemid()+"存款到期, 得到利息: "+inter);
 			}
