@@ -312,8 +312,7 @@ Insure.prototype.buyCallback = function(ret){
 		
 	var cash = g_player.saving[1].amount;	   
 	cash -= amount;
-	var pupdate = {"cash":cash};
-	g_player.updateData(pupdate);
+	g_player.updateData({"cash":cash});
 	g_quest.onBuyItem(this.name,item,1);
 				   
 	//tip:

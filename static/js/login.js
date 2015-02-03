@@ -117,55 +117,56 @@ Login.prototype.onImgClick = function(image)
 			this.msg("选择你的性别");
 			return;
 		}
-		var canLogin = true;
 		if (tdata==null||tdata.playerid!=this.loginPlayerid)
-			canLogin = this.register();
-		if (canLogin){
+			this.register();
+		else{
 			this.login();
 		}
 	}
 }
 
-Login.prototype.register = function(){
-    var createtime = Date.parse(new Date());
-	var tag = document.getElementById("inputnick");
-	var ppname = tag.value;
-     var player = {
-        "accountid":1,"playerid":-1,"playername":ppname,"exp":0,
-		quest:[],sex:this.sex,createtime:createtime
-        };
-           
-    var dataParam = obj2ParamStr("player",player);
-	var dataobj = $.ajax({type:"post",url:"/cf/login_register.do",data:dataParam,async:false});
-	var retcode = 0;
-	try    {
-		if (dataobj!=null&&dataobj.responseText.length>0) {
-			var obj = cfeval(dataobj.responseText);
-			if (obj!=null){
-			//error:
-				if (obj.code!=null){
-					retcode = obj.code;
-				}else if (obj.pwd!=null){
-					player.playerid = obj.playerid;
-					player.pwd = obj.pwd;
-				}
-			}
-		}
-	}   catch  (e)   {
-	    document.write(e.name  +   " :  "   +  dataobj.responseText);
-	    return false;
-	}	
-	if (retcode>0){
-		this.msg('注册失败: '+ERR_MSG[retcode]);
-		return false;
+Login.prototype.registerCallback = function(data){
+	var obj = cfeval(data);
+	if (obj.code!=null&&obj.code>0){
+	 this.msg('注册失败: '+ERR_MSG[obj.code]);
+	 return;
 	}
+	
+	if (obj.pwd==null){
+	 return;
+	}
+	
+	var player = obj;	
+	player.quest = [];
+	player.createtime = Date.parse(new Date());
+	
 	var logindata = store.get(this.name);
 	var lastPlayer = logindata[logindata.length-1];
 	if (lastPlayer==null||lastPlayer.playerid!=player.playerid)
 	 logindata.push(player);
 	store.set(g_player.name,player);
 	
-	return true;
+	this.loginCallback(data);
+}
+
+Login.prototype.register = function(){
+	g_msg.showload("g_login.register");
+
+	var tag = document.getElementById("inputnick");
+	var ppname = tag.value;
+	var accountid = 11;
+           
+    var dataParam = "playername="+ppname+"&accountid="+accountid+"&sex="+g_login.sex;
+    
+	try    {
+		$.ajax({type:"post",url:"/cf/login_register.jsp",data:dataParam,success:function(data){
+		 g_login.registerCallback(data);
+         g_msg.destroyload();
+		}});
+	}   catch  (e)   {
+	    logerr(e.name  +   " :  "   +  dataParam);
+	   return false;
+	}	
 }
 
 Login.prototype.loadData = function(obj){
@@ -196,7 +197,9 @@ Login.prototype.loadData = function(obj){
 			msg.push({type:g_insure.name,t:parseInt(item.type),name:item.name,profit:parseInt(idata[itemid].profit)});
 		 }
 	}
-	g_player.stock = cfeval(obj.stock);
+	g_player.stock = {};
+	if (obj.stock.length>0)
+	 g_player.stock = cfeval(obj.stock);
 	
 	g_player.setStockIds();
 	
@@ -282,7 +285,7 @@ Login.prototype.login = function(){
          g_msg.destroyload();
 		}});
 	}   catch  (e)   {
-	    logerr(e.name  +   " :  "   +  dataobj.responseText);
+	    logerr(e.name  +   " :  "   +  dataParam);
 	   return false;
 	}	
 

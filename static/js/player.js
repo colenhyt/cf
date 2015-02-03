@@ -134,43 +134,33 @@ Player.prototype.updateData = function(prop) {
      if (newLevel>oldLevel)
      	g_uplevel.open();
  	this.flushPageview();
-	this.syncData2();
+	this.syncPlayerData();
     store.set(this.name,this.data);
 }
 
 Player.prototype.clone = function(data) {
 	var pl = this.data;
 	data.playerid = pl.playerid;
-	data.accountid = pl.accountid;
+	data.playername = pl.playername;
+	data.exp = pl.exp;
 	data.sex = pl.sex;
 	data.openstock = pl.openstock;
-	data.createtime = pl.createtime;
-	data.playername = pl.playername;
-	data.pwd = pl.pwd;
-	data.exp = pl.exp;
 	if (pl.quest!=null)
 		data.quest = pl.quest.concat();
 }
 
-Player.prototype.syncData2 = function(){
+Player.prototype.syncPlayerData = function(){
 	var data = {};
 	this.clone(data);
 	data.quest = JSON.stringify(data.quest);
 	var updateStr = "player="+JSON.stringify(data);
 	//alert("任务同步到服务器:"+data.quest);
 	try  {
-		$.ajax({type:"post",url:"/cf/login_update.do",data:updateStr,success:this.syncCallback});
+		$.ajax({type:"post",url:"/cf/login_update.jsp",data:updateStr,success:function(dataobj){
+			var obj = cfeval(dataobj);
+		}});
 	}   catch  (e)   {
 	    document.write(e.name);
-	}   
-}
-
-Player.prototype.syncCallback=function(dataobj){
-	try    {
-			var obj = cfeval(dataobj);
-			//alert(obj);
-	}   catch  (e)   {
-	    document.write(e.name  +   " :  "   +  dataobj);
 	}   
 }
 
@@ -233,7 +223,9 @@ Player.prototype.prize = function(prizes) {
  		try  {
 			var obj = {id:this.saving[1].id,itemid:1,amount:this.saving[1].amount,playerid:this.data.playerid};
 			var updateStr = obj2ParamStr("saving",obj);
-			$.ajax({type:"post",url:"/cf/saving_updatelive.do",data:updateStr,success:this.syncCallback});
+			$.ajax({type:"post",url:"/cf/saving_updatelive.do",data:updateStr,success:function(dataobj){
+			var obj = cfeval(dataobj);
+		    }});
 		}   catch  (e)   {
 	   	 logerr(e.name);
 		}     	
@@ -399,8 +391,7 @@ Player.prototype.buyItem = function(tname,id,qty,ps){
 	}
 				
 	cash -= amount;
-	var pupdate = {"cash":cash};
-	this.updateData(pupdate);
+	this.updateData({"cash":cash});
 	g_quest.onBuyItem(tname,item,qty);
 	
 	tgoods.name = item.name;	
