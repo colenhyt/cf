@@ -73,13 +73,13 @@ public class DataManager {
 		String playerStr = null;
 		synchronized(playerMaps) {
 		boolean exist = playerMaps.containsKey(playername);
-		if (exist){
-			System.out.println("该玩家已存在:"+playername);
-			Message msg = new Message();
-			msg.setCode(RetMsg.MSG_PlayerNameIsExist);		//重名
-			JSONObject obj = JSONObject.fromObject(msg);
-			return obj.toString();
-		}
+//		if (exist){
+//			System.out.println("该玩家已存在:"+playername);
+//			Message msg = new Message();
+//			msg.setCode(RetMsg.MSG_PlayerNameIsExist);		//重名
+//			JSONObject obj = JSONObject.fromObject(msg);
+//			return obj.toString();
+//		}
 		Date time = new Date(); 
 		
 		PlayerWithBLOBs playerBlob = new PlayerWithBLOBs();
@@ -95,8 +95,8 @@ public class DataManager {
 		ToplistService toplistService = new ToplistService();
 		int top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),0,0);
 		playerBlob.setWeektop(top+1);
-		top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),1,0);
-		playerBlob.setMonthtop(top+1);	
+//		top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),1,0);
+//		playerBlob.setMonthtop(top+1);	
 		
 		if (init!=null){
 			playerBlob.setExp(init.getExp());
@@ -141,8 +141,8 @@ public class DataManager {
 				playerMaps.put(player.getPlayername(), player);				
 			}
 		}
-		ToplistService toplistService = new ToplistService();
-		LoginAction.initToplist(player, toplistService);
+//		ToplistService toplistService = new ToplistService();
+//		LoginAction.initToplist(player, toplistService);
 		
 		float margin = StockManager.getInstance().getMarginSec();
 		player.setQuotetime(margin);
@@ -291,17 +291,17 @@ public class DataManager {
 	
 	public void update(){
     	tick ++;
-    	if (newPlayersVect.size()>0||tick%UPDATE_PERIOD==0){
-    		pushPlayers();
-    	}
-    	
-    	if (updatePlayersVect.size()>0||tick%UPDATE_PERIOD==0){
-    		updatePlayers();
-    	}
-    	
-    	if (newSavingVect.size()>0||tick%UPDATE_PERIOD==0){
-    		pushSavings();
-    	}    	
+//    	if (newPlayersVect.size()>0||tick%UPDATE_PERIOD==0){
+//    		pushPlayers();
+//    	}
+//    	
+//    	if (updatePlayersVect.size()>0||tick%UPDATE_PERIOD==0){
+//    		updatePlayers();
+//    	}
+//    	
+//    	if (newSavingVect.size()>0||tick%UPDATE_PERIOD==0){
+//    		pushSavings();
+//    	}    	
 	}
     
     public static void main(String[] args) {
