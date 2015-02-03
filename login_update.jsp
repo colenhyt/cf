@@ -7,8 +7,9 @@
 <%@ page import="net.sf.json.JSONObject"%>
 <%
 String pp = request.getParameter("player");
+
 JSONObject ppObj = JSONObject.fromObject(pp);
 PlayerWithBLOBs playerBlob = (PlayerWithBLOBs)JSONObject.toBean(ppObj,PlayerWithBLOBs.class);
 DataManager.getInstance().updatePlayer(playerBlob);
-System.out.println("update:"+playerBlob.getPlayername());
+System.out.println("update:"+pp);
 %>
