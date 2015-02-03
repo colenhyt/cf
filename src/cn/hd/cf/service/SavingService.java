@@ -127,18 +127,11 @@ public class SavingService extends BaseService {
 		return true;
 	}	
 	
-	public boolean updateLive(Saving record)
+	public boolean updateLive2(Saving record)
 	{
-		if (jedis!=null){
-		String key = record.getPlayerid()+ITEM_KEY;
-		jedis.hset(key, new Integer(1).toString(), record.toString());		
-		jedis.close();
-		}
-		
 		try {
 			SavingExample example = new SavingExample();
 			Criteria criteria = example.createCriteria();
-			criteria.andIdEqualTo(record.getId());
 			criteria.andPlayeridEqualTo(record.getPlayerid());
 			criteria.andItemidEqualTo(1);		
 			savingMapper.updateByExampleSelective(record, example);
@@ -158,6 +151,23 @@ public class SavingService extends BaseService {
 			Criteria criteria = example.createCriteria();
 			criteria.andPlayeridEqualTo(record.getPlayerid());
 			criteria.andItemidEqualTo(record.getItemid());			
+			savingMapper.updateByExampleSelective(record, example);
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}				
+		return true;
+	}
+
+	public boolean updateLive(Saving record)
+	{
+		try {
+			SavingExample example = new SavingExample();
+			Criteria criteria = example.createCriteria();
+			criteria.andIdEqualTo(record.getId());
+			criteria.andPlayeridEqualTo(record.getPlayerid());
+			criteria.andItemidEqualTo(1);		
 			savingMapper.updateByExampleSelective(record, example);
 			DBCommit();
 		}catch (Exception e){

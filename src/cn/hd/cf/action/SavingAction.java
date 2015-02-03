@@ -125,7 +125,12 @@ public class SavingAction extends BaseAction {
 	//更新活期存款金钱:
 	public String updatelive()
 	{
-		boolean update = playerMoneyUpdate(saving);	
+		saving.setUpdatetime(new Date());	
+		boolean update = savingService.updateLive2(saving);	
+		
+		System.out.println("活期存款更新:"+saving.getPlayerid()+";value="+saving.getAmount());
+		 playerTopUpdate(saving.getPlayerid());
+		 
 		if (update==false){
 			super.writeMsg(RetMsg.MSG_SQLExecuteError);
 		}else

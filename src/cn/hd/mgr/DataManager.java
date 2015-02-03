@@ -8,12 +8,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import com.alibaba.fastjson.JSON;
+
 import net.sf.json.JSONObject;
 import redis.clients.jedis.Jedis;
 import cn.hd.cf.action.LoginAction;
 import cn.hd.cf.action.RetMsg;
 import cn.hd.cf.action.SavingAction;
 import cn.hd.cf.model.Init;
+import cn.hd.cf.model.Message;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Savingdata;
@@ -65,24 +68,35 @@ public class DataManager {
 		return nextPlayerId;
 	}
 	
-	public String register(String playername)
+	public String register(String playername,int accountid,byte sex)
 	{
 		String playerStr = null;
 		synchronized(playerMaps) {
 		boolean exist = playerMaps.containsKey(playername);
-//		if (exist){
-//			System.out.println("该玩家已存在:"+playername);
-//			return playerStr;
-//		}
+		if (exist){
+			System.out.println("该玩家已存在:"+playername);
+			Message msg = new Message();
+			msg.setCode(RetMsg.MSG_PlayerNameIsExist);		//重名
+			JSONObject obj = JSONObject.fromObject(msg);
+			return obj.toString();
+		}
 		Date time = new Date(); 
 		
 		PlayerWithBLOBs playerBlob = new PlayerWithBLOBs();
 		playerBlob.setPlayername(playername);
-		playerBlob.setAccountid(1);
+		playerBlob.setAccountid(accountid);
+		playerBlob.setSex(sex);
 		playerBlob.setCreatetime(time);
+		playerBlob.setZan(0);
 		String pwd = StringUtil.getRandomString(10);
 		playerBlob.setPwd(MD5.MD5(pwd));
 		playerBlob.setPlayerid(assignNextId());
+		
+		ToplistService toplistService = new ToplistService();
+		int top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),0,0);
+		playerBlob.setWeektop(top+1);
+		top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),1,0);
+		playerBlob.setMonthtop(top+1);	
 		
 		if (init!=null){
 			playerBlob.setExp(init.getExp());
@@ -91,6 +105,7 @@ public class DataManager {
 		 playerMaps.put(playerBlob.getPlayername(), playerBlob);
 			
 		 if (init!=null&&init.getMoney()>0){
+			 Map<Integer,Saving> savings = new HashMap<Integer,Saving>();
 		Saving savingCfg = savingData.get(1);
 		Saving saving = new Saving();
 		saving.setName(savingCfg.getName());
@@ -104,6 +119,8 @@ public class DataManager {
 		saving.setPlayerid(playerBlob.getPlayerid());
 		saving.setAmount(Float.valueOf(init.getMoney().intValue()));
 		newSavingVect.add(saving);
+		savings.put(savingCfg.getId(), saving);
+		playerBlob.setSaving(JSON.toJSONString(savings));
 		 }
 		  JSONObject obj = JSONObject.fromObject(playerBlob);
 		  playerStr = obj.toString();
@@ -137,6 +154,19 @@ public class DataManager {
 	
 	public void updatePlayer(PlayerWithBLOBs player)
 	{
+		PlayerWithBLOBs cachePlayer = playerMaps.get(player.getPlayername());
+		if (cachePlayer==null){
+			return;
+		}
+		cachePlayer.setExp(player.getExp());
+		cachePlayer.setSex(player.getSex());
+		cachePlayer.setQuest(player.getQuest());
+		cachePlayer.setOpenstock(player.getOpenstock());
+		System.out.println("更新内存玩家数据:"+player.getExp());
+		player.setPwd(cachePlayer.getPwd());
+		player.setAccountid(cachePlayer.getAccountid());
+		player.setCreatetime(cachePlayer.getCreatetime());
+		player.setZan(cachePlayer.getZan());
 		updatePlayersVect.add(player);
 	}
 	
@@ -173,12 +203,12 @@ public class DataManager {
 		}
 		
     	PlayerService playerService = new PlayerService();
-		nextPlayerId = playerService.initData(jedis);
-		
 		List<PlayerWithBLOBs> players = playerService.findAll();
 		for (int i=0; i<players.size();i++){
 			PlayerWithBLOBs player = players.get(i);
 			playerMaps.put(player.getPlayername(), player);
+			if (player.getPlayerid()>nextPlayerId)
+				nextPlayerId = player.getPlayerid();			
 		}
 		System.out.println("load players :"+nextPlayerId);
 		
@@ -239,7 +269,7 @@ public class DataManager {
 	private void updatePlayers(){
 		PlayerService playerService = new PlayerService();
 		for (int i=0;i<updatePlayersVect.size();i++){
-			playerService.add(updatePlayersVect.get(i));
+			playerService.updateByKey(updatePlayersVect.get(i));
 		}
 		playerService.DBCommit();
 		System.out.println("更新玩家:"+updatePlayersVect.size());
