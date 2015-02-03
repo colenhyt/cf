@@ -40,31 +40,21 @@ public class PlayerService extends BaseService {
 			if (player.getPlayerid()>nextPlayerId)
 				nextPlayerId = player.getPlayerid();
 			
-			if (jedis2!=null)
-			 jedis2.hset(ITEM_KEY, player.getPlayerid().toString(), player.toString());
 		}
-		if (jedis2!=null)
-		 jedis2.close();
-		
 		return nextPlayerId;
 	}
 	
-	public PlayerWithBLOBs find(int playerid){
+	public List<PlayerWithBLOBs> findAll(){
+		PlayerExample example = new PlayerExample();
+		return playerMapper.selectByExampleWithBLOBs(example);		
+	}
+	
+	public PlayerWithBLOBs findByName(String playerName){
 		PlayerWithBLOBs player = null;
-		if (jedis!=null){
-		String jsonObj = jedis.hget(ITEM_KEY,Integer.valueOf(playerid).toString());
-		if (jsonObj!=null){
-			player = (PlayerWithBLOBs)Bean.toBean(jsonObj, PlayerWithBLOBs.class);
-//			if (!player.getPwd().equals(strPwd))
-//				return null;
-		}
-		jedis.close();
-		return player;
-		}
-		
+	
 		PlayerExample example = new PlayerExample();
 		Criteria criteria=example.createCriteria();
-		criteria.andPlayeridEqualTo(Integer.valueOf(playerid));
+		criteria.andPlayernameEqualTo(playerName);
 //		criteria.andPwdEqualTo(strPwd);
 		List<PlayerWithBLOBs> players = playerMapper.selectByExampleWithBLOBs(example);
 		if (players.size()>0)
@@ -96,7 +86,6 @@ public class PlayerService extends BaseService {
 	
 	public boolean add(PlayerWithBLOBs record)
 	{
-		record.setPlayerid(DataManager.getInstance().assignNextId());
 		if (jedis!=null){
 		jedis.hset(ITEM_KEY,Integer.valueOf(record.getPlayerid()).toString(),record.toString());
 		jedis.close();
@@ -114,11 +103,6 @@ public class PlayerService extends BaseService {
 	
 	public boolean updateByKey(PlayerWithBLOBs record)
 	{
-		if (jedis!=null){
-		jedis.hset(ITEM_KEY,Integer.valueOf(record.getPlayerid()).toString(),record.toString());
-		jedis.close();
-		}
-		
 		try {
 			playerMapper.updateByPrimaryKeySelective(record);
 			DBCommit();
@@ -152,4 +136,28 @@ public class PlayerService extends BaseService {
 		List<Player> players = playerMapper.selectByExample(example);
 		return players.size()>0;	
 	}
+
+	public PlayerWithBLOBs find(int playerid){
+			PlayerWithBLOBs player = null;
+			if (jedis!=null){
+			String jsonObj = jedis.hget(ITEM_KEY,Integer.valueOf(playerid).toString());
+			if (jsonObj!=null){
+				player = (PlayerWithBLOBs)Bean.toBean(jsonObj, PlayerWithBLOBs.class);
+	//			if (!player.getPwd().equals(strPwd))
+	//				return null;
+			}
+			jedis.close();
+			return player;
+			}
+			
+			PlayerExample example = new PlayerExample();
+			Criteria criteria=example.createCriteria();
+			criteria.andPlayeridEqualTo(Integer.valueOf(playerid));
+	//		criteria.andPwdEqualTo(strPwd);
+			List<PlayerWithBLOBs> players = playerMapper.selectByExampleWithBLOBs(example);
+			if (players.size()>0)
+				player = players.get(0);
+			
+			return player;
+		}
 }

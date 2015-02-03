@@ -158,7 +158,7 @@ public class SavingAction extends BaseAction {
 		return u;
 	}
 	
-	protected boolean playerTopUpdate(int playerid){
+	public boolean playerTopUpdate(int playerid){
 		PlayerWithBLOBs player = playerService.findByPlayerId(playerid);
 		if (player!=null){
 			float money = calculatePlayerMoney(playerid);

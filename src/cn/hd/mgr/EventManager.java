@@ -31,5 +31,6 @@ public class EventManager extends java.util.TimerTask{
 		// TODO Auto-generated method stub
 //		System.out.println("eventMgr timer here");
 		StockManager.getInstance().update();
+		DataManager.getInstance().update();
 	}
 }

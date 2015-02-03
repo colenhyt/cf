@@ -36,13 +36,17 @@ public class RedisClient {
     { 
         // 池基本配置 
         JedisPoolConfig config = new JedisPoolConfig(); 
+        config.setMaxTotal(500);
         config.setMaxIdle(5); 
         config.setMaxWaitMillis(1000*1000l); 
-        config.setTestOnBorrow(false); 
+        config.setTestOnBorrow(true); 
         
         jedisPool = new JedisPool(config,"127.0.0.1",6379);
     }
     
+    public Jedis getJedis(){
+    	return jedisPool.getResource();     	
+    }
     /** 
      * 初始化切片池 
      */ 
