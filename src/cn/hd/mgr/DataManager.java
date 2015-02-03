@@ -1,35 +1,36 @@
 package cn.hd.mgr;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import com.alibaba.fastjson.JSON;
-
 import net.sf.json.JSONObject;
 import redis.clients.jedis.Jedis;
-import cn.hd.cf.action.LoginAction;
-import cn.hd.cf.action.RetMsg;
+import cn.hd.base.Bean;
 import cn.hd.cf.action.SavingAction;
 import cn.hd.cf.model.Init;
-import cn.hd.cf.model.Message;
+import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Savingdata;
-import cn.hd.cf.service.InsureService;
+import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.service.SavingService;
-import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.ToplistService;
 import cn.hd.cf.tools.InitdataService;
 import cn.hd.cf.tools.SavingdataService;
 import cn.hd.util.MD5;
 import cn.hd.util.RedisClient;
 import cn.hd.util.StringUtil;
+
+import com.alibaba.fastjson.JSON;
 
 public class DataManager {
 	private int UPDATE_PERIOD = 20*30;		//20*60: 一小时
@@ -39,13 +40,11 @@ public class DataManager {
 	private Init	init;
 	private Map<Integer,Saving>		savingData;
 	private Map<String,PlayerWithBLOBs> playerMaps;
+	private List<Toplist>			currMonthList;
 	private Vector<PlayerWithBLOBs>	newPlayersVect;
 	private Vector<PlayerWithBLOBs>	updatePlayersVect;
+	private Vector<Toplist>			updateToplistVect;
 	private Vector<Saving>	newSavingVect;
-	private ToplistService toplistService;
-	private SavingService savingService;
-	private InsureService insureService;
-	private StockService stockService;
 	private int tick = 0;
 	private int nextPlayerId;
 	
@@ -132,6 +131,18 @@ public class DataManager {
 		return playerStr;
 	}
 	
+	public PlayerWithBLOBs findPlayer(int playerid){
+		PlayerWithBLOBs player = null;
+		Collection<PlayerWithBLOBs> l = playerMaps.values();
+		for (Iterator<PlayerWithBLOBs> iter = l.iterator(); iter.hasNext();) {
+			PlayerWithBLOBs pp = (PlayerWithBLOBs)iter.next();
+			if (pp.getPlayerid()==playerid){
+				player = pp;
+			}
+		}	
+		return player;
+	}
+	
 	public String login(String playerName){
 		PlayerWithBLOBs player = playerMaps.get(playerName);
 		if (player==null){
@@ -150,6 +161,30 @@ public class DataManager {
 		
 		JSONObject obj = JSONObject.fromObject(player);	
 		return obj.toString();
+	}
+	
+	public void onMoneyChanged(int playerid,float fChangedMoney){
+		String playername = null;
+		for (int i=0;i<currMonthList.size();i++){
+			Toplist topi = currMonthList.get(i);
+			if (topi.getPlayerid()==playerid){
+				playername = topi.getPlayername();
+				float newMoney = topi.getMoney().floatValue()+fChangedMoney;
+				if (newMoney>0)
+				 topi.setMoney(BigDecimal.valueOf(newMoney));
+			}
+		}
+		if (playername==null){
+			PlayerWithBLOBs player = findPlayer(playerid);
+			if (player!=null)
+			 playername = player.getPlayername();
+		}
+		
+		Toplist toplist = new Toplist();
+		toplist.setPlayerid(playerid);
+		toplist.setPlayername(playername);
+		toplist.setMoney(BigDecimal.valueOf(fChangedMoney));
+		updateToplistVect.add(toplist);
 	}
 	
 	public void updatePlayer(PlayerWithBLOBs player)
@@ -179,6 +214,7 @@ public class DataManager {
 		
     	newPlayersVect = new Vector<PlayerWithBLOBs>();
     	updatePlayersVect = new Vector<PlayerWithBLOBs>();
+    	
     	
     	newSavingVect = new Vector<Saving>();
     	
@@ -212,51 +248,12 @@ public class DataManager {
 		}
 		System.out.println("load players :"+nextPlayerId);
 		
-    	savingService = new SavingService();
-    	savingService.initData(jedis);
+    	ToplistService toplistService = new ToplistService();
+    	currMonthList = toplistService.findCurrMonthToplists();
     	
-    	insureService = new InsureService();
-    	insureService.initData(jedis);
     	
-    	stockService = new StockService();    	
-    	stockService.initData(jedis);
-    	
-    	toplistService = new ToplistService();
-    	toplistService.initData(jedis);
     }
-    public ToplistService getToplistService() {
-		return toplistService;
-	}
-
-	public void setToplistService(ToplistService toplistService) {
-		this.toplistService = toplistService;
-	}
-
-	public SavingService getSavingService() {
-		return savingService;
-	}
-
-	public void setSavingService(SavingService savingService) {
-		this.savingService = savingService;
-	}
-
-	public InsureService getInsureService() {
-		return insureService;
-	}
-
-	public void setInsureService(InsureService insureService) {
-		this.insureService = insureService;
-	}
-
-	public StockService getStockService() {
-		return stockService;
-	}
-
-	public void setStockService(StockService stockService) {
-		this.stockService = stockService;
-	}
-
-	private void pushPlayers(){
+    private void pushPlayers(){
 		PlayerService playerService = new PlayerService();
 		for (int i=0;i<newPlayersVect.size();i++){
 			playerService.add(newPlayersVect.get(i));
@@ -275,7 +272,18 @@ public class DataManager {
 		System.out.println("更新玩家:"+updatePlayersVect.size());
 		updatePlayersVect.clear();
 	}
-	
+
+	private void updateToplists(){
+		ToplistService toplistService = new ToplistService();
+		for (int i=0;i<updateToplistVect.size();i++){
+			Toplist toplist = updateToplistVect.get(i);
+			toplistService.changeToplist(toplist.getPlayerid(),toplist.getPlayername(),toplist.getMoney().doubleValue());
+		}
+		toplistService.DBCommit();
+		System.out.println("更新排行榜:"+updatePlayersVect.size());
+		updatePlayersVect.clear();
+	}
+		
 	private void pushSavings(){
 		SavingService savingService = new SavingService();
 		SavingAction savingAction = new SavingAction();
@@ -301,7 +309,11 @@ public class DataManager {
 //    	
 //    	if (newSavingVect.size()>0||tick%UPDATE_PERIOD==0){
 //    		pushSavings();
-//    	}    	
+//    	}
+    	if (updateToplistVect.size()>0||tick%UPDATE_PERIOD==0){
+    		updateToplists();
+    	}
+    	
 	}
     
     public static void main(String[] args) {

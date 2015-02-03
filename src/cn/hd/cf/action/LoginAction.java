@@ -205,6 +205,7 @@ public class LoginAction extends SavingAction {
 				
 					Insure incfg = insuredataService.findInsure(insure.getItemid());
 					inter = incfg.getProfit()*insure.getQty();
+					DataManager.getInstance().onMoneyChanged(insure.getPlayerid(),inter);
 					super.pushLive(playerId, insure.getAmount()+inter);
 				}else {		//保险到期，移除
 					inter = -1;

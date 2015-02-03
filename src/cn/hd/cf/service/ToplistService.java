@@ -69,6 +69,15 @@ public class ToplistService extends BaseService {
 		return tops;
 	}
 	
+	public List<Toplist> findCurrMonthToplists(){
+		Date currMontDate = getFirstDate(1);
+		ToplistExample example=new ToplistExample();
+		Criteria criteria=example.createCriteria();		
+		criteria.andUpdatetimeGreaterThan(currMontDate);
+		example.setOrderByClause("money desc");
+		return toplistMapper.selectByExample(example);
+	}
+	
 	public int findCountByGreaterMoney(int playerid,int type,float fPMoney){
 		Toplist top = findByPlayerId(playerid);
 		int intMoney = Float.valueOf(fPMoney).intValue();
@@ -196,8 +205,6 @@ public class ToplistService extends BaseService {
 			newtop.setCreatetime(new Date());
 			newtop.setUpdatetime(new Date());
 			newtop.setMoney(BigDecimal.valueOf(money));
-			newtop.setType(0);
-			newtop.setWeek(-1);
 			newtop.setZan(0);
 			add(newtop);				
 			//System.out.println("增加最新排行榜记录: "+newtop.getPlayername()+":"+newtop.getMoney());
@@ -272,5 +279,30 @@ public class ToplistService extends BaseService {
 		}
 		//System.out.println("取排行榜(type:"+type+"):开始时间:"+firstDate.toString()+",记录数:"+tops.size());
 		return tops;
+	}
+
+	public boolean changeToplist(int playerid,String playerName,double money){
+		Toplist toplist = findByPlayerId(playerid);
+		if (toplist==null){
+			Toplist newtop = new Toplist();
+			newtop.setPlayerid(playerid);
+			newtop.setPlayername(playerName);
+			newtop.setCreatetime(new Date());
+			newtop.setUpdatetime(new Date());
+			newtop.setMoney(BigDecimal.valueOf(money));
+			newtop.setZan(0);
+			add(newtop);				
+			//System.out.println("增加最新排行榜记录: "+newtop.getPlayername()+":"+newtop.getMoney());
+		}else {
+			double topMoney = toplist.getMoney().doubleValue();
+			topMoney += money;
+			if (topMoney>0.01){
+				toplist.setMoney(BigDecimal.valueOf(topMoney));
+				toplist.setUpdatetime(new Date());
+				updateByKey(toplist);
+				//System.out.println("更新排行榜财富: "+toplist.getPlayername()+":"+topMoney+","+toplist.getMoney());
+			}
+		}
+		return true;		
 	}
 }
