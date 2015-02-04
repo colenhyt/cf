@@ -2,8 +2,15 @@ package cn.hd.mgr;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,16 +20,18 @@ import java.util.Vector;
 
 import net.sf.json.JSONObject;
 import redis.clients.jedis.Jedis;
-import cn.hd.base.Bean;
+import cn.hd.cf.action.RetMsg;
 import cn.hd.cf.action.SavingAction;
 import cn.hd.cf.model.Init;
-import cn.hd.cf.model.Insure;
+import cn.hd.cf.model.Message;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Savingdata;
+import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.service.SavingService;
+import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.ToplistService;
 import cn.hd.cf.tools.InitdataService;
 import cn.hd.cf.tools.SavingdataService;
@@ -57,9 +66,48 @@ public class DataManager {
         return uniqueInstance;  
      } 
     
+    private void initStock(PlayerWithBLOBs player){
+    	Connection conn = null;
+		Statement stat = null;
+		try {
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/hdcf","root","123a123@");
+			stat = conn.createStatement();
+	         ResultSet rs = stat.executeQuery("SELECT amount FROM stock where playerid="+player.getPlayerid());  
+	         while (rs.next()){  
+	             float mm = rs.getFloat(1); 
+//	             System.out.println(mm);
+	         } 	
+	         rs.close();
+	    } catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				stat.close();
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}    	
+    }
+    
     public DataManager(){
     	nextPlayerId = 0;
     	jedis = null;
+    	try {
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
      }
 	
 	public int assignNextId(){
@@ -91,12 +139,6 @@ public class DataManager {
 		playerBlob.setPwd(MD5.MD5(pwd));
 		playerBlob.setPlayerid(assignNextId());
 		
-		ToplistService toplistService = new ToplistService();
-		int top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),0,0);
-		playerBlob.setWeektop(top+1);
-//		top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),1,0);
-//		playerBlob.setMonthtop(top+1);	
-		
 		if (init!=null){
 			playerBlob.setExp(init.getExp());
 		}
@@ -116,18 +158,28 @@ public class DataManager {
 		saving.setCreatetime(time);
 		saving.setType(savingCfg.getType());
 		saving.setPlayerid(playerBlob.getPlayerid());
-		saving.setAmount(Float.valueOf(init.getMoney().intValue()));
+		float fMoney = Float.valueOf(init.getMoney().intValue());
+		saving.setAmount(fMoney);
 		newSavingVect.add(saving);
 		savings.put(savingCfg.getId(), saving);
+		playerBlob.setMoney(fMoney);
 		playerBlob.setSaving(JSON.toJSONString(savings));
+		 }else{
+			 playerBlob.setMoney(Float.valueOf(0));
 		 }
+			
+		playerBlob.setWeektop(getTop(playerBlob.getPlayerid(),playerBlob.getMoney(),0));
+		playerBlob.setMonthtop(getTop(playerBlob.getPlayerid(),playerBlob.getMoney(),1));
+		 
 		  JSONObject obj = JSONObject.fromObject(playerBlob);
 		  playerStr = obj.toString();
 		newPlayersVect.add(playerBlob);
+		
+		
 		}
 		
 		
-		System.out.println("新增玩家:"+playerMaps.size());
+		//System.out.println("新增玩家:"+playerMaps.size());
 		return playerStr;
 	}
 	
@@ -143,37 +195,92 @@ public class DataManager {
 		return player;
 	}
 	
-	public String login(String playerName){
+	public String login(String playerName,String pwd){
 		PlayerWithBLOBs player = playerMaps.get(playerName);
-		if (player==null){
+		if (player==null||!player.getPwd().equals(pwd)){
 			PlayerService playerService = new PlayerService();
 			player = playerService.findByName(playerName);
-			if (player!=null){
-				playerMaps.put(player.getPlayername(), player);				
+			if (player==null||!player.getPwd().equals(pwd)){
+				System.out.println("用户名或密码不正确:"+playerName);
+				Message msg = new Message();
+				msg.setCode(RetMsg.MSG_WrongPlayerNameOrPwd);		//不存在
+				JSONObject obj = JSONObject.fromObject(msg);
+				return obj.toString();				
 			}
+			
+			playerMaps.put(player.getPlayername(), player);		
 		}
-//		ToplistService toplistService = new ToplistService();
-//		LoginAction.initToplist(player, toplistService);
+		if (player.getMoney()==null)
+			player.setMoney(Float.valueOf(0));
+		
+		
+		initStock(player);
+ 
+//		StockService stockService = new StockService();
+//		try{
+//			List<Stock> stocks = stockService.findListByPlayerId(player.getPlayerid());
+//			player.setStock(JSON.toJSONString(stocks));	
+//			
+//		}finally{
+//			stockService.DBConnClose();
+//		}
+		
+		player.setWeektop(getTop(player.getPlayerid(),player.getMoney(),0));
+		player.setMonthtop(getTop(player.getPlayerid(),player.getMoney(),1));
 		
 		float margin = StockManager.getInstance().getMarginSec();
 		player.setQuotetime(margin);
 		player.setLastlogin(new Date());
 		
+		System.out.println("玩家登陆:"+player.getPlayerid());
 		JSONObject obj = JSONObject.fromObject(player);	
 		return obj.toString();
 	}
 	
+	public int getTop(int playerid,float fMoney,int type){
+		synchronized(currMonthList){
+			for (int i=0;i<currMonthList.size();i++){
+				Toplist top22 = currMonthList.get(i);
+				if (top22.getPlayerid()==playerid
+						||top22.getMoney().floatValue()<=fMoney){
+					return i;
+				}
+			}		
+			return currMonthList.size()+1;
+			
+		}
+	}
+	
+	private void sortToplist(){
+		synchronized(currMonthList){
+			Collections.sort(currMonthList, new Comparator<Toplist>() {
+	            public int compare(Toplist arg0, Toplist arg1) {
+	                return arg0.getMoney().compareTo(arg1.getMoney());
+	            }
+	        });			
+		}
+	}
+	
 	public void onMoneyChanged(int playerid,float fChangedMoney){
 		String playername = null;
+		boolean needResort = false;
 		for (int i=0;i<currMonthList.size();i++){
 			Toplist topi = currMonthList.get(i);
 			if (topi.getPlayerid()==playerid){
 				playername = topi.getPlayername();
 				float newMoney = topi.getMoney().floatValue()+fChangedMoney;
-				if (newMoney>0)
-				 topi.setMoney(BigDecimal.valueOf(newMoney));
+				if (newMoney>0){
+					 topi.setMoney(BigDecimal.valueOf(newMoney));
+					 needResort = true;
+					break;
+				}
 			}
 		}
+		
+		if (needResort){
+			sortToplist();
+		}
+		
 		if (playername==null){
 			PlayerWithBLOBs player = findPlayer(playerid);
 			if (player!=null)
@@ -214,7 +321,7 @@ public class DataManager {
 		
     	newPlayersVect = new Vector<PlayerWithBLOBs>();
     	updatePlayersVect = new Vector<PlayerWithBLOBs>();
-    	
+    	updateToplistVect = new Vector<Toplist>();
     	
     	newSavingVect = new Vector<Saving>();
     	
@@ -249,7 +356,11 @@ public class DataManager {
 		System.out.println("load players :"+nextPlayerId);
 		
     	ToplistService toplistService = new ToplistService();
-    	currMonthList = toplistService.findCurrMonthToplists();
+    	currMonthList = Collections.synchronizedList(new ArrayList<Toplist>());
+    	List<Toplist> monlist = toplistService.findCurrMonthToplists();
+    	for (int i=0;i<monlist.size();i++){
+    		currMonthList.add(monlist.get(i));
+    	}
     	
     	
     }
@@ -318,6 +429,8 @@ public class DataManager {
     
     public static void main(String[] args) {
     	DataManager stmgr = DataManager.getInstance();
+    	ToplistService toplistService = new ToplistService();
+    	List<Toplist> list = toplistService.findCurrMonthToplists();
     	stmgr.init();
     }
 }

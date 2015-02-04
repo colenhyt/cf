@@ -78,43 +78,43 @@ public class SavingAction extends BaseAction {
 		return savingService;
 	}
 
-	public String add()
+	public String addSaving(Saving saving2)
 	{
-		if (saving.getItemid()==1){
+		if (saving2.getItemid()==1){
 			return null;
 		}
 		
 		System.out.println("取钱:22");
 		boolean exec = false;
 		//取钱:
-		if (saving.getAmount()<0){
-			System.out.println("取钱:"+saving.getPlayerid()+":itemid="+saving.getItemid());
-			float inAmount = 0 - saving.getAmount();
-			if (saving.getStatus()==1)		//已到期的存款:
+		if (saving2.getAmount()<0){
+			System.out.println("取钱:"+saving2.getPlayerid()+":itemid="+saving2.getItemid());
+			float inAmount = 0 - saving2.getAmount();
+			if (saving2.getStatus()==1)		//已到期的存款:
 			{
-				float inter = saving.getAmount()*saving.getRate()/100;
+				float inter = saving2.getAmount()*saving2.getRate()/100;
 				inAmount += inter;				
 			}
-			pushLive(saving.getPlayerid(), inAmount);		//放回活期;
-			exec = savingService.remove(saving);	
+			pushLive(saving2.getPlayerid(), inAmount);		//放回活期;
+			exec = savingService.remove(saving2);	
 		}else {
 			
-			pushLive(saving.getPlayerid(), 0 - saving.getAmount());
+			pushLive(saving2.getPlayerid(), 0 - saving2.getAmount());
 			
-			Saving savingCfg = savingdataService.findSaving(saving.getItemid());
-			System.out.println("存钱:"+saving.getPlayerid()+":itemid="+saving.getItemid());
-			saving.setName(savingCfg.getName());
-			saving.setCreatetime(new Date());
-			saving.setUpdatetime(new Date());
-			saving.setRate(savingCfg.getRate());
-			saving.setQty(1);
-			saving.setType(savingCfg.getType());
-			saving.setPeriod(savingCfg.getPeriod());
-			exec = savingService.add(saving);		
+			Saving savingCfg = savingdataService.findSaving(saving2.getItemid());
+			System.out.println("存钱:"+saving2.getPlayerid()+":itemid="+saving2.getItemid());
+			saving2.setName(savingCfg.getName());
+			saving2.setCreatetime(new Date());
+			saving2.setUpdatetime(new Date());
+			saving2.setRate(savingCfg.getRate());
+			saving2.setQty(1);
+			saving2.setType(savingCfg.getType());
+			saving2.setPeriod(savingCfg.getPeriod());
+			exec = savingService.add(saving2);		
 		}
 		
 		if (exec==false){
-			pushLive(saving.getPlayerid(), saving.getAmount() );
+			pushLive(saving2.getPlayerid(), saving2.getAmount() );
 			super.writeMsg(RetMsg.MSG_SQLExecuteError);
 		}else {
 			super.writeMsg(RetMsg.MSG_OK);
@@ -199,6 +199,50 @@ public class SavingAction extends BaseAction {
 		}   	
 		
 		return amount;
+	}
+
+	public String add()
+	{
+		if (saving.getItemid()==1){
+			return null;
+		}
+		
+		System.out.println("取钱:22");
+		boolean exec = false;
+		//取钱:
+		if (saving.getAmount()<0){
+			System.out.println("取钱:"+saving.getPlayerid()+":itemid="+saving.getItemid());
+			float inAmount = 0 - saving.getAmount();
+			if (saving.getStatus()==1)		//已到期的存款:
+			{
+				float inter = saving.getAmount()*saving.getRate()/100;
+				inAmount += inter;				
+			}
+			pushLive(saving.getPlayerid(), inAmount);		//放回活期;
+			exec = savingService.remove(saving);	
+		}else {
+			
+			pushLive(saving.getPlayerid(), 0 - saving.getAmount());
+			
+			Saving savingCfg = savingdataService.findSaving(saving.getItemid());
+			System.out.println("存钱:"+saving.getPlayerid()+":itemid="+saving.getItemid());
+			saving.setName(savingCfg.getName());
+			saving.setCreatetime(new Date());
+			saving.setUpdatetime(new Date());
+			saving.setRate(savingCfg.getRate());
+			saving.setQty(1);
+			saving.setType(savingCfg.getType());
+			saving.setPeriod(savingCfg.getPeriod());
+			exec = savingService.add(saving);		
+		}
+		
+		if (exec==false){
+			pushLive(saving.getPlayerid(), saving.getAmount() );
+			super.writeMsg(RetMsg.MSG_SQLExecuteError);
+		}else {
+			super.writeMsg(RetMsg.MSG_OK);
+		}
+		return null;
 	}
 
 	public SavingAction(){

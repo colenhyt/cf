@@ -40,41 +40,12 @@ public class StockService extends BaseService {
 		return stockMapper.selectByExample(example);
 	}
 	
-	public Map<Integer,List<Stock>> findMapByPlayerId(int playerId)
+	public List<Stock> findListByPlayerId(int playerId)
 	{
-		Map<Integer,List<Stock>> smap = new HashMap<Integer,List<Stock>>();
-		
-		if (jedis!=null){
-		String key = playerId+ITEM_KEY;
-		Collection<String> l = jedis.hgetAll(key).values();
-		for (Iterator<String> iter = l.iterator(); iter.hasNext();) {
-			  String str = (String)iter.next();
-			Stock stock =(Stock)Bean.toBean(str, Stock.class);
-			List<Stock> list = smap.get(stock.getItemid());
-			if (list==null){
-				list = new ArrayList<Stock>();
-				smap.put(stock.getItemid(), list);
-			}
-			list.add(stock);
-		}		
-		jedis.close();
-		return smap;
-		}
-		
 		StockExample example = new StockExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
-		List<Stock> ss = stockMapper.selectByExample(example);
-		for (int i=0;i<ss.size();i++){
-			List<Stock> list = smap.get(ss.get(i).getItemid());
-			if (list==null){
-				list = new ArrayList<Stock>();
-				smap.put(ss.get(i).getItemid(), list);
-			}
-			list.add(ss.get(i));
-		}
-		
-		return smap;
+		return stockMapper.selectByExample(example);
 	}	
 	
 	public boolean remove(Stock record)
@@ -181,5 +152,25 @@ public class StockService extends BaseService {
 			jedis2.hset(key, record.getItemid().toString(),record.toString());
 		}	
 		jedis2.close();
+	}
+
+	public Map<Integer,List<Stock>> findMapByPlayerId(int playerId)
+	{
+		Map<Integer,List<Stock>> smap = new HashMap<Integer,List<Stock>>();
+		
+		StockExample example = new StockExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
+		List<Stock> ss = stockMapper.selectByExample(example);
+		for (int i=0;i<ss.size();i++){
+			List<Stock> list = smap.get(ss.get(i).getItemid());
+			if (list==null){
+				list = new ArrayList<Stock>();
+				smap.put(ss.get(i).getItemid(), list);
+			}
+			list.add(ss.get(i));
+		}
+		
+		return smap;
 	}
 }
