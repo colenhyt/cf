@@ -174,6 +174,8 @@ public class MessageConverter {
 		}
 		dataFile.write(" \"armature\": [ \n".getBytes());
 		dataFile.write("    { \n".getBytes());
+		Attribute nameA = root.getChild("armature").getAttribute("name");
+		dataFile.write(("    \"name\":\""+nameA.getValue()+"\",\n").getBytes());
 		for (Element e : list) {
 			System.out.println(e.getName());
 	
@@ -361,7 +363,7 @@ public class MessageConverter {
 		MessageConverter tt = new MessageConverter();
 		// tt.xml2json();
 		try {
-			 //tt.outputTexture();
+			tt.outputTexture();
 			tt.outputSkeleton();
 			//tt.readSkeleton();
 		} catch (JDOMException | IOException e) {
