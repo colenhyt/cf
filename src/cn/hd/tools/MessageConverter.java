@@ -154,7 +154,7 @@ public class MessageConverter {
 		String name = "skeleton";
 		InputStream file = new FileInputStream(name + ".xml");
 	
-		RandomAccessFile dataFile = new RandomAccessFile(name + ".json", "rw");
+		RandomAccessFile dataFile = new RandomAccessFile("D:\\sites\\egret\\CoreExample\\resource\\assets\\480\\"+name + ".json", "rw");
 	
 		dataFile.setLength(0);
 		dataFile.write("{ ".getBytes());
@@ -177,6 +177,7 @@ public class MessageConverter {
 		Attribute nameA = root.getChild("armature").getAttribute("name");
 		dataFile.write(("    \"name\":\""+nameA.getValue()+"\",\n").getBytes());
 		for (Element e : list) {
+			
 			System.out.println(e.getName());
 	
 			outputBone(dataFile, e, "bone");
@@ -311,7 +312,7 @@ public class MessageConverter {
 		SAXBuilder builder = new SAXBuilder();
 		InputStream file = new FileInputStream("texture.xml");
 
-		RandomAccessFile dataFile = new RandomAccessFile("texture.json", "rw");
+		RandomAccessFile dataFile = new RandomAccessFile("D:\\sites\\egret\\CoreExample\\resource\\assets\\480\\texture.json", "rw");
 
 		dataFile.setLength(0);
 		dataFile.write("{ ".getBytes());
@@ -336,7 +337,7 @@ public class MessageConverter {
 				System.out.println(e2.getName() + "=" + e2.getValue());
 				if (e2.getName().equals("name"))
 					dataFile.write(("          \"" + e2.getName()
-							+ "\":\"parts/" + e2.getValue() + "\"")
+							+ "\":\"" + e2.getValue() + "\"")
 							.getBytes());
 				else
 					dataFile.write(("          \"" + e2.getName() + "\":"
