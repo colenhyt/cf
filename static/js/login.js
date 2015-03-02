@@ -158,8 +158,9 @@ Login.prototype.register = function(){
            
     var dataParam = "playername="+ppname+"&accountid="+accountid+"&sex="+g_login.sex;
     
+	dataParam = "player.playername="+ppname+"&player.accountid="+accountid+"&player.sex="+g_login.sex;
 	try    {
-		$.ajax({type:"post",url:"/cf/login_register.jsp",data:dataParam,success:function(data){
+		$.ajax({type:"post",url:"/cf/login_register.do",data:dataParam,success:function(data){
 		 g_login.registerCallback(data);
          g_msg.destroyload();
 		}});

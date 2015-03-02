@@ -156,7 +156,7 @@ Player.prototype.syncPlayerData = function(){
 	var updateStr = "player="+JSON.stringify(data);
 	//alert("任务同步到服务器:"+data.quest);
 	try  {
-		$.ajax({type:"post",url:"/cf/login_update.jsp",data:updateStr,success:function(dataobj){
+		$.ajax({type:"post",url:"/cf/login_update.do",data:updateStr,success:function(dataobj){
 			var obj = cfeval(dataobj);
 		}});
 	}   catch  (e)   {
