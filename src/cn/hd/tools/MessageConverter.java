@@ -19,7 +19,9 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 public class MessageConverter {
-
+	static String path = "C:\\d\\Sites\\ai\\so\\resource\\assets\\zhandoushibai\\";
+	static String outpath = "C:\\d\\Sites\\ai\\so\\resource\\assets\\zhandoushibai\\";
+	
 	public static void outputanimation(RandomAccessFile dataFile, Element e0,
 			String childName) throws JDOMException, IOException {
 		List<Element> list = e0.getChildren(childName);
@@ -67,8 +69,10 @@ public class MessageConverter {
 					int rr=0;
 					dataFile.write(("            ").getBytes());
 					for (Attribute a3 : att3) {
-						dataFile.write(("\"" + a3.getName() + "\":"
-								+ a3.getValue()).getBytes());
+						if (a3.getName().equals("event"))
+							dataFile.write(("\"" + a3.getName() + "\":\""+ a3.getValue()+"\"").getBytes());
+						else
+						dataFile.write(("\"" + a3.getName() + "\":"+ a3.getValue()).getBytes());
 						rr++;
 						if (rr<att3.size())
 							dataFile.write((",").getBytes());
@@ -152,9 +156,9 @@ public class MessageConverter {
 	public static void outputSkeleton() throws JDOMException, IOException {
 		SAXBuilder builder = new SAXBuilder();
 		String name = "skeleton";
-		InputStream file = new FileInputStream(name + ".xml");
+		InputStream file = new FileInputStream(path+name + ".xml");
 	
-		RandomAccessFile dataFile = new RandomAccessFile("D:\\sites\\egret\\CoreExample\\resource\\assets\\480\\"+name + ".json", "rw");
+		RandomAccessFile dataFile = new RandomAccessFile(outpath+name + ".json", "rw");
 	
 		dataFile.setLength(0);
 		dataFile.write("{ ".getBytes());
@@ -310,9 +314,9 @@ public class MessageConverter {
 
 	public static void outputTexture() throws JDOMException, IOException {
 		SAXBuilder builder = new SAXBuilder();
-		InputStream file = new FileInputStream("texture.xml");
+		InputStream file = new FileInputStream(path+"texture.xml");
 
-		RandomAccessFile dataFile = new RandomAccessFile("D:\\sites\\egret\\CoreExample\\resource\\assets\\480\\texture.json", "rw");
+		RandomAccessFile dataFile = new RandomAccessFile(outpath+"texture.json", "rw");
 
 		dataFile.setLength(0);
 		dataFile.write("{ ".getBytes());
