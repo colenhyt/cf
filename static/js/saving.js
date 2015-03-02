@@ -172,7 +172,10 @@ Saving.prototype.requestBuy = function(id,qty,amount){
 }
 	
 Saving.prototype.buyCallback = function(ret){
-    if (ret.code) return;
+    if (ret.code) {
+     g_msg.tip("操作失败:"+ERR_MSG[ret.code]);
+     return;
+    }
 
    var buyitem = this.buyItem;
 	var id = buyitem.itemid;

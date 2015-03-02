@@ -86,6 +86,7 @@ var MSG_NoThisStock = 3;
 var MSG_NoSavingData = 4;
 var MSG_PlayerNameIsExist = 5;
 var MSG_WrongPlayerNameOrPwd = 6;
+var MSG_StockIsClosed = 7;
 
 var ERR_MSG ={};
 ERR_MSG[MSG_SQLExecuteError] = "sql出错";
@@ -94,6 +95,7 @@ ERR_MSG[MSG_NoThisStock] = "这个股票不存在";
 ERR_MSG[MSG_NoSavingData] = "没有该存款";
 ERR_MSG[MSG_PlayerNameIsExist] = "这个昵称已经被使用";
 ERR_MSG[MSG_WrongPlayerNameOrPwd] = "用户名或密码不正确";
+ERR_MSG[MSG_StockIsClosed] = "股市已关闭,不能买卖";
 
 function loadStyle(url){
     var link = document.createElement('link');

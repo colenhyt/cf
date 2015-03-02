@@ -198,8 +198,10 @@ Stock.prototype.buildPage = function(page)
       		content += "</div>"
 		}
 			content += "           <div class='cfinsure_tip'>  "
-			content += "          股市开市为8:00AM-9:00PM<br>下次行情跳动: "
-			content += "<span id='"+this.name+"_quotetime' style='color:yellow'></span>"  
+			content += "          股市开市为8:00AM-9:00PM"
+			if (this.isStockOpen()==true){
+			 content += "<br>下次行情跳动: <span id='"+this.name+"_quotetime' style='color:yellow'></span>"
+			}  
 			content += "             </div>"
      		content += "</div>"
 		
@@ -381,7 +383,10 @@ Stock.prototype.requestBuy = function(id,qty,ps) {
 
 	
 Stock.prototype.buyCallback = function(ret){
-    if (ret.code) return;
+    if (ret.code) {
+     g_msg.tip("操作失败:"+ERR_MSG[ret.code]);
+     return;
+    }
 
    var buyitem = this.buyItem;
 	var id = buyitem.itemid;
@@ -543,7 +548,7 @@ Stock.prototype.update_self = function(){
 		rebuild = true;
 	}
 
-	if (!this.isOpen) return;
+	if (!this.isOpen||!this.isStockOpen()) return;
 	
 	var tag = document.getElementById(this.name+"_quotetime");
 	var min = parseInt(lsec/60);
