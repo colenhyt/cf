@@ -207,13 +207,12 @@ public class SavingAction extends BaseAction {
 			return null;
 		}
 		
-		System.out.println("取钱:22");
 		boolean exec = false;
 		//取钱:
 		if (saving.getAmount()<0){
 			System.out.println("取钱:"+saving.getPlayerid()+":itemid="+saving.getItemid());
 			float inAmount = 0 - saving.getAmount();
-			if (saving.getStatus()==1)		//已到期的存款:
+			if (saving.getStatus()!=null&&saving.getStatus()==1)		//已到期的存款:
 			{
 				float inter = saving.getAmount()*saving.getRate()/100;
 				inAmount += inter;				

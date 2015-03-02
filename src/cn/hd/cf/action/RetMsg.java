@@ -8,4 +8,5 @@ public interface RetMsg {
 	public static int MSG_NoSavingData = 4;
 	public static int MSG_PlayerNameIsExist = 5;
 	public static int MSG_WrongPlayerNameOrPwd = 6;
+	public static int MSG_StockIsClosed= 7;
 }

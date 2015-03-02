@@ -72,9 +72,14 @@ public class StockAction extends SavingAction {
 		if (stock.getQty()==0){
 			return null;
 		}
+		int ret = RetMsg.MSG_StockIsClosed;
+		if (StockManager.getInstance().isStockOpen()==false){
+			writeMsg(ret);
+			return null;
+		}
 		float inAmount = 0 - stock.getAmount();
 		//先扣钱:
-		int ret = super.pushLive(stock.getPlayerid(), inAmount);
+		ret = super.pushLive(stock.getPlayerid(), inAmount);
 		if (ret==0){
 			boolean exec = false;	
 			if (stock.getQty()>0){

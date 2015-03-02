@@ -106,12 +106,7 @@ public class SavingService extends BaseService {
 	
 	public boolean remove(Saving record)
 	{
-		if (jedis!=null){
-		String key = record.getPlayerid()+ITEM_KEY;
-		jedis.hdel(key, record.getItemid().toString());
-		jedis.close();
-		}
-		//System.out.println("删除saving记录:"+record.toString());
+		System.out.println("删除saving记录:"+record.toString());
 		
 		try {
 			SavingExample example = new SavingExample();

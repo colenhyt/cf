@@ -93,7 +93,7 @@ public class StockManager {
     	return quotes;
     }
     
-    private boolean isStockOpen(){
+    public boolean isStockOpen(){
 		Date now = new Date();
 		Calendar cl = Calendar.getInstance();
 		cl.setTime(now);
