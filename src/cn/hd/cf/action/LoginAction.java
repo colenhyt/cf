@@ -82,11 +82,11 @@ public class LoginAction extends SavingAction {
 	}
 	
 	public String register(){
-		log.debug("玩家注册:"+player.getPlayername());
+		//System.out.println("玩家注册:"+player.getPlayername());
 		boolean bExist = playerService.have(player.getPlayername());
 		if (bExist)
 		{
-			log.debug("account exist :name:"+player.getPlayername());
+			System.out.println("account exist :name:"+player.getPlayername());
 			Message msg = new Message();
 			msg.setCode(RetMsg.MSG_PlayerNameIsExist);		//重名
 			JSONObject obj = JSONObject.fromObject(msg);
@@ -105,6 +105,7 @@ public class LoginAction extends SavingAction {
 //		String ipAddr = getHttpRequest().getRemoteAddr();
 		playerBlob.setAccountid(1);
 		playerBlob.setPlayername(player.getPlayername());
+		playerBlob.setSex(player.getSex());
 		playerBlob.setCreatetime(time);
 		String pwd = StringUtil.getRandomString(10);
 		playerBlob.setPwd(MD5.MD5(pwd));
@@ -132,9 +133,10 @@ public class LoginAction extends SavingAction {
 			super.playerTopUpdate(playerBlob.getPlayerid());
 		}
 		
-		JSONObject obj = JSONObject.fromObject(playerBlob);
-		log.debug("register player: "+obj.toString());
-		write(obj.toString(),"utf-8");
+		String pdata = getPlayerJsonData(playerBlob);
+		
+		//System.out.println("register player: "+pdata);
+		write(pdata,"utf-8");
 		return null;
 	}
 	
@@ -152,9 +154,6 @@ public class LoginAction extends SavingAction {
 			fMm = toplist.getMoney().floatValue();
 			playerBlob.setZan(toplist.getZan());
 		}
-//		
-//		playerBlob.setWeektop(DataManager.getInstance().getTop(playerBlob.getPlayerid(),fMm,0));
-//		playerBlob.setMonthtop(DataManager.getInstance().getTop(playerBlob.getPlayerid(),fMm,1));
 
 		int top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),0,fMm);
 		playerBlob.setWeektop(top+1);

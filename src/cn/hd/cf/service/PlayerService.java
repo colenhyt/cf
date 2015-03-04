@@ -86,11 +86,6 @@ public class PlayerService extends BaseService {
 	
 	public boolean add(PlayerWithBLOBs record)
 	{
-		if (jedis!=null){
-		jedis.hset(ITEM_KEY,Integer.valueOf(record.getPlayerid()).toString(),record.toString());
-		jedis.close();
-		}
-		
 		try {
 		playerMapper.insertSelective(record);
 		DBCommit();
