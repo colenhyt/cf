@@ -48,16 +48,6 @@ public class SavingDataManager extends HdTimer{
 		return obj.toString();			
 	}
 	
-	private void addSavings(){
-		SavingAction savingAction = new SavingAction();
-		for (int i=0;i<addSavingVect.size();i++){
-			Saving saving = addSavingVect.get(i);
-			savingAction.addSaving(saving);
-		}
-		System.out.println("购买股票:"+addSavingVect.size());
-		addSavingVect.clear();
-	}
-		
 	public void run(){
     	tick ++;
     	if (addSavingVect.size()>0||tick%ADD_PERIOD==0){

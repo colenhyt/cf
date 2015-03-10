@@ -246,28 +246,26 @@ public class LoginAction extends SavingAction {
 		boolean liveUpdate = false;
 		for (int i=0;i<savings.size();i++){
 			Saving saving = savings.get(i);
-			if (saving.getType()==0)
-				liveSaving = saving;
 			float inter = 0;
 	        c2.setTime(saving.getUpdatetime());
 	        float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
 	        float periodMinutes = saving.getPeriod()*60*60*24;//天:分钟
-//	        periodMinutes = 5;
-			//log.debug("利息到期时间:"+diffdd+","+periodMinutes);
-			if ((diffdd-periodMinutes)>0.001)
+			if (saving.getType()==0)
+			{
+				liveSaving = saving;
+				periodMinutes = 60*60*24;//天:分钟
+				long diff = (long)(diffdd/periodMinutes);
+				inter = diff * saving.getAmount()*saving.getRate()/100;
+				if (inter>1){
+					liveUpdate = true;
+					saving.setAmount(saving.getAmount()+inter);					
+				}else
+					inter = 0;		//不算利息
+			}else if (isSavingTimeout(saving))		//定期，看到期没有
 			{
 				liveUpdate = true;
-				//活期
-				if (saving.getType()==0)
-				{
-					long diff = (long)(diffdd/periodMinutes);
-					inter = diff * saving.getAmount()*saving.getRate()/100;
-					saving.setAmount(saving.getAmount()+inter);
-				}else //定期，设置状态,由玩家取
-				{
-					saving.setStatus((byte)1);
-					savingService.update(saving);
-				}
+				saving.setStatus((byte)1);
+				savingService.update(saving);
 				log.debug(saving.getItemid()+"存款到期, 得到利息: "+inter);
 			}
 			Saving usaving = new Saving();

@@ -45,25 +45,17 @@ public class SavingService extends BaseService {
 		}		
 		jedis2.close();
 	}	
-	public List<Saving> findByPlayerId(int playerId)
+	public Saving find(int playerId,int itemid)
 	{
-		List<Saving> savings = new ArrayList<Saving>();
-//		String key = playerId+ITEM_KEY;
-//		Map<String,String> mapJsons = jedis.hgetAll(key);
-//		Collection<String> l = mapJsons.values();
-//		for (Iterator<String> iter = l.iterator(); iter.hasNext();) {
-//			  String str = (String)iter.next();
-//			  System.out.println(str);
-//			  savings.add((Saving)Bean.toBean(str,Saving.class));
-//		}
-//		jedis.close();
-		
 		SavingExample example = new SavingExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
-		savings = savingMapper.selectByExample(example);
+		criteria.andItemidEqualTo(itemid);
+		List<Saving> savings = savingMapper.selectByExample(example);
+		if (savings.size()>0)
+		 return savings.get(0);
 		
-		return savings;
+		return null;
 	}
 	
 	public Saving findLivingSavingByPlayerId(int playerId)
@@ -170,5 +162,17 @@ public class SavingService extends BaseService {
 			return false;
 		}				
 		return true;
+	}
+
+	public List<Saving> findByPlayerId(int playerId)
+	{
+		List<Saving> savings = new ArrayList<Saving>();
+		
+		SavingExample example = new SavingExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
+		savings = savingMapper.selectByExample(example);
+		
+		return savings;
 	}	
 }

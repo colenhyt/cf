@@ -27,11 +27,9 @@ import cn.hd.cf.model.Message;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Savingdata;
-import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.service.SavingService;
-import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.ToplistService;
 import cn.hd.cf.tools.InitdataService;
 import cn.hd.cf.tools.SavingdataService;
@@ -429,8 +427,7 @@ public class DataManager {
     
     public static void main(String[] args) {
     	DataManager stmgr = DataManager.getInstance();
-    	ToplistService toplistService = new ToplistService();
-    	List<Toplist> list = toplistService.findCurrMonthToplists();
-    	stmgr.init();
+    	SavingdataService ss = new SavingdataService();
+    	Savingdata dd = ss.findActive();
     }
 }

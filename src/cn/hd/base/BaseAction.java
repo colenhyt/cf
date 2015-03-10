@@ -99,6 +99,14 @@ public class BaseAction extends BaseService{
 		JSONObject obj = JSONObject.fromObject(msg);
 		write(obj.toString(),"utf-8");			
 	}
+	
+	public void writeMsg2(int code,String desc){
+		Message msg = new Message();
+		msg.setCode(code);
+		msg.setDesc(desc);
+		JSONObject obj = JSONObject.fromObject(msg);
+		write(obj.toString(),"utf-8");			
+	}
 	/**
 	 * 判断是否为站点总管理员
 	 */

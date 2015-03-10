@@ -176,7 +176,7 @@ Saving.prototype.buyCallback = function(ret){
      g_msg.tip("操作失败:"+ERR_MSG[ret.code]);
      return;
     }
-
+		
    var buyitem = this.buyItem;
 	var id = buyitem.itemid;
    var item = store.get(this.name)[id];
@@ -206,6 +206,14 @@ Saving.prototype.buyCallback = function(ret){
 		
 	g_msg.tip(desc);
 	
+	var savingback = cfeval(ret.desc);
+	if (savingback.profit>1)
+	{
+	 g_player.saving[1].amount += savingback.profit;
+	 g_player.flushPageview();
+ 	 g_msg.tip("得到利息:"+savingback.profit);
+	}
+	 
 	this.hide(this.tagdetailname);
 	//刷新list 页面:
 	g_bank.buildPage(g_bank.currPage);

@@ -1,8 +1,11 @@
 package cn.hd.cf.action;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import net.sf.json.JSONObject;
+import cn.hd.base.Base;
 import cn.hd.base.BaseAction;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.PlayerWithBLOBs;
@@ -78,50 +81,6 @@ public class SavingAction extends BaseAction {
 		return savingService;
 	}
 
-	public String addSaving(Saving saving2)
-	{
-		if (saving2.getItemid()==1){
-			return null;
-		}
-		
-		System.out.println("取钱:22");
-		boolean exec = false;
-		//取钱:
-		if (saving2.getAmount()<0){
-			System.out.println("取钱:"+saving2.getPlayerid()+":itemid="+saving2.getItemid());
-			float inAmount = 0 - saving2.getAmount();
-			if (saving2.getStatus()==1)		//已到期的存款:
-			{
-				float inter = saving2.getAmount()*saving2.getRate()/100;
-				inAmount += inter;				
-			}
-			pushLive(saving2.getPlayerid(), inAmount);		//放回活期;
-			exec = savingService.remove(saving2);	
-		}else {
-			
-			pushLive(saving2.getPlayerid(), 0 - saving2.getAmount());
-			
-			Saving savingCfg = savingdataService.findSaving(saving2.getItemid());
-			System.out.println("存钱:"+saving2.getPlayerid()+":itemid="+saving2.getItemid());
-			saving2.setName(savingCfg.getName());
-			saving2.setCreatetime(new Date());
-			saving2.setUpdatetime(new Date());
-			saving2.setRate(savingCfg.getRate());
-			saving2.setQty(1);
-			saving2.setType(savingCfg.getType());
-			saving2.setPeriod(savingCfg.getPeriod());
-			exec = savingService.add(saving2);		
-		}
-		
-		if (exec==false){
-			pushLive(saving2.getPlayerid(), saving2.getAmount() );
-			super.writeMsg(RetMsg.MSG_SQLExecuteError);
-		}else {
-			super.writeMsg(RetMsg.MSG_OK);
-		}
-		return null;
-	}
-	
 	//更新活期存款金钱:
 	public String updatelive()
 	{
@@ -201,21 +160,49 @@ public class SavingAction extends BaseAction {
 		return amount;
 	}
 
+	//存款是否到期:
+	public boolean isSavingTimeout(Saving saving)
+	{
+		//活期不存在存款取款:
+		if (saving.getItemid()==1){
+			return false;
+		}		
+		
+		Date currDate = new Date();
+	    Calendar cCurr = Calendar.getInstance(); 
+	    cCurr.setTime(currDate);
+	    Calendar c2 = Calendar.getInstance(); 
+        c2.setTime(saving.getUpdatetime());
+        float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
+       float periodMinutes = saving.getPeriod()*60*60*24;//天:分钟
+       if ((diffdd-periodMinutes)>0.001)		//定期到期
+		{
+			return true;
+		}		
+		return true;
+	}
+	
 	public String add()
 	{
+		//活期不存在存款取款:
 		if (saving.getItemid()==1){
 			return null;
 		}
 		
 		boolean exec = false;
+		Saving newsaving = new Saving();
+		newsaving.setItemid(saving.getItemid());
+		newsaving.setPlayerid(saving.getPlayerid());
 		//取钱:
 		if (saving.getAmount()<0){
-			System.out.println("取钱:"+saving.getPlayerid()+":itemid="+saving.getItemid());
 			float inAmount = 0 - saving.getAmount();
-			if (saving.getStatus()!=null&&saving.getStatus()==1)		//已到期的存款:
+			Saving saving2 = savingService.find(saving.getPlayerid(),saving.getItemid());
+			//已到期的存款:
+			if ((saving.getStatus()!=null&&saving.getStatus()==1)||isSavingTimeout(saving2))		
 			{
-				float inter = saving.getAmount()*saving.getRate()/100;
+				int inter = (int)(saving2.getAmount()*saving2.getPeriod()*saving2.getRate()/100);
 				inAmount += inter;				
+				newsaving.setProfit((float)inter);
 			}
 			pushLive(saving.getPlayerid(), inAmount);		//放回活期;
 			exec = savingService.remove(saving);	
@@ -239,7 +226,8 @@ public class SavingAction extends BaseAction {
 			pushLive(saving.getPlayerid(), saving.getAmount() );
 			super.writeMsg(RetMsg.MSG_SQLExecuteError);
 		}else {
-			super.writeMsg(RetMsg.MSG_OK);
+			JSONObject obj = JSONObject.fromObject(newsaving);
+			super.writeMsg2(RetMsg.MSG_OK,obj.toString());
 		}
 		return null;
 	}
