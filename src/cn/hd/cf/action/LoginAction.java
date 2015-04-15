@@ -33,14 +33,7 @@ public class LoginAction extends SavingAction {
 	private PlayerWithBLOBs player;
 	
 	private SavingdataService savingdataService;
-	private InsuredataService insuredataService;
-	public InsuredataService getInsuredataService() {
-		return insuredataService;
-	}
 
-	public void setInsuredataService(InsuredataService insuredataService) {
-		this.insuredataService = insuredataService;
-	}
 
 	public SavingdataService getSavingdataService() {
 		return savingdataService;
@@ -182,57 +175,6 @@ public class LoginAction extends SavingAction {
 //		playerBlob.setMonthtop(top+1);	
 	}
 	
-	private Map<Integer,Insure> findUpdatedInsures(int playerId)
-	{
-		Date curr = new Date();
-	    Calendar cCurr = Calendar.getInstance(); 
-	    cCurr.setTime(curr);
-	    Calendar c2 = Calendar.getInstance(); 
-		
-		List<Insure> insures = insureService.findByPlayerId(playerId);
-		
-		Map<Integer,Insure>	mdata = new HashMap<Integer,Insure>();
-		
-		try {		
-		for (int i=0;i<insures.size();i++){
-			Insure insure = insures.get(i);
-			float inter = 0;	// 0表明未到期
-	        c2.setTime(insure.getUpdatetime());
-			float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
-			float periodMinutes = insure.getPeriod()*60*60*24; //天:分钟
-//			periodMinutes = 5;
-			//到期:
-			if ((diffdd-periodMinutes)>0.001)
-			{
-				//理财产品,得到收益:
-				if (insure.getType()!=null&&insure.getType()==1){
-				
-					Insure incfg = insuredataService.findInsure(insure.getItemid());
-					inter = incfg.getProfit()*insure.getQty();
-					DataManager.getInstance().onMoneyChanged(insure.getPlayerid(),inter);
-					super.pushLive(playerId, insure.getAmount()+inter);
-				}else {		//保险到期，移除
-					inter = -1;
-				}
-				//删除产品
-				insureService.delete(insure);
-			}
-			
-			Insure uinsure = new Insure();
-			uinsure.setAmount(insure.getAmount());
-			uinsure.setCreatetime(insure.getCreatetime());
-			uinsure.setQty(insure.getQty());
-			uinsure.setProfit(inter);
-			mdata.put(insure.getItemid(), uinsure);
-		}
-		}catch (Exception e){
-			e.printStackTrace();
-			return mdata;
-		}	
-		
-		return mdata;
-	}
-
 	//
 	private Map<Integer,Saving> findUpdatedSavings(int playerId)
 	{

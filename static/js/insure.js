@@ -57,6 +57,12 @@ Insure.prototype.findIds = function()
 	return ids.concat(otherdata);
 }
 
+Insure.prototype.findInsures = function()
+{
+ var updateStr = "insure.playerid="+g_player.data.playerid;
+ var insures = $.ajax({type:"post",url:"/cf/insure_get.do",data:updateStr,async:false});
+ return insures;
+}
 Insure.prototype.buildPage = function(page)
 {
 	if (page<0)
@@ -69,6 +75,7 @@ Insure.prototype.buildPage = function(page)
 		  content += "<div class='cfpanel' ID='insure_d1'><div class='cfpanel_body'>没有产品</div>"
       content += "</div>"
 	}else {
+		var is = this.findInsures();
 		var start = page* this.pageCount;
 		var end = (page+1)* this.pageCount;
 		if (end>sids.length)
@@ -78,6 +85,8 @@ Insure.prototype.buildPage = function(page)
 			var itemid = sids[i];
 			var item = tdata[itemid];
 			var pitem = g_player.getInsureItem(itemid);
+			if (!pitem)
+			 pitem = {amount:0,price:0,profit:0,qty:0};
 			var buyDesc;
 			if (item.type==0){
 				if (pitem.qty<=0)

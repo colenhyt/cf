@@ -1,6 +1,9 @@
 package cn.hd.cf.action;
 
 import java.util.Date;
+import java.util.Map;
+
+import com.alibaba.fastjson.JSON;
 
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.service.InsureService;
@@ -47,6 +50,15 @@ public class InsureAction extends SavingAction {
 			super.playerTopUpdate(insure.getPlayerid());
 		}
 		writeMsg(ret);
+		return null;
+	}
+	
+	public String get()
+	{
+		Map<Integer,Insure> insures = findUpdatedInsures(insure.getPlayerid());
+		String strInsure = JSON.toJSONString(insures);
+		write(strInsure,"utf-8");
+		System.out.println("find "+strInsure);
 		return null;
 	}
 	
