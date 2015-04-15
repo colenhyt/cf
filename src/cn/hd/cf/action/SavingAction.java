@@ -2,7 +2,9 @@ package cn.hd.cf.action;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.json.JSONObject;
 import cn.hd.base.Base;
@@ -17,11 +19,22 @@ import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.service.SavingService;
 import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.ToplistService;
+import cn.hd.cf.tools.InsuredataService;
 import cn.hd.cf.tools.SavingdataService;
+import cn.hd.mgr.DataManager;
 import cn.hd.mgr.StockManager;
 
 public class SavingAction extends BaseAction {
 	public Saving		saving;
+	private InsuredataService insuredataService;
+	public InsuredataService getInsuredataService() {
+		return insuredataService;
+	}
+
+	public void setInsuredataService(InsuredataService insuredataService) {
+		this.insuredataService = insuredataService;
+	}
+	
 	private SavingdataService savingdataService;
 	public SavingdataService getSavingdataService() {
 		return savingdataService;
@@ -231,6 +244,57 @@ public class SavingAction extends BaseAction {
 		}
 		return null;
 	}
+
+	public Map<Integer,Insure> findUpdatedInsures(int playerId)
+		{
+			Date curr = new Date();
+		    Calendar cCurr = Calendar.getInstance(); 
+		    cCurr.setTime(curr);
+		    Calendar c2 = Calendar.getInstance(); 
+			
+			List<Insure> insures = insureService.findByPlayerId(playerId);
+			
+			Map<Integer,Insure>	mdata = new HashMap<Integer,Insure>();
+			
+			try {		
+			for (int i=0;i<insures.size();i++){
+				Insure insure = insures.get(i);
+				float inter = 0;	// 0表明未到期
+		        c2.setTime(insure.getUpdatetime());
+				float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
+				float periodMinutes = insure.getPeriod()*60*60*24; //天:分钟
+	//			periodMinutes = 5;
+				//到期:
+				if ((diffdd-periodMinutes)>0.001)
+				{
+					//理财产品,得到收益:
+					if (insure.getType()!=null&&insure.getType()==1){
+					
+						Insure incfg = insuredataService.findInsure(insure.getItemid());
+						inter = incfg.getProfit()*insure.getQty();
+						DataManager.getInstance().onMoneyChanged(insure.getPlayerid(),inter);
+						pushLive(playerId, insure.getAmount()+inter);
+					}else {		//保险到期，移除
+						inter = -1;
+					}
+					//删除产品
+					insureService.delete(insure);
+				}
+				
+				Insure uinsure = new Insure();
+				uinsure.setAmount(insure.getAmount());
+				uinsure.setCreatetime(insure.getCreatetime());
+				uinsure.setQty(insure.getQty());
+				uinsure.setProfit(inter);
+				mdata.put(insure.getItemid(), uinsure);
+			}
+			}catch (Exception e){
+				e.printStackTrace();
+				return mdata;
+			}	
+			
+			return mdata;
+		}
 
 	public SavingAction(){
 		init("savingService","savingdataService","playerService",
