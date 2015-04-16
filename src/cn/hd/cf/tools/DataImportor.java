@@ -484,17 +484,14 @@ public class DataImportor extends Base{
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		DataImportor importor = new DataImportor("cfdata.xlsx");
-		String name = "initdata";
-		//importor.importData(name);
-		//importor.outputMapJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);
+		String name = "savingdata";
+		importor.importData(name);
+		importor.outputMapJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);
 
 //		name = "questdata";
 //		importor.importData(name);
 //		importor.outputJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);
 		
-		InitdataService dd = new InitdataService();
-		Init data = dd.findInit();
-		name = "initdata";
 		//importor.importData(name);
 		//importor.outputJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);
 		

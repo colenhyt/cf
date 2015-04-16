@@ -26,7 +26,7 @@ import cn.hd.mgr.StockManager;
 
 public class SavingAction extends BaseAction {
 	public Saving		saving;
-	private InsuredataService insuredataService;
+	protected InsuredataService insuredataService;
 	public InsuredataService getInsuredataService() {
 		return insuredataService;
 	}
@@ -187,7 +187,8 @@ public class SavingAction extends BaseAction {
 	    Calendar c2 = Calendar.getInstance(); 
         c2.setTime(saving.getUpdatetime());
         float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
-       float periodMinutes = saving.getPeriod()*60*60*24;//天:分钟
+       float periodMinutes = saving.getPeriod()*60*24;//天:分钟
+       System.out.println("剩余时间: "+diffdd+",周期时间:"+periodMinutes);
        if ((diffdd-periodMinutes)>0.001)		//定期到期
 		{
 			return true;
@@ -211,10 +212,13 @@ public class SavingAction extends BaseAction {
 			float inAmount = 0 - saving.getAmount();
 			Saving saving2 = savingService.find(saving.getPlayerid(),saving.getItemid());
 			//已到期的存款:
-			if ((saving.getStatus()!=null&&saving.getStatus()==1)||isSavingTimeout(saving2))		
+			boolean isout = isSavingTimeout(saving2);
+			System.out.println("is out:"+isout);
+			if ((saving.getStatus()!=null&&saving.getStatus()==1)||isout)		
 			{
-				int inter = (int)(saving2.getAmount()*saving2.getPeriod()*saving2.getRate()/100);
-				inAmount += inter;				
+				int inter = (int)(saving2.getAmount()*saving2.getRate()/100);
+				inAmount += inter;	
+				System.out.println("得到利息:"+inter);
 				newsaving.setProfit((float)inter);
 			}
 			pushLive(saving.getPlayerid(), inAmount);		//放回活期;
@@ -262,13 +266,14 @@ public class SavingAction extends BaseAction {
 				float inter = 0;	// 0表明未到期
 		        c2.setTime(insure.getUpdatetime());
 				float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
-				float periodMinutes = insure.getPeriod()*60*60*24; //天:分钟
+				float periodMinutes = insure.getPeriod()*60*24; //天:分钟
 	//			periodMinutes = 5;
 				//到期:
 				if ((diffdd-periodMinutes)>0.001)
 				{
 					//理财产品,得到收益:
 					if (insure.getType()!=null&&insure.getType()==1){
+					System.out.println("aaaaaaaaaaaa:"+diffdd+";"+periodMinutes);
 					
 						Insure incfg = insuredataService.findInsure(insure.getItemid());
 						inter = incfg.getProfit()*insure.getQty();
@@ -298,7 +303,7 @@ public class SavingAction extends BaseAction {
 
 	public SavingAction(){
 		init("savingService","savingdataService","playerService",
-				"insureService","stockService","toplistService");
+				"insureService","stockService","toplistService","insuredataService");
 	}
 	
 }

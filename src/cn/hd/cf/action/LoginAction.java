@@ -19,7 +19,6 @@ import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.ToplistService;
 import cn.hd.cf.tools.InitdataService;
-import cn.hd.cf.tools.InsuredataService;
 import cn.hd.cf.tools.SavingdataService;
 import cn.hd.cf.tools.SignindataService;
 import cn.hd.mgr.DataManager;
@@ -63,7 +62,7 @@ public class LoginAction extends SavingAction {
 
 	public LoginAction(){
 		init("signindataService","initdataService"
-				,"insuredataService","savingdataService");
+				,"savingdataService");
 	}
 	
 	public String connect(){
@@ -191,11 +190,11 @@ public class LoginAction extends SavingAction {
 			float inter = 0;
 	        c2.setTime(saving.getUpdatetime());
 	        float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
-	        float periodMinutes = saving.getPeriod()*60*60*24;//天:分钟
+	        float periodMinutes = saving.getPeriod()*60*24;//天:分钟
 			if (saving.getType()==0)
 			{
 				liveSaving = saving;
-				periodMinutes = 60*60*24;//天:分钟
+				periodMinutes = 60*24;//天:分钟
 				long diff = (long)(diffdd/periodMinutes);
 				inter = diff * saving.getAmount()*saving.getRate()/100;
 				if (inter>1){

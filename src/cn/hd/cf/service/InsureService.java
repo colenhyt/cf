@@ -37,18 +37,6 @@ public class InsureService extends BaseService {
 	public List<Insure> findByPlayerId(int playerId)
 	{
 		List<Insure> insures = new ArrayList<Insure>();
-		if (jedis!=null){
-			String key = playerId+ITEM_KEY;
-			Map<String,String> mapJsons = jedis.hgetAll(key);
-			Collection<String> l = mapJsons.values();
-			for (Iterator<String> iter = l.iterator(); iter.hasNext();) {
-				  String str = (String)iter.next();
-				  System.out.println(str);
-				  insures.add((Insure)Bean.toBean(str,Insure.class));
-			}
-			jedis.close();			
-		}
-
 		InsureExample example = new InsureExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));

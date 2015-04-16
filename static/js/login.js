@@ -170,6 +170,23 @@ Login.prototype.register = function(){
 	}	
 }
 
+Login.prototype.loadInsureData = function(indata){
+	g_player.insure = {};
+	var msg = [];
+	var idata = cfeval(indata);
+	for (itemid in idata){
+		var item = store.get(g_insure.name)[itemid];
+		if (!item) continue;
+		
+		if (idata[itemid].profit==0)
+		  g_player.insure[itemid]= idata[itemid];
+		 else { //保险产品到期
+			msg.push({type:g_insure.name,t:parseInt(item.type),name:item.name,profit:parseInt(idata[itemid].profit)});
+		 }
+	}
+	return msg;
+}
+
 Login.prototype.loadData = function(obj){
 	g_player.data = obj;
 	g_player.data.quest = cfeval(obj.quest);
@@ -186,17 +203,10 @@ Login.prototype.loadData = function(obj){
 			msg.push({type:g_saving.name,t:parseInt(item.type),name:item.name,profit:parseInt(sdata[itemid].profit)});
 		}
 	}
-	g_player.insure = {};
-	var idata = cfeval(obj.insure);
-	for (itemid in idata){
-		var item = store.get(g_insure.name)[itemid];
-		if (!item) continue;
-		
-		if (idata[itemid].profit==0)
-		  g_player.insure[itemid]= idata[itemid];
-		 else { //保险产品到期
-			msg.push({type:g_insure.name,t:parseInt(item.type),name:item.name,profit:parseInt(idata[itemid].profit)});
-		 }
+	var imsg = this.loadInsureData(obj.insure);
+	for (var i=0;i<imsg.length;i++)
+	{
+	 msg.push(imsg[i]);
 	}
 	g_player.stock = {};
 	if (obj.stock.length>0)
@@ -205,6 +215,24 @@ Login.prototype.loadData = function(obj){
 	g_player.setStockIds();
 	
 	return msg;
+}
+
+Login.prototype.msgtip = function(loginMsg){
+	for (var i=0;i<loginMsg.length;i++){
+		var msg = loginMsg[i];
+		if (msg.type==g_saving.name){
+			var ppf = parseInt(msg.profit);
+			if (msg.t==0)
+				g_msg.tip("获得"+msg.name+"利息:"+ppf);
+			else
+				g_msg.tip("你的"+msg.name+"存款到期, 获得利息:"+ppf);
+		}else if (msg.type==g_insure.name){
+			if (msg.profit==-1){
+				g_msg.tip("你的"+msg.name+"已到期");
+			}else
+				g_msg.tip("你的"+msg.name+"已到期,获得收益:"+parseInt(msg.profit));
+		}
+	}
 }
 
 Login.prototype.loginCallback = function(obj){
@@ -218,7 +246,8 @@ Login.prototype.loginCallback = function(obj){
      g_player.data = player;
 
      var loginMsg = this.loadData(cfeval(obj));
-
+	this.msgtip(loginMsg);
+	
 	for (var i=0;i<loginMsg.length;i++){
 		var msg = loginMsg[i];
 		if (msg.type==g_saving.name){

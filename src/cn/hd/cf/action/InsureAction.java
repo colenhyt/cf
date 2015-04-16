@@ -20,16 +20,6 @@ public class InsureAction extends SavingAction {
 		this.insure = insure;
 	}
 
-	private InsuredataService insuredataService;
-	
-	public InsuredataService getInsuredataService() {
-		return insuredataService;
-	}
-
-	public void setInsuredataService(InsuredataService insuredataService) {
-		this.insuredataService = insuredataService;
-	}
-
 	public String add()
 	{
 		float inAmount = 0 - insure.getAmount();
@@ -60,10 +50,6 @@ public class InsureAction extends SavingAction {
 		write(strInsure,"utf-8");
 		System.out.println("find "+strInsure);
 		return null;
-	}
-	
-	public InsureAction(){
-		init("insuredataService");
 	}
 	
 }
