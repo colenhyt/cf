@@ -196,6 +196,23 @@ public class SavingAction extends BaseAction {
 		return false;
 	}
 	
+	protected float getLiveInter(Saving saving)
+	{
+		Saving savingCfg = savingdataService.findSaving(1);
+		 Calendar c2 = Calendar.getInstance(); 
+        c2.setTime(saving.getUpdatetime());
+        Date currDate = new Date();
+	    Calendar cCurr = Calendar.getInstance(); 
+	    cCurr.setTime(currDate);
+	    
+        float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
+		float periodMinutes = 60*24;//天:分钟
+		float diff = (diffdd/periodMinutes);
+		System.out.println("aa "+savingCfg.getRate()+";"+diff+";"+saving.getAmount());
+		float inter = diff * saving.getAmount()*savingCfg.getRate()/100;	
+		return inter;
+	}
+	
 	public String add()
 	{
 		//活期不存在存款取款:
@@ -214,12 +231,18 @@ public class SavingAction extends BaseAction {
 			//已到期的存款:
 			boolean isout = isSavingTimeout(saving2);
 			System.out.println("is out:"+isout);
+			float inter  = 0;
 			if ((saving.getStatus()!=null&&saving.getStatus()==1)||isout)		
 			{
-				int inter = (int)(saving2.getAmount()*saving2.getRate()/100);
-				inAmount += inter;	
-				System.out.println("得到利息:"+inter);
-				newsaving.setProfit((float)inter);
+				inter = (saving2.getAmount()*saving2.getRate()/100);
+			}else {			//按活期得到利息
+				inter = getLiveInter(saving2);
+			}
+			if (Math.abs(inter-0.9)>0){
+				int iInter = (int)inter;
+				inAmount += iInter;	
+				System.out.println("得到利息:"+iInter);
+				newsaving.setProfit((float)iInter);				
 			}
 			pushLive(saving.getPlayerid(), inAmount);		//放回活期;
 			exec = savingService.remove(saving);	

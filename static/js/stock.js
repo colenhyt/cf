@@ -499,7 +499,7 @@ Stock.prototype.stockChange = function()
 				var newps = ForDight(lastquotes[itemid]);
 				floatAmounts[itemid] = pitem.qty*newps; 
 				prs += pitem.qty*newps - pitem.amount;
-				g_player.setStockItemPs(itemid,newps);
+				//g_player.setStockItemPs(itemid,newps);
 				this.hasTip = true;
 			}
 			for (key in closeIds)

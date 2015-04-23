@@ -207,7 +207,7 @@ Saving.prototype.buyCallback = function(ret){
 	g_msg.tip(desc);
 	
 	var savingback = cfeval(ret.desc);
-	if (savingback.profit>1)
+	if (savingback.profit>=1)
 	{
 	 g_player.saving[1].amount += savingback.profit;
 	 g_player.flushPageview();

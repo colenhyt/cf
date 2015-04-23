@@ -191,7 +191,7 @@ public class LoginAction extends SavingAction {
 	        c2.setTime(saving.getUpdatetime());
 	        float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
 	        float periodMinutes = saving.getPeriod()*60*24;//天:分钟
-			if (saving.getType()==0)
+			if (saving.getType()==0)		//活期
 			{
 				liveSaving = saving;
 				periodMinutes = 60*24;//天:分钟
