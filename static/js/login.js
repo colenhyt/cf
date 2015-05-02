@@ -16,7 +16,7 @@ Login.prototype = new Datamgr();
 Login.prototype.init = function(){
     var isRe = false;
     var ret = true;
- 	var tdata = store.get(this.name);
+  	var tdata = store.get(this.name);
 	if (tdata==null)
 	{
 		store.set(this.name,[]);
@@ -28,7 +28,6 @@ Login.prototype.draw = function()
 {
 	var localdata = store.get(this.name);
 	var tdata = localdata[localdata.length-1];
-	tdata = store.get(g_player.name);
 	for (var i=0;i<login_imgs.length;i++){
 		var img = login_imgs[i];
    	 	g_game.addImg(img);
@@ -98,8 +97,9 @@ Login.prototype.msg = function(msg)
 Login.prototype.onImgClick = function(image)
 {
 	var tdata = store.get(g_player.name);
+	var tag = document.getElementById("inputnick");
 	if (image.name=="chosegirl"||image.name=="choseboy"){
-		if (tdata!=null&&tdata.playerid==this.loginPlayerid)
+		if (tdata!=null&&tdata.playername==tag.value)
 			return;
 		
 		var sex = 0;
@@ -108,7 +108,6 @@ Login.prototype.onImgClick = function(image)
 		this.drawChoseBorder(sex);
 		
 	}else if (image.name=="btstart"){
-		var tag = document.getElementById("inputnick");
 		if (tag.value==null||tag.value==""||tag.value==Login_InputDft){
 			this.msg("输入你的昵称");
 			return;		
@@ -117,11 +116,11 @@ Login.prototype.onImgClick = function(image)
 			this.msg("选择你的性别");
 			return;
 		}
-		if (tdata==null||tdata.playerid!=this.loginPlayerid)
-			this.register();
-		else{
+//		if (tdata!=null&&tdata.playername!=tag.value)
+//			this.register();
+//		else{
 			this.login();
-		}
+//		}
 	}
 }
 
@@ -242,10 +241,20 @@ Login.prototype.loginCallback = function(obj){
 	$('#inputnickdiv').remove();
 	$('#errmsg').remove();
 	
-     var player = store.get(g_player.name);
-     g_player.data = player;
 
-     var loginMsg = this.loadData(cfeval(obj));
+	var objdata = cfeval(obj);
+    var player = objdata;
+	
+	var logindata = store.get(this.name);
+	var lastPlayer = logindata[logindata.length-1];
+	if (lastPlayer==null||lastPlayer.playerid!=player.playerid){
+	 logindata.push(player);
+	 store.set(this.name,logindata);
+	 }
+	 	
+	 store.set(g_player.name,player);
+	 
+     var loginMsg = this.loadData(objdata);
 	this.msgtip(loginMsg);
 	
 	for (var i=0;i<loginMsg.length;i++){
@@ -298,13 +307,15 @@ Login.prototype.loginCallback = function(obj){
 Login.prototype.login = function(){
 	g_msg.showload("g_login.login");
 	
-     var player = store.get(g_player.name);
-     if (player==null){
-     	alert("本地数据缺失，登录失败");
-     	return;
-     }
+	var tag = document.getElementById("inputnick");
+	var pname = tag.value;	
+//     var player = store.get(g_player.name);
+//     if (player==null){
+//     	alert("本地数据缺失，登录失败");
+//     	return;
+//     }
      
-     var ppobj = {playerid:player.playerid,pwd:player.pwd,playername:player.playername}
+     var ppobj = {playername:pname,sex:this.sex};
    	var dataParam = obj2ParamStr("player",ppobj);
     var serverPlayer;
     var now = new Date();

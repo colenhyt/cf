@@ -125,10 +125,10 @@ public class LoginAction extends SavingAction {
 			super.playerTopUpdate(playerBlob.getPlayerid());
 		}
 		
-		String pdata = getPlayerJsonData(playerBlob);
+		//String pdata = getPlayerJsonData(playerBlob);
 		
 		//System.out.println("register player: "+pdata);
-		write(pdata,"utf-8");
+		//write(pdata,"utf-8");
 		return null;
 	}
 	
@@ -255,17 +255,19 @@ public class LoginAction extends SavingAction {
 	public String login()
 	{
 		
-		PlayerWithBLOBs playerBlob = playerService.find(player.getPlayerid());
+		PlayerWithBLOBs playerBlob = playerService.findByName(player.getPlayername());
 		if (playerBlob==null)
 		{
-			System.out.println("no player found:playerid:"+player.getPlayerid());
-			return null;
+			register();
+			System.out.println("new register:"+player.getPlayername());
+			playerBlob = playerService.findByName(player.getPlayername());
+			//return null;
 		}
 		//System.out.println("player(");
 		String pdata = getPlayerJsonData(playerBlob);
 	
 		PlayerWithBLOBs p2 = new PlayerWithBLOBs();
-		p2.setPlayerid(player.getPlayerid());
+		p2.setPlayerid(playerBlob.getPlayerid());
 		p2.setLastlogin(playerBlob.getLastlogin());
 		playerService.updateByKey(p2);
 			

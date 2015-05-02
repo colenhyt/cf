@@ -10,27 +10,35 @@ Playerlog.prototype.init = function(){
 	}
 }
 
+Playerlog.prototype.findlogkey = function(){
+	var currDate = new Date();
+	var player = g_player.data;
+	return player.playerid+"_"+currDate.toDateString();
+}
+
 Playerlog.prototype.addlog = function(){
 	var currDate = new Date();
+	var key = g_playerlog.findlogkey();
  	var jsonCurr = Date.parse(currDate);
 	var daylog = {feeling:-1,dailyquest:0,logins:[jsonCurr]};
 	var tdata = store.get(this.name);
-	var currdlog = tdata[currDate.toDateString()];
+	var currdlog = tdata[key];
 	if (currdlog) {
 		currdlog.logins.push(jsonCurr);
 		daylog = currdlog;
 	}
 	
-	tdata[currDate.toDateString()] = daylog;
+	tdata[key] = daylog;
 	store.set(this.name,tdata);
 }
 
 Playerlog.prototype.findTodayLog = function(){
+	var key = g_playerlog.findlogkey();
 	var needSignin = true;
 	var needDailyQuest = true;
 	var currDate = new Date();
 	var tdata = store.get(this.name);
-	var todaylog = tdata[currDate.toDateString()];
+	var todaylog = tdata[key];
 	if (todaylog){
 		if (todaylog.feeling>=0)
 			needSignin = false;
@@ -41,24 +49,26 @@ Playerlog.prototype.findTodayLog = function(){
 }
 
 Playerlog.prototype.updateQuest = function(){
+	var key = g_playerlog.findlogkey();
 	var currDate = new Date();
 	var tdata = store.get(this.name);
-	var currdlog = tdata[currDate.toDateString()];
+	var currdlog = tdata[key];
 	if (currdlog) {
 		currdlog.dailyquest = 1;
 	}
-	tdata[currDate.toDateString()] = currdlog;
+	tdata[key] = currdlog;
 	store.set(this.name,tdata);
 }
 
 Playerlog.prototype.updateSignin = function(feeling){
+	var key = g_playerlog.findlogkey();
 	var currDate = new Date();
 	var tdata = store.get(this.name);
-	var currdlog = tdata[currDate.toDateString()];
+	var currdlog = tdata[key];
 	if (currdlog) {
 		currdlog.feeling = feeling;
 	}
-	tdata[currDate.toDateString()] = currdlog;
+	tdata[key] = currdlog;
 	store.set(this.name,tdata);
 }
 

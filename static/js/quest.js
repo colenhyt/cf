@@ -29,6 +29,8 @@ Quest.prototype.buildPage = function(page)
 {
 	var quest = g_player.data.quest;
 	
+	if (quest==null) quest = [];
+	
 	var tdata = store.get(this.name);
 	var content = 	"";
 	if (quest.length<=0){

@@ -199,7 +199,9 @@ function initScreen(){
 		SCREENKEY = 360;
 	 else
 	    SCREENKEY = 320;
-
+//
+//alert(width);
+//alert(SCREENKEY);
 	//SCREENKEY = 480;
 	SIZEPER = SCREENKEY/640;
 	var cssFile = "static/css/cf"+SCREENKEY+".css";
