@@ -100,6 +100,7 @@ function outputCssStyles(css_file_name,per) {
 	 	content += style.selectorText.toLowerCase()+"{"
 	 	for (param in style.style){
 			var value = style.style[param];
+			if (typeof(value)=="function") continue;
 	 		if (isLegalName(param)&&isLegalValue(value)){
 	 		 value = value.replace('(http://localhost:8080/cf/',"('../../");
 	 		 value = value.replace('.png)',".png')");
@@ -236,9 +237,11 @@ myajax = function(url,dataParam,async){
 
 findSigninLog = function(logdata){
  var now = new Date();
+ var player = g_player.data;
  var signinDays = 0;
  for (var i=0;i<7;i++){
-  if (logdata[now.toDateString()])
+  var key = player.playerid+"_"+now.toDateString(); 
+  if (logdata[key])
    signinDays++;
   else
    break;

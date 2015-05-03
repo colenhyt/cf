@@ -37,7 +37,7 @@ Playerinfo.prototype.showInfo = function(jsondata){
     content +=            " <div class='cfplayer_panel_text'> "
       content += "<table class='cfinfo_tabl'>"
      content += "<tr><td>昵&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp称: </td><td> <span style='color:yellow'>"+jsondata.data.playername.substring(0,10)+"</span>	</td></tr>"	
-     content += "<tr><td>当前等级: </td><td> <span style='color:yellow'>"+lv+"</span> "+g_title.getData(lv).name+"</td></tr>"	
+     content += "<tr><td><div class='cfplayer_info3'>当前等级:</div> </td><td> <span style='color:yellow'>"+lv+"</span> "+g_title.getData(lv).name+"</td></tr>"	
      content += "<tr><td>下一等级: </td><td> <span style='color:yellow'>"+(lv+1)+"</span> "+g_title.getData(lv+1).name+"</td></tr>"	
      content += "<tr><td> 经&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp验: </td>"
      content += "<td><div class='cfinfo_exp_bg'><div class='cfinfo_exp_img' id='cfinfo_exp_img' style='width:"+expPer+"%'></div>"

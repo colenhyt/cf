@@ -125,7 +125,7 @@ var PageSizes = {
 	,QuestMoney:["120px","390px"]
 	},
 	
-	"480":{SceneWidth:640,SceneHeight:993,PieWidth:260,PieFontSize:24,PieFontSize2:18,
+	"480":{SceneWidth:640,SceneHeight:1008,PieWidth:260,PieFontSize:24,PieFontSize2:18,
 	PieHeight:280,PageWidth:"432px",PageHeight:"477px",PageTop:60,
 	DetailPageTop:80,MsgTop:100,
 	StockView:[410,350,400,230,18]
@@ -134,7 +134,7 @@ var PageSizes = {
 	,QuestMoney:["120px","390px"]
 	},
 	
-	"360":{SceneWidth:640,SceneHeight:992,PieWidth:200,PieFontSize:20,PieFontSize2:16,
+	"360":{SceneWidth:640,SceneHeight:1008,PieWidth:200,PieFontSize:20,PieFontSize2:16,
 	PieHeight:220,PageWidth:"328px",PageHeight:"477px",PageTop:40,
 	DetailPageTop:50,MsgTop:50,
 	StockView:[300,300,280,190,15]
@@ -214,7 +214,28 @@ getSizes = function(){
 	return PageSizes[SCREENKEY];
 }
 
-
+function sc(){
+var s = "<div style='color:red'>"; 
+s += " 网页可见区域宽："+ document.body.clientWidth+"<br />"; 
+s += " 网页可见区域高："+ document.body.clientHeight+"<br />"; 
+s += " 网页可见区域宽："+ document.body.offsetWidth + " (包括边线和滚动条的宽)"+"<br />"; 
+s += " 网页可见区域高："+ document.body.offsetHeight + " (包括边线的宽)"+"<br />"; 
+s += " 网页正文全文宽："+ document.body.scrollWidth+"<br />"; 
+s += " 网页正文全文高："+ document.body.scrollHeight+"<br />"; 
+s += " 网页被卷去的高(ff)："+ document.body.scrollTop+"<br />"; 
+s += " 网页被卷去的高(ie)："+ document.documentElement.scrollTop+"<br />"; 
+s += " 网页被卷去的左："+ document.body.scrollLeft+"<br />"; 
+s += " 网页正文部分上："+ window.screenTop+"<br />"; 
+s += " 网页正文部分左："+ window.screenLeft+"<br />"; 
+s += " 屏幕分辨率的高："+ window.screen.height+"<br />"; 
+s += " 屏幕分辨率的宽："+ window.screen.width+"<br />"; 
+s += " 屏幕可用工作区高度："+ window.screen.availHeight+"<br />"; 
+s += " 屏幕可用工作区宽度："+ window.screen.availWidth+"<br />"; 
+s += " 你的屏幕设置是 "+ window.screen.colorDepth +" 位彩色"+"<br />"; 
+s += " 你的屏幕设置 "+ window.screen.deviceXDPI +" 像素/英寸"+"<br />"; 
+ s += "</div>"
+document.writeln(s);
+}
 function aa(){
 document.writeln("语言版本: "+browser.language);
 document.writeln(" 是否为移动终端: "+browser.versions.mobile);
@@ -225,4 +246,6 @@ document.writeln(" 是否为iPhone5: "+browser.versions.iPhone5);
 document.writeln(" 是否iPad: "+browser.versions.iPad);
 document.writeln(navigator.userAgent);
 }
+
+//sc();
 //aa();
