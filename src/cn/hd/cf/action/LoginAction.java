@@ -255,6 +255,7 @@ public class LoginAction extends SavingAction {
 	public String login()
 	{
 		
+		System.out.println("login :"+player.getPlayername());
 		PlayerWithBLOBs playerBlob = playerService.findByName(player.getPlayername());
 		if (playerBlob==null)
 		{

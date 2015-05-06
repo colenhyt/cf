@@ -315,7 +315,7 @@ Login.prototype.login = function(){
 //     	return;
 //     }
      
-     var ppobj = {playername:pname,sex:this.sex};
+     var ppobj = {playername:pname,sex:g_login.sex};
    	var dataParam = obj2ParamStr("player",ppobj);
     var serverPlayer;
     var now = new Date();

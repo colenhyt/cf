@@ -10,6 +10,9 @@ wx.ready(function () {
       ],
       success: function (res) {
         alert(JSON.stringify(res));
+      },
+      fail: function (res) {
+        alert('aaa');
       }
     });
   };
