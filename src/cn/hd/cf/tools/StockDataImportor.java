@@ -22,6 +22,7 @@ import cn.hd.cf.model.Stockdata;
 public class StockDataImportor extends Base{
 	private String cfg_file;
 	private static String CONFIG_PATH_JS = "static/data/";
+	public static String listName = "stockdata";
 	private QuotedataService quotedataService;
 	private StockdataService stockdataService;
 	
@@ -155,6 +156,7 @@ public class StockDataImportor extends Base{
 	            //获取行中所有列数据  
 	            cols=row.getLastCellNum();  
 	            String record = "{";
+	            boolean hasStr = false;
 	        for(int j=0;j<cols;j++){  
 	            XSSFCell cell=row.getCell(j);  
 	            if(cell==null){  
@@ -165,6 +167,7 @@ public class StockDataImportor extends Base{
 	            switch (cell.getCellType()) {    
 	                case XSSFCell.CELL_TYPE_STRING: // 字符串    
 	                    record += "\""+cell.getStringCellValue()+"\",";
+	                    hasStr = true;
 	                    break;    
 	                case XSSFCell.CELL_TYPE_NUMERIC: // 数字,转为float
 	                	float value = (float)cell.getNumericCellValue();
@@ -180,6 +183,7 @@ public class StockDataImportor extends Base{
 	        }  
 	        }  
 	            record += "}";
+	            if (hasStr)
 	            jsondata.add(record);
 	        }  
 	    }  
@@ -188,7 +192,6 @@ public class StockDataImportor extends Base{
 	}
 
 	public List<Stockdata>  findStocks(){
-		String listName = "stockdata";
 		JSONArray data = getJsondata(listName,ROW_INDEX_NAME,ROW_INDEX_DATA);
 		List<Stockdata> stocks  = JSONArray.toList(data, Stockdata.class);
 		return stocks;
@@ -196,10 +199,13 @@ public class StockDataImportor extends Base{
 	public void importStockdata(){
 		stockdataService.clear();
 		List<Stockdata> stocks = findStocks();
-		Float freq = getRowData("stockdata",2);
+		Float freq = getRowData(listName,2);
 		Integer ifreq = Integer.valueOf(freq.intValue());
 		for (int i=0;i<stocks.size();i++){
 			Stockdata stock = stocks.get(i);
+			if (stock==null){
+				continue;
+			}
 			JSONArray data = getArraydata(stock.getId(),stock.getName(),0,1,50);
 			stock.setCreatetime(new Date());
 			stock.setQuotes(data.toString().getBytes());	
@@ -218,8 +224,7 @@ public class StockDataImportor extends Base{
 		importor2.importStockdata();
 		
 		DataImportor importor3 = new DataImportor("stockdata.xlsx");
-		String name = "stockdata";
-		//importor3.outputMapJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);	
+		importor3.outputMapJsData(StockDataImportor.listName,ROW_INDEX_NAME,ROW_INDEX_DATA);	
 		
 	}
 

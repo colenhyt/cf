@@ -294,6 +294,7 @@ public class DataImportor extends Base{
 	            //获取行中所有列数据  
 	            cols=row.getLastCellNum();  
 	            String record = "";
+	            boolean hasStr = false;
 	        for(int j=0;j<cols;j++){  
             	if (row1.getCell(j)==null) continue;
 	            XSSFCell cell=row.getCell(j);  
@@ -314,6 +315,7 @@ public class DataImportor extends Base{
 	            switch (cell.getCellType()) {    
 	                case XSSFCell.CELL_TYPE_STRING: // 字符串    
 	                    record += "\""+cell.getStringCellValue()+"\",";
+	                    hasStr = true;
 	                    break;    
 	                case XSSFCell.CELL_TYPE_NUMERIC: // 数字,转为float
 	                	float value = (float)cell.getNumericCellValue();
@@ -328,6 +330,7 @@ public class DataImportor extends Base{
 	                }    
 	        }  
 	            record += "},";
+	            if (hasStr)
 	            strdata += record+"\n";
 	        }  
 	    }  
