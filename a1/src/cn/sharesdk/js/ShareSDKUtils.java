@@ -59,6 +59,7 @@ public class ShareSDKUtils extends WebViewClient implements Callback {
 		this.wvClient.setWebViewClient(wbClient);
 		this.webview.setWebViewClient(this.wvClient);
 		webview.getSettings().setJavaScriptEnabled(true);
+		webview.addJavascriptInterface(this, "JSInterface");
 	}
 	
 	/* process js init function */
@@ -100,7 +101,9 @@ public class ShareSDKUtils extends WebViewClient implements Callback {
 	}
 	
 	/** receive js log */
+	@JavascriptInterface
 	public void jsLog(String msg) {
+		System.out.println("get jsLogjsLogjsLog "+msg);
 		Log.w("ShareSDK for JS", msg == null ? "" : msg);
 	}
 	
