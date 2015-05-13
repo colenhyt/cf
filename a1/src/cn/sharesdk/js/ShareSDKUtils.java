@@ -59,7 +59,6 @@ public class ShareSDKUtils extends WebViewClient implements Callback {
 		this.wvClient.setWebViewClient(wbClient);
 		this.webview.setWebViewClient(this.wvClient);
 		webview.getSettings().setJavaScriptEnabled(true);
-		webview.addJavascriptInterface(this, "JSInterface");
 	}
 	
 	/* process js init function */
@@ -93,7 +92,7 @@ public class ShareSDKUtils extends WebViewClient implements Callback {
 	@JavascriptInterface
 	public void jsCallback(String seqId, String api, String data, String callback) {
 		// this is in webview core thread, not in ui thread
-	//	System.out.println("get param "+seqId+" api:"+api);
+		System.out.println("get param "+seqId+" api:"+api);
 //		Message msg = new Message();
 //		msg.what = MSG_JS_CALL;
 //		msg.obj = new Object[] {seqId, api, data, callback};

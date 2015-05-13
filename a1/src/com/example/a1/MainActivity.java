@@ -49,8 +49,9 @@ private EditText Ev1;
 				return super.onJsAlert(view, url, message, result);
 			}
 		});
-//		webView.addJavascriptInterface(new DemoJavaScriptInterface(), "demo");
-		ShareSDKUtils.prepare(webView, wvClient);
+		ShareSDKUtils aa = ShareSDKUtils.prepare(webView, wvClient);
+		webView.addJavascriptInterface(aa, "JSInterface");
+		webView.addJavascriptInterface(new DemoJavaScriptInterface(), "demo");
 		
 //		webView = new WebView(this);
 //		flushWebView("http://192.168.31.241:8080/cf/index.html"); //xiaomi-7e
