@@ -28,50 +28,20 @@ private EditText Ev1;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-	
-		webView = (WebView)findViewById(R.id.webView1);
-	
-		DisplayMetrics dm = new DisplayMetrics();  
-        getWindowManager().getDefaultDisplay().getMetrics(dm);  
-          
-        int width = dm.widthPixels;  
-        int height = dm.heightPixels; 
-        
-		webView.getSettings().setDomStorageEnabled(true);   
-		webView.getSettings().setDatabaseEnabled(true);
-		webView.getSettings().setAllowFileAccess(true);  
+		WebView wvBody = new WebView(this);
 		WebViewClient wvClient = new WebViewClient();
-		webView.setWebViewClient(wvClient); 
-		webView.setWebChromeClient(new WebChromeClient() {
+		wvBody.setWebViewClient(wvClient);
+		wvBody.setWebChromeClient(new WebChromeClient() {
 			public boolean onJsAlert(WebView view, String url, String message,
 					JsResult result) {
 				return super.onJsAlert(view, url, message, result);
 			}
 		});
-		ShareSDKUtils aa = ShareSDKUtils.prepare(webView, wvClient);
-		webView.addJavascriptInterface(aa, "JSInterface");
-		webView.addJavascriptInterface(new DemoJavaScriptInterface(), "demo");
 		
-//		webView = new WebView(this);
-//		flushWebView("http://192.168.31.241:8080/cf/index.html"); //xiaomi-7e
-//		flushWebView("http://192.168.8.101:8080/cf/index.html");	//huaweiwifi-colen
-//		flushWebView("http://192.168.123.1:8080/cf/index.html");	//xiaomi-wifi
-		flushWebView("http://192.168.43.168:8080/cf/index.html");	//vt-wifi
-//		flushWebView("http://202.69.27.223:8081/cf/index.html");	//pingan-test-wifi
-		
-		
-//		Button btn1 = (Button)findViewById(R.id.button1);
-//		btn1.setOnClickListener(new Button.OnClickListener(){
-//			public void onClick(View v)
-//			{
-//				flushWebView("http://localhost:8080/cf/index.html");
-//			}
-//		});
-//		if (savedInstanceState == null) {
-//			getSupportFragmentManager().beginTransaction()
-//					.add(R.id.container, new PlaceholderFragment()).commit();
-//		}
+		// you must call the following line after the webviewclient is set into the webview
+		ShareSDKUtils.prepare(wvBody, wvClient);
+		setContentView(wvBody);
+		wvBody.loadUrl("http://192.168.43.168:8080/cf/Sample.html");
 	}
 
 	private void flushWebView(String strUrl)

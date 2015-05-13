@@ -93,10 +93,10 @@ public class ShareSDKUtils extends WebViewClient implements Callback {
 	public void jsCallback(String seqId, String api, String data, String callback) {
 		// this is in webview core thread, not in ui thread
 		System.out.println("get param "+seqId+" api:"+api);
-//		Message msg = new Message();
-//		msg.what = MSG_JS_CALL;
-//		msg.obj = new Object[] {seqId, api, data, callback};
-//		UIHandler.sendMessage(msg, this);
+		Message msg = new Message();
+		msg.what = MSG_JS_CALL;
+		msg.obj = new Object[] {seqId, api, data, callback};
+		UIHandler.sendMessage(msg, this);
 	}
 	
 	/** receive js log */
