@@ -10,10 +10,10 @@ Main = function(){
 }
 
 Main.prototype.init = function(){
-	$.getJSON("/cf/login_connect.do", function(json){
-		if (json.code==-1)
-			alert('联网失败，请检查你的网络');
-	})	
+//	$.getJSON("/cf/login_connect.do", function(json){
+//		if (json.code==-1)
+//			alert('联网失败，请检查你的网络');
+//	})	
 	
 	//loadStyle('static/css/cf.css');
 	//outputCssFiles(320);
