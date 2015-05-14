@@ -37,7 +37,7 @@ private EditText Ev1;
 		//wvBody.getSettings().setJavaScriptEnabled(true);
 		//wvBody.addJavascriptInterface(new JavaScriptInterface(), "ncp");  
 		setContentView(wvBody);
-		wvBody.loadUrl("http://192.168.43.168:8080/cf/Sample.html");
+		wvBody.loadUrl("http://192.168.43.168:8080/cf/index.html");
 	}
 	
 	final class JavaScriptInterface {   
