@@ -19,13 +19,17 @@ private EditText Ev1;
 		super.onCreate(savedInstanceState);
 		
 		WebView wvBody = new WebView(this);
+		
+		wvBody.getSettings().setDomStorageEnabled(true);   
+		wvBody.getSettings().setDatabaseEnabled(true);
+		wvBody.getSettings().setAllowFileAccess(true);  
 		WebViewClient wvClient = new WebViewClient();
 		wvBody.setWebViewClient(wvClient);
 		wvBody.setWebChromeClient(new WebChromeClient() {
-//			public boolean onJsAlert(WebView view, String url, String message,
-//					JsResult result) {
-//				return super.onJsAlert(view, url, message, result);
-//			}
+			public boolean onJsAlert(WebView view, String url, String message,
+					JsResult result) {
+				return super.onJsAlert(view, url, message, result);
+			}
 		});
 		
 		// you must call the following line after the webviewclient is set into the webview
@@ -33,7 +37,7 @@ private EditText Ev1;
 		//wvBody.getSettings().setJavaScriptEnabled(true);
 		//wvBody.addJavascriptInterface(new JavaScriptInterface(), "ncp");  
 		setContentView(wvBody);
-		wvBody.loadUrl("http://192.168.31.109:8080/cf/Sample.html");
+		wvBody.loadUrl("http://192.168.43.168:8080/cf/Sample.html");
 	}
 	
 	final class JavaScriptInterface {   
