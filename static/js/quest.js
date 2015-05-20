@@ -127,13 +127,18 @@ Quest.prototype.acceptQuest = function(id){
 }
 
 Quest.prototype.onAcceptDaily = function(){
+	var pquest =  g_player.data.quest?g_player.data.quest:[];
+	if (pquest.length>=2)
+	{
+	 return;
+	}
 	var tdata = store.get(this.name);
 	var qids = [];
 	var cc = this.dailyCount;
 	if (cc>tdata.length)
 		cc = tdata.length;
 	var qkeys = [];
-	var pquest =  g_player.data.quest?g_player.data.quest:[];
+	
 	var jsonCurr = Date.parse(new Date());
 	for (var i=0;i<cc;i++)
 	{

@@ -12,7 +12,9 @@ var NetReqWait = 10000;	//网络请求等待时间(ms)
 
 var QUOTETIME = 300;		//行情跳动时间(秒)
 
-var EventTriggerTime = 5*120;	//随机事件跳动;*UpdateDuration/1000 秒
+var FirstEventTriggerTime = 60*5;	//注册后首次意外事件触发事件,
+
+var EventTriggerTime = 300*5;	//随机事件跳动;*UpdateDuration/1000 秒
 
 var Panel_ClickColor = "#123123";
 

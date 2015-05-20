@@ -4,6 +4,8 @@ Event = function(){
     this.pagename = this.tagname+"page";
     this.tagdetailname = this.tagname+"detail";
     this.pagedetailname = this.tagdetailname+"page";
+    this.firstTrigger = true;
+    this.firstTick = 0;
     this.tick = 0;
 }
 
@@ -128,12 +130,20 @@ var div=$("#cfevent_prize");
 
 //
 Event.prototype.update = function(){
+ if (this.firstTrigger){
+	this.firstTick++;
+	if (this.firstTick%FirstEventTriggerTime==0)
+	{
+		this.triggerEvent();
+		this.firstTrigger = false;
+	}	
+ }else {
 	this.tick++;
-	//g_msg.tip(this.tick);
 	if (this.tick%EventTriggerTime==0)
 	{
 		this.triggerEvent();
 	}
+ }
 }
 var g_event = new Event();
 g_event.init();
