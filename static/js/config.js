@@ -199,7 +199,11 @@ function initScreen(){
 		SCREENKEY = 360;
 	 else
 	    SCREENKEY = 320;
+	    
+  if (browser.versions.iPhone)
+   SCREENKEY = 320;
 //
+//alert(browser.versions.iPhone)
 //alert(width);
 //alert(SCREENKEY);
 	//SCREENKEY = 480;
