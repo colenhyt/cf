@@ -38,6 +38,8 @@ private EditText Ev1;
 		//wvBody.addJavascriptInterface(new JavaScriptInterface(), "ncp");  
 		setContentView(wvBody);
 		wvBody.loadUrl("http://192.168.43.168:8080/cf/index.html");
+		//wvBody.loadUrl("http://202.69.27.223:8081/cf/index.html");	//pingan-test-wifi
+
 	}
 	
 	final class JavaScriptInterface {   
