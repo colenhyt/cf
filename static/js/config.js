@@ -18,6 +18,8 @@ var Panel_ClickColor = "#123123";
 
 var Login_InputDft = "输入你的昵称";
 
+
+
 var login_imgs = [
 	{name:"map",src:"static/img/login_bg.png",x:0,y:0,zindex:0},
 	{name:"inputnick",src:"static/img/nick_input.png",x:130,y:110,zindex:0},
@@ -159,6 +161,7 @@ var SIZEPER = 1;
  var browser={
     versions:function(){ 
            var u = navigator.userAgent, app = navigator.appVersion; 
+           //alert(u);
            return {//移动终端浏览器版本信息 
                 trident: u.indexOf('Trident') > -1, //IE内核
                 presto: u.indexOf('Presto') > -1, //opera内核
@@ -191,17 +194,23 @@ function initScreen(){
 	}
 	}
  	 var width = window.screen.width;
-	 if (width>=640)
+ 	 if (browser.versions.iPhone||browser.versions.iPad)
+ 	 {
+	  if (width>=640)
 		SCREENKEY = 640;
-	 else if (width<640&&width>=480)
+ 	  else
+		SCREENKEY = 320; 	  
+ 	 }else{
+	  if (width>=640)
+		SCREENKEY = 640;
+	  else if (width<640&&width>=480)
 		SCREENKEY = 480;
-	 else if (width<480&&width>=360)
+	  else if (width<480&&width>=360)
 		SCREENKEY = 360;
-	 else
+	  else
 	    SCREENKEY = 320;
+ 	 }
 	    
-  if (browser.versions.iPhone)
-   SCREENKEY = 320;
 //
 //alert(browser.versions.iPhone)
 //alert(width);
