@@ -163,6 +163,11 @@ function errorDB(err){
 
 log33 = function(text){
 	 var div2=document.getElementById('testpos');
+	 if (div2==null){
+	    div2 = document.createElement("div");
+	    div.id = 'testpos';
+	    document.body.appendChild(div);		  
+	 }
 	 div2.innerHTML = text;
 	 div2.style.color = 'black';
 }
@@ -419,8 +424,8 @@ function carAni1(){
 
  var divName = "divcar1";
 var anis=[
-['+='+parseInt(410*SIZEPER)+'px','+='+parseInt(240*SIZEPER)+'px',parseInt(11000*SIZEPER),'icon_car1.png',"-"+parseInt(50*SIZEPER)+"px",parseInt(338*SIZEPER)+"px"],
-['-='+parseInt(100*SIZEPER)+'px','+='+parseInt(80*SIZEPER)+'px',parseInt(2500*SIZEPER),'icon_car1_2.png'],
+['+='+parseInt(410*SIZEPER)+'px','+='+parseInt(240*SIZEPER)+'px',parseInt(11000),'icon_car1.png',"-"+parseInt(50*SIZEPER)+"px",parseInt(338*SIZEPER)+"px"],
+['-='+parseInt(100*SIZEPER)+'px','+='+parseInt(80*SIZEPER)+'px',parseInt(2500),'icon_car1_2.png'],
 ]
 
  var tag = document.getElementById(divName);
@@ -459,11 +464,11 @@ function carAni2(){
 
  var divName = "divcar2";
 var anis=[
-['-='+parseInt(350*SIZEPER)+'px','+='+parseInt(230*SIZEPER)+'px',parseInt(8000*SIZEPER),'icon_car2.png',parseInt(605*SIZEPER)+"px",parseInt(234*SIZEPER)+"px"],
-['+='+parseInt(280*SIZEPER)+'px','+='+parseInt(170*SIZEPER)+'px',parseInt(7500*SIZEPER),'icon_car2_2.png'],
-['-='+parseInt(80*SIZEPER)+'px','+='+parseInt(80*SIZEPER)+'px',parseInt(3500*SIZEPER),'icon_car2.png'],
-['+='+parseInt(120*SIZEPER)+'px','+='+parseInt(120*SIZEPER)+'px',parseInt(4500*SIZEPER),'icon_car2_2.png'],
-['-='+parseInt(180*SIZEPER)+'px','+='+parseInt(120*SIZEPER)+'px',parseInt(8000*SIZEPER),'icon_car2.png'],
+['-='+parseInt(330*SIZEPER)+'px','+='+parseInt(220*SIZEPER)+'px',parseInt(7500),'icon_car2.png',parseInt(590*SIZEPER)+"px",parseInt(244*SIZEPER)+"px"],
+['+='+parseInt(280*SIZEPER)+'px','+='+parseInt(170*SIZEPER)+'px',parseInt(7500),'icon_car2_2.png'],
+['-='+parseInt(80*SIZEPER)+'px','+='+parseInt(80*SIZEPER)+'px',parseInt(3500),'icon_car2.png'],
+['+='+parseInt(120*SIZEPER)+'px','+='+parseInt(120*SIZEPER)+'px',parseInt(4500),'icon_car2_2.png'],
+['-='+parseInt(180*SIZEPER)+'px','+='+parseInt(120*SIZEPER)+'px',parseInt(8000),'icon_car2.png'],
 ]
 
  var tag = document.getElementById(divName);
@@ -520,9 +525,9 @@ function carAni3(){
 
  var divName = "divcar3";
 var anis=[
-['-='+parseInt(150*SIZEPER)+'px','+='+parseInt(120*SIZEPER)+'px',parseInt(4500*SIZEPER),'icon_car3.png',parseInt(585*SIZEPER)+"px",parseInt(603*SIZEPER)+"px"],
-['+='+parseInt(155*SIZEPER)+'px','+='+parseInt(115*SIZEPER)+'px',parseInt(4500*SIZEPER),'icon_car3_2.png'],
-['-='+parseInt(140*SIZEPER)+'px','+='+parseInt(115*SIZEPER)+'px',parseInt(6500*SIZEPER),'icon_car3.png'],
+['-='+parseInt(150*SIZEPER)+'px','+='+parseInt(120*SIZEPER)+'px',parseInt(4500),'icon_car3.png',parseInt(585*SIZEPER)+"px",parseInt(603*SIZEPER)+"px"],
+['+='+parseInt(150*SIZEPER)+'px','+='+parseInt(110*SIZEPER)+'px',parseInt(4300),'icon_car3_2.png'],
+['-='+parseInt(140*SIZEPER)+'px','+='+parseInt(115*SIZEPER)+'px',parseInt(6500),'icon_car3.png'],
 ]
 
  var tag = document.getElementById(divName);
