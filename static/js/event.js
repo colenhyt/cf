@@ -138,8 +138,9 @@ Event.prototype.update = function(){
 		this.firstTrigger = false;
 	}	
  }else {
+ 	var du = data_eventdata_feq*EventTriggerTime;
 	this.tick++;
-	if (this.tick%EventTriggerTime==0)
+	if (this.tick%du==0)
 	{
 		this.triggerEvent();
 	}

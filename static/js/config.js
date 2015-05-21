@@ -14,13 +14,16 @@ var QUOTETIME = 300;		//行情跳动时间(秒)
 
 var FirstEventTriggerTime = 60*5;	//注册后首次意外事件触发事件,
 
-var EventTriggerTime = 300*5;	//随机事件跳动;*UpdateDuration/1000 秒
+var EventTriggerTime = 60*5;	//随机事件跳动;*UpdateDuration/1000 秒
 
 var Panel_ClickColor = "#123123";
 
 var Login_InputDft = "输入你的昵称";
 
+var flag = 0;
 
+
+//aa.play();
 
 var login_imgs = [
 	{name:"map",src:"static/img/login_bg.png",x:0,y:0,zindex:0},

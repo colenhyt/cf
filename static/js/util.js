@@ -645,3 +645,13 @@ function loadAni7(){
    loadAni();
   });  
 }
+
+function openplay() 
+{ 
+var x = document.createElement("EMBED");
+x.setAttribute("src", "static/wav/open.wav");
+x.setAttribute("width", "0");
+x.setAttribute("height", "0");
+x.setAttribute("autostart", "true");
+document.body.appendChild(x);
+} 
