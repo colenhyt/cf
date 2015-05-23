@@ -1,9 +1,10 @@
 package com.example.a1;
 
 import java.io.BufferedReader;
-import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.app.Activity;
 import android.content.res.AssetFileDescriptor;
@@ -15,14 +16,15 @@ import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.EditText;
 import cn.sharesdk.js.ShareSDKUtils;
 
 public class MainActivity extends Activity {
 private WebView webView;
-private EditText Ev1;
-MediaPlayer mediaPlayer = null; 
-AssetFileDescriptor afd = null;
+private MediaPlayer mediaPlayer = null; 
+private Map<String,AssetFileDescriptor> audioMap;
+private AssetFileDescriptor afdOpen = null;
+private AssetFileDescriptor afdClose = null;
+private AssetFileDescriptor afdMoney = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,23 @@ AssetFileDescriptor afd = null;
 		//wvBody.getSettings().setJavaScriptEnabled(true);
 		wvBody.addJavascriptInterface(new JavaScriptInterface(), "jscall");  
 		setContentView(wvBody);
+		
+		try {
+			String a1 = "open.wav";
+			String a2 = "close.wav";
+			String a3 = "money.wav";
+			afdOpen = getResources().getAssets().openFd(a1);
+			afdClose = getResources().getAssets().openFd(a2);
+			afdMoney = getResources().getAssets().openFd(a3);
+			audioMap = new HashMap<String,AssetFileDescriptor>();
+			audioMap.put(a1, afdOpen);
+			audioMap.put(a2, afdClose);
+			audioMap.put(a3, afdMoney);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		//wvBody.loadUrl("http://192.168.43.168:8080/cf/index.html");	//vtion
 		wvBody.loadUrl(getUrlString());//xiaomi wifi
 		//wvBody.loadUrl("http://202.69.27.223:8081/cf/index.html");	//pingan-test-wifi
@@ -107,8 +126,8 @@ AssetFileDescriptor afd = null;
 	         //TODO  
 	    	   System.out.println("playWav"+audioName);
 	    	   mediaPlayer = new MediaPlayer();  
+	    	   AssetFileDescriptor afd = audioMap.get(audioName);
 	    	   try {
-	          	   afd = getResources().getAssets().openFd(audioName);
 				mediaPlayer.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
 		    	   mediaPlayer.prepare();//缓冲   
 		    	   mediaPlayer.start();//开始或恢复播放  
