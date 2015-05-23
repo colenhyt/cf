@@ -89,7 +89,8 @@ Datamgr.prototype = {
     
 	onClose:function()
 	{
-	if (jscall)	jscall.playAudio('close.wav');	
+	
+		playAudio('close.wav');	
 		//alert(this.name+"close");
     	var tag = document.getElementById("tag"+this.name);
     	if (tag&&this.name!=g_playerinfo.name){
@@ -116,7 +117,7 @@ Datamgr.prototype = {
     },    
 	
 	hide:function(pagename){
-	if (jscall)	jscall.playAudio('close.wav');	
+	playAudio('close.wav');	
 		if (pagename==null)
 		$('#'+this.tagname).modal('hide');  
 		else
@@ -138,7 +139,7 @@ Datamgr.prototype = {
 		var ss = myDate.getSeconds(); 
 		var ms = myDate.getMilliseconds();	
 		this.buildPage(0);
-		if (jscall)	jscall.playAudio('open.wav');	
+		playAudio('open.wav');	
         $('#'+this.tagname).modal({position:getSizes().PageTop,show: true}); 
         var myDate22 = new Date();
 		var ss2 = myDate22.getSeconds(); 

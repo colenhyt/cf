@@ -120,6 +120,7 @@ Signin.prototype.clickFeeling = function(feelingId){
 	ftag.style.border = "3px solid green";
     
     
+  playAudio('money.wav');	
 
   var div=$("#cfsignin_prize_exp");
   div.animate({fontSize:'2.5em'},100);

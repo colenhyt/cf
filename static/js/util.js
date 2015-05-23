@@ -646,6 +646,12 @@ function loadAni7(){
   });  
 }
 
+function playAudio(audioName)
+{
+if (window.jscall==null) return;
+
+window.jscall.playAudio(audioName);	
+}
 function openplay() 
 { 
 var x = document.createElement("EMBED");

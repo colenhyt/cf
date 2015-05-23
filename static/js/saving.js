@@ -22,7 +22,7 @@ Saving.prototype.init = function(){
 }
 
 Saving.prototype.showDetail = function(id){    
-	if (jscall)	jscall.playAudio('open.wav');	
+	playAudio('open.wav');	
 	var tdata = store.get(this.name);
    var item = tdata[id];
    if (item==null) return;
@@ -105,7 +105,7 @@ content += "             </div>"
  }
 
 Saving.prototype.closeDetail = function(id){ 
-	if (jscall)	jscall.playAudio('close.wav');	
+	playAudio('close.wav');	
 	$('#'+this.tagdetailname).modal('hide');  
 }
 

@@ -96,9 +96,6 @@ Login.prototype.msg = function(msg)
 
 Login.prototype.onImgClick = function(image)
 {
-//jscall.playAudio('money.wav');
-//return;
-
 	//showShareMenuClickHandler();
 	//return;
 	var tdata = store.get(g_player.name);

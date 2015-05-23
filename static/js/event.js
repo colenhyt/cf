@@ -26,7 +26,7 @@ Event.prototype.triggerEvent = function(){
 	var index = Math.floor(Math.random()*tdata.length);
 	var item = tdata[index]; 
 
-	if (jscall)	jscall.playAudio('open.wav');	
+	playAudio('open.wav');	
 	if (item.type==1){
 		this.badEvent(item);
 	}else 
@@ -110,6 +110,7 @@ Event.prototype.eventOkCallback = function(itemid){
 		}
 	}
 	
+  playAudio('money.wav');	
   var div=$("#cfevent_prize");
   div.animate({fontSize:'2.5em'},150);
   div.animate({left:'-='+getSizes().EventMoney[0],top:'-='+getSizes().EventMoney[1]},700);

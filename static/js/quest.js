@@ -200,6 +200,7 @@ Quest.prototype.getQuetPrize = function(id){
 			break;
 		}
 	}   
+	playAudio('money.wav');	
 	g_msg.tip("成功领取任务奖励:"+itemStr2(pz,","));
 	quests.splice(index,1);
 	g_player.updateData({quest:quests});
