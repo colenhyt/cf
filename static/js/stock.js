@@ -424,6 +424,7 @@ Stock.prototype.buyCallback = function(ret){
 	 }
 	}
 	g_player.setStockIds();
+  playAudio('money.wav');	
 	
 		
 	var cash = g_player.saving[1].amount;	   

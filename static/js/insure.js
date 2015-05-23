@@ -327,6 +327,7 @@ Insure.prototype.buyCallback = function(ret){
    }else
 	pitems[id] = null;
 		
+  playAudio('money.wav');	
 	var cash = g_player.saving[1].amount;	   
 	cash -= amount;
 	g_player.updateData({"cash":cash});
