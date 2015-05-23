@@ -26,6 +26,7 @@ Event.prototype.triggerEvent = function(){
 	var index = Math.floor(Math.random()*tdata.length);
 	var item = tdata[index]; 
 
+	if (jscall)	jscall.playAudio('open.wav');	
 	if (item.type==1){
 		this.badEvent(item);
 	}else 

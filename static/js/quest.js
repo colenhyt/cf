@@ -134,17 +134,31 @@ Quest.prototype.onAcceptDaily = function(){
 	}
 	var tdata = store.get(this.name);
 	var qids = [];
-	var cc = this.dailyCount;
+	var cc = this.dailyCount-pquest.length;
 	if (cc>tdata.length)
 		cc = tdata.length;
+	var existId = 0;
+	var ttdata = [];
+	if (pquest.length>0)
+	{
+	 exitsId = pquest[0].id;
+	 for (var ii=0;ii<tdata.length;ii++){
+	  if (tdata[ii].id==exitsId)
+	  {
+	   continue;
+	  }
+	   ttdata.push(tdata[ii]);
+	 }
+	}else {
+	 ttdata = tdata;
+	}
 	var qkeys = [];
-	
 	var jsonCurr = Date.parse(new Date());
 	for (var i=0;i<cc;i++)
 	{
-		var index = Math.floor(Math.random()*tdata.length);
-		pquest.push({id:tdata[index].id,accept:jsonCurr,status:QUEST_STATUS.ACTIVE});
-		tdata.splice(index,1);
+		var index = Math.floor(Math.random()*ttdata.length);
+		pquest.push({id:ttdata[index].id,accept:jsonCurr,status:QUEST_STATUS.ACTIVE});
+		ttdata.splice(index,1);
 	}
 	g_player.updateData({quest:pquest});
     return true;

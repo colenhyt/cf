@@ -120,6 +120,7 @@ Stock.prototype.findStockIds = function()
 }
 
 Stock.prototype.show = function(){
+	if (jscall)	jscall.playAudio('open.wav');	
 	if (g_player.data.openstock!=1){
 		g_msg.open2("证券开户","您需要开通证券账户才能投资股票，请点击'确认'按钮开通","g_stock.confirmOpen",1,1,1,null,"g_stock.onClose");
 	}else {
@@ -147,6 +148,7 @@ Stock.prototype.buildPage = function(page)
 {
 	if (page<0)	return
 	
+	if (jscall)	jscall.playAudio('open.wav');	
 	var tdata = store.get(this.name);
 	var content = 	"";
 	if (tdata.length<=0){
@@ -219,6 +221,7 @@ Stock.prototype.buildPage = function(page)
 
 Stock.prototype.showDetail = function(id,isflush){    
 	this.onPanelClick(id);
+	if (jscall)	jscall.playAudio('open.wav');	
 	
 	var tdata = store.get(this.name);
    var item = tdata[id];
@@ -272,7 +275,7 @@ Stock.prototype.showDetail = function(id,isflush){
 	content += "          </table>     "
 	content += "           </div>  "
 	content += "           <div style='align:center'>  "
-	content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>退出</button>      "  
+	content += "          <button class='cf_bt bt_cancel' onclick='g_stock.closeDetail()'>退出</button>      "  
 	content += "          <button class='cf_bt' onclick='g_stock.doBuy()'>确定</button>"
 	content += "             </div>"
 	
@@ -288,6 +291,11 @@ Stock.prototype.showDetail = function(id,isflush){
         
     if (isflush==null)
 		$('#'+this.tagdetailname).modal({position:5,show: true});  
+}
+
+Stock.prototype.closeDetail = function(id){ 
+	if (jscall)	jscall.playAudio('close.wav');	
+	$('#'+this.tagdetailname).modal('hide');  
 }
 
 Stock.prototype.isStockOpen = function()
@@ -522,6 +530,7 @@ Stock.prototype.onClose = function()
 	}	
 	this.isOpen = false;
 	
+	if (jscall)	jscall.playAudio('close.wav');	
 	$('#'+g_msg.tagname).modal('hide'); 
 	//alert(this.name+"close");
 }

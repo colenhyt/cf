@@ -22,6 +22,7 @@ Saving.prototype.init = function(){
 }
 
 Saving.prototype.showDetail = function(id){    
+	if (jscall)	jscall.playAudio('open.wav');	
 	var tdata = store.get(this.name);
    var item = tdata[id];
    if (item==null) return;
@@ -96,12 +97,17 @@ content += "             <tr>"
 content += "              </tr>"
 content += "          </table>     "
 		content += "             </div>"
-	content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>      "  
+	content += "          <button class='cf_bt bt_cancel' onclick='g_saving.closeDetail()'>取消</button>      "  
 	content += "          <button class='cf_bt' onclick='g_saving.doBuy("+id+")'>取出</button>"
 content += "             </div>"
  	return content;
  	
  }
+
+Saving.prototype.closeDetail = function(id){ 
+	if (jscall)	jscall.playAudio('close.wav');	
+	$('#'+this.tagdetailname).modal('hide');  
+}
 
 Saving.prototype.countBuy = function(id,count){
     var tag = document.getElementById('saving_amount');

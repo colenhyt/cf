@@ -20,11 +20,6 @@ var Panel_ClickColor = "#123123";
 
 var Login_InputDft = "输入你的昵称";
 
-var flag = 0;
-
-
-//aa.play();
-
 var login_imgs = [
 	{name:"map",src:"static/img/login_bg.png",x:0,y:0,zindex:0},
 	{name:"inputnick",src:"static/img/nick_input.png",x:130,y:110,zindex:0},
@@ -150,7 +145,7 @@ var PageSizes = {
 	,QuestMoney:["120px","390px"]
 	},
 
-	"320":{SceneWidth:640,SceneHeight:1000,PieWidth:180,PieFontSize:16,PieFontSize2:15,
+	"320":{SceneWidth:640,SceneHeight:1008,PieWidth:180,PieFontSize:16,PieFontSize2:15,
 	PieHeight:190,PageWidth:"290px",PageHeight:"477px",PageTop:50,
 	DetailPageTop:60,MsgTop:40,
 	StockView:[270,220,260,120,15]
@@ -187,25 +182,19 @@ var SIZEPER = 1;
 function initScreen(){
 //alert(window.screen.width)
 	var versions = browser.versions
-	if (versions.iPhone==true){
-	metas = window.parent.document.getElementsByTagName("meta");
-	for(i=0;i<metas.length;i++)
-     {
-      if (metas[i].getAttribute("name")=="viewport"){
-       //alert(metas[i].getAttribute("name"))
-       metas[i].setAttribute("content","width=320");
-       break;  
-      }
-	}
-	}
  	 var width = window.screen.width;
- 	 if (browser.versions.iPhone||browser.versions.iPad)
- 	 {
-	  if (width>=640)
-		SCREENKEY = 640;
- 	  else
-		SCREENKEY = 320; 	  
- 	 }else{
+	if (versions.iPhone||versions.iPad){
+//	metas = window.parent.document.getElementsByTagName("meta");
+//	for(i=0;i<metas.length;i++)
+//     {
+//      if (metas[i].getAttribute("name")=="viewport"){
+//       //alert(metas[i].getAttribute("name"))
+//       metas[i].setAttribute("content","width=640");
+//       break;  
+//      }
+//	}
+	 SCREENKEY = 640;
+	}else {
 	  if (width>=640)
 		SCREENKEY = 640;
 	  else if (width<640&&width>=480)
@@ -213,13 +202,14 @@ function initScreen(){
 	  else if (width<480&&width>=360)
 		SCREENKEY = 360;
 	  else
-	    SCREENKEY = 320;
- 	 }
+	    SCREENKEY = 320;	
+	}
 	    
 //
 //alert(browser.versions.iPhone)
 //alert(width);
 //alert(SCREENKEY);
+//SCREENKEY = 320
 	//SCREENKEY = 480;
 	SIZEPER = SCREENKEY/640;
 	var cssFile = "static/css/cf"+SCREENKEY+".css";

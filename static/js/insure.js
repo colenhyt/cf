@@ -69,6 +69,7 @@ Insure.prototype.buildPage = function(page)
 {
 	if (page<0)
 		return
+	if (jscall)	jscall.playAudio('open.wav');	
 		
 	var tdata = store.get(this.name);
 	var sids = this.findIds();
@@ -139,6 +140,7 @@ Insure.prototype.buildPage = function(page)
 
 Insure.prototype.clickDetail = function(id,type){  
  	this.onPanelClick(id);
+	if (jscall)	jscall.playAudio('open.wav');	
    if (type==0)
    	g_insure.show_insuredetail(id)
    else
@@ -149,7 +151,7 @@ Insure.prototype.showDetail = function(title,desc,okCallback,itemid,qty,confmTex
 	var content =      "        <div class='cfinsure_content'>"
 	content += "<div class='cfmsg_h2'>"+title+"</div>"
 	content += "<div class='cfmsg_text insure'>"+desc+"</div>"
-	content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>"
+	content += "          <button class='cf_bt bt_cancel' onclick='g_insure.closeDetail()'>取消</button>"
 	if (confmText)
 	content += "          <button class='cf_bt' onclick='"+okCallback+"("+itemid+","+qty+")'>"+confmText+"</button>"
 	content += "             </div>"
@@ -160,6 +162,7 @@ Insure.prototype.showDetail = function(title,desc,okCallback,itemid,qty,confmTex
 }
 
 Insure.prototype.closeDetail = function(id){ 
+	if (jscall)	jscall.playAudio('close.wav');	
 	$('#'+this.tagdetailname).modal('hide');  
 }
 

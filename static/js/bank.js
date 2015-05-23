@@ -71,6 +71,7 @@ Bank.prototype.buildPage = function(page){
 
 Bank.prototype.showBank = function(page,pop){
 	
+	if (jscall)	jscall.playAudio('open.wav');	
     var   header ="";
     var desc = "";
 	if (page==-1) {
