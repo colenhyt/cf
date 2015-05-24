@@ -39,7 +39,10 @@ alert('load');
         "ShareContent" : "shareContent",
         "OneKeyShareContent" : "oneKeyShareContent",
         "ShowShareMenu" : "showShareMenu",
-        "ShowShareView" : "showShareView"
+        "ShowShareView" : "showShareView",
+        "GetFriendList" : "getFriendList",
+        "FollowFriend" : "followFriend",
+        "GetAuthInfo" : "getAuthInfo"
     };
 
     /**
@@ -189,7 +192,7 @@ alert('load');
                             callbackFunc(response.platform, response.state, response.error);
                             break;
                         case ShareSDKMethodName.GetUserInfo:
-                            callbackFunc(response.platform, response.state, response.data, response.error);
+                            callbackFunc(response.platform, response.state, response.data, response.platformDb, response.error);
                             break;
                         case ShareSDKMethodName.HasAuthorized:
                             callbackFunc(response.platform, response.data);
@@ -201,6 +204,15 @@ alert('load');
                             isShare = true;
                             callbackFunc(response.platform, response.state, response.data, response.error, response.end);
                             break;
+                        case ShareSDKMethodName.GetFriendList:
+                        	callbackFunc(response.platform, response.state, response.data, response.error);
+                        	break;
+                        case ShareSDKMethodName.FollowFriend:
+                        	callbackFunc(response.platform, response.state, response.error);
+                        	break;
+                        case ShareSDKMethodName.GetAuthInfo:
+                        	callbackFunc(response.platform, response.data);
+                        	break;
                     }
                 }
             }
@@ -270,6 +282,7 @@ alert('load');
                         case ShareSDKMethodName.ShowShareView:
                             callbackFunc(response.platform, response.state, response.data, response.error, response.end);
                             break;
+                            
                     }
                 }
             }
@@ -646,6 +659,22 @@ alert('load');
 
         ShareSDK._callMethod(ShareSDKMethodName.GetUserInfo, params);
     };
+    
+    /**
+     * 获取授权信息
+     * @param platform          平台类型
+     * @param callback          回调方法
+     */
+    ShareSDK.getAuthInfo = function (platform, callback)
+    {
+        var params =
+        {
+            "platform" : platform,
+            "callback" : "(" + callback.toString() + ")"
+        };
+
+        ShareSDK._callMethod(ShareSDKMethodName.GetAuthInfo, params);
+    };
 
     /**
      * 分享内容
@@ -653,17 +682,19 @@ alert('load');
      * @param shareParams       分享内容
      * @param callback          回调方法
      */
-    ShareSDK.shareContent = function (platform, shareParams, callback)
+    ShareSDK.shareContent = function (platform, shareParams, isSSO, callback)
     {
         var params =
         {
             "platform" : platform,
             "shareParams" : shareParams,
+            "isSSO" : isSSO,
             "callback" : "(" + callback.toString() + ")"
         };
 
         ShareSDK._callMethod(ShareSDKMethodName.ShareContent, params);
     };
+    
 
     /**
      * 一键分享
@@ -671,18 +702,22 @@ alert('load');
      * @param shareParams       分享内容
      * @param callback          回调方法
      */
-    ShareSDK.oneKeyShareContent = function (platforms, shareParams, callback)
+    ShareSDK.oneKeyShareContent = function (platforms, shareParams, isSSO, callback)
     {
         var params =
         {
             "platforms" : platforms,
             "shareParams" : shareParams,
+            "isSSO" : isSSO,
             "callback" : "(" + callback.toString() + ")"
         };
 
         ShareSDK._callMethod(ShareSDKMethodName.OneKeyShareContent, params);
     };
 
+    
+  
+    
     /**
      * 显示分享菜单
      * @param platforms         分享的目标平台类型集合
@@ -692,7 +727,7 @@ alert('load');
      * @param direction         弹出菜单的箭头方向（仅用于iPad）
      * @param callback          回调方法
      */
-    ShareSDK.showShareMenu = function (platforms, shareParams, x, y, direction, callback)
+    ShareSDK.showShareMenu = function (platforms, shareParams, x, y, direction, isSSO, callback)
     {
         var params =
         {
@@ -701,6 +736,8 @@ alert('load');
             "x" : x,
             "y" : y,
             "direction" : direction,
+            "isSSO" : isSSO,
+            "theme" : "skyblue",
             "callback" : "(" + callback.toString() + ")"
         };
 
@@ -724,6 +761,45 @@ alert('load');
 
         ShareSDK._callMethod(ShareSDKMethodName.ShowShareView, params);
     };
+    
+    /**
+     * 获取朋友列表
+     * @param platform
+     * @param isSSO
+     * @param page
+     * @param count
+     * @param account
+     * @param callback
+     */
+    ShareSDK.getFriendList = function (platform, isSSO, page, count, account, callback)
+    {
+    	 var params =
+         {
+             "platform" : platform,
+             "isSSO" : isSSO,
+             "page" : page,
+             "count" : count,
+             "account" : account,
+             "callback" : "(" + callback.toString() + ")"
+         };
+    	ShareSDK._callMethod(ShareSDKMethodName.GetFriendList, params);
+    }
+    
+    /**
+     * 关注好友
+     * @param platform
+     * @param friendName
+     * @param callback 
+     */
+    ShareSDK.followFriend = function(platform, friendName, callback){
+    	var params = 
+    	{
+    			"platform" : platform,
+                "friendName" : friendName,
+                "callback" : "(" + callback.toString() + ")"	
+    	}
+    	ShareSDK._callMethod(ShareSDKMethodName.FollowFriend, params);
+    }
 
     window.$sharesdk = ShareSDK;
 
