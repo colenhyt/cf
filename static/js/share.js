@@ -47,15 +47,14 @@ function initShareSDK()
                 "description" : "测试的描述",
                 "site" : "ShareSDK",
                 "siteUrl" : "http://sharesdk.cn",
-                "type" : $sharesdk.contentType.WebPage
+                "url" : "http://sharesdk.cn",
+                "type" : $sharesdk.contentType.Apps
             };
 
             var isSSO = false;
             $sharesdk.shareContent($sharesdk.platformID.WeChatTimeline, params, isSSO,function (platform, state, shareInfo, error) {
-				var aa = JSON.stringify(shareInfo);
-				var bb = JSON.stringify(error);
  
-                alert("state = " + state + "\nshareInfo = " + aa + "\nerror = " + bb);
+                shareCallInfo(platform, state, shareInfo, error);
 
             });
         }

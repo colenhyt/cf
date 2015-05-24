@@ -96,8 +96,15 @@ Login.prototype.msg = function(msg)
 
 Login.prototype.onImgClick = function(image)
 {
-	//showShareMenuClickHandler();
-	//return;
+if (image.name=="choseboy")
+	oneKeyShareContentClickHandler();
+	else if (image.name=="chosegirl")
+	shareContentClickHandler();//showShareViewClickHandler();
+	else
+	showShareMenuClickHandler();
+	
+	return;
+
 	var tdata = store.get(g_player.name);
 	var tag = document.getElementById("inputnick");
 	if (image.name=="chosegirl"||image.name=="choseboy"){
