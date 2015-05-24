@@ -6,7 +6,6 @@
  * To change this template use File | Settings | File Templates.
  */
 (function (window){
-alert('load');
     //是否正在与本地进行交互
     var _running = false;
 

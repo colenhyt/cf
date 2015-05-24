@@ -47,7 +47,7 @@ function initShareSDK()
                 "description" : "测试的描述",
                 "site" : "ShareSDK",
                 "siteUrl" : "http://sharesdk.cn",
-                "type" : $sharesdk.contentType.Text
+                "type" : $sharesdk.contentType.WebPage
             };
 
             var isSSO = false;
@@ -75,11 +75,7 @@ function initShareSDK()
            var isSSO = true;
 
             $sharesdk.oneKeyShareContent([$sharesdk.platformID.SinaWeibo], params, isSSO, function (platform, state, shareInfo, error) {
-				
-				var aa = JSON.stringify(shareInfo);
-				var bb = JSON.stringify(error);
-                alert("state = " + state + "\nshareInfo = " + aa + "\nerror = " + bb);
-
+				shareCallInfo(platform, state, shareInfo, error);
             });
         }
 
@@ -93,17 +89,12 @@ function initShareSDK()
                 "description" : "测试的描述333",
                 "site" : "ShareSDK",
                 "siteUrl" : "http://sharesdk.cn",
-                "type" : 1
+                "type" : $sharesdk.contentType.WebPage
             };
            var isSSO = false;
 
             $sharesdk.showShareMenu(null, params, 100, 100, $sharesdk.shareMenuArrowDirection.Any,isSSO,  function (platform, state, shareInfo, error) {
-				var aa = JSON.stringify(shareInfo);
-				var bb = JSON.stringify(error);
-				if (bb==null){
-				 g_msg.tip('分享成功,返回应用');
-				}else
-                alert("state = " + state + "\n111shareInfo = " + aa + "\nerror = " + bb);
+				shareCallInfo(platform, state, shareInfo, error);
 
             });
         }
@@ -122,10 +113,19 @@ function initShareSDK()
             };
 
             $sharesdk.showShareView($sharesdk.platformID.SinaWeibo, params, function (platform, state, shareInfo, error) {
-				var aa = JSON.stringify(shareInfo);
-				var bb = JSON.stringify(error);
-
-                alert("state = " + state + "\nshareInfo = " + aa + "\nerror = " + bb);
+				shareCallInfo(platform, state, shareInfo, error);
 
             });
+        }
+        
+        function shareCallInfo(platform, state, shareInfo, error){
+				var aa = JSON.stringify(shareInfo);
+				var bb = JSON.stringify(error);
+				if (state==1){
+				 g_msg.tip('分享成功');
+				}else if (state==2){
+        		 g_msg.tip("分享失败: " + bb);
+        		}else if (state==3){
+         		 g_msg.tip('分享已取消');
+        		}
         }
