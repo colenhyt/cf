@@ -656,8 +656,9 @@ function openplay()
 { 
 var x = document.createElement("EMBED");
 x.setAttribute("src", "static/wav/open.wav");
-x.setAttribute("width", "0");
-x.setAttribute("height", "0");
-x.setAttribute("autostart", "true");
+x.setAttribute("width", "220");
+x.setAttribute("height", "110");
+x.setAttribute("autostart", "1");
+alert(x);
 document.body.appendChild(x);
 } 
