@@ -18,7 +18,7 @@ var EventTriggerTime = 60*5;	//随机事件跳动;*UpdateDuration/1000 秒
 
 var Panel_ClickColor = "#123123";
 
-var Login_InputDft = "输入你的昵称";
+var Login_InputDft = "输入昵称";
 
 var login_imgs = [
 	{name:"map",src:"static/img/login_bg.png",x:0,y:0,zindex:0},
