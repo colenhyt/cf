@@ -38,6 +38,7 @@ public class InsureAction extends SavingAction {
 				ret = RetMsg.MSG_SQLExecuteError;
 			}
 			super.playerTopUpdate(insure.getPlayerid());
+			//insureService.DBConnClose();
 		}
 		writeMsg(ret);
 		return null;
@@ -48,7 +49,7 @@ public class InsureAction extends SavingAction {
 		Map<Integer,Insure> insures = findUpdatedInsures(insure.getPlayerid());
 		String strInsure = JSON.toJSONString(insures);
 		write(strInsure,"utf-8");
-		System.out.println("find "+strInsure);
+		System.out.println("find insures: "+strInsure);
 		return null;
 	}
 	

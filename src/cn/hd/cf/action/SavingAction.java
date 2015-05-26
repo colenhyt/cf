@@ -1,5 +1,6 @@
 package cn.hd.cf.action;
 
+import java.sql.Connection;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import cn.hd.cf.tools.InsuredataService;
 import cn.hd.cf.tools.SavingdataService;
 import cn.hd.mgr.DataManager;
 import cn.hd.mgr.StockManager;
+import cn.hd.util.MybatisSessionFactory;
 
 public class SavingAction extends BaseAction {
 	public Saving		saving;
@@ -122,6 +124,7 @@ public class SavingAction extends BaseAction {
 			playerMoneyUpdate(saving2);		
 			return RetMsg.MSG_OK;
 		}else {
+			System.out.println("could not found livsaving for playerid:"+playerId);
 			return RetMsg.MSG_NoSavingData;
 		}
 	}	
@@ -278,9 +281,10 @@ public class SavingAction extends BaseAction {
 		    Calendar cCurr = Calendar.getInstance(); 
 		    cCurr.setTime(curr);
 		    Calendar c2 = Calendar.getInstance(); 
-			
+			Connection conn = MybatisSessionFactory.getSession().getConnection();
+		
 			List<Insure> insures = insureService.findByPlayerId(playerId);
-			
+			System.out.println("find insure for"+playerId+" from db:"+insures.size()+",db:"+conn.toString()+",sess:"+MybatisSessionFactory.getSession().toString());
 			Map<Integer,Insure>	mdata = new HashMap<Integer,Insure>();
 			
 			try {		
@@ -305,6 +309,7 @@ public class SavingAction extends BaseAction {
 					}else {		//保险到期，移除
 						inter = -1;
 					}
+					System.out.println("insure overdate:"+insure.getId());
 					//删除产品
 					insureService.delete(insure);
 				}
@@ -315,12 +320,13 @@ public class SavingAction extends BaseAction {
 				uinsure.setQty(insure.getQty());
 				uinsure.setProfit(inter);
 				mdata.put(insure.getItemid(), uinsure);
+				System.out.println("put insure :"+insure.getItemid());
 			}
 			}catch (Exception e){
 				e.printStackTrace();
 				return mdata;
 			}	
-			
+			System.out.println("return insure :"+mdata.size());
 			return mdata;
 		}
 

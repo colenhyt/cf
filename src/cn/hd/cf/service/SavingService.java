@@ -79,11 +79,11 @@ public class SavingService extends BaseService {
 	
 	public boolean add(Saving record)
 	{
-		if (jedis!=null){
-		String key = record.getPlayerid()+ITEM_KEY;
-		jedis.hset(key, record.getItemid().toString(), record.toString());
-		jedis.close();
-		}
+//		if (jedis!=null){
+//		String key = record.getPlayerid()+ITEM_KEY;
+//		jedis.hset(key, record.getItemid().toString(), record.toString());
+//		jedis.close();
+//		}
 		//System.out.println("增加存款记录:"+record.toString());
 		
 		try {

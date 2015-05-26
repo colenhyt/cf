@@ -271,8 +271,9 @@ public class LoginAction extends SavingAction {
 		p2.setPlayerid(playerBlob.getPlayerid());
 		p2.setLastlogin(playerBlob.getLastlogin());
 		playerService.updateByKey(p2);
-			
-//		playerService.DBConnClose();
+		
+//		insureService.DBConnClose();
+//		playerService.DBConnClose();	
 		write(pdata,"utf-8");
 		
 		//System.out.println("player("+playerBlob.getPlayername()+") login success");
