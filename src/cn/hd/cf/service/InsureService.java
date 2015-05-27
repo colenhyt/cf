@@ -1,5 +1,12 @@
 package cn.hd.cf.service;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -33,20 +40,58 @@ public class InsureService extends BaseService {
 		initMapper("insureMapper");
 	}
 	
+	public String readFile2(String filePath,List<String> cfgs) {
+		String fileContent = "";
+                //目标地址
+		String u=this.getClass().getResource("/").getPath() ;
+		File file = new File(u+"/"+filePath);
+		if (file.isFile() && file.exists()) {
+			try {
+				InputStreamReader read = new InputStreamReader(
+						new FileInputStream(file), "UTF-8");
+				BufferedReader reader = new BufferedReader(read);
+				String line;
+				try {
+                                        //循环，每次读一行
+					while ((line = reader.readLine()) != null) {
+						if (line.indexOf("mysql.url")==0||line.indexOf("mysql.username")==0||line.indexOf("mysql.password")==0){
+							line = line.substring(line.indexOf("=")+1).replace("\\", "");
+							cfgs.add(line);
+						}
+						fileContent += line;
+					}
+					reader.close();
+					read.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		return fileContent;
+	}	
 	public List<Insure> findByPlayerId(int playerId)
 	{
 		InsureExample example = new InsureExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
-//		Connection conn = MybatisSessionFactory.getSession().getConnection();
-		String url="jdbc:mysql://localhost:3306/hdcf?user=root&password=123a123@";
+		List<String> cfgs = new ArrayList<String>();
+		readFile2("db.properties",cfgs);
+		//Connection conn = MybatisSessionFactory.getSession().getConnection();
+		String url = cfgs.get(0)+"&user="+cfgs.get(1)+"&password="+cfgs.get(2);
+		url = url.replace("\\", "");
+		System.out.println("url:"+url);
 		List<Insure> insures = new ArrayList<Insure>();
 		Connection conn = null;
 		Statement st = null;
 		try {
 			conn = DriverManager.getConnection(url);
 			st = conn.createStatement();
-			ResultSet r = st.executeQuery("select itemid,amount,profit,qty,updatetime,period,type from insure where playerid="+playerId);   
+			ResultSet r = st.executeQuery("select itemid,amount,profit,qty,updatetime,type,period,playerid,createtime from insure where playerid="+playerId);   
 			while (r.next())
 			{
 				Insure insure = new Insure();
@@ -57,9 +102,9 @@ public class InsureService extends BaseService {
 				insure.setUpdatetime(r.getDate(5));
 				insure.setType(r.getByte(6));
 				insure.setPeriod(r.getInt(7));
+				insure.setPlayerid(r.getInt(8));
+				insure.setCreatetime(r.getDate(9));
 				insures.add(insure);
-			// 打印当前行的值。
-				System.out.println("ROW = " + insure.getItemid());
 			}
 			st.close();
 			r.close();

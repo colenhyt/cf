@@ -294,13 +294,13 @@ public class SavingAction extends BaseAction {
 		        c2.setTime(insure.getUpdatetime());
 				float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
 				float periodMinutes = insure.getPeriod()*60*24; //天:分钟
+				System.out.println("diffdd:"+diffdd+",periodMinutes:"+periodMinutes);
 	//			periodMinutes = 5;
 				//到期:
 				if ((diffdd-periodMinutes)>0.001)
 				{
 					//理财产品,得到收益:
 					if (insure.getType()!=null&&insure.getType()==1){
-					System.out.println("aaaaaaaaaaaa:"+diffdd+";"+periodMinutes);
 					
 						Insure incfg = insuredataService.findInsure(insure.getItemid());
 						inter = incfg.getProfit()*insure.getQty();
@@ -309,7 +309,7 @@ public class SavingAction extends BaseAction {
 					}else {		//保险到期，移除
 						inter = -1;
 					}
-					System.out.println("insure overdate:"+insure.getId());
+//					System.out.println("insure overdate:"+insure.getItemid());
 					//删除产品
 					insureService.delete(insure);
 				}
