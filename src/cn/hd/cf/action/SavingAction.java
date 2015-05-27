@@ -284,7 +284,7 @@ public class SavingAction extends BaseAction {
 			Connection conn = MybatisSessionFactory.getSession().getConnection();
 		
 			List<Insure> insures = insureService.findByPlayerId(playerId);
-			System.out.println("find insure for"+playerId+" from db:"+insures.size()+",db:"+conn.toString()+",sess:"+MybatisSessionFactory.getSession().toString());
+//			System.out.println("find insure for"+playerId+" from db:"+insures.size()+",db:"+conn.toString()+",sess:"+MybatisSessionFactory.getSession().toString());
 			Map<Integer,Insure>	mdata = new HashMap<Integer,Insure>();
 			
 			try {		
@@ -294,7 +294,7 @@ public class SavingAction extends BaseAction {
 		        c2.setTime(insure.getUpdatetime());
 				float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
 				float periodMinutes = insure.getPeriod()*60*24; //天:分钟
-				System.out.println("diffdd:"+diffdd+",periodMinutes:"+periodMinutes);
+//				System.out.println("diffdd:"+diffdd+",periodMinutes:"+periodMinutes);
 	//			periodMinutes = 5;
 				//到期:
 				if ((diffdd-periodMinutes)>0.001)
@@ -320,13 +320,13 @@ public class SavingAction extends BaseAction {
 				uinsure.setQty(insure.getQty());
 				uinsure.setProfit(inter);
 				mdata.put(insure.getItemid(), uinsure);
-				System.out.println("put insure :"+insure.getItemid());
+//				System.out.println("put insure :"+insure.getItemid());
 			}
 			}catch (Exception e){
 				e.printStackTrace();
 				return mdata;
 			}	
-			System.out.println("return insure :"+mdata.size());
+//			System.out.println("return insure :"+mdata.size());
 			return mdata;
 		}
 

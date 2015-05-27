@@ -59,6 +59,7 @@ public class MybatisSessionFactory {
 			if (sessionFactory == null) {
 				rebuildSessionFactory();
 			}
+//			System.out.println("get new session:");
 			session = (sessionFactory != null) ? sessionFactory.openSession()
 					: null;
 			threadLocal.set(session);

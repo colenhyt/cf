@@ -84,7 +84,7 @@ public class InsureService extends BaseService {
 		//Connection conn = MybatisSessionFactory.getSession().getConnection();
 		String url = cfgs.get(0)+"&user="+cfgs.get(1)+"&password="+cfgs.get(2);
 		url = url.replace("\\", "");
-		System.out.println("url:"+url);
+//		System.out.println("url:"+url);
 		List<Insure> insures = new ArrayList<Insure>();
 		Connection conn = null;
 		Statement st = null;
