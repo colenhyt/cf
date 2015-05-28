@@ -36,7 +36,7 @@ Insure.prototype.onEnter = function(){
 		}
 	}
 	if (hasRisk){
-		g_msg.open("你还没有购买任何保险，风险较高");
+		g_msg.open("您还没有购买任何保险，风险较高");
 	}
 }
 
@@ -277,7 +277,7 @@ Insure.prototype.doBuy = function(id,qty) {
     var amount = ps * qty;
     var cash = g_player.saving[1].amount;
     if (cash<amount){
-	    g_msg.tip("你的现金不够，购买失败!");
+	    g_msg.tip("您的现金不够，购买失败!");
 	    return;
     }
     	
@@ -335,11 +335,11 @@ Insure.prototype.buyCallback = function(ret){
 	g_quest.onBuyItem(this.name,item,1);
 				   
 	//tip:
-	g_msg.tip("你购买"+buyitem.qty+"份<span style='color:red'>"+item.name+"</span>成功");
+	g_msg.tip("您购买"+buyitem.qty+"份<span style='color:red'>"+item.name+"</span>成功");
 	
 	this.hide(this.tagdetailname);
 	//刷新list 页面:
-	this.buildPage(this.currPage);
+	this.buildPage(0);
 }
 
 Insure.prototype.existTimeout = function() {

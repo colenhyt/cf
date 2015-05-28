@@ -316,7 +316,7 @@ Stock.prototype.countBuy = function(stockid,count,price)
    var pitem = g_player.getStockItem(stockid);
    var count2 = this.waitCount+ count;
    if (count2<0&&pitem.qty<(0-count2)){
-   		g_msg.tip("卖出数量不能大于你持有数量!");	
+   		g_msg.tip("卖出数量不能大于您持有数量!");	
    		return;
    }
    		
@@ -352,13 +352,13 @@ Stock.prototype.doBuy = function()
 	    var needCash = ps * this.waitCount;
 	    var cash = g_player.saving[1].amount;
 	    if (cash<needCash){
-		    g_msg.tip("你的现金不够，购买失败!");
+		    g_msg.tip("您的现金不够，购买失败!");
 		    return;
 	    }		
     }else {
 	   var pitem = g_player.getStockItem(this.waitStockid);
 	   if (pitem.qty<(0-this.waitCount)){
-	   		g_msg.tip("持有数量少于你抛售数量!");	
+	   		g_msg.tip("持有数量少于您抛售数量!");	
 	   		return;
 	   }
     }
@@ -442,7 +442,7 @@ Stock.prototype.buyCallback = function(ret){
 	
 	//this.showDetail(id,true);
 	//刷新list 页面:
-	this.buildPage(this.currPage);
+	this.buildPage(0);
 }
 
 Stock.prototype.findQuotes = function()

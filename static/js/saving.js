@@ -161,7 +161,7 @@ Saving.prototype.requestBuy = function(id,qty,amount){
 	
 	 var cash = g_player.saving[1].amount;
 	 if (cash<g_saving.buyItem.amount){
-		 g_msg.tip('你没有这么多钱存入');
+		 g_msg.tip('您没有这么多钱存入');
 		return;
 	 }	
 	 
@@ -223,7 +223,7 @@ Saving.prototype.buyCallback = function(ret){
 	 
 	this.hide(this.tagdetailname);
 	//刷新list 页面:
-	g_bank.buildPage(g_bank.currPage);
+	g_bank.buildPage(1);
 }
 
 Saving.prototype.buy = function(id){
@@ -257,7 +257,7 @@ Saving.prototype.buy = function(id){
     	
     	this.hide(this.tagdetailname);
     	//刷新list 页面:
-    	g_bank.buildPage(g_bank.currPage);
+    	g_bank.buildPage(1);
     	//$('#'+this.tagdetailname).modal('hide');
     }    
 

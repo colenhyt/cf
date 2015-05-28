@@ -31,7 +31,7 @@ Bank.prototype.onEnter = function(){
 		}
 	}	
 	if (hasRisk)
-	 g_msg.tip("你还没有任何定期存款，收益偏低");
+	 g_msg.tip("您还没有任何定期存款，收益偏低");
 }
 
 Bank.prototype.buildHTML2 = function()
@@ -66,7 +66,7 @@ Bank.prototype.buildHTML2 = function()
 
 Bank.prototype.buildPage = function(page){
 	this.currPage = page;
-	this.showBank(-1,true);
+	this.showBank(page,true);
 }
 
 Bank.prototype.showBank = function(page,pop){
@@ -74,21 +74,21 @@ Bank.prototype.showBank = function(page,pop){
 	playAudio('open.wav');	
     var   header ="";
     var desc = "";
-	if (page==-1) {
-            header += "<button class='cf_title_bg saving2off' onclick='g_bank.showBank(0)'></button>"
+	if (page==0) {
+            header += "<button class='cf_title_bg saving2off' onclick='g_bank.showBank(1)'></button>"
             header += "<button class='cf_title_bg savingon'></button>"
 	}
 	else{
-           header += "<button class='cf_title_bg savingoff' onclick='g_bank.showBank(-1)'></button>"
+           header += "<button class='cf_title_bg savingoff' onclick='g_bank.showBank(0)'></button>"
             header += "<button class='cf_title_bg saving2on'></button>"
         }        	
 	var tagHeader = document.getElementById(this.pageheader);
 	tagHeader.innerHTML = header;
 	
-	if (page==-1){
+	if (page==0){
 		this.showSaving();
 	}else
-		this.showSaving2(page);
+		this.showSaving2(page-1);
 
 	if (pop)
     	$('#'+this.tagname).modal({position:Page_Top,show:true});       

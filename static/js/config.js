@@ -92,7 +92,7 @@ var MSG_StockIsClosed = 7;
 
 var ERR_MSG ={};
 ERR_MSG[MSG_SQLExecuteError] = "sql出错";
-ERR_MSG[MSG_MoneyNotEnough] = "你的钱不够";
+ERR_MSG[MSG_MoneyNotEnough] = "您的钱不够";
 ERR_MSG[MSG_NoThisStock] = "这个股票不存在";
 ERR_MSG[MSG_NoSavingData] = "没有该存款";
 ERR_MSG[MSG_PlayerNameIsExist] = "这个昵称已经被使用";
@@ -189,11 +189,11 @@ function initScreen(){
 //     {
 //      if (metas[i].getAttribute("name")=="viewport"){
 //       //alert(metas[i].getAttribute("name"))
-//       metas[i].setAttribute("content","width=640");
+//       metas[i].setAttribute("content","width=320");
 //       break;  
 //      }
 //	}
-	 SCREENKEY = 640;
+	 SCREENKEY =640;
 	}else {
 	  if (width>=640)
 		SCREENKEY = 640;
@@ -204,7 +204,7 @@ function initScreen(){
 	  else
 	    SCREENKEY = 320;	
 	}
-	    
+	 //  SCREENKEY = 320;	  
 //
 //alert(browser.versions.iPhone)
 //alert(width);
@@ -239,8 +239,8 @@ s += " 屏幕分辨率的高："+ window.screen.height+"<br />";
 s += " 屏幕分辨率的宽："+ window.screen.width+"<br />"; 
 s += " 屏幕可用工作区高度："+ window.screen.availHeight+"<br />"; 
 s += " 屏幕可用工作区宽度："+ window.screen.availWidth+"<br />"; 
-s += " 你的屏幕设置是 "+ window.screen.colorDepth +" 位彩色"+"<br />"; 
-s += " 你的屏幕设置 "+ window.screen.deviceXDPI +" 像素/英寸"+"<br />"; 
+s += " 您的屏幕设置是 "+ window.screen.colorDepth +" 位彩色"+"<br />"; 
+s += " 您的屏幕设置 "+ window.screen.deviceXDPI +" 像素/英寸"+"<br />"; 
  s += "</div>"
 document.writeln(s);
 }

@@ -207,7 +207,7 @@ Toplist.prototype.zan = function(page,playerId)
 	}else {
 		for (var i=0;i<zans.length;i++){
 			if (zans[i]==playerId){
-				g_msg.tip("你每天只能对一个人点赞1次");
+				g_msg.tip("您每天只能对一个人点赞1次");
 				return;
 			}
 		}

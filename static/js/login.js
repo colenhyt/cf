@@ -101,8 +101,7 @@ Login.prototype.onImgClick = function(image)
 //	else if (image.name=="chosegirl")
 //	shareContentClickHandler();//showShareViewClickHandler();
 //	else
-//	showShareMenuClickHandler();
-	
+//	showShareMenuClickHandler();	
 //	return;
 
 	var tdata = store.get(g_player.name);
@@ -118,11 +117,11 @@ Login.prototype.onImgClick = function(image)
 		
 	}else if (image.name=="btstart"){
 		if (tag.value==null||tag.value==""||tag.value==Login_InputDft){
-			this.msg("输入你的昵称");
+			this.msg("输入您的昵称");
 			return;		
 		}
 		if (this.sex==null){
-			this.msg("选择你的性别");
+			this.msg("选择您的性别");
 			return;
 		}
 //		if (tdata!=null&&tdata.playername!=tag.value)
@@ -233,12 +232,12 @@ Login.prototype.msgtip = function(loginMsg){
 			if (msg.t==0)
 				g_msg.tip("获得"+msg.name+"利息:"+ppf);
 			else
-				g_msg.tip("你的"+msg.name+"存款到期, 获得利息:"+ppf);
+				g_msg.tip("您的"+msg.name+"存款到期, 获得利息:"+ppf);
 		}else if (msg.type==g_insure.name){
 			if (msg.profit==-1){
-				g_msg.tip("你的"+msg.name+"已到期");
+				g_msg.tip("您的"+msg.name+"已到期");
 			}else
-				g_msg.tip("你的"+msg.name+"已到期,获得收益:"+parseInt(msg.profit));
+				g_msg.tip("您的"+msg.name+"已到期,获得收益:"+parseInt(msg.profit));
 		}
 	}
 }
@@ -273,12 +272,12 @@ Login.prototype.loginCallback = function(obj){
 			if (msg.t==0)
 				g_msg.tip("获得"+msg.name+"利息:"+ppf);
 			else
-				g_msg.tip("你的"+msg.name+"存款到期, 获得利息:"+ppf);
+				g_msg.tip("您的"+msg.name+"存款到期, 获得利息:"+ppf);
 		}else if (msg.type==g_insure.name){
 			if (msg.profit==-1){
-				g_msg.tip("你的"+msg.name+"已到期");
+				g_msg.tip("您的"+msg.name+"已到期");
 			}else
-				g_msg.tip("你的"+msg.name+"已到期,获得收益:"+parseInt(msg.profit));
+				g_msg.tip("您的"+msg.name+"已到期,获得收益:"+parseInt(msg.profit));
 		}
 	}
 	

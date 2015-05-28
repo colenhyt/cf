@@ -192,14 +192,14 @@ Datamgr.prototype = {
 		    var needCash = ps * qty;
 		    var cash = g_player.saving[1].amount;
 		    if (cash<needCash){
-			    g_msg.tip("你的现金不够，购买失败!");
+			    g_msg.tip("您的现金不够，购买失败!");
 			    return;
 		    }		
 	    }else {
 	    	if (this.name=="stock"){
 			   var pitem = g_player.getStockItem(id);
 			   if (pitem.qty<(0-qty)){
-			   		g_msg.tip("持有数量少于你抛售数量!");	
+			   		g_msg.tip("持有数量少于您抛售数量!");	
 			   		return;
 			   }
 	    	}else {

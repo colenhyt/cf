@@ -28,7 +28,7 @@ Signin.prototype.buildPage = function(page)
     content +=           "  明天签到将获得:"
     content +=            "  <span id='signin_gettomorrow' class='cf_font2'> </span>"
     content +=            "     <div class='cf_font3'>注:连续签到工资将会有提升</div>"
-    content +=            " <div class='cf_signin_feeling'> 请选择你今天的心情:"
+    content +=            " <div class='cf_signin_feeling'> 请选择您今天的心情:"
     content +=            "     <div id ='signin_feeling' class='cf_signin_feeling2'>心情选择</div>  "
      content +=       " </div>"
     content +=            " </div>"

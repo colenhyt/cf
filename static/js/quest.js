@@ -34,7 +34,7 @@ Quest.prototype.buildPage = function(page)
 	var tdata = store.get(this.name);
 	var content = 	"";
 	if (quest.length<=0){
-		  content += "<div class='cfpanel' ID='insure_d1'>你当前没有任务"
+		  content += "<div class='cfpanel' ID='insure_d1'>您当前没有任务"
       content += "</div>"
 	}else {
 		var start = page* this.pageCount;

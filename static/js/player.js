@@ -354,7 +354,7 @@ Player.prototype.buyItem = function(tname,id,qty,ps){
 	var cash = this.saving[1].amount;
 	var amount = parseInt(ps * qty);
 	if (cash<amount){
-		 g_msg.tip('你的钱不够');
+		 g_msg.tip('您的钱不够');
 		return;
 	}
 

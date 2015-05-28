@@ -41,14 +41,13 @@ function initShareSDK()
         {
             var params = {
                 "text" : "微信财富人生内容",
-                "imageUrl" : "http://img0.bdstatic.com/img/image/shouye/tangwei.jpg",
+               // "imageUrl" : "http://img0.bdstatic.com/img/image/shouye/tangwei.jpg",
                 "title" : "财富人生内容测试的标题",
                 "titleUrl" : "http://sharesdk.cn",
                 "description" : "测试的描述",
                 "site" : "ShareSDK",
-                "siteUrl" : "http://sharesdk.cn",
                 "url" : "http://sharesdk.cn",
-                "type" : $sharesdk.contentType.Apps
+                "type" : $sharesdk.contentType.WebPage
             };
 
             var isSSO = false;
@@ -63,7 +62,7 @@ function initShareSDK()
         {
             var params = {
                 "text" : "财富人生内容新浪",
-                "imageUrl" : "http://img0.bdstatic.com/img/image/shouye/tangwei.jpg",
+               // "imageUrl" : "http://img0.bdstatic.com/img/image/shouye/tangwei.jpg",
                 "title" : "财富人生标题",
                 "titleUrl" : "http://sharesdk.cn",
                 "description" : "测试的描述",
@@ -82,12 +81,13 @@ function initShareSDK()
         {
             var params = {
                 "text" : "财富人生帅爆了，你也来吧...",
-                "imageUrl" : "http://img0.bdstatic.com/img/image/shouye/tangwei.jpg",
+              //  "imageUrl" : "http://img0.bdstatic.com/img/image/shouye/tangwei.jpg",
                 "title" : "测试的标题",
                 "titleUrl" : "http://sharesdk.cn",
                 "description" : "测试的描述333",
                 "site" : "ShareSDK",
                 "siteUrl" : "http://sharesdk.cn",
+                "url" : "http://sharesdk.cn",  
                 "type" : $sharesdk.contentType.WebPage
             };
            var isSSO = false;
