@@ -281,7 +281,6 @@ public class SavingAction extends BaseAction {
 		    Calendar cCurr = Calendar.getInstance(); 
 		    cCurr.setTime(curr);
 		    Calendar c2 = Calendar.getInstance(); 
-			Connection conn = MybatisSessionFactory.getSession().getConnection();
 		
 			List<Insure> insures = insureService.findByPlayerId(playerId);
 //			System.out.println("find insure for"+playerId+" from db:"+insures.size()+",db:"+conn.toString()+",sess:"+MybatisSessionFactory.getSession().toString());

@@ -79,48 +79,8 @@ public class InsureService extends BaseService {
 		InsureExample example = new InsureExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
-		List<String> cfgs = new ArrayList<String>();
-		readFile2("db.properties",cfgs);
-		//Connection conn = MybatisSessionFactory.getSession().getConnection();
-		String url = cfgs.get(0)+"&user="+cfgs.get(1)+"&password="+cfgs.get(2);
-		url = url.replace("\\", "");
-//		System.out.println("url:"+url);
-		List<Insure> insures = new ArrayList<Insure>();
-		Connection conn = null;
-		Statement st = null;
-		try {
-			conn = DriverManager.getConnection(url);
-			st = conn.createStatement();
-			ResultSet r = st.executeQuery("select itemid,amount,profit,qty,updatetime,type,period,playerid,createtime from insure where playerid="+playerId);   
-			while (r.next())
-			{
-				Insure insure = new Insure();
-				insure.setItemid(r.getInt(1));
-				insure.setAmount(r.getFloat(2));
-				insure.setProfit(r.getFloat(3));
-				insure.setQty(r.getInt(4));
-				insure.setUpdatetime(r.getDate(5));
-				insure.setType(r.getByte(6));
-				insure.setPeriod(r.getInt(7));
-				insure.setPlayerid(r.getInt(8));
-				insure.setCreatetime(r.getDate(9));
-				insures.add(insure);
-			}
-			st.close();
-			r.close();
-			conn.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			if (conn!=null)
-				try {
-					conn.close();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-		}     
-		
+		List<Insure> insures = insureMapper.selectByExample(example);
+		MybatisSessionFactory.getSession().clearCache();
 	return insures;
 	}
 	
