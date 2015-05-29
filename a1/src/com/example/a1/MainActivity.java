@@ -69,7 +69,10 @@ private AssetFileDescriptor afdMoney = null;
 		}
 		
 		//wvBody.loadUrl("http://192.168.43.168:8080/cf/index.html");	//vtion
+		//http://112.74.108.46:8080/cf/index.html: 阿里云
+		//http://192.168.123.1:8080/cf/index.html:xmwifi
 		wvBody.loadUrl(getUrlString());//xiaomi wifi
+		System.out.println("load url:"+getUrlString());
 		//wvBody.loadUrl("http://202.69.27.223:8081/cf/index.html");	//pingan-test-wifi
 
 	}
