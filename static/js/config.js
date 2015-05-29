@@ -209,7 +209,7 @@ function initScreen(){
 //alert(browser.versions.iPhone)
 //alert(width);
 //alert(SCREENKEY);
-//SCREENKEY = 320
+//SCREENKEY = 640
 	//SCREENKEY = 480;
 	SIZEPER = SCREENKEY/640;
 	var cssFile = "static/css/cf"+SCREENKEY+".css";
