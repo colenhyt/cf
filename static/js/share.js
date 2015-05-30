@@ -41,12 +41,12 @@ function initShareSDK()
         {
             var params = {
                 "text" : "微信财富人生内容",
-               // "imageUrl" : "http://img0.bdstatic.com/img/image/shouye/tangwei.jpg",
+                "imageUrl" : "http://img0.bdstatic.com/img/image/shouye/tangwei.jpg",
                 "title" : "财富人生内容测试的标题",
-                "titleUrl" : "http://sharesdk.cn",
+                "titleUrl" : "www.pingan.com",
                 "description" : "测试的描述",
                 "site" : "ShareSDK",
-                "url" : "http://sharesdk.cn",
+                "url" : "www.pingan.com",
                 "type" : $sharesdk.contentType.WebPage
             };
 
@@ -81,14 +81,14 @@ function initShareSDK()
         {
             var params = {
                 "text" : "财富人生帅爆了，你也来吧...",
-              //  "imageUrl" : "http://img0.bdstatic.com/img/image/shouye/tangwei.jpg",
+                "imageUrl" : "http://img0.bdstatic.com/img/image/shouye/tangwei.jpg",
                 "title" : "测试的标题",
                 "titleUrl" : "http://sharesdk.cn",
                 "description" : "测试的描述333",
                 "site" : "ShareSDK",
                 "siteUrl" : "http://sharesdk.cn",
                 "url" : "http://sharesdk.cn",  
-                "type" : $sharesdk.contentType.WebPage
+                "type" : 1
             };
            var isSSO = false;
 
@@ -116,14 +116,22 @@ function initShareSDK()
 
             });
         }
-        
+
+        function playAudioHandler(audioName)
+        {
+            
+            $sharesdk.playAudio($sharesdk.platformID.SinaWeibo, audioName, function (platform, state, shareInfo, error) {
+				shareCallInfo(platform, state, shareInfo, error);
+
+            });
+        }        
         function shareCallInfo(platform, state, shareInfo, error){
 				var aa = JSON.stringify(shareInfo);
 				var bb = JSON.stringify(error);
 				if (state==1){
 				 g_msg.tip('分享成功');
 				}else if (state==2){
-        		 g_msg.tip("分享失败: " + bb);
+        		 alert("分享失败: " + bb);
         		}else if (state==3){
          		 g_msg.tip('分享已取消');
         		}
