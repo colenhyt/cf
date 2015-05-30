@@ -41,6 +41,7 @@
         "ShowShareView" : "showShareView",
         "GetFriendList" : "getFriendList",
         "FollowFriend" : "followFriend",
+        "PlayAudio" : "playAudio",
         "GetAuthInfo" : "getAuthInfo"
     };
 
@@ -798,8 +799,18 @@
                 "callback" : "(" + callback.toString() + ")"	
     	}
     	ShareSDK._callMethod(ShareSDKMethodName.FollowFriend, params);
-    }
-
+    };
+    
+    /**
+     * play audio
+     * @param platform
+     * @param friendName
+     * @param callback 
+     */
+    ShareSDK.playAudio = function(platform, shareParams, callback){
+    	ShareSDK._callMethod(ShareSDKMethodName.PlayAudio, shareParams);
+    };
+    
     window.$sharesdk = ShareSDK;
 
 })(window)
