@@ -21,10 +21,6 @@ import cn.sharesdk.js.ShareSDKUtils;
 public class MainActivity extends Activity {
 private WebView webView;
 private MediaPlayer mediaPlayer = null; 
-private Map<String,AssetFileDescriptor> audioMap;
-private AssetFileDescriptor afdOpen = null;
-private AssetFileDescriptor afdClose = null;
-private AssetFileDescriptor afdMoney = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,35 +41,32 @@ private AssetFileDescriptor afdMoney = null;
 				return super.onJsAlert(view, url, message, result);
 			}
 		});
-		
-		// you must call the following line after the webviewclient is set into the webview
-		ShareSDKUtils.prepare(wvBody, wvClient);
-		//wvBody.getSettings().setJavaScriptEnabled(true);
-		wvBody.addJavascriptInterface(new JavaScriptInterface(), "jscall");  
-		setContentView(wvBody);
-		
+	
 		try {
-			String a1 = "open.wav";
-			String a2 = "close.wav";
-			String a3 = "money.wav";
-			afdOpen = getResources().getAssets().openFd(a1);
-			afdClose = getResources().getAssets().openFd(a2);
-			afdMoney = getResources().getAssets().openFd(a3);
-			audioMap = new HashMap<String,AssetFileDescriptor>();
+			String a1 = "open";
+			String a2 = "close";
+			String a3 = "money";
+			AssetFileDescriptor afdOpen = getResources().getAssets().openFd(a1+".wav");
+			AssetFileDescriptor afdClose = getResources().getAssets().openFd(a2+".wav");
+			AssetFileDescriptor afdMoney = getResources().getAssets().openFd(a3+".wav");
+			Map<String,AssetFileDescriptor> audioMap = new HashMap<String,AssetFileDescriptor>();
 			audioMap.put(a1, afdOpen);
 			audioMap.put(a2, afdClose);
 			audioMap.put(a3, afdMoney);
+		// you must call the following line after the webviewclient is set into the webview
+		ShareSDKUtils shareSDK = ShareSDKUtils.prepare(wvBody, wvClient,audioMap);
+		//wvBody.getSettings().setJavaScriptEnabled(true);
+		wvBody.addJavascriptInterface(new JavaScriptInterface(), "jscall");  
+		setContentView(wvBody);
+			
+		//wvBody.loadUrl("http://192.168.43.168:8080/cf/index.html");	//vtion
+		wvBody.loadUrl(getUrlString());//xiaomi wifi
+		//wvBody.loadUrl("http://202.69.27.223:8081/cf/index.html");	//pingan-test-wifi
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		//wvBody.loadUrl("http://192.168.43.168:8080/cf/index.html");	//vtion
-		//http://112.74.108.46:8080/cf/index.html: 阿里云
-		//http://192.168.123.1:8080/cf/index.html:xmwifi
-		wvBody.loadUrl(getUrlString());//xiaomi wifi
-		System.out.println("load url:"+getUrlString());
-		//wvBody.loadUrl("http://202.69.27.223:8081/cf/index.html");	//pingan-test-wifi
 
 	}
 	
@@ -126,38 +119,7 @@ private AssetFileDescriptor afdMoney = null;
 	       }  
 	       @JavascriptInterface
 	       public void playAudio(String audioName) {  
-	         //TODO  
-	    	   System.out.println("playWav"+audioName);
-	    	   mediaPlayer = new MediaPlayer();  
-	    	   AssetFileDescriptor afd = audioMap.get(audioName);
-	    	   try {
-				mediaPlayer.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
-		    	   mediaPlayer.prepare();//缓冲   
-		    	   mediaPlayer.start();//开始或恢复播放  
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalStateException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}  
-	    	   mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {//播出完毕事件  
-	    	           @Override public void onCompletion(MediaPlayer arg0) {  
-	    	         mediaPlayer.release();  
-	    	           }  
-	    	   });  
-	    	   mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {// 错误处理事件  
-	    	            @Override public boolean onError(MediaPlayer player, int arg1, int arg2) {  
-	    	     mediaPlayer.release();  
-	    	     return false;  
-	    	            }  
-	    	   });	    	   
+  
 	       }  
 	     
 	  } 

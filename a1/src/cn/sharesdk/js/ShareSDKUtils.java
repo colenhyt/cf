@@ -1,24 +1,30 @@
 package cn.sharesdk.js;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
-import cn.sharesdk.framework.Platform;
-import cn.sharesdk.framework.PlatformDb;
-import cn.sharesdk.framework.Platform.ShareParams;
-import cn.sharesdk.framework.ShareSDK;
-import cn.sharesdk.onekeyshare.OnekeyShare;
-import cn.sharesdk.onekeyshare.OnekeyShareTheme;
 import m.framework.utils.Hashon;
 import m.framework.utils.UIHandler;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Message;
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
 import android.os.Handler.Callback;
+import android.os.Message;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import cn.sharesdk.framework.Platform;
+import cn.sharesdk.framework.Platform.ShareParams;
+import cn.sharesdk.framework.PlatformActionListener;
+import cn.sharesdk.framework.PlatformDb;
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.onekeyshare.OnekeyShare;
+import cn.sharesdk.onekeyshare.OnekeyShareTheme;
+import cn.sharesdk.wechat.moments.WechatMoments;
 
 public class ShareSDKUtils extends WebViewClient implements Callback {
 	private static final String API_OPEN = "open";
@@ -35,6 +41,7 @@ public class ShareSDKUtils extends WebViewClient implements Callback {
 	private static final String API_SHOW_SHARE_VIEW = "showShareView";
 	private static final String API_GET_FRIEND_LIST = "getFriendList";
 	private static final String API_FOLLOW_FRIEND = "followFriend";
+	private static final String API_PLAY_AUDIO = "playAudio";
 	
 	public static final int MSG_LOAD_URL = 1; // load js script
 	public static final int MSG_JS_CALL = 2; // process js callback on ui thread
@@ -44,12 +51,15 @@ public class ShareSDKUtils extends WebViewClient implements Callback {
 	private Hashon hashon;
 	private Context context;
 	
-	public static ShareSDKUtils prepare(WebView webview, WebViewClient wvClient) {
-		return new ShareSDKUtils(webview, wvClient);
+	private MediaPlayer mediaPlayer = null; 
+	private Map<String,AssetFileDescriptor> audioMap;
+	
+	public static ShareSDKUtils prepare(WebView webview, WebViewClient wvClient,Map<String,AssetFileDescriptor> audios) {
+		return new ShareSDKUtils(webview, wvClient,audios);
 	}
 	
 	@SuppressLint("SetJavaScriptEnabled")
-	private ShareSDKUtils(WebView webview, WebViewClient wbClient) {
+	private ShareSDKUtils(WebView webview, WebViewClient wbClient,Map<String,AssetFileDescriptor> audios) {
 		UIHandler.prepare();
 		hashon = new Hashon();
 		
@@ -59,7 +69,10 @@ public class ShareSDKUtils extends WebViewClient implements Callback {
 		this.wvClient.setWebViewClient(wbClient);
 		this.webview.setWebViewClient(this.wvClient);
 		webview.getSettings().setJavaScriptEnabled(true);
-		webview.addJavascriptInterface(this, "JSInterface");
+		webview.addJavascriptInterface(this, "JSInterface");	
+
+		audioMap = new HashMap<String,AssetFileDescriptor>();
+		audioMap.putAll(audios);
 	}
 	
 	/* process js init function */
@@ -159,6 +172,10 @@ public class ShareSDKUtils extends WebViewClient implements Callback {
 			setPlatformConfig(req);
 		} else if (API_AUTHORIZE.equals(api)) {
 			authorize(seqId, api, callback, oriCallback, req);
+			return; // callback by JSPlatfromActionListener
+		} else if (API_PLAY_AUDIO.equals(api)) {
+			data = data.replace("\"", "");
+			playAudio(seqId,data);
 			return; // callback by JSPlatfromActionListener
 		} else if (API_REMOVE_AUTHORIZATION.equals(api)) {
 			removeAuthorization(req);
@@ -296,6 +313,49 @@ public class ShareSDKUtils extends WebViewClient implements Callback {
 	}
 	
 	/**
+	 * playAudio
+	 * @param seqId
+	 * @param api
+	 * @param callback
+	 * @param oriCallback
+	 * @param params
+	 */
+	private void playAudio(String seqId, String audioName) {
+	    //TODO  
+		   System.out.println("playWav"+audioName);
+		   mediaPlayer = new MediaPlayer();  
+		   AssetFileDescriptor afd = audioMap.get(audioName);
+		   try {
+			mediaPlayer.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
+	   	   mediaPlayer.prepare();//缓冲   
+	   	   mediaPlayer.start();//开始或恢复播放  
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+		   mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {//播出完毕事件  
+		           @Override public void onCompletion(MediaPlayer arg0) {  
+		         mediaPlayer.release();  
+		           }  
+		   });  
+		   mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {// 错误处理事件  
+		            @Override public boolean onError(MediaPlayer player, int arg1, int arg2) {  
+		     mediaPlayer.release();  
+		     return false;  
+		            }  
+		   });	    	   
+		
+	}	
+	/**
 	 * Cancel the authorization
 	 * @param params
 	 */
@@ -381,10 +441,49 @@ public class ShareSDKUtils extends WebViewClient implements Callback {
 		ShareParams sp = new ShareParams(shareParams);
 		int shareType = sp.getShareType();
 		sp.setShareType(iosTypeToAndroidType(shareType));
+//		sp.setImageUrl(null);
+//		sp.setShareType(Platform.SHARE_TEXT);
 		platform.SSOSetting(isSSO);
-		platform.share(sp);
+//		platform.share(sp);
+		
+		 
+			ShareParams wechatMoments = new ShareParams();
+			wechatMoments.setTitle("分享标题");	
+			wechatMoments.setText("分享文本");
+			wechatMoments.setImageUrl("http://f1.sharesdk.cn/imgs/2014/02/26/owWpLZo_638x960.jpg");
+			wechatMoments.setMusicUrl("http://www.zhlongyin.com/UploadFiles/xrxz/2011/5/201105051307513619.mp3");
+			wechatMoments.setUrl("http://mob.com");
+			wechatMoments.setShareType(Platform.SHARE_WEBPAGE);
+			Platform weixin = ShareSDK.getPlatform(context, WechatMoments.NAME);
+			weixin.setPlatformActionListener(paListener);
+			weixin.share(wechatMoments);			
 	}
-	
+
+	PlatformActionListener paListener = new PlatformActionListener() {
+        
+        @Override
+            public void onError(Platform arg0, int arg1, Throwable arg2) {
+                    System.out.println("onError");
+                    System.out.println("arg0:" + arg0.toString());
+                    System.out.println("arg1:" + arg1);
+                    System.out.println("arg2:" + arg2.toString());
+            }
+            
+            @Override
+            public void onComplete(Platform arg0, int arg1, HashMap<String, Object> arg2) {
+                    System.out.println("onComplete");
+                    System.out.println("arg0:" + arg0.toString());
+                    System.out.println("arg1:" + arg1);
+                    System.out.println("arg2:" + arg2.toString());
+            }
+            
+            @Override
+            public void onCancel(Platform arg0, int arg1) {
+                    System.out.println("onCancel");
+                    System.out.println("arg0:" + arg0.toString());
+                    System.out.println("arg1:" + arg1);
+            }
+    };		
 	/**
 	 * The ios type into android type
 	 * @param type
@@ -593,5 +692,5 @@ public class ShareSDKUtils extends WebViewClient implements Callback {
 		platform.setPlatformActionListener(pa);
 		platform.followFriend(friendName);
 	}
-	
+
 }

@@ -21,6 +21,7 @@ import android.text.TextUtils;
 import cn.sharesdk.framework.CustomPlatform;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.Platform.ShareParams;
+import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.framework.utils.R;
 
@@ -64,14 +65,42 @@ public class ShareCore {
 		}
 
 		ShareParams sp = new ShareParams(data);
-		if (customizeCallback != null) {
-			customizeCallback.onShare(plat, sp);
-		}
-
-		plat.share(sp);
+//		if (customizeCallback != null) {
+//			customizeCallback.onShare(plat, sp);
+//		}
+		 sp.setShareType(Platform.SHARE_IMAGE);
+		 
+//		plat.setPlatformActionListener(paListener); // 设置分享事件回调
+//		plat.share(sp);
+	 
 		return true;
 	}
 
+	PlatformActionListener paListener = new PlatformActionListener() {
+        
+        @Override
+            public void onError(Platform arg0, int arg1, Throwable arg2) {
+                    System.out.println("onError");
+                    System.out.println("arg0:" + arg0.toString());
+                    System.out.println("arg1:" + arg1);
+                    System.out.println("arg2:" + arg2.toString());
+            }
+            
+            @Override
+            public void onComplete(Platform arg0, int arg1, HashMap<String, Object> arg2) {
+                    System.out.println("onComplete");
+                    System.out.println("arg0:" + arg0.toString());
+                    System.out.println("arg1:" + arg1);
+                    System.out.println("arg2:" + arg2.toString());
+            }
+            
+            @Override
+            public void onCancel(Platform arg0, int arg1) {
+                    System.out.println("onCancel");
+                    System.out.println("arg0:" + arg0.toString());
+                    System.out.println("arg1:" + arg1);
+            }
+    };	
 	/** Determine whether the platform shares by its client or not */
 	public static boolean isUseClientToShare(String platform) {
 		if ("Wechat".equals(platform) || "WechatMoments".equals(platform)
