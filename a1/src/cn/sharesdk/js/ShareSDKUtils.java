@@ -325,6 +325,9 @@ public class ShareSDKUtils extends WebViewClient implements Callback {
 		   System.out.println("playWav"+audioName);
 		   mediaPlayer = new MediaPlayer();  
 		   AssetFileDescriptor afd = audioMap.get(audioName);
+		   if (afd==null)
+			   return;
+		   
 		   try {
 			mediaPlayer.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
 	   	   mediaPlayer.prepare();//缓冲   
