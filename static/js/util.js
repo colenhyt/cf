@@ -645,20 +645,3 @@ function loadAni7(){
    loadAni();
   });  
 }
-
-function playAudio(audioName)
-{
-if (window.jscall==null) return;
-
-window.jscall.playAudio(audioName);	
-}
-function openplay() 
-{ 
-var x = document.createElement("EMBED");
-x.setAttribute("src", "static/wav/open.wav");
-x.setAttribute("width", "220");
-x.setAttribute("height", "110");
-x.setAttribute("autostart", "1");
-alert(x);
-document.body.appendChild(x);
-} 

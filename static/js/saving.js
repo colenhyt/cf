@@ -22,7 +22,7 @@ Saving.prototype.init = function(){
 }
 
 Saving.prototype.showDetail = function(id){    
-	playAudio('open.wav');	
+	playAudioHandler('open');	
 	var tdata = store.get(this.name);
    var item = tdata[id];
    if (item==null) return;
@@ -105,7 +105,7 @@ content += "             </div>"
  }
 
 Saving.prototype.closeDetail = function(id){ 
-	playAudio('close.wav');	
+	playAudioHandler('close');	
 	$('#'+this.tagdetailname).modal('hide');  
 }
 
@@ -198,7 +198,7 @@ Saving.prototype.buyCallback = function(ret){
    }else
 	pitems[id] = null;
 			   
-  playAudio('money.wav');	
+  playAudioHandler('money');	
 	var cash = g_player.saving[1].amount;	   
 	cash -= amount;
 	g_player.updateData({"cash":cash});

@@ -80,7 +80,7 @@ Toplist.prototype.showToplist = function(type,page)
 	if (page<0)
 		return
 		
-	playAudio('open.wav');	
+	playAudioHandler('open');	
 	var tdata;
         var   header ="";
 	if (type==0) {

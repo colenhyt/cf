@@ -120,7 +120,7 @@ Stock.prototype.findStockIds = function()
 }
 
 Stock.prototype.show = function(){
-	playAudio('open.wav');	
+	playAudioHandler('open');	
 	if (g_player.data.openstock!=1){
 		g_msg.open2("证券开户","您需要开通证券账户才能投资股票，请点击'确认'按钮开通","g_stock.confirmOpen",1,1,1,null,"g_stock.onClose");
 	}else {
@@ -148,7 +148,7 @@ Stock.prototype.buildPage = function(page)
 {
 	if (page<0)	return
 	
-	playAudio('open.wav');	
+	playAudioHandler('open');	
 	var tdata = store.get(this.name);
 	var content = 	"";
 	if (tdata.length<=0){
@@ -221,7 +221,7 @@ Stock.prototype.buildPage = function(page)
 
 Stock.prototype.showDetail = function(id,isflush){    
 	this.onPanelClick(id);
-	playAudio('open.wav');	
+	playAudioHandler('open');	
 	
 	var tdata = store.get(this.name);
    var item = tdata[id];
@@ -294,7 +294,7 @@ Stock.prototype.showDetail = function(id,isflush){
 }
 
 Stock.prototype.closeDetail = function(id){ 
-	playAudio('close.wav');	
+	playAudioHandler('close');	
 	$('#'+this.tagdetailname).modal('hide');  
 }
 
@@ -424,7 +424,7 @@ Stock.prototype.buyCallback = function(ret){
 	 }
 	}
 	g_player.setStockIds();
-  playAudio('money.wav');	
+  playAudioHandler('money');	
 	
 		
 	var cash = g_player.saving[1].amount;	   
@@ -531,7 +531,7 @@ Stock.prototype.onClose = function()
 	}	
 	this.isOpen = false;
 	
-	playAudio('close.wav');	
+	playAudioHandler('close');	
 	$('#'+g_msg.tagname).modal('hide'); 
 	//alert(this.name+"close");
 }

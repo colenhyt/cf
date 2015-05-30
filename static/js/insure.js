@@ -69,7 +69,7 @@ Insure.prototype.buildPage = function(page)
 {
 	if (page<0)
 		return
-	playAudio('open.wav');	
+	playAudioHandler('open');	
 		
 	this.reloadInsures();
 	
@@ -141,7 +141,7 @@ Insure.prototype.buildPage = function(page)
 
 Insure.prototype.clickDetail = function(id,type){  
  	this.onPanelClick(id);
-	playAudio('open.wav');	
+	playAudioHandler('open');	
    if (type==0)
    	g_insure.show_insuredetail(id)
    else
@@ -163,7 +163,7 @@ Insure.prototype.showDetail = function(title,desc,okCallback,itemid,qty,confmTex
 }
 
 Insure.prototype.closeDetail = function(id){ 
-	playAudio('close.wav');	
+	playAudioHandler('close');	
 	$('#'+this.tagdetailname).modal('hide');  
 }
 
@@ -328,7 +328,7 @@ Insure.prototype.buyCallback = function(ret){
    }else
 	pitems[id] = null;
 		
-  playAudio('money.wav');	
+  playAudioHandler('money');	
 	var cash = g_player.saving[1].amount;	   
 	cash -= amount;
 	g_player.updateData({"cash":cash});
