@@ -92,6 +92,8 @@ function initShareSDK()
             };
            var isSSO = false;
 
+			playAudioHandler('open');
+
             $sharesdk.showShareMenu(null, params, 100, 100, $sharesdk.shareMenuArrowDirection.Any,isSSO,  function (platform, state, shareInfo, error) {
 				shareCallInfo(platform, state, shareInfo, error);
 
@@ -110,7 +112,7 @@ function initShareSDK()
                 "siteUrl" : "http://sharesdk.cn",
                 "type" : 1
             };
-
+				
             $sharesdk.showShareView($sharesdk.platformID.SinaWeibo, params, function (platform, state, shareInfo, error) {
 				shareCallInfo(platform, state, shareInfo, error);
 
