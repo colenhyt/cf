@@ -65,13 +65,12 @@ public class ShareCore {
 		}
 
 		ShareParams sp = new ShareParams(data);
-//		if (customizeCallback != null) {
-//			customizeCallback.onShare(plat, sp);
-//		}
-		 sp.setShareType(Platform.SHARE_IMAGE);
+		if (customizeCallback != null) {
+			customizeCallback.onShare(plat, sp);
+		}
 		 
-//		plat.setPlatformActionListener(paListener); // 设置分享事件回调
-//		plat.share(sp);
+		plat.setPlatformActionListener(paListener); // 设置分享事件回调
+		plat.share(sp);
 	 
 		return true;
 	}
