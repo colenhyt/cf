@@ -30,6 +30,10 @@ var Share_PageText_Prize = "获得<img class='cficon_money' src='static/img/mone
 
 var Share_Img = "http://112.74.108.46:8080/cf/static/img/app_icon_share.png"
 
+//var Share_Url = "http://elife.pingan.com/"
+
+var Share_Url = "http://dd.myapp.com/16891/32B5098A37D290206587504942EBB30D.apk?fsname=com.pingan.lifeinsurance_2.5.6.2_52.apk&asr=8eff"
+
 var Login_InputDft = "输入昵称";
 
 var login_imgs = [

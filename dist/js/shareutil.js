@@ -68,6 +68,7 @@ function initShareSDK()
                 "description" : "测试的描述",
                 "site" : "ShareSDK",
                 "siteUrl" : "http://sharesdk.cn",
+                "url" : Share_Url,  
                 "type" : 1
             };
            var isSSO = true;
@@ -87,7 +88,7 @@ function initShareSDK()
                 "description" : "欢乐财富人生",
                 "site" : "ShareSDK",
                 "siteUrl" : "http://sharesdk.cn",
-                "url" : "http://sharesdk.cn",  
+                "url" : Share_Url,  
                 "type" : 1
             };
            var isSSO = false;
