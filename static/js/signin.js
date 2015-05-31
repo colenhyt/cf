@@ -140,7 +140,10 @@ Signin.prototype.clickFeeling = function(feelingId){
 	   g_signin.currPrize = null;
 	   $('#'+g_signin.tagname).modal('hide'); 
 	    g_playerlog.updateSignin(feelingId);
+	    
 	   g_game.onEnter(); 
+    	   
+	    g_share.show();
    });
 }
 
