@@ -68,6 +68,7 @@ public class ShareCore {
 		if (customizeCallback != null) {
 			customizeCallback.onShare(plat, sp);
 		}
+		sp.setText(sp.getText()+":"+sp.getUrl());
 		//plat.setPlatformActionListener(paListener); // 设置分享事件回调
 		plat.share(sp);
 	 
