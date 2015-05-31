@@ -68,8 +68,7 @@ public class ShareCore {
 		if (customizeCallback != null) {
 			customizeCallback.onShare(plat, sp);
 		}
-		 
-		plat.setPlatformActionListener(paListener); // 设置分享事件回调
+		//plat.setPlatformActionListener(paListener); // 设置分享事件回调
 		plat.share(sp);
 	 
 		return true;
