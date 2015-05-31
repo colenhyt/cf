@@ -40,9 +40,9 @@ function initShareSDK()
         function shareContentClickHandler()
         {
             var params = {
-                "text" : "微信财富人生内容",
-                "imageUrl" : "http://img0.bdstatic.com/img/image/shouye/tangwei.jpg",
-                "title" : "财富人生内容测试的标题",
+                "text" : Share_Text,
+                "imageUrl" : Share_Img,
+                "title" : "财富人生",
                 "titleUrl" : "www.pingan.com",
                 "description" : "测试的描述",
                 "site" : "ShareSDK",
@@ -61,8 +61,8 @@ function initShareSDK()
         function oneKeyShareContentClickHandler()
         {
             var params = {
-                "text" : "财富人生内容新浪",
-               // "imageUrl" : "http://img0.bdstatic.com/img/image/shouye/tangwei.jpg",
+                "text" : Share_Text,
+                "imageUrl" : Share_Img,
                 "title" : "财富人生标题",
                 "titleUrl" : "http://sharesdk.cn",
                 "description" : "测试的描述",
@@ -80,8 +80,8 @@ function initShareSDK()
         function showShareMenuClickHandler()
         {
             var params = {
-                "text" : "财富人生帅爆了，你也来吧...",
-                "imageUrl" : "http://img0.bdstatic.com/img/image/shouye/tangwei.jpg",
+                "text" : Share_Text,
+                "imageUrl" : Share_Img,
                 "title" : "测试的标题",
                 "titleUrl" : "http://sharesdk.cn",
                 "description" : "测试的描述333",
@@ -101,8 +101,8 @@ function initShareSDK()
         function showShareViewClickHandler()
         {
             var params = {
-                "text" : "测试分享内容",
-                "imageUrl" : "http://img0.bdstatic.com/img/image/shouye/tangwei.jpg",
+                "text" : Share_Text,
+                "imageUrl" : Share_Img,
                 "title" : "测试的标题",
                 "titleUrl" : "http://sharesdk.cn",
                 "description" : "测试的描述",
