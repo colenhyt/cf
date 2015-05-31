@@ -26,7 +26,7 @@ body{color:rgb(255, 255, 255);font-size:20px;}
 
 .cfpage.player{height:396px;}
 
-.cflogin_input_div{font-size:1.2em;left:78px;position:absolute;top:67px;}
+.cflogin_input_div{font-size:1.2em;left:78px;position:absolute;top:64px;}
 
 .cflogin_tip{color:black;left:78px;position:absolute;top:376px;}
 
@@ -242,7 +242,7 @@ td{font-size:15px;font-weight:bold;}
 
 .cf_title{background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;color:rgb(255, 255, 255);float:left;font-size:15px;font-weight:bold;height:23px;margin-left:14px;margin-top:10px;position:relative;width:104px;}
 
-.cf_top{height:292px;margin-left:-8px;margin-top:5px;padding-left:5px;width:315px;}
+.cf_top{height:309px;margin-left:-8px;margin-top:5px;padding-left:5px;width:315px;}
 
 .cf_top_header{background:url('../../static/img/top_title_bg.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;height:28px;padding-left:5px;vertical-align:middle;width:309px;}
 
@@ -255,6 +255,8 @@ td{font-size:15px;font-weight:bold;}
 .cfevent_prize{color:red;display:block;left:168px;position:absolute;top:0px;z-index:3000;}
 
 .cf_top_zan{background:url('../../static/img/zan.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:15px;width:17px;}
+
+.cf_top_share{background:url('../../static/img/bt_share.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:18px;width:16px;}
 
 .cf_top_zan_me{background:url('../../static/img/zan.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:15px;width:17px;}
 

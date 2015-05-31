@@ -802,7 +802,7 @@ border:none;
   margin-top:10px;
   padding-left: 10px;
   width: 560px;
-  height:520px;
+  height:550px;
 }
 
 .cf_top_header{
@@ -845,6 +845,15 @@ z-index:3000;
   width: 31px;
   height: 28px;
 background:url('../../static/img/zan.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;    
+}
+
+.cf_top_share{
+  border: none;
+  width: 30px;
+  height: 32px;
+background:url('../../static/img/bt_share.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;    
 }

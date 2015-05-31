@@ -84,7 +84,7 @@ function initShareSDK()
                 "imageUrl" : Share_Img,
                 "title" : "测试的标题",
                 "titleUrl" : "http://sharesdk.cn",
-                "description" : "测试的描述333",
+                "description" : "欢乐财富人生",
                 "site" : "ShareSDK",
                 "siteUrl" : "http://sharesdk.cn",
                 "url" : "http://sharesdk.cn",  
@@ -132,6 +132,7 @@ function initShareSDK()
 				var bb = JSON.stringify(error);
 				if (state==1){
 				 g_msg.tip('分享成功');
+				 g_share.shareComplete();
 				}else if (state==2){
         		 alert("分享失败: " + bb);
         		}else if (state==3){

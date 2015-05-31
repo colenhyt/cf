@@ -18,11 +18,15 @@ var EventTriggerTime = 60*5;	//随机事件跳动;*UpdateDuration/1000 秒
 
 var Panel_ClickColor = "#123123";
 
+var Share_Prize = 500
+
 var Share_PageText = "又开始了新的一天！是否分享您今日的心情给您的好朋友们?"
 
-var Share_PageText2 = "成功分享将获得<span style='color:red'>500元</span>游戏币奖励"
+var Share_PageText2 = "成功分享将获得<span style='color:red'>"+Share_Prize+"元</span>游戏币奖励"
 
-var Share_Text = "我正在使用平安人寿APP玩<<财富人生>>游戏，快跟我一起来吧，更多惊喜和活动等着你"
+var Share_Text = "我正在使用平安人寿APP玩<<财富人生>>游戏，快跟我一起来吧，更多惊喜和活动等着您"
+
+var Share_PageText_Prize = "获得<img class='cficon_money' src='static/img/money.png'/><span style='color:red'>"+Share_Prize+"</span>"
 
 var Share_Img = "http://112.74.108.46:8080/cf/static/img/app_icon_share.png"
 
