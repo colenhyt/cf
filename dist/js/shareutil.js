@@ -132,7 +132,7 @@ function initShareSDK()
 				var aa = JSON.stringify(shareInfo);
 				var bb = JSON.stringify(error);
 				if (state==1){
-				 g_msg.tip('分享成功');
+				// g_msg.tip('分享成功');
 				 g_share.shareComplete();
 				}else if (state==2){
         		 alert("分享失败: " + bb);
