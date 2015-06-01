@@ -160,7 +160,7 @@ Toplist.prototype.showToplist = function(type,page)
 			  content += "               <td class='cftoplist_c4' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+topStr+"</div></td>"
 			   
 			 content += "               <td class='cftoplist_c3' style='color:yellow'><div onclick='g_toplist.zan("+page+","+item.playerid+")'"
-			  if (item.playerid==me.playerid)
+			  if (item.playerid==me.playerid&&!Is_InBrowser)
 			   content += "<input type='button' class='cf_top_share'/><span class='cftoplist_c6'>(<span id='zan_"+item.playerid+"'>"+item.zan+"</span>)</span>"
 			 else
 			   content += "<input type='button' class='cf_top_zan'/><span class='cftoplist_c6'>*<span id='zan_"+item.playerid+"'>"+item.zan+"</span></span>"
@@ -201,9 +201,12 @@ Toplist.prototype.showToplist = function(type,page)
 Toplist.prototype.zan = function(page,playerId)
 {
 	if (playerId==g_player.data.playerid){
-		//g_msg.tip("不能给自己点赞");
+	  if (Is_InBrowser)
+		g_msg.tip("不能给自己点赞");
+	  else
 		g_share.doShare();
-		return;	
+	
+	  return;	
 	}
 	
 	var ZAN_COUNT = 3;

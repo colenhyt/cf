@@ -18,6 +18,8 @@ var EventTriggerTime = 60*5;	//随机事件跳动;*UpdateDuration/1000 秒
 
 var Panel_ClickColor = "#123123";
 
+var Is_InBrowser = true;
+
 var Share_Prize = 500
 
 var Share_PageText = "又开始了新的一天！是否分享您今日的心情给您的好朋友们?"

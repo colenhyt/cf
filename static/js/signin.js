@@ -142,7 +142,8 @@ Signin.prototype.clickFeeling = function(feelingId){
 	    g_playerlog.updateSignin(feelingId);
 	    
 	   g_game.onEnter(); 
-    	   
+    	
+     if (!Is_InBrowser)	   
 	    g_share.show();
    });
 }
