@@ -515,6 +515,7 @@
                 };
                 jsLog.log("found platform type: Android");
                 _apiCaller = new AndroidAPICaller();
+                Is_InBrowser = false;
                 break;
             case 2:
                 jsLog = {
@@ -523,6 +524,7 @@
                     }
                 };
                 _apiCaller = new iOSAPICaller();
+                Is_InBrowser = false;
                 break;
         }
 
