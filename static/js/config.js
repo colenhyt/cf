@@ -26,7 +26,9 @@ var Share_PageText = "又开始了新的一天！是否分享您今日的心情�
 
 var Share_PageText2 = "成功分享将获得<span style='color:red'>"+Share_Prize+"元</span>游戏币奖励"
 
-var Share_Text = "我正在使用平安人寿APP玩<<财富人生>>游戏，快跟我一起来吧，更多惊喜和活动等着您"
+var Share_Title = "我正在使用平安人寿APP玩<<财富人生>>游戏，快跟我一起来吧，更多惊喜和活动等着您"
+
+var Share_Text = "财富人生"
 
 var Share_PageText_Prize = "获得<img class='cficon_money' src='static/img/money.png'/><span style='color:red'>"+Share_Prize+"</span>"
 

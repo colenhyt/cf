@@ -63,13 +63,13 @@ function initShareSDK()
             var params = {
                 "text" : Share_Text,
                 "imageUrl" : Share_Img,
-                "title" : "财富人生标题",
+                "title" : Share_Text,
                 "titleUrl" : "http://sharesdk.cn",
                 "description" : "测试的描述",
                 "site" : "ShareSDK",
                 "siteUrl" : "http://sharesdk.cn",
                 "url" : Share_Url,  
-                "type" : 1
+                "type" : $sharesdk.contentType.WebPage
             };
            var isSSO = true;
 
@@ -83,13 +83,13 @@ function initShareSDK()
             var params = {
                 "text" : Share_Text,
                 "imageUrl" : Share_Img,
-                "title" : "测试的标题",
-                "titleUrl" : "http://sharesdk.cn",
+                "title" : Share_Title,
+                "titleUrl" : "http://pingan.com",
                 "description" : "欢乐财富人生",
-                "site" : "ShareSDK",
-                "siteUrl" : "http://sharesdk.cn",
+                "site" : "pingan.com",
+                "siteUrl" : "http://pingan.com",
                 "url" : Share_Url,  
-                "type" : 1
+                "type" : $sharesdk.contentType.WebPage
             };
            var isSSO = false;
 
@@ -131,6 +131,7 @@ function initShareSDK()
         function shareCallInfo(platform, state, shareInfo, error){
 				var aa = JSON.stringify(shareInfo);
 				var bb = JSON.stringify(error);
+				alert('分享回调'+state);
 				if (state==1){
 				// g_msg.tip('分享成功');
 				 g_share.shareComplete();
