@@ -62,5 +62,11 @@
             <meta-data android:name="AuthorizeAdapter" android:value="com.example.a1.MyAdapter" />
  
         </activity>    
+        <!-- 微信分享回调 -->
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true" />        
        </application>
 </manifest>
