@@ -312,7 +312,99 @@ public class OnekeyShare implements PlatformActionListener, Callback {
 		for (Entry<Platform, HashMap<String, Object>> ent : shareData.entrySet()) {
 			Platform plat = ent.getKey();
 			plat.SSOSetting(disableSSO);
+			String name = plat.getName();
 
+//			boolean isGooglePlus = "GooglePlus".equals(name);
+//			if (isGooglePlus && !plat.isValid()) {
+//				Message msg = new Message();
+//				msg.what = MSG_TOAST;
+//				int resId = getStringRes(context, "google_plus_client_inavailable");
+//				msg.obj = context.getString(resId);
+//				UIHandler.sendMessage(msg, this);
+//				continue;
+//			}
+
+			boolean isKakaoTalk = "KakaoTalk".equals(name);
+			if (isKakaoTalk && !plat.isClientValid()) {
+				Message msg = new Message();
+				msg.what = MSG_TOAST;
+				int resId = getStringRes(context, "kakaotalk_client_inavailable");
+				msg.obj = context.getString(resId);
+				UIHandler.sendMessage(msg, this);
+				continue;
+			}
+
+			boolean isKakaoStory = "KakaoStory".equals(name);
+			if (isKakaoStory && !plat.isClientValid()) {
+				Message msg = new Message();
+				msg.what = MSG_TOAST;
+				int resId = getStringRes(context, "kakaostory_client_inavailable");
+				msg.obj = context.getString(resId);
+				UIHandler.sendMessage(msg, this);
+				continue;
+			}
+
+			boolean isLine = "Line".equals(name);
+			if (isLine && !plat.isClientValid()) {
+				Message msg = new Message();
+				msg.what = MSG_TOAST;
+				int resId = getStringRes(context, "line_client_inavailable");
+				msg.obj = context.getString(resId);
+				UIHandler.sendMessage(msg, this);
+				continue;
+			}
+
+			boolean isWhatsApp = "WhatsApp".equals(name);
+			if (isWhatsApp && !plat.isClientValid()) {
+				Message msg = new Message();
+				msg.what = MSG_TOAST;
+				int resId = getStringRes(context, "whatsapp_client_inavailable");
+				msg.obj = context.getString(resId);
+				UIHandler.sendMessage(msg, this);
+				continue;
+			}
+
+			boolean isPinterest = "Pinterest".equals(name);
+			if (isPinterest && !plat.isClientValid()) {
+				Message msg = new Message();
+				msg.what = MSG_TOAST;
+				int resId = getStringRes(context, "pinterest_client_inavailable");
+				msg.obj = context.getString(resId);
+				UIHandler.sendMessage(msg, this);
+				continue;
+			}
+
+			if ("Instagram".equals(name) && !plat.isClientValid()) {
+				Message msg = new Message();
+				msg.what = MSG_TOAST;
+				int resId = getStringRes(context, "instagram_client_inavailable");
+				msg.obj = context.getString(resId);
+				UIHandler.sendMessage(msg, this);
+				continue;
+			}
+
+			boolean isLaiwang = "Laiwang".equals(name);
+			boolean isLaiwangMoments = "LaiwangMoments".equals(name);
+			if(isLaiwang || isLaiwangMoments){
+				if (!plat.isClientValid()) {
+					Message msg = new Message();
+					msg.what = MSG_TOAST;
+					int resId = getStringRes(context, "laiwang_client_inavailable");
+					msg.obj = context.getString(resId);
+					UIHandler.sendMessage(msg, this);
+					continue;
+				}
+			}
+
+			boolean isYixin = "YixinMoments".equals(name) || "Yixin".equals(name);
+			if (isYixin && !plat.isClientValid()) {
+				Message msg = new Message();
+				msg.what = MSG_TOAST;
+				int resId = getStringRes(context, "yixin_client_inavailable");
+				msg.obj = context.getString(resId);
+				UIHandler.sendMessage(msg, this);
+				continue;
+			}
 
 			HashMap<String, Object> data = ent.getValue();
 			int shareType = Platform.SHARE_TEXT;
@@ -352,6 +444,7 @@ public class OnekeyShare implements PlatformActionListener, Callback {
 					}
 				}
 			}
+			data.put("shareType", Platform.SHARE_WEBPAGE);
 
 			if (!started) {
 				started = true;
