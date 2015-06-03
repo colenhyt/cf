@@ -68,7 +68,15 @@ public class ShareCore {
 		if (customizeCallback != null) {
 			customizeCallback.onShare(plat, sp);
 		}
-		sp.setText(sp.getText()+":"+sp.getUrl());
+		String name = plat.getName();
+		boolean isSinaWeibo = "SinaWeibo".equals(name);
+		boolean isWechatMoments = "WechatMoments".equals(name);
+		if (isSinaWeibo){
+			sp.setText(sp.getText()+":"+sp.getUrl());
+		}else if (isWechatMoments){
+			sp.setTitle(sp.getText());
+		}
+		
 		//plat.setPlatformActionListener(paListener); // 设置分享事件回调
 		plat.share(sp);
 	 
