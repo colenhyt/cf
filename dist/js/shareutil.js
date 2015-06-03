@@ -89,7 +89,7 @@ function initShareSDK()
                 "site" : "pingan.com",
                 "siteUrl" : "http://pingan.com",
                 "url" : Share_Url,  
-                "type" : $sharesdk.contentType.WebPage
+                "type" : $sharesdk.contentType.Apps
             };
            var isSSO = false;
 
@@ -131,7 +131,6 @@ function initShareSDK()
         function shareCallInfo(platform, state, shareInfo, error){
 				var aa = JSON.stringify(shareInfo);
 				var bb = JSON.stringify(error);
-				alert('分享回调'+state);
 				if (state==1){
 				// g_msg.tip('分享成功');
 				 g_share.shareComplete();
