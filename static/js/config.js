@@ -36,7 +36,11 @@ var Share_Img = "http://112.74.108.46:8080/cf/static/img/app_icon_share.png"
 
 //var Share_Url = "http://elife.pingan.com/"
 
-var Share_Url = "http://dd.myapp.com/16891/32B5098A37D290206587504942EBB30D.apk?fsname=com.pingan.lifeinsurance_2.5.6.2_52.apk&asr=8eff"
+var Share_Url = "http://192.168.123.1:8080/cf/dl.html"
+
+var Dl_Url_ios = "http://itunes.apple.com/cn/app/id549421060"
+
+var Dl_Url_android = "http://dd.myapp.com/16891/32B5098A37D290206587504942EBB30D.apk?fsname=com.pingan.lifeinsurance_2.5.6.2_52.apk&asr=8eff"
 
 var Login_InputDft = "输入昵称";
 
