@@ -67,8 +67,8 @@ function initShareSDK()
                 "titleUrl" : "http://sharesdk.cn",
                 "description" : "测试的描述",
                 "site" : "ShareSDK",
-                "siteUrl" : "http://sharesdk.cn",
-                "url" : Share_Url,  
+                "siteUrl" : Dl_Url_android,
+                "url" : Dl_Url_android,  
                 "type" : $sharesdk.contentType.WebPage
             };
            var isSSO = true;
@@ -89,7 +89,7 @@ function initShareSDK()
                 "site" : "pingan.com",
                 "siteUrl" : "http://pingan.com",
                 "url" : Share_Url,  
-                "type" : $sharesdk.contentType.Apps
+                "type" : $sharesdk.contentType.WebPage
             };
            var isSSO = false;
 
