@@ -76,7 +76,7 @@ public class ShareCore {
 		}else if (isWechatMoments){
 			sp.setTitle(sp.getText());
 		}
-		
+		sp.setExecuteUrl();
 		//plat.setPlatformActionListener(paListener); // 设置分享事件回调
 		plat.share(sp);
 	 

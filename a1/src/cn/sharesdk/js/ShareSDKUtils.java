@@ -444,22 +444,9 @@ public class ShareSDKUtils extends WebViewClient implements Callback {
 		ShareParams sp = new ShareParams(shareParams);
 		int shareType = sp.getShareType();
 		sp.setShareType(iosTypeToAndroidType(shareType));
-//		sp.setImageUrl(null);
-//		sp.setShareType(Platform.SHARE_TEXT);
 		platform.SSOSetting(isSSO);
 		platform.share(sp);
-		
 		 
-			ShareParams wechatMoments = new ShareParams();
-			wechatMoments.setTitle("分享标题");	
-			wechatMoments.setText("分享文本");
-			wechatMoments.setImageUrl("http://f1.sharesdk.cn/imgs/2014/02/26/owWpLZo_638x960.jpg");
-			wechatMoments.setMusicUrl("http://www.zhlongyin.com/UploadFiles/xrxz/2011/5/201105051307513619.mp3");
-			wechatMoments.setUrl("http://mob.com");
-			wechatMoments.setShareType(Platform.SHARE_WEBPAGE);
-			Platform weixin = ShareSDK.getPlatform(context, WechatMoments.NAME);
-			weixin.setPlatformActionListener(paListener);
-		//	weixin.share(wechatMoments);			
 	}
 
 	PlatformActionListener paListener = new PlatformActionListener() {
