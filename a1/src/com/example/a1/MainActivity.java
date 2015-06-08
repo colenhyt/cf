@@ -74,7 +74,9 @@ private PackageManager mPackageManager;
 		setContentView(wvBody);
 			
 		//wvBody.loadUrl("http://192.168.43.168:8080/cf/index.html");	//vtion
-		wvBody.loadUrl(configs.get(0));//xiaomi wifi
+		String url = configs.get(0);
+		url += "/index.html";
+		wvBody.loadUrl(url);//xiaomi wifi
 		//wvBody.loadUrl("http://202.69.27.223:8081/cf/index.html");	//pingan-test-wifi
 
 		} catch (IOException e) {
