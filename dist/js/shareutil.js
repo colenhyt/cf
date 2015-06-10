@@ -1,12 +1,23 @@
 
 function initShareSDK()
 {
-    $sharesdk.open("iosv1101", true);
+    $sharesdk.open("76300569a724", true);
+    
     var sinaConf = {};
-    sinaConf["app_key"] = "76300569a724";
+    sinaConf["app_key"] = "568898243";
     sinaConf["app_secret"] = "38a4f8204cc784f81f9f0daaf31e02e3";
     sinaConf["redirect_uri"] = "http://www.sharesdk.cn";
     $sharesdk.setPlatformConfig($sharesdk.platformID.SinaWeibo, sinaConf);
+    
+    
+    var wechatConf = {};
+    wechatConf["app_key"] = "wxe00b327e7a0d2a4a";
+    wechatConf["app_secret"] = "292ca06883a56602a8b9009acae96f7d";
+    wechatConf["redirect_uri"] = "http://www.sharesdk.cn";
+    
+    $sharesdk.setPlatformConfig($sharesdk.platformID.WeChatSession, wechatConf);    
+    
+    $sharesdk.setPlatformConfig($sharesdk.platformID.WeChatTimeline, wechatConf);    
 
 }
 
@@ -81,7 +92,7 @@ function initShareSDK()
         function showShareMenuClickHandler()
         {
             var params = {
-                "text" : Share_Text,
+                "text" : Share_Title,
                 "imageUrl" : Share_Img,
                 "title" : Share_Title,
                 "titleUrl" : "http://pingan.com",
@@ -95,8 +106,9 @@ function initShareSDK()
 
 			playAudioHandler('open');
 
-            $sharesdk.showShareMenu(null, params, 100, 100, $sharesdk.shareMenuArrowDirection.Any,isSSO,  function (platform, state, shareInfo, error) {
-				shareCallInfo(platform, state, shareInfo, error);
+            $sharesdk.showShareMenu(null, params, 100, 100, $sharesdk.shareMenuArrowDirection.Any,isSSO,   function (platform, state, shareInfo, error) {
+
+                alert("state = " + state + "\nshareInfo = " + shareInfo + "\nerror = " + error);
 
             });
         }
