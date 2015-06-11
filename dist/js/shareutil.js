@@ -108,7 +108,7 @@ function initShareSDK()
 
             $sharesdk.showShareMenu(null, params, 100, 100, $sharesdk.shareMenuArrowDirection.Any,isSSO,   function (platform, state, shareInfo, error) {
 
-                alert("state = " + state + "\nshareInfo = " + shareInfo + "\nerror = " + error);
+                shareCallInfo(platform, state, shareInfo, error);
 
             });
         }
