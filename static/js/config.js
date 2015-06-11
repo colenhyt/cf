@@ -36,7 +36,7 @@ var Share_PageText = "又开始了新的一天！是否分享您今日的心情�
 
 var Share_PageText2 = "成功分享将获得<span style='color:red'>"+Share_Prize+"元</span>游戏币奖励"
 
-var Share_Title = "我正在使用平安人寿APP玩<<财富人生>>游戏，快跟我一起来吧，更多惊喜和活动等着您"
+var Share_Title = "我正在使用平安人寿APP玩<<财富人生>>游戏，快跟我一起来吧，更多惊喜和活动等着您:"+Share_Url
 
 var Share_Text = "财富人生"
 
@@ -210,16 +210,7 @@ function initScreen(){
 	var versions = browser.versions
  	 var width = window.screen.width;
 	if (versions.iPhone||versions.iPad){
-//	metas = window.parent.document.getElementsByTagName("meta");
-//	for(i=0;i<metas.length;i++)
-//     {
-//      if (metas[i].getAttribute("name")=="viewport"){
-//       //alert(metas[i].getAttribute("name"))
-//       metas[i].setAttribute("content","width=320");
-//       break;  
-//      }
-//	}
-	 SCREENKEY =640;
+		SCREENKEY =640;	 
 	}else {
 	  if (width>=640)
 		SCREENKEY = 640;
