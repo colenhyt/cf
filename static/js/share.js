@@ -10,6 +10,11 @@ Share = function(){
 Share.prototype = new Datamgr();
 
 Share.prototype.init = function(){ 
+	var tdata = store.get(this.name);
+	if (tdata==null)
+	{
+		store.set(this.name,{});
+	}
     this.buildHTML();
 }
 
@@ -48,7 +53,14 @@ Share.prototype.doShare = function() {
 }
 
 Share.prototype.shareComplete = function() {
- playAudioHandler('open');
+	var key = g_playerlog.findlogkey();
+	var tdata = store.get(this.name);
+	if (tdata[key]){
+	 g_msg.tip('分享成功');
+	 return;
+	}
+	
+ 	playAudioHandler('open');
 
 		var	desc = "<div style='cfevent_content'>"
 		desc += "<br><div style='margin: auto;text-align:center;'>分享成功</div>"
@@ -72,6 +84,12 @@ Share.prototype.sharePrize = function() {
 	var pp = [{t:0,v:Share_Prize}];
 	g_player.prize(pp);
 	playAudioHandler('money');
+	
+	var key = g_playerlog.findlogkey();
+	var tdata = store.get(this.name);
+	tdata[key] = true;
+	store.set(this.name,tdata);
+		
 	g_share.close();
 }
 
