@@ -50,8 +50,6 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/xmlsec-1.3.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/xwork-core-2.3.14.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Tomcat 7.0/lib/jsp-api.jar"/>
-	<classpathentry kind="lib" path="C:/Tomcat 7.0/lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/json-lib-2.3-jdk15.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-beanutils-1.7.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-collections-3.1.jar"/>
@@ -70,5 +68,7 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/xom-1.1.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jdom-2.0.5-contrib.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jdom-2.0.5.jar"/>
+	<classpathentry kind="lib" path="C:/tomcat-7.0.57/lib/jsp-api.jar"/>
+	<classpathentry kind="lib" path="C:/tomcat-7.0.57/lib/servlet-api.jar"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>

@@ -153,6 +153,24 @@ var PageSizes = {
 	,QuestMoney:["120px","390px"]
 	},
 	
+	"600":{SceneWidth:640,SceneHeight:1008,PieWidth:320,PieFontSize:28,PieFontSize2:21,
+	PieHeight:350,PageWidth:"532px",PageHeight:"577px",PageTop:75,
+	DetailPageTop:95,MsgTop:114,
+	StockView:[495,395,450,265,20]
+	,EventMoney:["70px","380px"]
+	,SigninMoney:["80px","25px","195px"]
+	,QuestMoney:["120px","390px"]
+	},
+	
+	"540":{SceneWidth:640,SceneHeight:1008,PieWidth:290,PieFontSize:26,PieFontSize2:20,
+	PieHeight:300,PageWidth:"482px",PageHeight:"527px",PageTop:70,
+	DetailPageTop:90,MsgTop:108,
+	StockView:[450,370,430,250,19]
+	,EventMoney:["70px","350px"]
+	,SigninMoney:["70px","30px","180px"]
+	,QuestMoney:["120px","390px"]
+	},
+	
 	"480":{SceneWidth:640,SceneHeight:1008,PieWidth:260,PieFontSize:24,PieFontSize2:18,
 	PieHeight:280,PageWidth:"432px",PageHeight:"477px",PageTop:60,
 	DetailPageTop:80,MsgTop:100,
@@ -214,7 +232,9 @@ function initScreen(){
 	}else {
 	  if (width>=640)
 		SCREENKEY = 640;
-	  else if (width<640&&width>=480)
+	  else if (width<640&&width>=540)
+		SCREENKEY = 540;
+	  else if (width<540&&width>=480)
 		SCREENKEY = 480;
 	  else if (width<480&&width>=360)
 		SCREENKEY = 360;

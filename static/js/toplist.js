@@ -288,6 +288,5 @@ Toplist.prototype.syncData2 = function(){
 }
 
 var g_toplist = new Toplist();
-store.remove(g_toplist.zandata);
 g_toplist.init();
 
