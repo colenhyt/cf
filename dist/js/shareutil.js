@@ -147,7 +147,7 @@ function initShareSDK()
 				// g_msg.tip('分享成功');
 				 g_share.shareComplete();
 				}else if (state==2){
-        		 alert("分享失败: " + bb);
+        		 g_msg.tip("分享失败: 你的手机版本不支持分享");
         		}else if (state==3){
          		 g_msg.tip('分享已取消');
         		}

@@ -250,15 +250,16 @@ Login.prototype.msgtip = function(loginMsg){
 }
 
 Login.prototype.loginCallback = function(obj){
-	//进入场景:
-	g_game.enter();
-	
-	$('#inputnickdiv').remove();
-	$('#errmsg').remove();
-	
-
 	var objdata = cfeval(obj);
     var player = objdata;
+	
+	//进入场景:先remove login页面元素
+	$('#inputnickdiv').remove();
+	$('#errmsg').remove();
+    //head img:
+    var head_img = head_imgs[player.sex];
+    head_img.name = player.playername;
+	g_game.enter(head_img);
 	
 	var logindata = store.get(this.name);
 	var lastPlayer = logindata[logindata.length-1];
@@ -287,11 +288,6 @@ Login.prototype.loginCallback = function(obj){
 				g_msg.tip("您的"+msg.name+"已到期,获得收益:"+parseInt(msg.profit));
 		}
 	}
-	
-    //head img:
-    var head_img = head_imgs[player.sex];
-    head_img.name = player.playername;
-    g_game.addImg(head_img);
     
     g_playerlog.addlog();
     

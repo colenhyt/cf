@@ -121,8 +121,9 @@ Map.prototype.init = function(width,height){
 	};
 }
 
-Map.prototype.enter = function(){
+Map.prototype.enter = function(sexImg){
     this.m_imgs = game_imgs;
+    this.m_imgs.push(sexImg);
     var map = this;
 	this.m_imgs.sort(this.sortImg);
 	var mapImgs = game_imgs;
@@ -135,7 +136,6 @@ Map.prototype.enter = function(){
             map.draw();
         };	       
         mapImgs[i].img = img;
-      //  this.addImg(mapImgs[i]);
         if (mapImgs[i].hasDiv==true){
             var div = document.createElement("DIV");
             div.id = "tag"+mapImgs[i].name;
@@ -312,10 +312,10 @@ Game.prototype.init = function(canvas){
 	
 }
 
-Game.prototype.enter = function()
+Game.prototype.enter = function(sexImg)
 {
- this.imgCount = game_imgs.length;
- this.m_scene.m_map.enter();
+ this.imgCount = game_imgs.length+1;
+ this.m_scene.m_map.enter(sexImg);
 }
 
 Game.prototype.onEnter = function(){
