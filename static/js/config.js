@@ -232,7 +232,9 @@ function initScreen(){
 	}else {
 	  if (width>=640)
 		SCREENKEY = 640;
-	  else if (width<640&&width>=540)
+	  else if (width<640&&width>=600)
+		SCREENKEY = 600;
+	  else if (width<600&&width>=540)
 		SCREENKEY = 540;
 	  else if (width<540&&width>=480)
 		SCREENKEY = 480;
