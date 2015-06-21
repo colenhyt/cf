@@ -28,9 +28,16 @@ Login.prototype.draw = function()
 {
 	var localdata = store.get(this.name);
 	var tdata = localdata[localdata.length-1];
-	for (var i=0;i<login_imgs.length;i++){
-		var img = login_imgs[i];
-   	 	g_game.addImg(img);
+	var imgs = login_imgs;
+   	if (tdata!=null){
+ 		this.sex = tdata.sex;
+   		var choseImg = this.choseBorderImg(tdata.sex);
+   		imgs.push(choseImg);
+   		this.loginPlayerid = tdata.playerid;
+   	}
+	for (var i=0;i<imgs.length;i++){
+		var img = imgs[i];	    		
+   	 	g_game.addImg(img,imgs.length,"g_login.drawCallback");
 	   	 if (img.name=="inputnick"){
 		    var div = document.createElement("div");
 		    div.id = "inputnickdiv";
@@ -40,18 +47,20 @@ Login.prototype.draw = function()
 		    var input = "<input type='text' id='inputnick' value='"+nickName+"' class='cflogin_input' onfocus='g_login.clearInput()'>";
 		    div.innerHTML = title+input;
 		    div.className = "cflogin_input_div";
-		    document.body.appendChild(div);   
+		    this.div = div;
 		    	 
 	   	 }
-   	}
-		    var div = document.createElement("div");
-		    div.id = "errmsg";
-		    div.className = "cflogin_tip";
-		    document.body.appendChild(div);     	
-   	if (tdata!=null){
-   		this.drawChoseBorder(tdata.sex,100,100);
-   		this.loginPlayerid = tdata.playerid;
-   	}
+   	}   	
+}
+
+Login.prototype.drawCallback = function()
+{
+    document.body.appendChild(this.div);   
+    var div = document.createElement("div");
+    div.id = "errmsg";
+    div.className = "cflogin_tip";
+    document.body.appendChild(div);   
+    this.div = null;  	
 }
 
 Login.prototype.clearInput = function()
@@ -61,10 +70,8 @@ Login.prototype.clearInput = function()
 		tag.value = "";
 }
 
-Login.prototype.drawChoseBorder = function(sex)
+Login.prototype.choseBorderImg = function(sex)
 {
-	this.sex = sex;
-		
 	var img;
 	for (var i=0;i<login_imgs.length;i++){
 		if (sex==0){
@@ -78,6 +85,14 @@ Login.prototype.drawChoseBorder = function(sex)
 		}
 	}
 	var img22 = {name:"choseBorder",src:"static/img/bt_head_chose.png",x:img.x-24,y:img.y-24};
+	return img22;
+}
+
+Login.prototype.drawChoseBorder = function(sex)
+{
+	this.sex = sex;
+	
+	var img22 = this.choseBorderImg(sex);
 	var img = g_game.m_scene.m_map.findImg(img22.name);
 	if (img){
 		img.x = img22.x;
@@ -236,7 +251,7 @@ Login.prototype.msgtip = function(loginMsg){
 
 Login.prototype.loginCallback = function(obj){
 	//进入场景:
-	g_game.m_scene.m_map.enter();
+	g_game.enter();
 	
 	$('#inputnickdiv').remove();
 	$('#errmsg').remove();

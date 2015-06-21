@@ -190,6 +190,12 @@ Map.prototype.sortImg = function(img1,img2){
 }
 
 Map.prototype.draw = function(){
+	g_game.currImgCount++;
+	if (g_game.currImgCount<g_game.imgCount){
+	 return;
+	}
+	g_game.currImgCount = 0;
+	
 	var pos = this.m_pos;
 	var scale = this.m_imgScale;
 	var canvas = this.m_canvas;
@@ -206,10 +212,12 @@ Map.prototype.draw = function(){
   	     newy = pos.y + this.m_imgs[i].y;
         }
       context.drawImage(img,0,0,img.width,img.height,newx,newy,img.width*scale,img.height*scale);
-//				var img_data = rotateImg(context,img.x,img.y,img.width,img.height);
-//				context.putImageData(img_data, img.x, img.y);        
    }
-
+	if (g_game.drawCallback!=null){
+	  var aa = g_game.drawCallback;
+	  eval ("(" + aa + "())");
+	  g_game.drawCallback = null;
+	}
 }
 
 Map.prototype.update = function(){
@@ -260,14 +268,9 @@ Scene.prototype.init = function(canvas){
 	this.m_map.init();
 }
 
-Scene.prototype.draw = function(){
-}
-
-Scene.prototype.update = function(){
-}
-
 Game = function(){
 	this.name = "game";
+	this.currImgCount = 0;
 	this.count = 1;
     this.syncDuration = 6;
 	this.mm = {"aa":'ss',"bb":'ssb'};
@@ -309,6 +312,12 @@ Game.prototype.init = function(canvas){
 	
 }
 
+Game.prototype.enter = function()
+{
+ this.imgCount = game_imgs.length;
+ this.m_scene.m_map.enter();
+}
+
 Game.prototype.onEnter = function(){
 	g_insure.onEnter();
 	g_stock.onEnter();
@@ -342,7 +351,9 @@ Game.prototype.register = function(obj){
     this.sys[obj.name] = obj;
 }
 
-Game.prototype.addImg = function(img){
+Game.prototype.addImg = function(img,imgCount,drawCallback){
+	this.imgCount = imgCount;
+	this.drawCallback = drawCallback;
     this.m_scene.m_map.addImg(img);
 }
 
