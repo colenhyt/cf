@@ -228,7 +228,19 @@ function initScreen(){
 	var versions = browser.versions
  	 var width = window.screen.width;
 	if (versions.iPhone||versions.iPad){
-		SCREENKEY =640;	 
+		if (width<=320){
+			metas = window.parent.document.getElementsByTagName("meta");
+			for(i=0;i<metas.length;i++)
+		     {
+		      if (metas[i].getAttribute("name")=="viewport"){
+		       //alert(metas[i].getAttribute("name"))
+		       metas[i].setAttribute("content","width=320");
+		       break;  
+		      }
+			}
+			SCREENKEY =320;	 
+		}else
+			SCREENKEY =640;	 
 	}else {
 	  if (width>=640)
 		SCREENKEY = 640;
