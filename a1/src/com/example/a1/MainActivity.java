@@ -41,6 +41,9 @@ private PackageManager mPackageManager;
 //		[[UIApplication sharedApplication] openURL:[NSURL urlWithString:str]];
 		// itms-apps://itunes.apple.com/app/id%@?mt=8 
 		
+		String cacheDirPath = getFilesDir().getAbsolutePath()+"/webviewCache"; 
+		wvBody.getSettings().setDatabasePath(cacheDirPath); 
+		wvBody.getSettings().setAppCacheEnabled(true); 
 		wvBody.getSettings().setDomStorageEnabled(true);   
 		wvBody.getSettings().setDatabaseEnabled(true);
 		wvBody.getSettings().setAllowFileAccess(true);  
