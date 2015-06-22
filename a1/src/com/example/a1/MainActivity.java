@@ -60,8 +60,8 @@ private PackageManager mPackageManager;
 	
 		List<String> configs = getConfigStrings();
 		try {
-			String a1 = "open";
-			String a2 = "close";
+			String a1 = "open1";
+			String a2 = "close1";
 			String a3 = "money";
 			AssetFileDescriptor afdOpen = getResources().getAssets().openFd(a1+".wav");
 			AssetFileDescriptor afdClose = getResources().getAssets().openFd(a2+".wav");
