@@ -19,7 +19,7 @@ Playerinfo.prototype.show = function(){
 }
 
 Playerinfo.prototype.showInfo = function(jsondata){
-	playAudioHandler('open');	
+	playAudioHandler('open1');	
 	var texp = store.get("exp");
 	var lv = g_title.getLevel(jsondata.data.exp);
 	var expPer = jsondata.data.exp/g_title.getData(lv+1).exp;

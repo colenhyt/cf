@@ -69,7 +69,7 @@ Insure.prototype.buildPage = function(page)
 {
 	if (page<0)
 		return
-	playAudioHandler('open');	
+	playAudioHandler('open1');	
 		
 	this.reloadInsures();
 	
@@ -141,7 +141,7 @@ Insure.prototype.buildPage = function(page)
 
 Insure.prototype.clickDetail = function(id,type){  
  	this.onPanelClick(id);
-	playAudioHandler('open');	
+	playAudioHandler('open1');	
    if (type==0)
    	g_insure.show_insuredetail(id)
    else
@@ -163,7 +163,7 @@ Insure.prototype.showDetail = function(title,desc,okCallback,itemid,qty,confmTex
 }
 
 Insure.prototype.closeDetail = function(id){ 
-	playAudioHandler('close');	
+	playAudioHandler('close1');	
 	$('#'+this.tagdetailname).modal('hide');  
 }
 

@@ -104,7 +104,7 @@ function initShareSDK()
             };
            var isSSO = false;
 
-			playAudioHandler('open');
+			playAudioHandler('open1');
 
             $sharesdk.showShareMenu(null, params, 100, 100, $sharesdk.shareMenuArrowDirection.Any,isSSO,   function (platform, state, shareInfo, error) {
 

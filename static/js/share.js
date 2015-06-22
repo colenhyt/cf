@@ -60,7 +60,7 @@ Share.prototype.shareComplete = function() {
 	 return;
 	}
 	
- 	playAudioHandler('open');
+ 	playAudioHandler('open1');
 
 		var	desc = "<div style='cfevent_content'>"
 		desc += "<br><div style='margin: auto;text-align:center;'>分享成功</div>"
@@ -94,7 +94,7 @@ Share.prototype.sharePrize = function() {
 }
 
 Share.prototype.close = function(id){ 
-	playAudioHandler('close');	
+	playAudioHandler('close1');	
 	$('#'+this.tagname).modal('hide');  
 }
 	

@@ -26,7 +26,7 @@ Event.prototype.triggerEvent = function(){
 	var index = Math.floor(Math.random()*tdata.length);
 	var item = tdata[index]; 
 
-	playAudioHandler('open');	
+	playAudioHandler('open1');	
 	if (item.type==1){
 		this.badEvent(item);
 	}else 
