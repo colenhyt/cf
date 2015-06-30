@@ -40,7 +40,12 @@ Msg.prototype.buildHTML = function()
         content += "<div class='cfpagedetail small' id='"+this.pagename+"'>"
         content += "</div></div>"
         pagedetail.addContent(content);
-        document.write(pagedetail.toString());  
+        document.write(pagedetail.toString()); 
+        
+ 		var tag = document.getElementById(this.tagname+"_dialog");
+ 		if (tag){
+		 tag.style.setProperty("height",getSizes().PageHeight);
+ 		}         
 }
 
 function MsgTipCallback(){

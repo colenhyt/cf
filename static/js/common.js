@@ -33,7 +33,7 @@ Datamgr.prototype = {
  		var tag = document.getElementById(this.tagname+"_dialog");
  		if (tag){
 		 tag.style.setProperty("width",getSizes().PageWidth);
-		 tag.style.setProperty("height","800px");
+		 tag.style.setProperty("height",getSizes().PageHeight);
  		}
         
         var pagedetail = new PageUtil(this.tagdetailname);
@@ -49,7 +49,12 @@ Datamgr.prototype = {
         content += "<div class='"+pclass+"' id='"+this.pagedetailname+"'>"
         content += "</div></div>"
         pagedetail.addContent(content);
-        document.write(pagedetail.toString());    
+        document.write(pagedetail.toString());   
+        
+ 		var tagdetail = document.getElementById(this.tagdetailname+"_dialog");
+ 		if (tagdetail){
+		 tagdetail.style.setProperty("height",getSizes().PageHeight);
+ 		}         
 		
 	},
 

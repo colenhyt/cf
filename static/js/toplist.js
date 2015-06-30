@@ -209,7 +209,6 @@ Toplist.prototype.zan = function(page,playerId)
 	  return;	
 	}
 	
-	var ZAN_COUNT = 3;
 	var now = new Date();
 	var zandata = store.get(this.zandata);
 	var key = now.getFullYear()+"-"+now.getMonth()+"-"+now.getDate();
