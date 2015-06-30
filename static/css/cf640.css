@@ -818,7 +818,7 @@ background:url('../../static/img/top_title_bg.png') no-repeat;
 .cfsignin_prize {
 position:absolute;
 display:block; 
-left:250px;
+left:280px;
 top:70px;
 z-index:3000;
 }
@@ -851,8 +851,8 @@ background:url('../../static/img/zan.png') no-repeat;
 
 .cf_top_share{
   border: none;
-  width: 30px;
-  height: 32px;
+  width: 35px;
+  height: 38px;
 background:url('../../static/img/bt_share.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;    
@@ -917,7 +917,7 @@ color:yellow;
 
 .cf_font3 {
 margin-top:10px;
-color:blue;
+color:pink;
 }
 
 .cf_font4 {

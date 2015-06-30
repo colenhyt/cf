@@ -116,7 +116,8 @@ Player.prototype.getTotal = function(data) {
 
 Player.prototype.flushPageview = function() {
     var tag = document.getElementById("tagsaving");
-    tag.innerHTML = "存款: " +parseInt(this.saving[1].amount);	
+    var data = this.getTotal(g_player);
+    tag.innerHTML = "总资产: " +data.total;	
     var strTop = "";
     if (this.data.weektop>0){
     	strTop = this.data.weektop;

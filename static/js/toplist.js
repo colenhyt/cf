@@ -161,7 +161,7 @@ Toplist.prototype.showToplist = function(type,page)
 			   
 			 content += "               <td class='cftoplist_c3' style='color:yellow'><div onclick='g_toplist.zan("+page+","+item.playerid+")'"
 			  if (item.playerid==me.playerid&&!Is_InBrowser)
-			   content += "<input type='button' class='cf_top_share'/><span class='cftoplist_c6'>(<span id='zan_"+item.playerid+"'>"+item.zan+"</span>)</span>"
+			   content += "<input type='button' class='cf_top_share'/><span class='cftoplist_c6'>&nbsp;<span id='zan_"+item.playerid+"'>"+item.zan+"</span></span>"
 			 else
 			   content += "<input type='button' class='cf_top_zan'/><span class='cftoplist_c6'>*<span id='zan_"+item.playerid+"'>"+item.zan+"</span></span>"
 			 content +="</div></td>"

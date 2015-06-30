@@ -112,9 +112,9 @@ Event.prototype.eventOkCallback = function(itemid){
 	
   playAudioHandler('money');	
   var div=$("#cfevent_prize");
-  div.animate({fontSize:'2.5em'},150);
-  div.animate({left:'-='+getSizes().EventMoney[0],top:'-='+getSizes().EventMoney[1]},700);
-  div.animate({fontSize:'1em'},150,function(){
+  div.animate({fontSize:'2.5em'},800);
+  div.animate({left:'-='+getSizes().EventMoney[0],top:'-='+getSizes().EventMoney[1]},2000);
+  div.animate({fontSize:'1em'},500,function(){
     div.remove();
  	if (item){
 	   var pp = cfeval(item.prize);
