@@ -83,14 +83,14 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
         
 		var labels = ["9:00"];
 		if (!g_stock.isStockOpen()){
-			labels = ["9:00","11:00","13:00","15:00","17:00","19:00","21:00"];
+			labels = ["9:00","13:00","17:00","21:00"];
 		}else{
         var startDate = new Date();
         startDate.setHours(9);
         startDate.setMinutes(0);
         startDate.setSeconds(0);
         
-        var split = 8;
+        var split = 4;
         var now = new Date();
         
         var diff = Date.parse(now)-Date.parse(startDate);
@@ -112,15 +112,18 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 		var chart = new iChart.LineBasic2D({
 			render : divName,
 			data: data,
+			offsety: -10,
 			align:'center',
 			title : {
 				text:titleText,
+				offsety: -5,
 				font : '微软雅黑',
 				fontsize:getSizes().StockView[4],
 				color:color
 			},
 			subtitle : {
 				text:subTitleText,
+				offsety: -5,
 				font : '微软雅黑',
 				fontsize:getSizes().StockView[4]-2,
 				color:color

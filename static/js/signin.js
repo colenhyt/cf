@@ -123,16 +123,16 @@ Signin.prototype.clickFeeling = function(feelingId){
   playAudioHandler('money');	
 
   var div=$("#cfsignin_prize_exp");
-  div.animate({fontSize:'2.5em'},800);
-  div.animate({left:'-='+getSizes().SigninMoney[0],top:'-='+getSizes().SigninMoney[2]},1800);
+  div.animate({fontSize:'2.5em'},500);
+  div.animate({left:'-='+getSizes().SigninMoney[0],top:'-='+getSizes().SigninMoney[2]},1500);
   div.animate({fontSize:'1em'},200,function(){
     var div=$("#cfsignin_prize_exp");
     div.remove();
    });    
     
   var div=$("#cfsignin_prize");
-  div.animate({fontSize:'2.5em'},800);
-  div.animate({left:'-='+getSizes().SigninMoney[1],top:'-='+getSizes().SigninMoney[2]},1800);
+  div.animate({fontSize:'2.5em'},500);
+  div.animate({left:'-='+getSizes().SigninMoney[1],top:'-='+getSizes().SigninMoney[2]},1500);
   div.animate({fontSize:'1em'},200,function(){
    var div=$("#cfsignin_prize");
     div.remove();

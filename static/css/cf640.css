@@ -534,7 +534,7 @@ color:rgb(39,88,104);
 -moz-background-size:100% 100%;  
     background-size:100% 100%;    
   width:580px;
-  height:940px;
+  height:870px;
 }
 
 .cfpagedetail.small
@@ -662,7 +662,9 @@ text-align:center;
 }
 
 .cfstock_content {
-height:200px;
+margin-top:-10px;
+height:190px;
+margin-left:30px;
 }
 
 .cpgapedetail_h2 {
@@ -671,6 +673,10 @@ margin-top:5px;
 margin-bottom:-5px;
 font-size:35px;
 }
+.cpgapedetail_h2.stockdetail {
+margin-bottom:-25px;
+}
+
 .cpgapedetail_h2.left{
 float:left
 }
@@ -714,6 +720,22 @@ color:#ffffff;
 .cf_line {
 width:530px;
 height:2px;
+}
+.cf_line.stockdetail{
+background:url('../../static/img/pop_line.png') no-repeat;
+-moz-background-size:100% 100%;  
+    background-size:100% 100%;  
+ margin:8px;
+}
+
+.cf_stockdetail_btn{
+position:relative;
+text-align:center;width:500px;
+}
+
+.cf_stock_desc{
+margin-top:-15px;
+margin-bottom:-15px;
 }
 
 .cf_title_bg {

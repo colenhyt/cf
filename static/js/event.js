@@ -28,14 +28,14 @@ Event.prototype.triggerEvent = function(){
 
 	playAudioHandler('open1');	
 	if (item.type==1){
-		this.badEvent(item);
+		this.badEvent(item,index);
 	}else 
 	{
-		this.goodEvent(item);
+		this.goodEvent(item,index);
 	}
 }
 
-Event.prototype.goodEvent = function(item){
+Event.prototype.goodEvent = function(item,itemIndex){
 	var found;
 	var insures = g_player.insure;
 	if (insures[item.itemid]!=null){		
@@ -59,11 +59,11 @@ Event.prototype.goodEvent = function(item){
 			content += "<span id='cfevent_prize' class='cfevent_prize'>"+ money+"</span>"
 			content += "</div>"
 	}
-	g_msg.openModal(item.name,content,"g_event.eventOkCallback",item.itemid);
+	g_msg.openModal(item.name,content,"g_event.eventOkCallback",itemIndex);
 	
 }
 
-Event.prototype.badEvent = function(item){
+Event.prototype.badEvent = function(item,itemIndex){
 	var insures = g_player.insure;
 	var pp = cfeval(item.prize);
 	var money = 0-itemValue(pp,ITEM_TYPE.CASH);
@@ -95,26 +95,20 @@ Event.prototype.badEvent = function(item){
 		content += "<span id='cfevent_prize' class='cfevent_prize'>"+ money+"</span>"
 		content += "</div>"
 		content += "(您可购买<span style='color:red'>"+iname+"</span>来避免该意外)"
-		g_msg.openModal(item.name,content,"g_event.eventOkCallback",item.itemid);
+		g_msg.openModal(item.name,content,"g_event.eventOkCallback",itemIndex);
 	}
 
 }
 
 Event.prototype.eventOkCallback = function(itemid){
 	var tdata = store.get(this.name);
-	var item;
-	for (var i=0;i<tdata.length;i++){
-		if (tdata[i].itemid==itemid){
-			item = tdata[i];
-			break;
-		}
-	}
+	var item = tdata[itemid];
 	
   playAudioHandler('money');	
   var div=$("#cfevent_prize");
-  div.animate({fontSize:'2.5em'},800);
-  div.animate({left:'-='+getSizes().EventMoney[0],top:'-='+getSizes().EventMoney[1]},2000);
-  div.animate({fontSize:'1em'},500,function(){
+  div.animate({fontSize:'2.5em'},500);
+  div.animate({left:'-='+getSizes().EventMoney[0],top:'-='+getSizes().EventMoney[1]},1500);
+  div.animate({fontSize:'1em'},300,function(){
     div.remove();
  	if (item){
 	   var pp = cfeval(item.prize);

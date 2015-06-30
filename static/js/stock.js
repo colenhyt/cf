@@ -249,9 +249,9 @@ Stock.prototype.showDetail = function(id,isflush){
 	var content =      "        <div class='cfpanel_text'><div class='cpgapedetail_h2'>"+item.name
 	content += "<span class='cfpanel_text right'>"+strPro+" </span>"
 	content += "</div>"
-	content += "<img src='static/img/pop_line.png' class='cf_line'>"
+	content += "<div class='cf_line stockdetail'></div>"
 	 content += "<div> "+item.descs+"</div>"
-	content += "<img src='static/img/pop_line.png' class='cf_line'>"
+	content += "<div class='cf_line stockdetail'></div>"
 	 content +=	"</div>"
 	content += "<div id='"+this.graphName +"'></div>"
 	 content += "           <div class='cfstock_content'>  "
@@ -274,7 +274,7 @@ Stock.prototype.showDetail = function(id,isflush){
 	content += "              </tr>"
 	content += "          </table>     "
 	content += "           </div>  "
-	content += "           <div style='align:center'>  "
+	content += "           <div class='cf_stockdetail_btn'>  "
 	content += "          <button class='cf_bt bt_cancel' onclick='g_stock.closeDetail()'>退出</button>      "  
 	content += "          <button class='cf_bt' onclick='g_stock.doBuy()'>确定</button>"
 	content += "             </div>"
@@ -290,7 +290,7 @@ Stock.prototype.showDetail = function(id,isflush){
     	g_stockdetail.drawQuote(id,ps,quotes,this.graphName);
         
     if (isflush==null)
-		$('#'+this.tagdetailname).modal({position:5,show: true});  
+		$('#'+this.tagdetailname).modal({position:0,show: true});  
 }
 
 Stock.prototype.closeDetail = function(id){ 
