@@ -148,7 +148,7 @@ var PageSizes = {
 	"640":{SceneWidth:640,SceneHeight:1008,PieWidth:350,PieFontSize:30,PieFontSize2:19,
 	PieHeight:400,PageWidth:"580px",PageHeight:"237px",PageTop:80,
 	DetailPageTop:100,MsgTop:120,
-	StockView:[540,310,480,210,22]
+	StockView:[550,310,480,210,22]
 	,EventMoney:["70px","410px"]
 	,SigninMoney:["60px","20px","210px"]
 	,QuestMoney:["120px","390px"]
@@ -262,7 +262,7 @@ function initScreen(){
 //alert(width);
 //alert(SCREENKEY);
 //SCREENKEY = 640
-	//SCREENKEY = 480;
+	SCREENKEY = 360;
 	SIZEPER = SCREENKEY/640;
 	var cssFile = "static/css/cf"+SCREENKEY+".css";
 	loadStyle(cssFile);		

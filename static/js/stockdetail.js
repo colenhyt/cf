@@ -36,7 +36,7 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 		dir = "↓";
 		color = "green"
 	}
-	per = ForDight(per/100,3);
+	per = ForDight(per*100,2);
 	var now = new Date();
 	var tt = now.toLocaleTimeString();
 	var status = "已休市"
@@ -63,14 +63,10 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 			flow.push(ps);
 		}
 		flow.push(currPs);
-		var diff = upps - lowps;
-		var unit = diff/quotes.length;
-		unit *= 3;
-		if (lowps>unit)
-			lowps -= unit;
-		lowps = parseInt(lowps);
-		upps += unit;
-		upps = parseInt(upps);
+		var sl_unit = ForDight((upps - lowps)/4,2);
+		lowps = ForDight(lowps,1);
+		upps += sl_unit;
+		upps = ForDight(upps,1);
 		var data = [
 		         	{
 		         		name : 'PV',
@@ -112,6 +108,7 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 		var chart = new iChart.LineBasic2D({
 			render : divName,
 			data: data,
+			offsetx: 15,
 			offsety: -10,
 			align:'center',
 			title : {
@@ -129,7 +126,6 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 				color:color
 			},
 			animation:true,
-			offsetx: 5,
 			width : getSizes().StockView[0],
 			height : getSizes().StockView[1],
 			border:{
@@ -180,7 +176,7 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 					 position:'left',	
 					 start_scale:lowps,
 					 end_scale:upps,
-					 scale_space:2,
+					 scale_space:sl_unit,
 					 scale_size:2,
 					 scale_enable : false,
 					 label : {color:'#311212',font : '微软雅黑',fontsize:15,fontweight:600},
