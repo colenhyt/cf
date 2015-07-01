@@ -493,7 +493,7 @@ public class DataImportor extends Base{
 
 		name = "eventdata";
 //		importor.importData(name);
-		importor.outputJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);
+		//importor.outputJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);
 		
 		//importor.importData(name);
 		//importor.outputJsData(name,ROW_INDEX_NAME,ROW_INDEX_DATA);

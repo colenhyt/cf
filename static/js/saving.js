@@ -48,6 +48,7 @@ Saving.prototype.inContent = function(id,item){
     var dftProfit = ForDight(dftAmount * (item.rate/100));
 	var content =      "        <div class='cfsaving_div'>"
  content += "        <div><span class='cpgapedetail_h2 left'>"+item.name+"存款</span>"
+  content += "<span class='cpgapedetail_h3'>(1年=现实24小时)</span>"
 	content += "<span class='cfsaving_stext'>存款 </span></div>"
 	content += "<img src='static/img/pop_line.png' class='cf_line'>"
  content += "           <div class='cfmsg_text'>  "
@@ -79,6 +80,7 @@ Saving.prototype.outContent = function(id,item,pitem){
  	   
 	var content =      "        <div class='cfsaving_div'>"
  content += "        <div><span class='cpgapedetail_h2 left'>"+item.name+"取款</span>"
+  content += "<span class='cpgapedetail_h3'>(1年=现实24小时)</span>"
 	content += "<span class='cfsaving_stext out'>取款 </span></div>"
 	content += "<img src='static/img/pop_line.png' class='cf_line'>"
  content += "           <div class='cfmsg_text saving'>  "

@@ -63,6 +63,11 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 			flow.push(ps);
 		}
 		flow.push(currPs);
+		if (currPs<lowps)
+		 lowps = currPs;
+		else if (currPs>upps)
+		 upps = currPs;
+		 
 		var sl_unit = ForDight((upps - lowps)/4,2);
 		lowps = ForDight(lowps,1);
 		upps += sl_unit;
