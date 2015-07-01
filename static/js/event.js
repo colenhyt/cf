@@ -94,7 +94,7 @@ Event.prototype.badEvent = function(item,itemIndex){
 		content += "损失 <img class='cficon_money' src='static/img/money.png'/> "
 		content += "<span id='cfevent_prize' class='cfevent_prize'>"+ money+"</span>"
 		content += "</div>"
-		content += "(购买<span style='color:red'>"+iname+"</span>保险可避免该意外损失)"
+		content += "(购买<span style='color:red'>"+iname+"</span>可避免该意外损失)"
 		g_msg.openModal(item.name,content,"g_event.eventOkCallback",itemIndex);
 	}
 
