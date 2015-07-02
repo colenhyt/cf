@@ -246,11 +246,14 @@ Stock.prototype.showDetail = function(id,isflush){
    
     var amount = g_player.saving[1].amount;
     var canBuyQty = parseInt(amount/(ps*100));
+    var sizePer = 100;
+    if (item.descs.length>18)
+     sizePer = 80;
 	var content =      "        <div class='cfpanel_text'><div class='cpgapedetail_h2'>"+item.name
 	content += "<span class='cfpanel_text right'>"+strPro+" </span>"
 	content += "</div>"
 	content += "<div class='cf_line stockdetail'></div>"
-	 content += "<div> "+item.descs+"</div>"
+	 content += "<div style='font-size:"+sizePer+"%'> "+item.descs+"</div>"
 	content += "<div class='cf_line stockdetail'></div>"
 	 content +=	"</div>"
 	content += "<div id='"+this.graphName +"'></div>"

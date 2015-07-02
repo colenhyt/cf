@@ -51,7 +51,7 @@ public class InsureAction extends SavingAction {
 		Map<Integer,Insure> insures = findUpdatedInsures(insure.getPlayerid());
 		String strInsure = JSON.toJSONString(insures);
 		write(strInsure,"utf-8");
-		if (insures.size()<=0)
+		//if (insures.size()<=0)
 		System.out.println("find insures: "+insures.size());
 		return null;
 	}

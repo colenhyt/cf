@@ -283,7 +283,7 @@ public class SavingAction extends BaseAction {
 		    Calendar c2 = Calendar.getInstance(); 
 		
 			List<Insure> insures = insureService.findByPlayerId(playerId);
-//			System.out.println("find insure for"+playerId+" from db:"+insures.size()+",db:"+conn.toString()+",sess:"+MybatisSessionFactory.getSession().toString());
+			System.out.println("找到保险个数:"+playerId+" from db:"+insures.size()+",session:"+MybatisSessionFactory.getSession().toString());
 			Map<Integer,Insure>	mdata = new HashMap<Integer,Insure>();
 			
 			try {		

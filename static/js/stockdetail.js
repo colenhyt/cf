@@ -62,6 +62,7 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 				lowps = ps;
 			flow.push(ps);
 		}
+		//alert(flow.length)
 		flow.push(currPs);
 		if (currPs<lowps)
 		 lowps = currPs;
@@ -69,10 +70,18 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 		 upps = currPs;
 		 
 		var sl_unit = ForDight((upps - lowps)/4,2);
+		if (sl_unit>1)
+		 sl_unit = parseInt(sl_unit);
+		else if (sl_unit<0.5)
+		 sl_unit = 0.5;
 		lowps = ForDight(lowps,1);
+		if (lowps>1)
+		 lowps = parseInt(lowps);
 		upps += sl_unit;
 		upps = ForDight(upps,1);
-		var data = [
+		if (upps>1)
+		 upps = parseInt(upps);
+		 var data = [
 		         	{
 		         		name : 'PV',
 		         		value:flow,
@@ -184,11 +193,11 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 					 scale_space:sl_unit,
 					 scale_size:2,
 					 scale_enable : false,
-					 label : {color:'#311212',font : '微软雅黑',fontsize:15,fontweight:600},
+					 label : {color:'#311212',font : '微软雅黑',fontsize:getSizes().StockView[4]-3,fontweight:600},
 					 scale_color:'#9f9f9f'
 				},{
 					 position:'bottom',	
-					 label : {color:'#311212',font : '微软雅黑',fontsize:15,fontweight:600},
+					 label : {color:'#311212',font : '微软雅黑',fontsize:getSizes().StockView[4]-3,fontweight:600},
 					 scale_enable : false,
 					 labels:labels
 				}]
