@@ -20,14 +20,17 @@ import java.util.Vector;
 
 import net.sf.json.JSONObject;
 import redis.clients.jedis.Jedis;
+import cn.hd.base.BaseService;
 import cn.hd.cf.action.RetMsg;
 import cn.hd.cf.action.SavingAction;
 import cn.hd.cf.model.Init;
+import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Message;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Savingdata;
 import cn.hd.cf.model.Toplist;
+import cn.hd.cf.service.InsureService;
 import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.service.SavingService;
 import cn.hd.cf.service.ToplistService;
@@ -46,6 +49,7 @@ public class DataManager {
 	public RedisClient redisClient;	
 	private Init	init;
 	private Map<Integer,Saving>		savingData;
+	private Map<Integer,String>	insureMap;
 	private Map<String,PlayerWithBLOBs> playerMaps;
 	private List<Toplist>			currMonthList;
 	private Vector<PlayerWithBLOBs>	newPlayersVect;
@@ -105,9 +109,61 @@ public class DataManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	
+    	insureMap = new HashMap<Integer,String>();
      }
 	
+    public synchronized boolean addInsure(int playerId,Insure insure){
+    	String instr = getInsures(playerId);
+    	List<Insure> list = BaseService.jsonToBeanList(instr, Insure.class);
+    	boolean found = false;
+    	for (int i=0;i<list.size();i++){
+    		if (list.get(i).getPlayerid()==playerId&&list.get(i).getItemid()==insure.getItemid()){
+    			found = true;
+    			break;
+    		}
+    	}
+    	if (found){
+    		return false;
+    	}
+    	list.add(insure);
+		instr = BaseService.beanListToJson(list,Insure.class);
+		insureMap.put(playerId, instr);
+    	return true;
+    }
+	
+    public synchronized boolean deleteInsure(int playerId,Insure insure){
+    	String instr = getInsures(playerId);
+    	List<Insure> list = BaseService.jsonToBeanList(instr, Insure.class);
+    	boolean found = false;
+    	for (int i=0;i<list.size();i++){
+    		if (list.get(i).getPlayerid()==playerId&&list.get(i).getItemid()==insure.getItemid()){
+    			list.remove(i);
+    			found = true;
+    			break;
+    		}
+    	}
+    	if (found){
+    		instr = BaseService.beanListToJson(list,Insure.class);
+    		insureMap.put(playerId, instr);
+    		return true;
+    	}
+    	return false;
+    }
+    
+    public synchronized String getInsures(int playerId){
+    	String instr = null;
+    	if (insureMap.containsKey(playerId))
+    	instr = insureMap.get(playerId);
+    	else {
+    		InsureService inser = new InsureService();
+    		List<Insure> list = inser.getDBInsures(playerId);
+    		instr = BaseService.beanListToJson(list, Insure.class);
+    		insureMap.put(playerId, instr);
+    	}
+    	System.out.println("找这里::::");
+    	return instr;
+    }
+    
 	public int assignNextId(){
 		nextPlayerId++;
 		return nextPlayerId;

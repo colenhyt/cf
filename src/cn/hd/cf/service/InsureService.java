@@ -8,11 +8,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 import redis.clients.jedis.Jedis;
@@ -21,6 +16,7 @@ import cn.hd.cf.dao.InsureMapper;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.InsureExample;
 import cn.hd.cf.model.InsureExample.Criteria;
+import cn.hd.mgr.DataManager;
 import cn.hd.util.MybatisSessionFactory;
 
 public class InsureService extends BaseService {
@@ -76,13 +72,19 @@ public class InsureService extends BaseService {
 	}	
 	public List<Insure> findByPlayerId(int playerId)
 	{
+		String instr = DataManager.getInstance().getInsures(playerId);
+		List<Insure> list = BaseService.jsonToBeanList(instr, Insure.class);
+		return list;
+	}
+	
+	public List<Insure> getDBInsures(int playerId)
+	{
 		InsureExample example = new InsureExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
 		List<Insure> insures = insureMapper.selectByExample(example);
-		MybatisSessionFactory.getSession().clearCache();
-	return insures;
-	}
+		return insures;
+	}	
 	
 	public boolean add(Insure record)
 	{
@@ -98,6 +100,7 @@ public class InsureService extends BaseService {
 		try {
 		insureMapper.insert(record);
 		DBCommit();
+		DataManager.getInstance().addInsure(record.getPlayerid(), record);
 		}catch (Exception e){
 			e.printStackTrace();
 			return false;
@@ -107,16 +110,16 @@ public class InsureService extends BaseService {
 	
 	public boolean delete(Insure record)
 	{
-		if (jedis!=null){
-			String key = record.getPlayerid()+ITEM_KEY;
-			jedis.hdel(key, record.getItemid().toString());
-			jedis.close();
-		}
 		System.out.println("删除记录:"+record.toString());
 		
 		try {
-			insureMapper.deleteByPrimaryKey(record.getId());
+			InsureExample example = new InsureExample();
+			Criteria criteria = example.createCriteria();
+			criteria.andPlayeridEqualTo(record.getPlayerid());
+			criteria.andItemidEqualTo(record.getItemid());
+			insureMapper.deleteByExample(example);
 			DBCommit();	
+			DataManager.getInstance().deleteInsure(record.getPlayerid(), record);
 		}catch (Exception e){
 			e.printStackTrace();
 			return false;
