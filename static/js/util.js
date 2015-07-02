@@ -113,8 +113,8 @@ function outputCssStyles(css_file_name,per) {
 	 			//content += param+":"+value+";";
 			if (param=='backgroundSize')
 			{
-				content += uncamelize(param,'-')+":100% 100%;";
-	 			content += "-moz-background-size:100% 100%;";
+				content += uncamelize(param,'-')+":"+value+";";
+	 			content += "-moz-background-size:"+value+";";
 			}else
 				content += uncamelize(param,'-')+":"+value+";";
 				 			
