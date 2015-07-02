@@ -39,6 +39,8 @@ public class InsureAction extends SavingAction {
 			}
 			super.playerTopUpdate(insure.getPlayerid());
 			//insureService.DBConnClose();
+		}else {
+			System.out.println("insure没找到存款吗:"+ret);
 		}
 		writeMsg(ret);
 		return null;
@@ -49,8 +51,21 @@ public class InsureAction extends SavingAction {
 		Map<Integer,Insure> insures = findUpdatedInsures(insure.getPlayerid());
 		String strInsure = JSON.toJSONString(insures);
 		write(strInsure,"utf-8");
-		System.out.println("find insures: "+strInsure);
+		if (insures.size()<=0)
+		System.out.println("find insures: "+insures.size());
 		return null;
 	}
 	
+	public static void main(String[] args)
+	{
+		InsureAction aa = new InsureAction();
+		Insure in = new Insure();
+		in.setPlayerid(215);
+		aa.setInsure(in);
+		for (int i=0;i<200;i++){
+			aa.get();
+			
+		}
+		System.out.println("print done");
+	}
 }

@@ -292,8 +292,8 @@ public class SavingAction extends BaseAction {
 				float inter = 0;	// 0表明未到期
 		        c2.setTime(insure.getUpdatetime());
 				float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
-				float periodMinutes = insure.getPeriod()*60*24; //天:分钟
-//				System.out.println("diffdd:"+diffdd+",periodMinutes:"+periodMinutes);
+				float periodMinutes = insure.getPeriod()*60; //天:分钟
+				System.out.println("(peroid:"+insure.getPeriod()+") diffdd:"+diffdd+",periodMinutes:"+periodMinutes);
 	//			periodMinutes = 5;
 				//到期:
 				if ((diffdd-periodMinutes)>0.001)

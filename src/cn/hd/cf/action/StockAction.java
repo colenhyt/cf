@@ -97,6 +97,8 @@ public class StockAction extends SavingAction {
 				ret = RetMsg.MSG_SQLExecuteError;
 			}
 			super.playerTopUpdate(stock.getPlayerid());
+		}else {
+			System.out.println("没找到存款吗:"+ret);
 		}
 		writeMsg(ret);
 		return null;

@@ -117,9 +117,9 @@ Insure.prototype.buildPage = function(page)
 			 content += "	<div>"
 			 content += "<span class='cfpanel_text'>价格: <img class='cficon_money' src='static/img/money.png'/>"+ForDight(item.price)+"</span>"
 			 if (pitem.qty<=0)
-			 	content += "<span class='cfpanel_text right'>期限:"+item.period+"天</span>"
+			 	content += "<span class='cfpanel_text right'>期限:"+item.period+"小时</span>"
 			 else {
-			 	var timeout = timeoutDesc(pitem,item);
+			 	var timeout = timeoutDesc(pitem,item,1);
 			 	content += "<span class='cfpanel_text right'>"+timeout+"</span>"
 			 }
 			content += "     </div>"
@@ -187,10 +187,10 @@ Insure.prototype.show_insuredetail = function(id){
 	 content += "<div>  "
 	 content += "<table class='cfinsure_tabl2'>"
 	 content += "<tr><td>价格: <img class='cficon_money' src='static/img/money.png'/> "+item.price+" </td></tr>"
-	 content += "<tr><td>周期: "+item.period+"天 </td></tr>"
+	 content += "<tr><td>周期: "+item.period+"小时 </td></tr>"
 	content += "</table>"
 	if (pitem.qty>0){
-	     var timeout = timeoutDesc(pitem,item);
+	     var timeout = timeoutDesc(pitem,item,1);
       	content += "<br>(已购买该保险,  "+timeout+")";
  	}
 	content += "           </div>  "
@@ -226,10 +226,10 @@ Insure.prototype.show_finandetail = function(id){
  content += "<table class='cfinsure_tabl2'>"
  content += "<tr><td>价格: <img class='cficon_money' src='static/img/money.png'/> "+item.price+"</td></tr>"
  content += "<tr><td>收益: <img class='cficon_money' src='static/img/money.png'/> "+item.profit+"/份</td></tr>"
- content += "<tr><td>周期: "+item.period+"天</td></tr>"
+ content += "<tr><td>周期: "+item.period+"小时</td></tr>"
 content += "</table>     "
  	if (pitem.qty>0){
-	     var timeout = timeoutDesc(pitem,item);
+	     var timeout = timeoutDesc(pitem,item,1);
       	content += "<br>已购买  <span style='color:red'>"+pitem.qty+"</span>份, "+timeout;
  	}
  	if (pitem.qty<=0){

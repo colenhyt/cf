@@ -321,12 +321,15 @@ calculateTimeout = function(pitem,item){
 }
 
 //天,小时，分
-timeoutDesc = function(pitem,item){
+timeoutDesc = function(pitem,item,petype){
 	var tt = "已到期";
     var ctime = pitem.createtime;
     var now = Date.parse(new Date());
     var diff = (now - ctime)/1000;
     var periodTime = item.period*pitem.qty*60*60*24;
+    if (petype==1)
+     periodTime = item.period*pitem.qty*60*60;
+     
     var diffSec = periodTime - diff;
     
     if (diffSec<=0){
