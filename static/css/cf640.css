@@ -58,6 +58,8 @@ margin-top:0px;
 width:223px;
 height:48px;
   background:url('../../static/img/icon_exp.png') no-repeat;
+  -moz-background-size:cover;  
+  background-size:cover;
 }
 
 .divcar1{
