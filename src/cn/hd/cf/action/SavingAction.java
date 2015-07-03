@@ -99,10 +99,12 @@ public class SavingAction extends BaseAction {
 	//更新活期存款金钱:
 	public String updatelive()
 	{
-		saving.setUpdatetime(new Date());	
-		boolean update = savingService.updateLive(saving);	
+		Saving currLive = savingService.find(saving.getPlayerid(), 1);
+		currLive.setAmount(saving.getAmount());
+		currLive.setUpdatetime(new Date());	
+		boolean update = savingService.updateLive(currLive);	
 		
-		System.out.println("活期存款更新:"+saving.getPlayerid()+";value="+saving.getAmount());
+		System.out.println("活期存款更新:"+saving.getPlayerid()+";value="+currLive.getAmount()+";itemid="+currLive.getItemid());
 		 playerTopUpdate(saving.getPlayerid());
 		 
 		if (update==false){
@@ -131,8 +133,8 @@ public class SavingAction extends BaseAction {
 	
 	protected boolean playerMoneyUpdate(Saving saving){
 		saving.setUpdatetime(new Date());	
-		boolean u = savingService.updateLive(saving);	
 		System.out.println("活期存款更新:"+saving.getPlayerid()+";value="+saving.getAmount());
+		boolean u = savingService.updateLive(saving);	
 		 playerTopUpdate(saving.getPlayerid());
 		//更新排行榜金钱:
 		return u;

@@ -32,7 +32,7 @@ public class SavingDataManager{
     	List<Saving> list = BaseService.jsonToBeanList(jsonstr, Saving.class);
     	boolean found = false;
     	for (int i=0;i<list.size();i++){
-			if (list.get(i).getItemid().equals(record.getItemid())){
+			if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){
     			list.remove(i);
     			found = true;
     			break;
@@ -43,6 +43,7 @@ public class SavingDataManager{
     	}
     	list.add(record);
 		jsonstr = BaseService.beanListToJson(list,Saving.class);
+		System.out.println("更新内存存款:  "+jsonstr);
 		savingMap.put(playerId, jsonstr);
     	return true;
     }
@@ -79,8 +80,7 @@ public class SavingDataManager{
 		List<Saving> list = BaseService.jsonToBeanList(jsonstr, Saving.class);
 		boolean found = false;
 		for (int i=0;i<list.size();i++){
-			if (list.get(i).getItemid().equals(record.getItemid())){
-				System.out.println("xxxxxxxxxx: "+list.get(i).getItemid()+";aa:"+record.getItemid());
+			if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){
 				list.remove(i);
 				found = true;
 				break;
@@ -95,12 +95,12 @@ public class SavingDataManager{
 		return false;
 	}
 
-	public synchronized boolean addSaving(int playerId,Saving saving){
+	public synchronized boolean addSaving(int playerId,Saving record){
 		String jsonstr = getSavings(playerId);
 		List<Saving> list = BaseService.jsonToBeanList(jsonstr, Saving.class);
 		boolean found = false;
 		for (int i=0;i<list.size();i++){
-			if (list.get(i).getItemid()==saving.getItemid()){
+			if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){
 				found = true;
 				break;
 			}
@@ -108,7 +108,7 @@ public class SavingDataManager{
 		if (found){
 			return false;
 		}
-		list.add(saving);
+		list.add(record);
 		jsonstr = BaseService.beanListToJson(list,Saving.class);
 		savingMap.put(playerId, jsonstr);
 		return true;
