@@ -102,33 +102,5 @@ public class StockAction extends SavingAction {
 		}
 		writeMsg(ret);
 		return null;
-	}
-
-	public int addStock(Stock stock2){
-		if (stock2.getQty()==0){
-			return 0;
-		}
-		float inAmount = 0 - stock2.getAmount();
-		//先扣钱:
-		int ret = super.pushLive(stock2.getPlayerid(), inAmount);
-		if (ret==0){
-			boolean exec = false;	
-			if (stock2.getQty()>0){
-				stock2.setCreatetime(new Date());
-				exec = stockService.add(stock2);	
-				System.out.println("购买股票:"+stock2.getItemid()+",qty="+stock2.getQty());
-			}else {
-				int qq = (0 - stock2.getQty());
-				System.out.println("抛售股票:"+stock2.getItemid()+",qty="+qq);
-				exec = stockService.removeStock(stock2.getPlayerid(), stock2.getItemid(), qq);
-			}
-			if (exec==false){
-				//钱放回去:
-				super.pushLive(stock2.getPlayerid(),  stock2.getAmount());
-				ret = RetMsg.MSG_SQLExecuteError;
-			}
-			super.playerTopUpdate(stock2.getPlayerid());
-		}
-		return ret;
 	}	
 }

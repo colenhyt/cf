@@ -9,6 +9,7 @@ import cn.hd.cf.dao.SavingMapper;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.SavingExample;
 import cn.hd.cf.model.SavingExample.Criteria;
+import cn.hd.mgr.SavingDataManager;
 
 public class SavingService extends BaseService {
 	private SavingMapper	savingMapper;
@@ -47,48 +48,15 @@ public class SavingService extends BaseService {
 	}	
 	public Saving find(int playerId,int itemid)
 	{
-		SavingExample example = new SavingExample();
-		Criteria criteria = example.createCriteria();
-		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
-		criteria.andItemidEqualTo(itemid);
-		List<Saving> savings = savingMapper.selectByExample(example);
-		if (savings.size()>0)
-		 return savings.get(0);
-		
-		return null;
-	}
-	
-	public Saving findLivingSavingByPlayerId(int playerId)
-	{
-//		String key = playerId+ITEM_KEY;
-//		String strJson = jedis.hget(key, new Integer(1).toString());
-//		return (Saving)Bean.toBean(strJson, Saving.class);
-		
-		List<Saving> savings = new ArrayList<Saving>();
-		SavingExample example = new SavingExample();
-		Criteria criteria = example.createCriteria();
-		criteria.andPlayeridEqualTo(playerId);
-		criteria.andItemidEqualTo(1);
-		
-		savings = savingMapper.selectByExample(example);
-		if (savings.size()>0)
-			return savings.get(0);
-		
-		return null;
+		return SavingDataManager.getInstance().getSaving(playerId, itemid);
 	}
 	
 	public boolean add(Saving record)
-	{
-//		if (jedis!=null){
-//		String key = record.getPlayerid()+ITEM_KEY;
-//		jedis.hset(key, record.getItemid().toString(), record.toString());
-//		jedis.close();
-//		}
-		//System.out.println("增加存款记录:"+record.toString());
-		
+	{		
 		try {
 			savingMapper.insert(record);
 			DBCommit();
+			SavingDataManager.getInstance().addSaving(record.getPlayerid(), record);
 		}catch (Exception e){
 			e.printStackTrace();
 			return false;
@@ -98,7 +66,7 @@ public class SavingService extends BaseService {
 	
 	public boolean remove(Saving record)
 	{
-		System.out.println("删除saving记录:"+record.toString());
+		System.out.println("删除saving记录:"+record.getItemid()+";"+record.getPlayerid());
 		
 		try {
 			SavingExample example = new SavingExample();
@@ -107,29 +75,13 @@ public class SavingService extends BaseService {
 			criteria.andItemidEqualTo(record.getItemid());
 			savingMapper.deleteByExample(example);
 			DBCommit();
+			SavingDataManager.getInstance().deleteSaving(record.getPlayerid(), record);
 		}catch (Exception e){
 			e.printStackTrace();
 			return false;
 		}	
 		return true;
 	}	
-	
-	public boolean updateLive2(Saving record)
-	{
-		try {
-			SavingExample example = new SavingExample();
-			Criteria criteria = example.createCriteria();
-			criteria.andPlayeridEqualTo(record.getPlayerid());
-			criteria.andItemidEqualTo(1);		
-			savingMapper.updateByExampleSelective(record, example);
-			DBCommit();
-		}catch (Exception e){
-			e.printStackTrace();
-			return false;
-		}				
-		return true;
-	}
-	
 	
 	public boolean update(Saving record)
 	{
@@ -140,6 +92,7 @@ public class SavingService extends BaseService {
 			criteria.andItemidEqualTo(record.getItemid());			
 			savingMapper.updateByExampleSelective(record, example);
 			DBCommit();
+			SavingDataManager.getInstance().updateSaving(record.getPlayerid(), record);
 		}catch (Exception e){
 			e.printStackTrace();
 			return false;
@@ -149,22 +102,19 @@ public class SavingService extends BaseService {
 
 	public boolean updateLive(Saving record)
 	{
-		try {
-			SavingExample example = new SavingExample();
-			Criteria criteria = example.createCriteria();
-			criteria.andIdEqualTo(record.getId());
-			criteria.andPlayeridEqualTo(record.getPlayerid());
-			criteria.andItemidEqualTo(1);		
-			savingMapper.updateByExampleSelective(record, example);
-			DBCommit();
-		}catch (Exception e){
-			e.printStackTrace();
-			return false;
-		}				
-		return true;
+		record.setItemid(1);
+		return update(record);
 	}
 
 	public List<Saving> findByPlayerId(int playerId)
+	{
+		String jsonstr = SavingDataManager.getInstance().getSavings(playerId);
+    	List<Saving> list = BaseService.jsonToBeanList(jsonstr, Saving.class);
+		return list;
+	}	
+	
+
+	public List<Saving> getDBSavings(int playerId)
 	{
 		List<Saving> savings = new ArrayList<Saving>();
 		
@@ -174,5 +124,5 @@ public class SavingService extends BaseService {
 		savings = savingMapper.selectByExample(example);
 		
 		return savings;
-	}	
+	}		
 }

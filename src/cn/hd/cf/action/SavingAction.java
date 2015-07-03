@@ -100,7 +100,7 @@ public class SavingAction extends BaseAction {
 	public String updatelive()
 	{
 		saving.setUpdatetime(new Date());	
-		boolean update = savingService.updateLive2(saving);	
+		boolean update = savingService.updateLive(saving);	
 		
 		System.out.println("活期存款更新:"+saving.getPlayerid()+";value="+saving.getAmount());
 		 playerTopUpdate(saving.getPlayerid());
@@ -114,7 +114,7 @@ public class SavingAction extends BaseAction {
 	
 	public int pushLive(int playerId,float amount)
 	{
-		Saving saving2 = savingService.findLivingSavingByPlayerId(playerId);
+		Saving saving2 = savingService.find(playerId,1);
 		if (saving2!=null){
 			float newAmount = saving2.getAmount()+amount;
 			if (newAmount<0)
@@ -231,6 +231,10 @@ public class SavingAction extends BaseAction {
 		if (saving.getAmount()<0){
 			float inAmount = 0 - saving.getAmount();
 			Saving saving2 = savingService.find(saving.getPlayerid(),saving.getItemid());
+			if (saving2==null){
+				super.writeMsg(RetMsg.MSG_NoSavingData);
+				return null;
+			}
 			//已到期的存款:
 			boolean isout = isSavingTimeout(saving2);
 			System.out.println("is out:"+isout);

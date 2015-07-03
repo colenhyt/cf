@@ -1,18 +1,17 @@
 package cn.hd.mgr;
 
-import java.util.Vector;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import net.sf.json.JSONObject;
-import cn.hd.cf.action.RetMsg;
-import cn.hd.cf.action.SavingAction;
-import cn.hd.cf.model.Message;
+import cn.hd.base.BaseService;
+import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Saving;
-import cn.hd.util.HdTimer;
+import cn.hd.cf.service.SavingService;
 
-public class SavingDataManager extends HdTimer{
-	private int ADD_PERIOD = 20*30;		//20*60: 一小时
-	private Vector<Saving>	addSavingVect;
-	private int tick = 0;
+
+public class SavingDataManager{
+	private Map<Integer,String>	savingMap;
 	
     private static SavingDataManager uniqueInstance = null;  
 	
@@ -24,39 +23,105 @@ public class SavingDataManager extends HdTimer{
      } 
     
     public SavingDataManager(){
-    	try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
-    	addSavingVect = new Vector<Saving>();
+    	savingMap = new HashMap<Integer,String>();
      }
-	
-	public String addSaving(Saving stock){
-		addSavingVect.add(stock);
-		Message msg = new Message();
-		msg.setCode(RetMsg.MSG_OK);		//不存在
-		JSONObject obj = JSONObject.fromObject(msg);
-		return obj.toString();			
-	}
-	
-	public void run(){
-    	tick ++;
-    	if (addSavingVect.size()>0||tick%ADD_PERIOD==0){
-    		//addSavings();
+    
+
+    public synchronized boolean updateSaving(int playerId,Saving record){
+    	String jsonstr = getSavings(playerId);
+    	List<Saving> list = BaseService.jsonToBeanList(jsonstr, Saving.class);
+    	boolean found = false;
+    	for (int i=0;i<list.size();i++){
+			if (list.get(i).getItemid().equals(record.getItemid())){
+    			list.remove(i);
+    			found = true;
+    			break;
+    		}
     	}
-    	//System.out.println("Saving run");
+    	if (!found){
+    		return false;
+    	}
+    	list.add(record);
+		jsonstr = BaseService.beanListToJson(list,Saving.class);
+		savingMap.put(playerId, jsonstr);
+    	return true;
+    }
+    
+    public synchronized Saving getSaving(int playerId,int itemid){
+		String jsonstr = getSavings(playerId);
+		Saving saving = null;
+    	List<Saving> list = BaseService.jsonToBeanList(jsonstr, Saving.class);
+    	for (int i=0;i<list.size();i++){
+    		if (list.get(i).getItemid().intValue()==itemid){
+    			saving = list.get(i);
+    			break;
+    		}
+    	}
+    	return saving;
 	}
     
-    public static void main(String[] args) {
+    public synchronized String getSavings(int playerId){
+		String jsonstr = null;
+		if (savingMap.containsKey(playerId))
+		jsonstr = savingMap.get(playerId);
+		else {
+			SavingService service = new SavingService();
+			List<Saving> list = service.getDBSavings(playerId);
+			jsonstr = BaseService.beanListToJson(list, Saving.class);
+			savingMap.put(playerId, jsonstr);
+		}
+		System.out.println("存款找这里::::");
+		return jsonstr;
+	}
+
+	public synchronized boolean deleteSaving(int playerId,Saving record){
+		String jsonstr = getSavings(playerId);
+		List<Saving> list = BaseService.jsonToBeanList(jsonstr, Saving.class);
+		boolean found = false;
+		for (int i=0;i<list.size();i++){
+			if (list.get(i).getItemid().equals(record.getItemid())){
+				System.out.println("xxxxxxxxxx: "+list.get(i).getItemid()+";aa:"+record.getItemid());
+				list.remove(i);
+				found = true;
+				break;
+			}
+		}
+		if (found){
+			jsonstr = BaseService.beanListToJson(list,Saving.class);
+			System.out.println("删除后json: "+jsonstr);
+			savingMap.put(playerId, jsonstr);
+			return true;
+		}
+		return false;
+	}
+
+	public synchronized boolean addSaving(int playerId,Saving saving){
+		String jsonstr = getSavings(playerId);
+		List<Saving> list = BaseService.jsonToBeanList(jsonstr, Saving.class);
+		boolean found = false;
+		for (int i=0;i<list.size();i++){
+			if (list.get(i).getItemid()==saving.getItemid()){
+				found = true;
+				break;
+			}
+		}
+		if (found){
+			return false;
+		}
+		list.add(saving);
+		jsonstr = BaseService.beanListToJson(list,Saving.class);
+		savingMap.put(playerId, jsonstr);
+		return true;
+	}
+
+	public static void main(String[] args) {
     	SavingDataManager stmgr = SavingDataManager.getInstance();
+    	Saving ss = new Saving();
+    	ss.setItemid(2);
+    	stmgr.addSaving(1, ss);
+    	Saving s2 = new Saving();
+    	s2.setPlayerid(1);
+    	s2.setItemid(2);
+    	stmgr.deleteSaving(1, s2);
     }
 }

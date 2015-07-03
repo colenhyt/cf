@@ -22,7 +22,6 @@ import net.sf.json.JSONObject;
 import redis.clients.jedis.Jedis;
 import cn.hd.base.BaseService;
 import cn.hd.cf.action.RetMsg;
-import cn.hd.cf.action.SavingAction;
 import cn.hd.cf.model.Init;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Message;
@@ -32,15 +31,10 @@ import cn.hd.cf.model.Savingdata;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.InsureService;
 import cn.hd.cf.service.PlayerService;
-import cn.hd.cf.service.SavingService;
 import cn.hd.cf.service.ToplistService;
 import cn.hd.cf.tools.InitdataService;
 import cn.hd.cf.tools.SavingdataService;
-import cn.hd.util.MD5;
 import cn.hd.util.RedisClient;
-import cn.hd.util.StringUtil;
-
-import com.alibaba.fastjson.JSON;
 
 public class DataManager {
 	private int UPDATE_PERIOD = 20*30;		//20*60: 一小时
@@ -112,12 +106,12 @@ public class DataManager {
     	insureMap = new HashMap<Integer,String>();
      }
 	
-    public synchronized boolean addInsure(int playerId,Insure insure){
+    public synchronized boolean addInsure(int playerId,Insure record){
     	String instr = getInsures(playerId);
     	List<Insure> list = BaseService.jsonToBeanList(instr, Insure.class);
     	boolean found = false;
     	for (int i=0;i<list.size();i++){
-    		if (list.get(i).getPlayerid()==playerId&&list.get(i).getItemid()==insure.getItemid()){
+			if (list.get(i).getItemid().equals(record.getItemid())){
     			found = true;
     			break;
     		}
@@ -125,18 +119,18 @@ public class DataManager {
     	if (found){
     		return false;
     	}
-    	list.add(insure);
+    	list.add(record);
 		instr = BaseService.beanListToJson(list,Insure.class);
 		insureMap.put(playerId, instr);
     	return true;
     }
 	
-    public synchronized boolean deleteInsure(int playerId,Insure insure){
+    public synchronized boolean deleteInsure(int playerId,Insure record){
     	String instr = getInsures(playerId);
     	List<Insure> list = BaseService.jsonToBeanList(instr, Insure.class);
     	boolean found = false;
     	for (int i=0;i<list.size();i++){
-    		if (list.get(i).getPlayerid()==playerId&&list.get(i).getItemid()==insure.getItemid()){
+			if (list.get(i).getItemid().equals(record.getItemid())){
     			list.remove(i);
     			found = true;
     			break;
@@ -167,74 +161,6 @@ public class DataManager {
 	public int assignNextId(){
 		nextPlayerId++;
 		return nextPlayerId;
-	}
-	
-	public String register(String playername,int accountid,byte sex)
-	{
-		String playerStr = null;
-		synchronized(playerMaps) {
-		boolean exist = playerMaps.containsKey(playername);
-//		if (exist){
-//			System.out.println("该玩家已存在:"+playername);
-//			Message msg = new Message();
-//			msg.setCode(RetMsg.MSG_PlayerNameIsExist);		//重名
-//			JSONObject obj = JSONObject.fromObject(msg);
-//			return obj.toString();
-//		}
-		Date time = new Date(); 
-		
-		PlayerWithBLOBs playerBlob = new PlayerWithBLOBs();
-		playerBlob.setPlayername(playername);
-		playerBlob.setAccountid(accountid);
-		playerBlob.setSex(sex);
-		playerBlob.setCreatetime(time);
-		playerBlob.setZan(0);
-		String pwd = StringUtil.getRandomString(10);
-		playerBlob.setPwd(MD5.MD5(pwd));
-		playerBlob.setPlayerid(assignNextId());
-		
-		if (init!=null){
-			playerBlob.setExp(init.getExp());
-		}
-		
-		 playerMaps.put(playerBlob.getPlayername(), playerBlob);
-			
-		 if (init!=null&&init.getMoney()>0){
-			 Map<Integer,Saving> savings = new HashMap<Integer,Saving>();
-		Saving savingCfg = savingData.get(1);
-		Saving saving = new Saving();
-		saving.setName(savingCfg.getName());
-		saving.setPeriod(savingCfg.getPeriod());
-		saving.setRate(savingCfg.getRate());
-		saving.setItemid(savingCfg.getId());
-		saving.setQty(1);
-		saving.setUpdatetime(time);
-		saving.setCreatetime(time);
-		saving.setType(savingCfg.getType());
-		saving.setPlayerid(playerBlob.getPlayerid());
-		float fMoney = Float.valueOf(init.getMoney().intValue());
-		saving.setAmount(fMoney);
-		newSavingVect.add(saving);
-		savings.put(savingCfg.getId(), saving);
-		playerBlob.setMoney(fMoney);
-		playerBlob.setSaving(JSON.toJSONString(savings));
-		 }else{
-			 playerBlob.setMoney(Float.valueOf(0));
-		 }
-			
-		playerBlob.setWeektop(getTop(playerBlob.getPlayerid(),playerBlob.getMoney(),0));
-		playerBlob.setMonthtop(getTop(playerBlob.getPlayerid(),playerBlob.getMoney(),1));
-		 
-		  JSONObject obj = JSONObject.fromObject(playerBlob);
-		  playerStr = obj.toString();
-		newPlayersVect.add(playerBlob);
-		
-		
-		}
-		
-		
-		//System.out.println("新增玩家:"+playerMaps.size());
-		return playerStr;
 	}
 	
 	public PlayerWithBLOBs findPlayer(int playerid){
@@ -418,17 +344,7 @@ public class DataManager {
     	
     	
     }
-    private void pushPlayers(){
-		PlayerService playerService = new PlayerService();
-		for (int i=0;i<newPlayersVect.size();i++){
-			playerService.add(newPlayersVect.get(i));
-		}
-		playerService.DBCommit();
-		System.out.println("持久化玩家:"+newPlayersVect.size());
-		newPlayersVect.clear();
-	}
-
-	private void updatePlayers(){
+    private void updatePlayers(){
 		PlayerService playerService = new PlayerService();
 		for (int i=0;i<updatePlayersVect.size();i++){
 			playerService.updateByKey(updatePlayersVect.get(i));
@@ -449,19 +365,6 @@ public class DataManager {
 		updatePlayersVect.clear();
 	}
 		
-	private void pushSavings(){
-		SavingService savingService = new SavingService();
-		SavingAction savingAction = new SavingAction();
-		for (int i=0;i<newSavingVect.size();i++){
-			Saving saving = newSavingVect.get(i);
-			savingService.add(saving);
-			savingAction.playerTopUpdate(saving.getPlayerid());
-		}
-		savingService.DBCommit();
-		System.out.println("持久化存款:"+newSavingVect.size());
-		newSavingVect.clear();
-	}
-	
 	public void update(){
     	tick ++;
 //    	if (newPlayersVect.size()>0||tick%UPDATE_PERIOD==0){

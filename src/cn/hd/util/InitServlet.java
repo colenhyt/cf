@@ -14,7 +14,6 @@ public class InitServlet extends HttpServlet{
 	protected Logger  log = Logger.getLogger(getClass()); 
 	
 	public void init() throws ServletException {
-		SavingDataManager.getInstance().start();
 		StockDataManager.getInstance().start();
 		DataManager.getInstance().init();
 		EventManager.getInstance().start();

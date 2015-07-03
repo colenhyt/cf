@@ -48,16 +48,6 @@ public class StockDataManager extends HdTimer{
 		return obj.toString();			
 	}
 	
-	private void addStocks(){
-		StockAction stockAction = new StockAction();
-		for (int i=0;i<addStockVect.size();i++){
-			Stock stock = addStockVect.get(i);
-			stockAction.addStock(stock);
-		}
-		System.out.println("购买股票:"+addStockVect.size());
-		addStockVect.clear();
-	}
-		
 	public void run(){
     	tick ++;
     	if (addStockVect.size()>0||tick%ADD_PERIOD==0){

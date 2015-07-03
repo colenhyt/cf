@@ -210,7 +210,6 @@ public class LoginAction extends SavingAction {
 				log.debug(saving.getItemid()+"存款到期, 得到利息: "+inter);
 			}
 			Saving usaving = new Saving();
-			usaving.setId(saving.getId());
 			usaving.setItemid(saving.getItemid());
 			usaving.setAmount(saving.getAmount());
 			usaving.setCreatetime(saving.getCreatetime());

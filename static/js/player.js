@@ -232,7 +232,7 @@ Player.prototype.prize = function(prizes) {
      
      if (cashUpdate==true){
  		try  {
-			var obj = {id:this.saving[1].id,itemid:1,amount:this.saving[1].amount,playerid:this.data.playerid};
+			var obj = {itemid:1,amount:this.saving[1].amount,playerid:this.data.playerid};
 			var updateStr = obj2ParamStr("saving",obj);
 			$.ajax({type:"post",url:"/cf/saving_updatelive.do",data:updateStr,success:function(dataobj){
 			var obj = cfeval(dataobj);
