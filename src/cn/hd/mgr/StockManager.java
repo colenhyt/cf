@@ -14,8 +14,11 @@ import net.sf.json.JSONArray;
 import org.apache.log4j.Logger;
 
 import cn.hd.base.Base;
+import cn.hd.base.BaseService;
 import cn.hd.cf.model.Quote;
+import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Stockdata;
+import cn.hd.cf.service.StockService;
 import cn.hd.cf.tools.StockdataService;
 
 public class StockManager {
@@ -29,6 +32,7 @@ public class StockManager {
 	private int tick = 0;
 	private List<Stockdata> stockData;
     private static StockManager uniqueInstance = null;  
+	private Map<Integer,String>	stockMap;
 	
     public static StockManager getInstance() {  
         if (uniqueInstance == null) {  
@@ -43,6 +47,7 @@ public class StockManager {
 		StockdataService stockdataService = new StockdataService();
 		stockData = stockdataService.findActive();
 		quoteMap = new HashMap<Integer,LinkedList<Quote>>();
+		stockMap = new HashMap<Integer,String>();
 	   	for (int i=0;i<stockData.size();i++){
     		Stockdata  stock = stockData.get(i);
     		int fre = stock.getFreq();
@@ -176,7 +181,81 @@ public class StockManager {
 
 	}
     
-    public static void main(String[] args) {
+    public synchronized boolean addStock(int playerId,Stock record){
+		String jsonstr = getStocks(playerId);
+		List<Stock> list = BaseService.jsonToBeanList(jsonstr, Stock.class);
+		boolean found = false;
+		for (int i=0;i<list.size();i++){
+			if (list.get(i).getId().intValue()==record.getId().intValue()){
+				found = true;
+				break;
+			}
+		}
+		if (found){
+			return false;
+		}
+		list.add(record);
+		jsonstr = BaseService.beanListToJson(list,Stock.class);
+		stockMap.put(playerId, jsonstr);
+		System.out.println("增加内存股票:  "+jsonstr);
+		return true;
+	}
+
+	public synchronized boolean deleteStock(int playerId,Stock record){
+		String jsonstr = getStocks(playerId);
+		List<Stock> list = BaseService.jsonToBeanList(jsonstr, Stock.class);
+		boolean found = false;
+		for (int i=0;i<list.size();i++){
+			if (list.get(i).getId().intValue()==record.getId().intValue()){
+				list.remove(i);
+				found = true;
+				break;
+			}
+		}
+		if (found){
+			jsonstr = BaseService.beanListToJson(list,Stock.class);
+			System.out.println("删除内存股票: "+jsonstr);
+			stockMap.put(playerId, jsonstr);
+			return true;
+		}
+		return false;
+	}
+
+	public synchronized String getStocks(int playerId){
+		String jsonstr = null;
+		if (stockMap.containsKey(playerId))
+		jsonstr = stockMap.get(playerId);
+		else {
+			StockService service = new StockService();
+			List<Stock> list = service.getDBStocks(playerId);
+			jsonstr = BaseService.beanListToJson(list, Stock.class);
+			stockMap.put(playerId, jsonstr);
+		}
+		return jsonstr;
+	}
+
+	public synchronized boolean updateStock(int playerId,Stock record){
+		String jsonstr = getStocks(playerId);
+		List<Stock> list = BaseService.jsonToBeanList(jsonstr, Stock.class);
+		boolean found = false;
+		for (int i=0;i<list.size();i++){
+			if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){
+				list.remove(i);
+				found = true;
+				break;
+			}
+		}
+		if (!found){
+			return false;
+		}
+		list.add(record);
+		jsonstr = BaseService.beanListToJson(list,Stock.class);
+		System.out.println("更新内存股票:  "+jsonstr);
+		stockMap.put(playerId, jsonstr);
+		return true;
+	}
+
+	public static void main(String[] args) {
 //    	String a = "{'id':3,'name':'万科A','desc':'最大房地产股','price':18.7,'unit':100}";
 //    	JSONObject obj = JSONObject.fromObject(a);
     	StockManager stmgr = StockManager.getInstance();

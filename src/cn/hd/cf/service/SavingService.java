@@ -9,7 +9,7 @@ import cn.hd.cf.dao.SavingMapper;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.SavingExample;
 import cn.hd.cf.model.SavingExample.Criteria;
-import cn.hd.mgr.SavingDataManager;
+import cn.hd.mgr.SavingManager;
 
 public class SavingService extends BaseService {
 	private SavingMapper	savingMapper;
@@ -48,7 +48,7 @@ public class SavingService extends BaseService {
 	}	
 	public Saving find(int playerId,int itemid)
 	{
-		return SavingDataManager.getInstance().getSaving(playerId, itemid);
+		return SavingManager.getInstance().getSaving(playerId, itemid);
 	}
 	
 	public boolean add(Saving record)
@@ -56,7 +56,7 @@ public class SavingService extends BaseService {
 		try {
 			savingMapper.insert(record);
 			DBCommit();
-			SavingDataManager.getInstance().addSaving(record.getPlayerid(), record);
+			SavingManager.getInstance().addSaving(record.getPlayerid(), record);
 		}catch (Exception e){
 			e.printStackTrace();
 			return false;
@@ -75,7 +75,7 @@ public class SavingService extends BaseService {
 			criteria.andItemidEqualTo(record.getItemid());
 			savingMapper.deleteByExample(example);
 			DBCommit();
-			SavingDataManager.getInstance().deleteSaving(record.getPlayerid(), record);
+			SavingManager.getInstance().deleteSaving(record.getPlayerid(), record);
 		}catch (Exception e){
 			e.printStackTrace();
 			return false;
@@ -92,7 +92,7 @@ public class SavingService extends BaseService {
 			criteria.andItemidEqualTo(record.getItemid());			
 			savingMapper.updateByExampleSelective(record, example);
 			DBCommit();
-			SavingDataManager.getInstance().updateSaving(record.getPlayerid(), record);
+			SavingManager.getInstance().updateSaving(record.getPlayerid(), record);
 		}catch (Exception e){
 			e.printStackTrace();
 			return false;
@@ -108,7 +108,7 @@ public class SavingService extends BaseService {
 
 	public List<Saving> findByPlayerId(int playerId)
 	{
-		String jsonstr = SavingDataManager.getInstance().getSavings(playerId);
+		String jsonstr = SavingManager.getInstance().getSavings(playerId);
     	List<Saving> list = BaseService.jsonToBeanList(jsonstr, Saving.class);
 		return list;
 	}	

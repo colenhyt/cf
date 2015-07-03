@@ -10,19 +10,19 @@ import cn.hd.cf.model.Saving;
 import cn.hd.cf.service.SavingService;
 
 
-public class SavingDataManager{
+public class SavingManager{
 	private Map<Integer,String>	savingMap;
 	
-    private static SavingDataManager uniqueInstance = null;  
+    private static SavingManager uniqueInstance = null;  
 	
-    public static SavingDataManager getInstance() {  
+    public static SavingManager getInstance() {  
         if (uniqueInstance == null) {  
-            uniqueInstance = new SavingDataManager();  
+            uniqueInstance = new SavingManager();  
         }  
         return uniqueInstance;  
      } 
     
-    public SavingDataManager(){
+    public SavingManager(){
     	savingMap = new HashMap<Integer,String>();
      }
     
@@ -71,7 +71,6 @@ public class SavingDataManager{
 			jsonstr = BaseService.beanListToJson(list, Saving.class);
 			savingMap.put(playerId, jsonstr);
 		}
-		System.out.println("存款找这里::::");
 		return jsonstr;
 	}
 
@@ -115,7 +114,7 @@ public class SavingDataManager{
 	}
 
 	public static void main(String[] args) {
-    	SavingDataManager stmgr = SavingDataManager.getInstance();
+    	SavingManager stmgr = SavingManager.getInstance();
     	Saving ss = new Saving();
     	ss.setItemid(2);
     	stmgr.addSaving(1, ss);

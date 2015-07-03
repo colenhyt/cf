@@ -11,9 +11,11 @@ import redis.clients.jedis.Jedis;
 import cn.hd.base.BaseService;
 import cn.hd.base.Bean;
 import cn.hd.cf.dao.StockMapper;
+import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.StockExample;
 import cn.hd.cf.model.StockExample.Criteria;
+import cn.hd.mgr.StockManager;
 
 public class StockService extends BaseService {
 	private StockMapper	stockMapper;
@@ -34,32 +36,27 @@ public class StockService extends BaseService {
 	
 	public List<Stock> findByPlayerId(int playerId)
 	{
+		String jsonstr = StockManager.getInstance().getStocks(playerId);
+    	List<Stock> list = BaseService.jsonToBeanList(jsonstr, Stock.class);
+		return list;
+	}
+	
+	public List<Stock> getDBStocks(int playerId)
+	{
 		StockExample example = new StockExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
 		return stockMapper.selectByExample(example);
 	}
 	
-	public List<Stock> findListByPlayerId(int playerId)
-	{
-		StockExample example = new StockExample();
-		Criteria criteria = example.createCriteria();
-		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
-		return stockMapper.selectByExample(example);
-	}	
-	
 	public boolean remove(Stock record)
 	{
-		if (jedis!=null){
-		String key = record.getPlayerid()+ITEM_KEY;
-		jedis.hdel(key, record.getItemid().toString());
-		jedis.close();
-		}
 		System.out.println("删除stock记录:"+record.toString());
 		
 		try {
 			stockMapper.deleteByPrimaryKey(record.getId());
 			DBCommit();	
+			StockManager.getInstance().deleteStock(record.getPlayerid(), record);
 		}catch (Exception e){
 			e.printStackTrace();
 			return false;
@@ -70,27 +67,29 @@ public class StockService extends BaseService {
 	
 	public boolean removeStock(int playerId,int stockId,int qty)
 	{
-		StockExample example = new StockExample();
-		Criteria criteria = example.createCriteria();
-		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
-		criteria.andItemidEqualTo(stockId);
-		example.setOrderByClause("qty");
-		List<Stock> list = stockMapper.selectByExample(example);
+		List<Stock> all = findByPlayerId(playerId);
+		List<Stock> list = new ArrayList<Stock>();
+		for (int i=0;i<all.size();i++){
+			if (all.get(i).getItemid().intValue()==stockId){
+				list.add(all.get(i));
+			}
+		}
 		int needRemoveQty = qty;
 		boolean exec = false;
 		for (int i=0;i<list.size();i++){
 			Stock ss = list.get(i);
 			if (ss.getQty()<=needRemoveQty){
 				needRemoveQty -= ss.getQty();
+				System.out.println("删除:"+needRemoveQty);
 				remove(ss);
 			}else {
 				ss.setQty(ss.getQty()-needRemoveQty);
 				ss.setAmount(ss.getQty()*ss.getPrice());
+				System.out.println("更新:"+needRemoveQty);
 				needRemoveQty = 0;
 				update(ss);
 			}
 			if (needRemoveQty==0) {
-				DBCommit();
 				exec = true;
 				break;
 			}
@@ -100,16 +99,11 @@ public class StockService extends BaseService {
 	
 	public boolean add(Stock record)
 	{
-		if (jedis!=null){
-		String key = record.getPlayerid()+ITEM_KEY;
-		jedis.hset(key, record.getItemid().toString(), record.toString());
-		jedis.close();
-		}
-		System.out.println("增加stock记录:"+record.toString());
-		
 		try {
 			stockMapper.insertSelective(record);
 			DBCommit();
+			StockManager.getInstance().addStock(record.getPlayerid(), record);
+			System.out.println("增加stock记录:"+record.toString()+";自增长id:"+record.getId());
 		}catch (Exception e){
 			e.printStackTrace();
 			return false;
@@ -118,16 +112,11 @@ public class StockService extends BaseService {
 	}
 	
 	public boolean update(Stock record)
-	{
-		if (jedis!=null){
-		String key = record.getPlayerid()+ITEM_KEY;
-		jedis.hset(key, record.getItemid().toString(), record.toString());
-		jedis.close();
-		}
-		
+	{		
 		try {
 			stockMapper.updateByPrimaryKeySelective(record);
 			DBCommit();
+			StockManager.getInstance().updateStock(record.getPlayerid(), record);
 		}catch (Exception e){
 			e.printStackTrace();
 			return false;
@@ -158,10 +147,7 @@ public class StockService extends BaseService {
 	{
 		Map<Integer,List<Stock>> smap = new HashMap<Integer,List<Stock>>();
 		
-		StockExample example = new StockExample();
-		Criteria criteria = example.createCriteria();
-		criteria.andPlayeridEqualTo(Integer.valueOf(playerId));
-		List<Stock> ss = stockMapper.selectByExample(example);
+		List<Stock> ss = findByPlayerId(playerId);
 		for (int i=0;i<ss.size();i++){
 			List<Stock> list = smap.get(ss.get(i).getItemid());
 			if (list==null){

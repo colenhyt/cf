@@ -111,7 +111,7 @@ public class DataManager {
     	List<Insure> list = BaseService.jsonToBeanList(instr, Insure.class);
     	boolean found = false;
     	for (int i=0;i<list.size();i++){
-			if (list.get(i).getItemid().equals(record.getItemid())){
+			if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){
     			found = true;
     			break;
     		}
@@ -130,7 +130,7 @@ public class DataManager {
     	List<Insure> list = BaseService.jsonToBeanList(instr, Insure.class);
     	boolean found = false;
     	for (int i=0;i<list.size();i++){
-			if (list.get(i).getItemid().equals(record.getItemid())){
+			if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){
     			list.remove(i);
     			found = true;
     			break;
@@ -154,7 +154,6 @@ public class DataManager {
     		instr = BaseService.beanListToJson(list, Insure.class);
     		insureMap.put(playerId, instr);
     	}
-    	System.out.println("找这里::::");
     	return instr;
     }
     

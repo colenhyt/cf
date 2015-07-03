@@ -7,14 +7,11 @@ import org.apache.log4j.Logger;
 
 import cn.hd.mgr.DataManager;
 import cn.hd.mgr.EventManager;
-import cn.hd.mgr.SavingDataManager;
-import cn.hd.mgr.StockDataManager;
 
 public class InitServlet extends HttpServlet{
 	protected Logger  log = Logger.getLogger(getClass()); 
 	
 	public void init() throws ServletException {
-		StockDataManager.getInstance().start();
 		DataManager.getInstance().init();
 		EventManager.getInstance().start();
 		log.info("pingan moneylife init successful!");
