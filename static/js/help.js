@@ -15,27 +15,52 @@ Help.prototype.buildHTML = function()
 {
     var page = new PageUtil(this.tagname);
     
-     var content =     "<div class='tab-pane in active' onclick='g_help.closeHelp()'>";
-    content += "<div class='cfhelp' id='"+this.pagename+"'>"
-	content += "<div class='cfhelp_info'><img src='static/img/arrow.png'><span class='cfhelp_info_text'>个人信息</span></div>"
-	content += "<div class='cfhelp_quest'><img src='static/img/arrow.png' class='cfhelp_quest_img'><span class='cfhelp_quest_text'>任务</span></div>"
-	content += "<div class='cfhelp_toplist'><img src='static/img/arrow.png' class='cfhelp_toplist_img'><span class='cfhelp_toplist_text'>排行榜</span></div>"    
-    content += "</div>"
-    content += "</div>"
+     var   content =     "<div class=\"tab-pane in active\" id='quest2'>";
+        content += "<div class='cfpagedetail' id='"+this.pagename+"'>"
+        content += "</div></div>"
     page.addContent(content);
     document.write(page.toString());  
+    
+	         
+ 		var tag = document.getElementById(this.tagname+"_dialog");
+ 		if (tag){
+		 tag.style.setProperty("height",getSizes().PageHeight);
+ 		}    
 }
 
 Help.prototype.closeHelp = function(){
+	playAudioHandler('close1');	
 	$('#'+this.tagname).modal('hide');  
-	
     	var tag = document.getElementById("tag"+this.name);
-    	if (tag){
+    	if (tag&&this.name!=g_playerinfo.name){
     		tag.innerHTML = ""
     	}		
 }
+
+Help.prototype.getDesc = function(){
+	var desc = "<textarea style='width:100%;height:40%;border:none'>"
+	desc += HELP_DESC;
+	desc +="</textarea>"
+	
+	return desc;
+}
+
 Help.prototype.show = function(){
-    $('#'+this.tagname).modal({position:0,show: true});       
+	playAudioHandler('open1');	
+
+	var title = "帮助"
+	var desc = this.getDesc();
+	
+	var content =      "        <div style='margin: auto;text-align:center;'>"
+	content += "<div class='cfmsg_h2'>"+title+"</div>"
+	content += "<br>"
+	content += "            <div class='cfmsg_text'>"+desc+"</div>"
+	content += "          <button class='cf_bt' onclick='g_help.closeHelp()'>关闭</button>"	
+	content += "             </div>"
+	var tag = document.getElementById(this.pagename);
+	tag.innerHTML = content;
+		
+    $('#'+this.tagname).modal({backdrop:'static',position:getSizes().MsgTop,show: true});     
 }
 
 var g_help = new Help();

@@ -61,6 +61,7 @@ Signin.prototype.findPrize = function(days){
  }
 
 Signin.prototype.show = function(){
+	playAudioHandler('open1');	
 	var data = store.get(g_playerlog.name);
 	var signindays = findSigninLog(data);
 	if (signindays<=0) return;
