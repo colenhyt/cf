@@ -10,7 +10,7 @@ var Dl_Url_android = "http://dd.myapp.com/16891/32B5098A37D290206587504942EBB30D
 
 var g_game;
 
-var ZAN_COUNT = 10;	//
+var ZAN_COUNT = 10;	//每天点赞次数限制
 
 var LoginMode = 0;	//1为注册模式，0为登陆模式
 
