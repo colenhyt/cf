@@ -18,7 +18,7 @@ Main.prototype.init = function(){
 	//loadStyle('static/css/cf.css');
 	//outputCssFiles(320);
 	//outputCssFiles(480);
-	//outputCssFiles(600);
+	//outputCssFiles(320);
 	//return;
 	
 	//g_event.triggerEvent();

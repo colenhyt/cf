@@ -16,7 +16,7 @@ Help.prototype.buildHTML = function()
     var page = new PageUtil(this.tagname);
     
      var   content =     "<div class=\"tab-pane in active\" id='quest2'>";
-        content += "<div class='cfpagedetail' id='"+this.pagename+"'>"
+        content += "<div class='cfpagedetail stock' id='"+this.pagename+"'>"
         content += "</div></div>"
     page.addContent(content);
     document.write(page.toString());  
@@ -38,9 +38,7 @@ Help.prototype.closeHelp = function(){
 }
 
 Help.prototype.getDesc = function(){
-	var desc = "<textarea style='width:100%;height:40%;border:none'>"
-	desc += HELP_DESC;
-	desc +="</textarea>"
+	var desc = HELP_DESC;
 	
 	return desc;
 }
@@ -48,19 +46,26 @@ Help.prototype.getDesc = function(){
 Help.prototype.show = function(){
 	playAudioHandler('open1');	
 
-	var title = "帮助"
 	var desc = this.getDesc();
 	
 	var content =      "        <div style='margin: auto;text-align:center;'>"
-	content += "<div class='cfmsg_h2'>"+title+"</div>"
+	content += "<div class='cfmsg_h2 help'>游戏帮助</div>"
 	content += "<br>"
-	content += "            <div class='cfmsg_text'>"+desc+"</div>"
+	content += "            <div class='cfmsg_text help' id='cphelp_txt'>"+desc+"</div>"
 	content += "          <button class='cf_bt' onclick='g_help.closeHelp()'>关闭</button>"	
 	content += "             </div>"
 	var tag = document.getElementById(this.pagename);
 	tag.innerHTML = content;
 		
-    $('#'+this.tagname).modal({backdrop:'static',position:getSizes().MsgTop,show: true});     
+    $('#'+this.tagname).modal({backdrop:'static',position:20,show: true});     
+}
+
+Help.prototype.nextpage = function(page){
+	var tag = document.getElementById('cphelp_txt');
+	if (page==1)
+	 tag.innerHTML = HELP_DESC;
+	else
+	 tag.innerHTML = HELP_DESC2;
 }
 
 var g_help = new Help();

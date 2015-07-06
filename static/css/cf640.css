@@ -483,6 +483,20 @@ font-size:28px;
 height:150px;
 }
 
+.cfmsg_text.help {
+color:orange;
+font-size:23px;
+text-align:left;
+margin-top:-30px;
+margin-left:20px;
+height:530px;
+}
+
+.cfmsg_textsmall {
+color:rgb(39,88,104);
+font-size:19px;
+}
+
 .cfpanel
 {
   position: relative;
@@ -724,6 +738,10 @@ background:url('../../static/img/prop_bg5.png') no-repeat;
 .cfmsg_h2 {
 margin-top:-5px;
 color:#ffffff;
+}
+
+.cfmsg_h2.help {
+color:green;
 }
 
 .cf_line {
