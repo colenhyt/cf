@@ -72,12 +72,12 @@ Event.prototype.badEvent = function(item,itemIndex){
 		content += "<table><tr>"
 		content += "<td><div class='cfplayer_head_bg event'><img src='static/img/event_1.png'></div></td>"
 		content += "<td><div class='cfevent_desc'>";
-		content += "成功避开意外:<br><span style='color:green'>"+item.descs+"</span></div></td>"
+		content += "<span style='color:green'>"+item.descs+"</span></div></td>"
 		content += "</tr></table>"
 		content += "</div>"
 		content += "<div>"
 		content += "<br>"
-		content += "避免损失<img class='cficon_money' src='static/img/money.png'/>:<span style='color:red'>"+money+"</span>"
+		content += "已购买保险，成功避开意外损失<img class='cficon_money' src='static/img/money.png'/>:<span style='color:red'>"+money+"</span>"
 		content += "</div>"
 		g_msg.openModal(item.name,content);
 	}else{
@@ -94,7 +94,7 @@ Event.prototype.badEvent = function(item,itemIndex){
 		content += "损失 <img class='cficon_money' src='static/img/money.png'/> "
 		content += "<span id='cfevent_prize' class='cfevent_prize'>"+ money+"</span>"
 		content += "</div>"
-		content += "(购买<span style='color:red'>"+iname+"</span>可避免该意外损失)"
+		content += "(你可购买<span style='color:red'>"+iname+"</span>来规避该损失)"
 		g_msg.openModal(item.name,content,"g_event.eventOkCallback",itemIndex);
 	}
 
