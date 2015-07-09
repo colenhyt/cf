@@ -1,4 +1,4 @@
-var SiteUrl = "http://202.69.27.223:8081/cf"
+var SiteUrl = "http://202.69.27.238:8081/cf"
 
 var Share_Img = SiteUrl+"/static/img/app_icon_share.png"
 
