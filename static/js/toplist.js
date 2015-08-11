@@ -211,7 +211,7 @@ Toplist.prototype.zan = function(page,playerId)
 	
 	var now = new Date();
 	var zandata = store.get(this.zandata);
-	var key = now.getFullYear()+"-"+now.getMonth()+"-"+now.getDate();
+	var key = g_player.data.playerid+"_"+now.getFullYear()+"-"+now.getMonth()+"-"+now.getDate();
 	var zans = zandata[key];
 	if (zans==null){
 		zans = [];

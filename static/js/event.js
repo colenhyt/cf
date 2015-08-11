@@ -77,7 +77,7 @@ Event.prototype.badEvent = function(item,itemIndex){
 		content += "</div>"
 		content += "<div>"
 		content += "<br>"
-		content += "已购买保险，成功避开意外损失<img class='cficon_money' src='static/img/money.png'/>:<span style='color:red'>"+money+"</span>"
+		content += "已购买保险，成功避开意外损失:<br><img class='cficon_money' src='static/img/money.png'/> <span style='color:red'>"+money+"</span>"
 		content += "</div>"
 		g_msg.openModal(item.name,content);
 	}else{

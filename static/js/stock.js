@@ -98,7 +98,7 @@ Stock.prototype.loadNextQuoteTime = function(ids)
 
 Stock.prototype.findStockIds = function()
 {
-	var countNeed = 15;
+	var countNeed = 16;
 	
 	var tdata = store.get(this.name);
 	var data = [];

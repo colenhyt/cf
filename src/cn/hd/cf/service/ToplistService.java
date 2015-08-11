@@ -148,25 +148,15 @@ public class ToplistService extends BaseService {
 	
 	public int updateZan(Toplist toplist){
 		System.out.println("update zan: "+(toplist==null));
-		if (jedis!=null){
-			
-			String jsonObj = jedis.hget(ITEM_KEY,Integer.valueOf(toplist.getPlayerid()).toString());
-			if (jsonObj!=null){
-				Toplist record = (Toplist)Bean.toBean(jsonObj, Toplist.class);
-				jedis.hset(ITEM_KEY, record.getPlayerid().toString(), record.toString());
-			}			
-			jedis.close();
-			return 0;
-		}		
 		
 		ToplistExample example=new ToplistExample();
 		Criteria criteria=example.createCriteria();	
-		criteria.andTypeIsNotNull();
 		criteria.andPlayeridEqualTo(toplist.getPlayerid());
 		Toplist toplist2 = new Toplist();
 		toplist2.setZan(toplist.getZan());
+		toplist2.setPlayerid(toplist.getPlayerid());
 		toplistMapper.updateByExampleSelective(toplist2, example);
-		System.out.println("更新赞:"+toplist.getZan());
+		System.out.println("更新赞:"+toplist2.getZan());
 		DBCommit();
 		return 0;
 	}
@@ -304,5 +294,13 @@ public class ToplistService extends BaseService {
 			}
 		}
 		return true;		
+	}
+	
+	public static void main(String[] args){
+		ToplistService s = new ToplistService();
+		Toplist record = new Toplist();
+		record.setPlayerid(280);
+		record.setZan(3);
+		s.updateZan(record);
 	}
 }
