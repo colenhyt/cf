@@ -152,9 +152,12 @@ Insure.prototype.showDetail = function(title,desc,okCallback,itemid,qty,confmTex
 	var content =      "        <div class='cfinsure_content'>"
 	content += "<div class='cfmsg_h2'>"+title+"</div>"
 	content += "<div class='cfmsg_text insure'>"+desc+"</div>"
+	if (confmText){
 	content += "          <button class='cf_bt bt_cancel' onclick='g_insure.closeDetail()'>取消</button>"
-	if (confmText)
 	content += "          <button class='cf_bt' onclick='"+okCallback+"("+itemid+","+qty+")'>"+confmText+"</button>"
+	}else
+	content += "          <button class='cf_bt bt_cancel' onclick='g_insure.closeDetail()'>确认</button>"
+	
 	content += "             </div>"
 	var tag = document.getElementById(this.pagedetailname);
 	tag.innerHTML = content;

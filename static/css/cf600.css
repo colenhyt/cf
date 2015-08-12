@@ -92,7 +92,7 @@ td{font-size:26px;font-weight:bold;}
 
 .cfsaving_content{line-height:56px;text-align:left;}
 
-.cfsaving_qty{font-size:28px;height:54px;text-align:center;width:206px;}
+.cfsaving_qty{font-size:28px;height:54px;text-align:center;line-height:100%;width:206px;}
 
 .cfplayer_head_bg{background:url('../../static/img/player_head_bg.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;height:112px;vertical-align:bottom;width:112px;}
 
