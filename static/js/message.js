@@ -208,7 +208,7 @@ Msg.prototype.requestAgain = function(reqCallback){
 Msg.prototype.update = function()
 {
 	this.count++;
-	if (this.count%5==0)
+	if (this.count%20==0)
 	{
 		while (this.intips.length>0){
 			var desc = g_msg.intips.shift();
