@@ -367,7 +367,13 @@ Insure.prototype.update = function(){
 	  this.hasTip = this.existTimeout();
 	}
 	
-	if (!this.hasTip||!g_game.enter) return;
+	if (!this.hasTip||!g_game.enter) {
+		var tag=$("#tag2"+this.name);
+		if (tag){
+			tag.remove();
+		}
+		return;
+	}
 	
 	var tag = document.getElementById("tag2"+this.name);
 	if (!tag){
@@ -381,9 +387,9 @@ Insure.prototype.update = function(){
 	var tip = tag.innerHTML;
 	var index = tip.indexOf("tip2");
 	if (index>0){
-		tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text tip' onclick='g_insure.show()'>"
+		tag.innerHTML = "<div class='cfpage_text tip' onclick='g_insure.show()'></div>"
 	}else
-		tag.innerHTML = "<img src='static/img/tip_cash.png' class='cfpage_text tip2' onclick='g_insure.show()'>"
+		tag.innerHTML = "<div class='cfpage_text tip2' onclick='g_insure.show()'></div>"
 }
 
 var g_insure = new Insure();

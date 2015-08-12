@@ -51,7 +51,7 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 	var lowps = 0;
 		var flow = [];
 		for(var i=0;i<quotes.length;i++){
-			var ps = quotes[i].price;
+			var ps = ForDight(quotes[i].price,2);
 			if (upps==0)
 				upps = ps;
 			else if (ps>upps)

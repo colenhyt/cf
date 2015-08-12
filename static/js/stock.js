@@ -580,23 +580,29 @@ Stock.prototype.update_self = function(){
 
 //page打开才执行:
 Stock.prototype.update = function(){
-	if (!this.hasTip||!g_game.enter) return;
+	var tagid = "tag2"+this.name
+	var tag=document.getElementById(tagid);
+	if (!this.hasTip||!g_game.enter) {
+		if (tag){
+			document.body.removeChild(tag);
+		}
+		return;
+	}
 	
-		var tag = document.getElementById("tag2"+this.name);
-		if (!tag){
-	        var div = document.createElement("DIV");
-	        div.id = "tag2"+this.name;
-	        div.className = "cfpage_text "+this.name;
-	        document.body.appendChild(div);	  	
-	        tag = document.getElementById("tag2"+this.name);
-		}	
-			
-		var tip = tag.innerHTML;
-		var index = tip.indexOf("stocktip2");
-		if (index>0){
-			tag.innerHTML = "<img src='static/img/tip_stock.png' class='cfpage_text stocktip' onclick='g_stock.show()'>"
-		}else
-			tag.innerHTML = "<img src='static/img/tip_stock.png' class='cfpage_text stocktip2' onclick='g_stock.show()'>"
+	if (!tag){
+        var div = document.createElement("DIV");
+        div.id = tagid;
+        div.className = "cfpage_text "+this.name;
+        document.body.appendChild(div);	  	
+        tag = document.getElementById(tagid);
+	}	
+		
+	var tip = tag.innerHTML;
+	var index = tip.indexOf("stocktip2");
+	if (index>0)
+		tag.innerHTML = "<div class='cfpage_text stocktip' onclick='g_stock.show()'></div>"
+	else
+		tag.innerHTML = "<div class='cfpage_text stocktip2' onclick='g_stock.show()'></div>"
 }
 
 var g_stock = new Stock();

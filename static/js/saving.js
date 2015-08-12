@@ -68,7 +68,7 @@ content += "              </tr>"
 content += "          </table>     "
 		content += "             </div>"
 	content += "          <button class='cf_bt bt_cancel' data-dismiss='modal'>取消</button>      "  
-	content += "          <button class='cf_bt' onclick='g_saving.doBuy("+id+")'>确认</button>"
+	content += "          <button class='cf_bt' onclick='g_saving.doBuy("+id+")'>存入</button>"
 content += "             </div>"
  
  	return content;

@@ -138,7 +138,7 @@ Event.prototype.update = function(){
 	this.tick++;
 	if (this.tick%du==0)
 	{
-		this.triggerEvent();
+		//this.triggerEvent();
 	}
  }
 }
