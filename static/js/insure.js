@@ -148,21 +148,28 @@ Insure.prototype.clickDetail = function(id,type){
    	g_insure.show_finandetail(id)
 }
 
-Insure.prototype.showDetail = function(title,desc,okCallback,itemid,qty,confmText){
+Insure.prototype.showDetail = function(title,desc,okCallback,itemid,qty,confmText,isInsure){
+	var clsname  = "insure"
+	var tagname = this.tagdetailname
+	var detail = this.pagedetailname
 	var content =      "        <div class='cfinsure_content'>"
 	content += "<div class='cfmsg_h2'>"+title+"</div>"
-	content += "<div class='cfmsg_text insure'>"+desc+"</div>"
+	content += "<div class='cfmsg_text "+clsname+"'>"+desc+"</div>"
 	if (confmText){
-	content += "          <button class='cf_bt bt_cancel' onclick='g_insure.closeDetail()'>取消</button>"
-	content += "          <button class='cf_bt' onclick='"+okCallback+"("+itemid+","+qty+")'>"+confmText+"</button>"
-	}else
-	content += "          <button class='cf_bt bt_cancel' onclick='g_insure.closeDetail()'>确认</button>"
-	
-	content += "             </div>"
-	var tag = document.getElementById(this.pagedetailname);
-	tag.innerHTML = content;
+		content += "          <button class='cf_bt bt_cancel' onclick='g_insure.closeDetail()'>取消</button>"
+		content += "          <button class='cf_bt' onclick='"+okCallback+"("+itemid+","+qty+")'>"+confmText+"</button>"
+	}else {
+		content += "          <button class='cf_bt bt_cancel' onclick='g_insure.closeDetail()'>确认</button>"
+	}
 		
-	$('#'+this.tagdetailname).modal({position:getSizes().DetailPageTop,show: true});  
+	content += "             </div>"
+	var tag = document.getElementById(detail);
+	tag.innerHTML = content;
+	
+
+ 		
+	a = $('#'+tagname)
+	a.modal({position:getSizes().DetailPageTop,show: true});  
 }
 
 Insure.prototype.closeDetail = function(id){ 
@@ -201,7 +208,7 @@ Insure.prototype.show_insuredetail = function(id){
 	var confirm;
 	if (pitem.qty<=0)
 		confirm = "购买";		
-    this.showDetail(item.name,content,"g_insure.doBuy",id,1,confirm);
+    this.showDetail(item.name,content,"g_insure.doBuy",id,1,confirm,true);
 	
 }
 
@@ -249,7 +256,7 @@ content += "           </div>  "
 	var confirm;
 	if (pitem.qty<=0)
 		confirm = "购买";		
-    this.showDetail(item.name,content,"g_insure.doBuy",id,0,confirm);
+    this.showDetail(item.name,content,"g_insure.doBuy",id,0,confirm,false);
 }
 
 Insure.prototype.countBuy = function(count) {
@@ -350,6 +357,7 @@ Insure.prototype.existTimeout = function() {
 	var hasTip = false;
 	for (itemid in g_player.insure){
 	 pitem = g_player.insure[itemid];
+	 if (!pitem) continue;
      var item = tdata[itemid];
 	 var timeout = calculateTimeout(pitem,item);
 	 if (timeout<0.5){

@@ -178,6 +178,7 @@ Bank.prototype.existTimeout = function() {
 	var hasTip = false;
 	for (itemid in g_player.saving){
 	 pitem = g_player.saving[itemid];
+	 if (!pitem) continue;
      var item = tdata[itemid];
 	 var timeout = calculateTimeout(pitem,item);
 	 if (itemid!=1&&timeout<0.5){
