@@ -272,22 +272,6 @@ Login.prototype.loginCallback = function(obj){
 	 
      var loginMsg = this.loadData(objdata);
 	this.msgtip(loginMsg);
-	
-	for (var i=0;i<loginMsg.length;i++){
-		var msg = loginMsg[i];
-		if (msg.type==g_saving.name){
-			var ppf = parseInt(msg.profit);
-			if (msg.t==0)
-				g_msg.tip("获得"+msg.name+"利息:"+ppf);
-			else
-				g_msg.tip("您的"+msg.name+"存款到期, 获得利息:"+ppf);
-		}else if (msg.type==g_insure.name){
-			if (msg.profit==-1){
-				g_msg.tip("您的"+msg.name+"已到期");
-			}else
-				g_msg.tip("您的"+msg.name+"已到期,获得收益:"+parseInt(msg.profit));
-		}
-	}
     
     g_playerlog.addlog();
     
