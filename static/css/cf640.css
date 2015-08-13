@@ -491,7 +491,16 @@ height:275px;
 
 .cfmsg_text.insure{
 margin-top:40px;
+height:320px;
+}
+
+.cfmsg_text.final{
+margin-top:40px;
 height:420px;
+}
+
+.cfmsg_text.insure.small{
+height:360px;
 }
 
 .cfmsg_text.uplevel{
@@ -757,6 +766,10 @@ background:url('../../static/img/prop_bg5.png') no-repeat;
 .cfmsg_h2 {
 margin-top:-5px;
 color:#ffffff;
+}
+.cfmsg_h2.insure {
+margin-top:-15px;
+font-size:90%
 }
 
 .cfmsg_h2.help {

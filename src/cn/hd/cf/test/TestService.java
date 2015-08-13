@@ -1,27 +1,15 @@
 package cn.hd.cf.test;
 
-import java.util.Date;
-
-import cn.hd.cf.action.LoginAction;
-import cn.hd.cf.model.PlayerWithBLOBs;
-import cn.hd.cf.service.PlayerService;
-import cn.hd.util.MD5;
+import java.math.BigDecimal;
 
 public class TestService {
 	
 	public static void testAction()
 	{
-		LoginAction action = new LoginAction();		
-		PlayerWithBLOBs player = new PlayerWithBLOBs();
-		player.setAccountid(1);
-		player.setPlayername("test1");
-		player.setPwd(MD5.MD5("aaa"));
-		Date time = new Date(); 
-		player.setCreatetime(time);		
-		action.setPlayer(player);
-		//action.register();
-		PlayerService s = new PlayerService();
-		s.add(player);
+		float   f  = (float)22.5;  
+		  BigDecimal   b   =   new   BigDecimal(f);  
+		  int   f1   =   (int)b.setScale(0,   BigDecimal.ROUND_HALF_UP).floatValue();        
+		  System.out.println(f1);  
 		
 	}
 	public static void main(String[] args) {

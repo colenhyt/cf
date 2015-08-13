@@ -150,7 +150,11 @@ td{font-size:21px;font-weight:bold;}
 
 .cfmsg_text{font-size:21px;height:206px;position:relative;text-align:center;}
 
-.cfmsg_text.insure{height:315px;margin-top:30px;}
+.cfmsg_text.insure{height:240px;margin-top:30px;}
+
+.cfmsg_text.final{height:315px;margin-top:30px;}
+
+.cfmsg_text.insure.small{height:270px;}
 
 .cfmsg_text.uplevel{font-size:21px;height:112px;position:relative;text-align:center;}
 
@@ -227,6 +231,8 @@ td{font-size:21px;font-weight:bold;}
 .cfprop.p5{background:url('../../static/img/prop_bg5.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;}
 
 .cfmsg_h2{color:rgb(255, 255, 255);margin-top:-3px;}
+
+.cfmsg_h2.insure{font-size:90%;margin-top:-11px;}
 
 .cfmsg_h2.help{color:green;}
 

@@ -21,6 +21,9 @@ Insure.prototype.init = function(){
 		store.set(this.name,data_insuredata);
 	}     
     this.buildHTML();
+    tagdetail = $('#'+this.pagedetailname)
+    this.finalPageDetail = tagdetail.css("height")
+    this.smallPageDetail = parseInt(this.finalPageDetail.substring(0,this.finalPageDetail.indexOf("px")))*0.8+"px"
 }
 
 Insure.prototype.onEnter = function(){
@@ -149,12 +152,21 @@ Insure.prototype.clickDetail = function(id,type){
 }
 
 Insure.prototype.showDetail = function(title,desc,okCallback,itemid,qty,confmText,isInsure){
-	var clsname  = "insure"
 	var tagname = this.tagdetailname
 	var detail = this.pagedetailname
 	var content =      "        <div class='cfinsure_content'>"
-	content += "<div class='cfmsg_h2'>"+title+"</div>"
-	content += "<div class='cfmsg_text "+clsname+"'>"+desc+"</div>"
+	if (confmText&&isInsure){
+		content += "<div class='cfmsg_h2 insure'>"+title+"</div>"
+		content += "<div class='cfmsg_text insure'>"+desc+"</div>"
+		tagdetail = $('#'+this.pagedetailname)
+		tagdetail.css("height",this.smallPageDetail)
+	}else {
+		content += "<div class='cfmsg_h2'>"+title+"</div>"
+		content += "<div class='cfmsg_text final'>"+desc+"</div>"
+		tagdetail = $('#'+this.pagedetailname)
+		tagdetail.css("height",this.finalPageDetail)
+	}
+		
 	if (confmText){
 		content += "          <button class='cf_bt bt_cancel' onclick='g_insure.closeDetail()'>取消</button>"
 		content += "          <button class='cf_bt' onclick='"+okCallback+"("+itemid+","+qty+")'>"+confmText+"</button>"
@@ -165,8 +177,6 @@ Insure.prototype.showDetail = function(title,desc,okCallback,itemid,qty,confmTex
 	content += "             </div>"
 	var tag = document.getElementById(detail);
 	tag.innerHTML = content;
-	
-
  		
 	a = $('#'+tagname)
 	a.modal({position:getSizes().DetailPageTop,show: true});  

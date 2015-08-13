@@ -1,5 +1,6 @@
 package cn.hd.cf.action;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.Calendar;
 import java.util.Date;
@@ -248,7 +249,8 @@ public class SavingAction extends BaseAction {
 				inter = getLiveInter(saving2);
 			}
 			if (Math.abs(inter-0.9)>0){
-				int iInter = (int)inter;
+				BigDecimal b = new BigDecimal(inter);  
+				int iInter = (int)b.setScale(0,BigDecimal.ROUND_HALF_UP).floatValue();
 				inAmount += iInter;	
 				System.out.println("得到利息:"+iInter);
 				newsaving.setProfit((float)iInter);				
