@@ -181,7 +181,7 @@ Bank.prototype.existTimeout = function() {
 	 if (!pitem) continue;
      var item = tdata[itemid];
 	 var timeout = calculateTimeout(pitem,item);
-	 if (itemid!=1&&timeout<0.5){
+	 if (itemid!=1&&timeout<1){
 	  hasTip = true;
 	  break;
 	 }

@@ -312,8 +312,8 @@ itemStr2 = function(items,split){
 calculateTimeout = function(pitem,item){
     var ctime = pitem.createtime;
     var now = Date.parse(new Date());
-    var diffDays = (now - ctime)/(1000*60*60*24);
-    var periodTime = item.period*pitem.qty;
+    var diffDays = (now - ctime)/(1000*60*60);
+    var periodTime = item.period*pitem.qty*24;
     var days = ForDight(periodTime - diffDays);
     if (days<0)
      days = 0;
@@ -350,7 +350,7 @@ timeoutDesc = function(pitem,item,petype){
 }
 
 var pp = Date.parse(new Date());
-pp -= 1000*60*60*24;
+pp -= 1000*60*60*1;
 var pitem = {createtime:pp,qty:1};
 var item = {period:1};
 

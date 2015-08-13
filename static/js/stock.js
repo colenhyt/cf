@@ -38,41 +38,72 @@ Stock.prototype.init = function(){
 }
 
 Stock.prototype.onEnter = function(){
-	this.stockChange();
+}
+
+Stock.prototype.loadPlayerLastQuote = function()
+{
+	if (g_stock.isOpen) return;
+
+	var stockids = g_player.stockids;
+	if (!stockids) return;
+	
+	var jids = "stockids="+JSON.stringify(stockids);
+	try  {
+		$.ajax({type:"post",url:"/cf/stock_pagelastquotes.do",data:jids,success:function(data){
+			var lastquotes = cfeval(data);
+			var prelastquotes = g_stock.playerlastquotes
+			g_stock.playerlastquotes = lastquotes;
+			if (!prelastquotes)return;
+			
+			for (itemid in lastquotes){
+				var prelastps = ForDight(prelastquotes[itemid]);
+				var lastps = ForDight(lastquotes[itemid]);
+				if (prelastps!=lastps){
+					g_stock.hasTip = true
+				}
+			}
+		}});
+	}   catch  (e)   {
+	    logerr(e.name);
+	    return;
+	} 
 }
 
 Stock.prototype.loadPageLastQuote = function()
 {
 	g_msg.showload("g_stock.loadPageLastQuote");
 	
-	if (!g_stock.currPageIds) return;
+	var stockids = g_stock.currPageIds;
+	if (!stockids) return;
 	
-	var jids = "stockids="+JSON.stringify(g_stock.currPageIds);
+	var jids = "stockids="+JSON.stringify(stockids);
 	try  {
 		$.ajax({type:"post",url:"/cf/stock_pagelastquotes.do",data:jids,success:function(data){
+			g_msg.destroyload();
 			var lastquotes = cfeval(data);
 			g_stock.lastquotes = lastquotes;
+			//当前页股票属性变化:
 			var pname = g_stock.pagequote+g_stock.currPage;
-			//g_msg.tip("load back save quote:"+pname);
 			store.set(pname,lastquotes);
 			for (itemid in lastquotes){
+				var lastps = ForDight(lastquotes[itemid]);
+				//当前股票最新价格修改:
 				var tagps = document.getElementById(g_stock.name+"_ps"+itemid);
 				if (!tagps) continue;
 				
-				var lastps = ForDight(lastquotes[itemid]);
 				tagps.innerHTML = lastps;
+				
 				var pitem = g_player.getStockItem(itemid);
 				if (pitem.qty<=0)continue;
-				
+				//玩家股票盈亏变化:				
+				var pr = parseInt(pitem.qty*lastps - pitem.amount);
 				var tagpr = document.getElementById(g_stock.name+"_pr"+itemid);
-				var pr = pitem.qty*lastps - pitem.amount;
-				tagpr.innerHTML = parseInt(pr);
+				tagpr.innerHTML = pr;
 				if (pr>0)
 					tagpr.style.color = "red";
 				else
 					tagpr.style.color = "green";
 			}
-			g_msg.destroyload();
 		}});
 	}   catch  (e)   {
 	    logerr(e.name);
@@ -121,6 +152,8 @@ Stock.prototype.findStockIds = function()
 
 Stock.prototype.show = function(){
 	playAudioHandler('open1');	
+	this.hasTip = false;
+	
 	if (g_player.data.openstock!=1){
 		g_msg.open2("证券开户","您需要开通证券账户才能投资股票，请点击'确认'按钮开通","g_stock.confirmOpen",1,1,1,null,"g_stock.onClose");
 	}else {
@@ -229,7 +262,8 @@ Stock.prototype.showDetail = function(id,isflush){
         
    this.waitCount = 0;
    var strPro = "尚未持有";
- 	var quote = this.lastquotes[id];
+	currentquotes = store.get(g_stock.pagequote+g_stock.currPage);   
+ 	var quote = currentquotes[id];
 	var ps = 0;
  	if (quote!=null) {
 		ps = ForDight(quote);
@@ -453,13 +487,8 @@ Stock.prototype.findQuotes = function()
 	var stockid = g_stock.currShowStockId;
 	if (!stockid) return;
 
-	var lsec = g_stock.findQuoteLostTime();
-	var islocal = Math.abs(lsec-QUOTETIME)<QUOTETIME/3;
 	var qdatas = store.get(this.quotename);
 	var squotes = qdatas[stockid];
-//	if (islocal&&squotes){
-//		return squotes;
-//	}
 	
 	g_msg.showload("g_stock.findQuotes");
 
@@ -475,54 +504,6 @@ Stock.prototype.findQuotes = function()
 
 	}   catch  (e)   {
 	    logerr(e.name);
-	} 
-}
-
-Stock.prototype.playerStockQuoteCallback = function(data)
-{
-}
-
-Stock.prototype.queryStockLastQuote = function(stockids,callback)
-{
-	var jids = "stockids="+JSON.stringify(stockids);
-	try  {
-		$.ajax({type:"post",url:"/cf/stock_pagelastquotes.do",data:jids,success:callback});
-	}   catch  (e)   {
-	    logerr(e.name);
-	    return;
-	} 
-}
-
-Stock.prototype.stockChange = function()
-{
-	if (g_player.stockids.length<=0) return;
-	
-	var jids = "stockids="+JSON.stringify(g_player.stockids);
-	try  {
-		$.ajax({type:"post",url:"/cf/stock_pagelastquotes.do",data:jids,success:function(data){
-			var lastquotes = cfeval(data);
-			g_stock.lastquotes = lastquotes;
-			var floatAmounts = {};
-			var closeIds = {};
-			var prs = 0;
-			for (itemid in lastquotes){
-				var pitem = g_player.getStockItem(itemid);
-				if (pitem.qty<=0) continue;
-				var newps = ForDight(lastquotes[itemid]);
-				floatAmounts[itemid] = pitem.qty*newps; 
-				prs += pitem.qty*newps - pitem.amount;
-				//g_player.setStockItemPs(itemid,newps);
-				this.hasTip = true;
-			}
-			for (key in closeIds)
-			{
-				g_player.buyItem(g_stock.name,key,closeIds[key].qty,closeIds[key].price);
-			}
-			//g_msg.tip("股票资产盈亏变化:"+parseInt(prs));
-		}});
-	}   catch  (e)   {
-	    logerr(e.name);
-	    return;
 	} 
 }
 
@@ -557,7 +538,10 @@ Stock.prototype.update_self = function(){
 	var lsec = this.findQuoteLostTime();
 	var rebuild = false
 	if (lsec==QUOTETIME){
-		this.stockChange();	//股票涨跌获取通知:
+		//股票涨跌图标提示:
+		if (!this.isOpen){
+			this.loadPlayerLastQuote();
+		}
 		rebuild = true;
 	}
 

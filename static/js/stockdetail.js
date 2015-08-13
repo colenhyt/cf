@@ -50,7 +50,8 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 	var upps = 0;
 	var lowps = 0;
 		var flow = [];
-		for(var i=0;i<quotes.length;i++){
+		var len = quotes.length
+		for(var i=0;i<len;i++){
 			var ps = ForDight(quotes[i].price,2);
 			if (upps==0)
 				upps = ps;
@@ -61,6 +62,9 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 			else if (ps<lowps)
 				lowps = ps;
 			flow.push(ps);
+			if (itemid==18)
+			 i++;
+			
 		}
 		//alert(flow.length)
 		flow.push(currPs);

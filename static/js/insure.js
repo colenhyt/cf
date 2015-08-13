@@ -370,7 +370,7 @@ Insure.prototype.existTimeout = function() {
 	 if (!pitem) continue;
      var item = tdata[itemid];
 	 var timeout = calculateTimeout(pitem,item);
-	 if (timeout<0.5){
+	 if (timeout<1){
 	  hasTip = true;
 	  break;
 	 }
