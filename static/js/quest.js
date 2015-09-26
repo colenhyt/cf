@@ -180,6 +180,25 @@ Quest.prototype.doneQuest = function(quest){
 	    break;
 	}
     }
+    //当天任务是否已全部完成:
+    var doneCount = 0;
+    for (var i=0;i<items.length;i++){
+    	var item = items[i];
+    	if (item.status==QUEST_STATUS.DONE){
+    	 doneCount++;
+    	}
+    }    
+    if (doneCount>=items.length){
+     alert('任务已全部完成:'+doneCount);
+		try  {
+			var ppobj = {playerid:g_player.data.playerid};
+	   		var dataParam = obj2ParamStr("player",ppobj);
+			$.ajax({type:"post",url:"/cf/login_donetask.do",data:dataParam,success:function(dataobj){
+			}});
+		}   catch  (e)   {
+		    document.write(e.name);
+		}      
+    }
 }
 
 Quest.prototype.getQuetPrize = function(id){

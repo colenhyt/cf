@@ -73,62 +73,15 @@ public class LoginAction extends SavingAction {
 		return null;
 	}
 	
-	public String register(){
-		//System.out.println("玩家注册:"+player.getPlayername());
-		boolean bExist = playerService.have(player.getPlayername());
-		if (bExist)
-		{
-			System.out.println("account exist :name:"+player.getPlayername());
-			Message msg = new Message();
-			msg.setCode(RetMsg.MSG_PlayerNameIsExist);		//重名
-			JSONObject obj = JSONObject.fromObject(msg);
-			write(obj.toString(),"utf-8");
-			return null;
-		}
-		PlayerWithBLOBs playerBlob = new PlayerWithBLOBs();
-		Date time = new Date(); 
-		
-		//注册奖励:
-		Init init = initdataService.findInit();
-		if (init!=null){
-			playerBlob.setExp(init.getExp());
-		}
-		
-//		String ipAddr = getHttpRequest().getRemoteAddr();
-		playerBlob.setAccountid(1);
-		playerBlob.setPlayername(player.getPlayername());
-		playerBlob.setSex(player.getSex());
-		playerBlob.setCreatetime(time);
-		String pwd = StringUtil.getRandomString(10);
-		playerBlob.setPwd(MD5.MD5(pwd));
-		playerBlob.setPlayerid(DataManager.getInstance().assignNextId());
-		boolean ret = playerService.add(playerBlob);
-		if (ret==false){
-			super.writeMsg(RetMsg.MSG_SQLExecuteError);
-			return null;
-		}
-		//活期存款:
-		if (init!=null&&init.getMoney()>0){
-			Saving savingCfg = savingdataService.findSaving(1);
-			Saving saving = new Saving();
-			saving.setName(savingCfg.getName());
-			saving.setPeriod(savingCfg.getPeriod());
-			saving.setRate(savingCfg.getRate());
-			saving.setItemid(savingCfg.getId());
-			saving.setQty(1);
-			saving.setUpdatetime(time);
-			saving.setType(savingCfg.getType());
-			saving.setPlayerid(playerBlob.getPlayerid());
-			saving.setAmount(Float.valueOf(init.getMoney().intValue()));
-			saving.setCreatetime(time);
-			savingService.add(saving);
-			super.playerTopUpdate(playerBlob.getPlayerid());
-		}
-		
-		//String pdata = getPlayerJsonData(playerBlob);
-		
-		//System.out.println("register player: "+pdata);
-		//write(pdata,"utf-8");
+	public String signin(){
+		System.out.println("玩家签到:"+player.getPlayerid());
+		playerService.addSignin(player.getPlayerid());
+		return null;
+	}
+	
+	public String donetask(){
+		System.out.println("玩家完成任务:"+player.getPlayerid());
+		playerService.addDoneQuest(player.getPlayerid());
 		return null;
 	}
 	
@@ -254,13 +207,17 @@ public class LoginAction extends SavingAction {
 	public String login()
 	{
 		
-		System.out.println("login :"+player.getPlayername());
-		PlayerWithBLOBs playerBlob = playerService.findByName(player.getPlayername());
+		System.out.println("enter game,name:"+player.getPlayername()+",tel :"+player.getTel());
+		PlayerWithBLOBs playerBlob = playerService.findByKey(player.getPlayername(),player.getTel());
 		if (playerBlob==null)
 		{
-			register();
-			System.out.println("new register:"+player.getPlayername());
-			playerBlob = playerService.findByName(player.getPlayername());
+			String ret = register();
+			if (ret==null){
+				System.out.println("register fail:name:"+player.getPlayername()+",tel"+player.getTel());
+				return null;
+			}
+			System.out.println("register success:name:"+player.getPlayername()+",tel"+player.getTel());
+			playerBlob = playerService.findByKey(player.getPlayername(),player.getTel());
 			//return null;
 		}
 		//System.out.println("player(");
@@ -271,8 +228,6 @@ public class LoginAction extends SavingAction {
 		p2.setLastlogin(playerBlob.getLastlogin());
 		playerService.updateByKey(p2);
 		
-//		insureService.DBConnClose();
-//		playerService.DBConnClose();	
 		write(pdata,"utf-8");
 		
 		//System.out.println("player("+playerBlob.getPlayername()+") login success");
@@ -334,4 +289,61 @@ public class LoginAction extends SavingAction {
 	public void setPlayer(PlayerWithBLOBs player) {
 		this.player = player;
 	}
+
+	public String register(){
+			//System.out.println("玩家注册:"+player.getPlayername());
+			boolean bExist = playerService.have(player.getPlayername(),player.getTel());
+			if (bExist)
+			{
+				System.out.println("account exist :name:"+player.getPlayername()+",tel:"+player.getTel());
+				writeMsg(RetMsg.MSG_PlayerTelIsExist);//号码重复
+				return null;
+			}
+			PlayerWithBLOBs playerBlob = new PlayerWithBLOBs();
+			Date time = new Date(); 
+			
+			//注册奖励:
+			Init init = initdataService.findInit();
+			if (init!=null){
+				playerBlob.setExp(init.getExp());
+			}
+			
+	//		String ipAddr = getHttpRequest().getRemoteAddr();
+			playerBlob.setAccountid(1);
+			playerBlob.setTel(player.getTel());
+			playerBlob.setPlayername(player.getPlayername());
+			playerBlob.setSex(player.getSex());
+			playerBlob.setCreatetime(time);
+			String pwd = StringUtil.getRandomString(10);
+			playerBlob.setPwd(MD5.MD5(pwd));
+			playerBlob.setPlayerid(DataManager.getInstance().assignNextId());
+			boolean ret = playerService.add(playerBlob);
+			if (ret==false){
+				super.writeMsg(RetMsg.MSG_SQLExecuteError);
+				return null;
+			}
+			//活期存款:
+			if (init!=null&&init.getMoney()>0){
+				Saving savingCfg = savingdataService.findSaving(1);
+				Saving saving = new Saving();
+				saving.setName(savingCfg.getName());
+				saving.setPeriod(savingCfg.getPeriod());
+				saving.setRate(savingCfg.getRate());
+				saving.setItemid(savingCfg.getId());
+				saving.setQty(1);
+				saving.setUpdatetime(time);
+				saving.setType(savingCfg.getType());
+				saving.setPlayerid(playerBlob.getPlayerid());
+				saving.setAmount(Float.valueOf(init.getMoney().intValue()));
+				saving.setCreatetime(time);
+				savingService.add(saving);
+				super.playerTopUpdate(playerBlob.getPlayerid());
+			}
+			
+			//String pdata = getPlayerJsonData(playerBlob);
+			
+			//System.out.println("register player: "+pdata);
+			//write(pdata,"utf-8");
+			return "true";
+		}
 }

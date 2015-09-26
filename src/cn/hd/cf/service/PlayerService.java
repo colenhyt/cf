@@ -1,23 +1,43 @@
 package cn.hd.cf.service;
 
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.Date;
 import java.util.List;
 
 import redis.clients.jedis.Jedis;
 import cn.hd.base.BaseService;
 import cn.hd.base.Bean;
 import cn.hd.cf.dao.PlayerMapper;
+import cn.hd.cf.dao.QuestMapper;
+import cn.hd.cf.dao.SigninMapper;
 import cn.hd.cf.model.Player;
 import cn.hd.cf.model.PlayerExample;
 import cn.hd.cf.model.PlayerExample.Criteria;
 import cn.hd.cf.model.PlayerWithBLOBs;
-import cn.hd.mgr.DataManager;
+import cn.hd.cf.model.Quest;
+import cn.hd.cf.model.Signin;
 
 public class PlayerService extends BaseService {
 	public static String ITEM_KEY = "player";
 	private PlayerMapper playerMapper;
+	private SigninMapper signinMapper;
+	private QuestMapper questMapper;
 	
+	public QuestMapper getQuestMapper() {
+		return questMapper;
+	}
+
+	public void setQuestMapper(QuestMapper questMapper) {
+		this.questMapper = questMapper;
+	}
+
+	public SigninMapper getSigninMapper() {
+		return signinMapper;
+	}
+
+	public void setSigninMapper(SigninMapper signinMapper) {
+		this.signinMapper = signinMapper;
+	}
+
 	public PlayerMapper getPlayerMapper() {
 		return playerMapper;
 	}
@@ -28,7 +48,7 @@ public class PlayerService extends BaseService {
 
 	public PlayerService()
 	{
-		initMapper("playerMapper");
+		initMapper("playerMapper","signinMapper","questMapper");
 	}
 	
 	public int initData(Jedis jedis2){
@@ -63,6 +83,19 @@ public class PlayerService extends BaseService {
 		return player;
 	}
 	
+	public PlayerWithBLOBs findByKey(String playerName,String playerTel){
+		PlayerWithBLOBs player = null;
+	
+		PlayerExample example = new PlayerExample();
+		Criteria criteria=example.createCriteria();
+		criteria.andPlayernameEqualTo(playerName);
+		criteria.andTelEqualTo(playerTel);
+		List<PlayerWithBLOBs> players = playerMapper.selectByExampleWithBLOBs(example);
+		if (players.size()>0)
+			player = players.get(0);
+		
+		return player;
+	}	
 	public PlayerWithBLOBs findByPlayerId(int playerid){
 		PlayerWithBLOBs player = null;
 		if (jedis!=null){
@@ -96,6 +129,20 @@ public class PlayerService extends BaseService {
 		return true;
 	}
 	
+	public boolean addDoneQuest(int playerId){
+		try {
+			Quest record = new Quest();
+			record.setPlayerid(playerId);
+			record.setCrdate(new Date());
+			questMapper.insertSelective(record);
+		DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}		
+		return true;
+	}
+	
 	public boolean updateByKey(PlayerWithBLOBs record)
 	{
 		try {
@@ -108,26 +155,12 @@ public class PlayerService extends BaseService {
 		return true;
 	}
 	
-	public boolean have(String playerName){
-		if (jedis!=null){
-		Collection<String> l = jedis.hgetAll(ITEM_KEY).values();
-		boolean exist = false;
-		for (Iterator<String> iter = l.iterator(); iter.hasNext();) {
-			  String str = (String)iter.next();
-			  PlayerWithBLOBs player = (PlayerWithBLOBs)Bean.toBean(str,PlayerWithBLOBs.class);
-			  if (player.getPlayername().equals(playerName)){
-				  exist = true;
-				  break;
-			  }
-		}		
-		jedis.close();
-		return exist;
-		}
-		
+	public boolean have(String playerName,String playerTel){	
 		PlayerExample example = new PlayerExample();
 		Criteria criteria=example.createCriteria();
 		
 		criteria.andPlayernameEqualTo(playerName);
+		criteria.andTelEqualTo(playerTel);
 		List<Player> players = playerMapper.selectByExample(example);
 		return players.size()>0;	
 	}
@@ -155,4 +188,18 @@ public class PlayerService extends BaseService {
 			
 			return player;
 		}
+
+	public boolean addSignin(int playerId){
+		try {
+			Signin record = new Signin();
+			record.setPlayerid(playerId);
+			record.setCrdate(new Date());
+		signinMapper.insertSelective(record);
+		DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}		
+		return true;
+	}
 }

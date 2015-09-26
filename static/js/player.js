@@ -61,6 +61,15 @@ Playerlog.prototype.updateQuest = function(){
 }
 
 Playerlog.prototype.updateSignin = function(feeling){
+	try  {
+		var ppobj = {playerid:g_player.data.playerid};
+   		var dataParam = obj2ParamStr("player",ppobj);
+		$.ajax({type:"post",url:"/cf/login_signin.do",data:dataParam,success:function(dataobj){
+		}});
+	}   catch  (e)   {
+	    document.write(e.name);
+	} 
+	
 	var key = g_playerlog.findlogkey();
 	var currDate = new Date();
 	var tdata = store.get(this.name);
@@ -70,6 +79,7 @@ Playerlog.prototype.updateSignin = function(feeling){
 	}
 	tdata[key] = currdlog;
 	store.set(this.name,tdata);
+	
 }
 
 // JavaScript Document
