@@ -20,6 +20,18 @@ Main.prototype.init = function(){
 //return;
 	
 	//g_event.triggerEvent();
+	 
+	var tel = getPar("tel");
+	//!isNumValue(tel)
+	if (!tel||tel.length<=0){
+		gameErr("获取初始化参数失败，无法进入游戏!");
+		return;
+	}
+	g_usertel = tel;
+	
+	var nickname = getPar("nickname");
+	if (nickname)
+	 g_username = nickname;
 	
     var canvas = document.createElement("canvas");
     canvas.width = getSizes().SceneWidth;

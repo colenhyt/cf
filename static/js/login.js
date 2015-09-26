@@ -41,7 +41,12 @@ Login.prototype.draw = function()
 	   	 if (img.name=="inputnick"){
 		    var div = document.createElement("div");
 		    div.id = "inputnickdiv";
-		    var nickName = tdata?tdata.playername:Login_InputDft;
+		    var nickName = Login_InputDft;
+		    if (tdata&&tdata.playername){
+		    	nickName = tdata.playername;
+		    }else if (g_username)
+		    	nickName = g_username;
+		    	
 		   // nickName = Date.parse(new Date());
 		    var title = "<span>昵称:</span>"
 		    var input = "<input type='text' id='inputnick' value='"+nickName+"' class='cflogin_input' onfocus='g_login.clearInput()'>";
@@ -309,8 +314,7 @@ Login.prototype.login = function(){
 //     	alert("本地数据缺失，登录失败");
 //     	return;
 //     }
-     
-     var ppobj = {playername:pname,sex:g_login.sex};
+     var ppobj = {playername:pname,sex:g_login.sex,tel:g_usertel};
    	var dataParam = obj2ParamStr("player",ppobj);
     var serverPlayer;
     var now = new Date();

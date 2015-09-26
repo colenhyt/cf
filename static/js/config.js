@@ -10,6 +10,10 @@ var Dl_Url_android = "http://dd.myapp.com/16891/32B5098A37D290206587504942EBB30D
 
 var g_game;
 
+var g_username = null;
+
+var g_usertel = null;
+
 var ZAN_COUNT = 10;	//每天点赞次数限制
 
 var LoginMode = 0;	//1为注册模式，0为登陆模式
@@ -114,7 +118,7 @@ var MSG_SQLExecuteError = 1;
 var MSG_MoneyNotEnough = 2;
 var MSG_NoThisStock = 3;
 var MSG_NoSavingData = 4;
-var MSG_PlayerNameIsExist = 5;
+var MSG_PlayerTelIsExist = 5;
 var MSG_WrongPlayerNameOrPwd = 6;
 var MSG_StockIsClosed = 7;
 
@@ -123,7 +127,7 @@ ERR_MSG[MSG_SQLExecuteError] = "sql出错";
 ERR_MSG[MSG_MoneyNotEnough] = "您的钱不够";
 ERR_MSG[MSG_NoThisStock] = "这个股票不存在";
 ERR_MSG[MSG_NoSavingData] = "没有该存款";
-ERR_MSG[MSG_PlayerNameIsExist] = "这个昵称已经被使用";
+ERR_MSG[MSG_PlayerTelIsExist] = "重复电话号码";
 ERR_MSG[MSG_WrongPlayerNameOrPwd] = "用户名或密码不正确";
 ERR_MSG[MSG_StockIsClosed] = "股市已关闭,不能买卖";
 
