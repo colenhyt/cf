@@ -1,6 +1,8 @@
 
 function initShareSDK()
 {
+	return;		//关闭分享;
+	
     $sharesdk.open("76300569a724", true);
     
     var sinaConf = {};
@@ -134,6 +136,7 @@ function initShareSDK()
 
         function playAudioHandler(audioName)
         {
+            return;		//关闭音效;
             
             $sharesdk.playAudio($sharesdk.platformID.SinaWeibo, audioName, function (platform, state, shareInfo, error) {
 				shareCallInfo(platform, state, shareInfo, error);
