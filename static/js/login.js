@@ -256,6 +256,11 @@ Login.prototype.msgtip = function(loginMsg){
 
 Login.prototype.loginCallback = function(obj){
 	var objdata = cfeval(obj);
+	if (objdata.code!=null&&objdata.code>0){
+	 this.msg('登陆失败: '+ERR_MSG[objdata.code]);
+	 return;
+	}
+		
     var player = objdata;
 	
 	//进入场景:先remove login页面元素
@@ -322,7 +327,7 @@ Login.prototype.login = function(){
 	try    {
 		$.ajax({type:"post",url:"/cf/login_login.do",data:dataParam,success:function(data){
 		 g_login.loginCallback(data);
-         g_msg.destroyload();
+		 g_msg.destroyload();
 		}});
 	}   catch  (e)   {
 	    logerr(e.name  +   " :  "   +  dataParam);
