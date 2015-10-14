@@ -161,7 +161,7 @@ public class DataManager {
     	return instr;
     }
     
-	public int assignNextId(){
+	public synchronized int assignNextId(){
 		nextPlayerId++;
 		return nextPlayerId;
 	}

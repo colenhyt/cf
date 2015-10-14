@@ -252,8 +252,9 @@ public class LoginAction extends SavingAction {
 			playerBlob.setPlayername(player.getPlayername());
 			playerBlob.setSex(player.getSex());
 			playerBlob.setCreatetime(time);
-			String pwd = StringUtil.getRandomString(10);
-			playerBlob.setPwd(MD5.MD5(pwd));
+//			String pwd = StringUtil.getRandomString(10);
+//			playerBlob.setPwd(MD5.MD5(pwd));
+			playerBlob.setPwd("0");
 			playerBlob.setPlayerid(DataManager.getInstance().assignNextId());
 			boolean ret = playerService.add(playerBlob);
 			if (ret==false){

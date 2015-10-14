@@ -118,7 +118,7 @@ public class PlayerService extends BaseService {
 		return player;
 	}
 	
-	public boolean add(PlayerWithBLOBs record)
+	public synchronized boolean add(PlayerWithBLOBs record)
 	{
 		try {
 		playerMapper.insertSelective(record);
