@@ -62,9 +62,8 @@ Playerlog.prototype.updateQuest = function(){
 
 Playerlog.prototype.updateSignin = function(feeling){
 	try  {
-		var ppobj = {playerid:g_player.data.playerid};
-   		var dataParam = obj2ParamStr("player",ppobj);
-		$.ajax({type:"post",url:"/cf/login_signin.do",data:dataParam,success:function(dataobj){
+   		var dataParam = "playerid="+g_player.data.playerid;
+		$.ajax({type:"post",url:"/cf/player_signin.do",data:dataParam,success:function(dataobj){
 		}});
 	}   catch  (e)   {
 	    document.write(e.name);
@@ -174,7 +173,7 @@ Player.prototype.syncPlayerData = function(){
 	var data = {};
 	this.clone(data);
 	data.quest = JSON.stringify(data.quest);
-	var updateStr = "player="+JSON.stringify(data);
+	var updateStr = "playerdata="+JSON.stringify(data);
 	//alert("任务同步到服务器:"+data.quest);
 	try  {
 		$.ajax({type:"post",url:"/cf/login_update.do",data:updateStr,success:function(dataobj){
