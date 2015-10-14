@@ -86,6 +86,7 @@ public class PlayerService extends BaseService {
 	public PlayerWithBLOBs findByKey(String playerName,String playerTel){
 		PlayerWithBLOBs player = null;
 	
+		synchronized(this){
 		PlayerExample example = new PlayerExample();
 		Criteria criteria=example.createCriteria();
 		criteria.andPlayernameEqualTo(playerName);
@@ -93,7 +94,7 @@ public class PlayerService extends BaseService {
 		List<PlayerWithBLOBs> players = playerMapper.selectByExampleWithBLOBs(example);
 		if (players.size()>0)
 			player = players.get(0);
-		
+		}
 		return player;
 	}	
 	public PlayerWithBLOBs findByPlayerId(int playerid){

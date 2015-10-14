@@ -105,7 +105,7 @@ public class SavingAction extends BaseAction {
 		currLive.setUpdatetime(new Date());	
 		boolean update = savingService.updateLive(currLive);	
 		
-		System.out.println("活期存款更新:"+saving.getPlayerid()+";value="+currLive.getAmount()+";itemid="+currLive.getItemid());
+		log.warn("活期存款更新:"+saving.getPlayerid()+";value="+currLive.getAmount()+";itemid="+currLive.getItemid());
 		 playerTopUpdate(saving.getPlayerid());
 		 
 		if (update==false){
@@ -291,7 +291,7 @@ public class SavingAction extends BaseAction {
 		    Calendar c2 = Calendar.getInstance(); 
 		
 			List<Insure> insures = insureService.findByPlayerId(playerId);
-			System.out.println("找到保险个数:"+playerId+" from db:"+insures.size()+",session:"+MybatisSessionFactory.getSession().toString());
+//			System.out.println("找到保险个数:"+playerId+" from db:"+insures.size()+",session:"+MybatisSessionFactory.getSession().toString());
 			Map<Integer,Insure>	mdata = new HashMap<Integer,Insure>();
 			
 			try {		

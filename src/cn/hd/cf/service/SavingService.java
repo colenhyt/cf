@@ -83,7 +83,7 @@ public class SavingService extends BaseService {
 		return true;
 	}	
 	
-	public boolean update(Saving record)
+	public synchronized boolean update(Saving record)
 	{
 		try {
 			SavingExample example = new SavingExample();
@@ -106,7 +106,7 @@ public class SavingService extends BaseService {
 		return update(record);
 	}
 
-	public List<Saving> findByPlayerId(int playerId)
+	public synchronized List<Saving> findByPlayerId(int playerId)
 	{
 		String jsonstr = SavingManager.getInstance().getSavings(playerId);
     	List<Saving> list = BaseService.jsonToBeanList(jsonstr, Saving.class);
@@ -114,7 +114,7 @@ public class SavingService extends BaseService {
 	}	
 	
 
-	public List<Saving> getDBSavings(int playerId)
+	public synchronized List<Saving> getDBSavings(int playerId)
 	{
 		List<Saving> savings = new ArrayList<Saving>();
 		

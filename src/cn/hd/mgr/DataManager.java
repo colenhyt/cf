@@ -41,12 +41,16 @@ public class DataManager {
 	public boolean useJedis;
 	public Jedis jedis;
 	public RedisClient redisClient;	
+	
 	private Init	init;
+	public Init getInit() {
+		return init;
+	}
+
 	private Map<Integer,Saving>		savingData;
 	private Map<Integer,String>	insureMap;
 	private Map<String,PlayerWithBLOBs> playerMaps;
 	private List<Toplist>			currMonthList;
-	private Vector<PlayerWithBLOBs>	newPlayersVect;
 	private Vector<PlayerWithBLOBs>	updatePlayersVect;
 	private Vector<Toplist>			updateToplistVect;
 	private Vector<Saving>	newSavingVect;
@@ -298,7 +302,6 @@ public class DataManager {
     		jedis = redisClient.jedis;
     	}
 		
-    	newPlayersVect = new Vector<PlayerWithBLOBs>();
     	updatePlayersVect = new Vector<PlayerWithBLOBs>();
     	updateToplistVect = new Vector<Toplist>();
     	

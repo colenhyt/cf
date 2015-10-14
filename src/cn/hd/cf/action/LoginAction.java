@@ -22,6 +22,7 @@ import cn.hd.cf.tools.InitdataService;
 import cn.hd.cf.tools.SavingdataService;
 import cn.hd.cf.tools.SignindataService;
 import cn.hd.mgr.DataManager;
+import cn.hd.mgr.SavingManager;
 import cn.hd.mgr.StockManager;
 import cn.hd.util.MD5;
 import cn.hd.util.StringUtil;
@@ -31,38 +32,7 @@ import com.alibaba.fastjson.JSON;
 public class LoginAction extends SavingAction {
 	private PlayerWithBLOBs player;
 	
-	private SavingdataService savingdataService;
-
-
-	public SavingdataService getSavingdataService() {
-		return savingdataService;
-	}
-
-	public void setSavingdataService(SavingdataService savingdataService) {
-		this.savingdataService = savingdataService;
-	}
-	private InitdataService initdataService;
-	public InitdataService getInitdataService() {
-		return initdataService;
-	}
-
-	public void setInitdataService(InitdataService initdataService) {
-		this.initdataService = initdataService;
-	}
-
-	private SignindataService signindataService;
-	
-	public SignindataService getSignindataService() {
-		return signindataService;
-	}
-
-	public void setSignindataService(SignindataService signindataService) {
-		this.signindataService = signindataService;
-	}
-
 	public LoginAction(){
-		init("signindataService","initdataService"
-				,"savingdataService");
 	}
 	
 	public String connect(){
@@ -70,18 +40,6 @@ public class LoginAction extends SavingAction {
 		msg.setCode(0);
 		JSONObject obj = JSONObject.fromObject(msg);
 		write(obj.toString(),"utf-8");
-		return null;
-	}
-	
-	public String signin(){
-		System.out.println("玩家签到:"+player.getPlayerid());
-		playerService.addSignin(player.getPlayerid());
-		return null;
-	}
-	
-	public String donetask(){
-		System.out.println("玩家完成任务:"+player.getPlayerid());
-		playerService.addDoneQuest(player.getPlayerid());
 		return null;
 	}
 	
@@ -204,19 +162,19 @@ public class LoginAction extends SavingAction {
 		return pdata;
 	}
 	
-	public String login()
+	public synchronized String login()
 	{
 		
-		System.out.println("enter game,name:"+player.getPlayername()+",tel :"+player.getTel());
+		log.warn("enter game,name:"+player.getPlayername()+",tel :"+player.getTel());
 		PlayerWithBLOBs playerBlob = playerService.findByKey(player.getPlayername(),player.getTel());
 		if (playerBlob==null)
 		{
 			String ret = register();
 			if (ret==null){
-				System.out.println("register fail:name:"+player.getPlayername()+",tel"+player.getTel());
+				log.warn("register fail:name:"+player.getPlayername()+",tel"+player.getTel());
 				return null;
 			}
-			System.out.println("register success:name:"+player.getPlayername()+",tel"+player.getTel());
+			log.warn("register success:name:"+player.getPlayername()+",tel"+player.getTel());
 			playerBlob = playerService.findByKey(player.getPlayername(),player.getTel());
 			//return null;
 		}
@@ -227,9 +185,7 @@ public class LoginAction extends SavingAction {
 		p2.setPlayerid(playerBlob.getPlayerid());
 		p2.setLastlogin(playerBlob.getLastlogin());
 		playerService.updateByKey(p2);
-		
 		write(pdata,"utf-8");
-		
 		//System.out.println("player("+playerBlob.getPlayername()+") login success");
 		return null;
 	}
@@ -250,7 +206,7 @@ public class LoginAction extends SavingAction {
 	
 	public String update()
 	{
-		String pp = getHttpRequest().getParameter("player");
+		String pp = getHttpRequest().getParameter("playerdata");
 		JSONObject ppObj = JSONObject.fromObject(pp);
 		PlayerWithBLOBs playerBlob = (PlayerWithBLOBs)JSONObject.toBean(ppObj,PlayerWithBLOBs.class);
 		if (playerBlob==null)
@@ -265,24 +221,6 @@ public class LoginAction extends SavingAction {
 		return null;
 	}
 	
-	public List<Integer> findUpdateDataIds(String oldIds)
-	{
-		List<Integer> dataIds = new ArrayList<Integer>();
-		String[] arrOldIds = oldIds.split(",");
-		for (int i=0;i<arrOldIds.length;i+=2)
-		{
-			String id = arrOldIds[i];
-			String ver = arrOldIds[i+1];
-			int iId = Integer.valueOf(id).intValue();
-			int iVer = Integer.valueOf(ver).intValue();
-			Signindata data1 = signindataService.findActive();
-			if (iId==MODAL_SIGNIN&&data1!=null&&iVer!=data1.getVersion().intValue())
-			{
-				dataIds.add(Integer.valueOf(id));
-			}
-		}
-		return dataIds;
-	}
 	public PlayerWithBLOBs getPlayer() {
 		return player;
 	}
@@ -303,7 +241,7 @@ public class LoginAction extends SavingAction {
 			Date time = new Date(); 
 			
 			//注册奖励:
-			Init init = initdataService.findInit();
+			Init init = DataManager.getInstance().getInit();
 			if (init!=null){
 				playerBlob.setExp(init.getExp());
 			}
@@ -324,7 +262,7 @@ public class LoginAction extends SavingAction {
 			}
 			//活期存款:
 			if (init!=null&&init.getMoney()>0){
-				Saving savingCfg = savingdataService.findSaving(1);
+				Saving savingCfg = SavingManager.getInstance().getSavingCfg();
 				Saving saving = new Saving();
 				saving.setName(savingCfg.getName());
 				saving.setPeriod(savingCfg.getPeriod());

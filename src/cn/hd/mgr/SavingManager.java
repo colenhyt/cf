@@ -8,12 +8,18 @@ import cn.hd.base.BaseService;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.service.SavingService;
+import cn.hd.cf.tools.SavingdataService;
 
 
 public class SavingManager{
 	private Map<Integer,String>	savingMap;
+	Saving savingCfg;
 	
-    private static SavingManager uniqueInstance = null;  
+    public Saving getSavingCfg() {
+		return savingCfg;
+	}
+
+	private static SavingManager uniqueInstance = null;  
 	
     public static SavingManager getInstance() {  
         if (uniqueInstance == null) {  
@@ -21,6 +27,11 @@ public class SavingManager{
         }  
         return uniqueInstance;  
      } 
+    
+    public void init(){
+    	SavingdataService savingdataService = new SavingdataService();
+    	savingCfg = savingdataService.findSaving(1);
+    }
     
     public SavingManager(){
     	savingMap = new HashMap<Integer,String>();
@@ -43,7 +54,6 @@ public class SavingManager{
     	}
     	list.add(record);
 		jsonstr = BaseService.beanListToJson(list,Saving.class);
-		System.out.println("更新内存存款:  "+jsonstr);
 		savingMap.put(playerId, jsonstr);
     	return true;
     }
@@ -114,13 +124,20 @@ public class SavingManager{
 	}
 
 	public static void main(String[] args) {
-    	SavingManager stmgr = SavingManager.getInstance();
-    	Saving ss = new Saving();
-    	ss.setItemid(2);
-    	stmgr.addSaving(1, ss);
-    	Saving s2 = new Saving();
-    	s2.setPlayerid(1);
-    	s2.setItemid(2);
-    	stmgr.deleteSaving(1, s2);
+		
+//    	SavingManager stmgr = SavingManager.getInstance();
+//    	Saving ss = new Saving();
+//    	ss.setItemid(2);
+//    	stmgr.addSaving(1, ss);
+//    	Saving s2 = new Saving();
+//    	s2.setPlayerid(1);
+//    	s2.setItemid(2);
+//    	stmgr.deleteSaving(1, s2);
+		SavingService ss = new SavingService();
+		Saving sa = new Saving();
+		sa.setPlayerid(265);
+		sa.setItemid(1);
+		sa.setAmount((float)30);
+		ss.update(sa);
     }
 }
