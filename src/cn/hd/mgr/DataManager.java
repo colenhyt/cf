@@ -166,7 +166,11 @@ public class DataManager {
 		return nextPlayerId;
 	}
 	
-	public PlayerWithBLOBs findPlayer(int playerid){
+	public synchronized PlayerWithBLOBs findPlayer(String playerName){
+		return playerMaps.get(playerName);
+	}
+	
+	public synchronized PlayerWithBLOBs findPlayer(int playerid){
 		PlayerWithBLOBs player = null;
 		Collection<PlayerWithBLOBs> l = playerMaps.values();
 		for (Iterator<PlayerWithBLOBs> iter = l.iterator(); iter.hasNext();) {
@@ -176,48 +180,6 @@ public class DataManager {
 			}
 		}	
 		return player;
-	}
-	
-	public String login(String playerName,String pwd){
-		PlayerWithBLOBs player = playerMaps.get(playerName);
-		if (player==null||!player.getPwd().equals(pwd)){
-			PlayerService playerService = new PlayerService();
-			player = playerService.findByName(playerName);
-			if (player==null||!player.getPwd().equals(pwd)){
-				System.out.println("用户名或密码不正确:"+playerName);
-				Message msg = new Message();
-				msg.setCode(RetMsg.MSG_WrongPlayerNameOrPwd);		//不存在
-				JSONObject obj = JSONObject.fromObject(msg);
-				return obj.toString();				
-			}
-			
-			playerMaps.put(player.getPlayername(), player);		
-		}
-		if (player.getMoney()==null)
-			player.setMoney(Float.valueOf(0));
-		
-		
-		initStock(player);
- 
-//		StockService stockService = new StockService();
-//		try{
-//			List<Stock> stocks = stockService.findListByPlayerId(player.getPlayerid());
-//			player.setStock(JSON.toJSONString(stocks));	
-//			
-//		}finally{
-//			stockService.DBConnClose();
-//		}
-		
-		player.setWeektop(getTop(player.getPlayerid(),player.getMoney(),0));
-		player.setMonthtop(getTop(player.getPlayerid(),player.getMoney(),1));
-		
-		float margin = StockManager.getInstance().getMarginSec();
-		player.setQuotetime(margin);
-		player.setLastlogin(new Date());
-		
-		System.out.println("玩家登陆:"+player.getPlayerid());
-		JSONObject obj = JSONObject.fromObject(player);	
-		return obj.toString();
 	}
 	
 	public int getTop(int playerid,float fMoney,int type){

@@ -166,7 +166,7 @@ public class LoginAction extends SavingAction {
 	{
 		
 		log.warn("enter game,name:"+player.getPlayername()+",tel :"+player.getTel());
-		PlayerWithBLOBs playerBlob = playerService.findByKey(player.getPlayername(),player.getTel());
+		PlayerWithBLOBs playerBlob = playerService.findByKey(player.getPlayername(),null);
 		if (playerBlob==null)
 		{
 			String ret = register();
@@ -177,7 +177,11 @@ public class LoginAction extends SavingAction {
 			log.warn("register success:name:"+player.getPlayername()+",tel"+player.getTel());
 			playerBlob = playerService.findByKey(player.getPlayername(),player.getTel());
 			//return null;
+		}else if (!playerBlob.getTel().equals(player.getTel())){		//昵称已被注册
+			super.writeMsg(RetMsg.MSG_PlayerNameIsExist);
+			return null;
 		}
+		
 		//System.out.println("player(");
 		String pdata = getPlayerJsonData(playerBlob);
 	

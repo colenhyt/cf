@@ -90,7 +90,8 @@ public class PlayerService extends BaseService {
 		PlayerExample example = new PlayerExample();
 		Criteria criteria=example.createCriteria();
 		criteria.andPlayernameEqualTo(playerName);
-		criteria.andTelEqualTo(playerTel);
+		if (playerTel!=null)
+			criteria.andTelEqualTo(playerTel);
 		List<PlayerWithBLOBs> players = playerMapper.selectByExampleWithBLOBs(example);
 		if (players.size()>0)
 			player = players.get(0);
