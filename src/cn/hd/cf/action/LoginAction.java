@@ -1,6 +1,5 @@
 package cn.hd.cf.action;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,18 +13,12 @@ import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Message;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
-import cn.hd.cf.model.Signindata;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.ToplistService;
-import cn.hd.cf.tools.InitdataService;
-import cn.hd.cf.tools.SavingdataService;
-import cn.hd.cf.tools.SignindataService;
 import cn.hd.mgr.DataManager;
 import cn.hd.mgr.SavingManager;
 import cn.hd.mgr.StockManager;
-import cn.hd.util.MD5;
-import cn.hd.util.StringUtil;
 
 import com.alibaba.fastjson.JSON;
 
@@ -43,29 +36,28 @@ public class LoginAction extends SavingAction {
 		return null;
 	}
 	
-	public String getPlayerJsonData(PlayerWithBLOBs playerBlob)
+	public synchronized String getPlayerJsonData(PlayerWithBLOBs playerBlob)
 	{
 		Map<Integer,Insure> insures = findUpdatedInsures(playerBlob.getPlayerid());
 		playerBlob.setInsure(JSON.toJSONString(insures));		
 		Map<Integer,Saving> savings = findUpdatedSavings(playerBlob.getPlayerid());
 		playerBlob.setSaving(JSON.toJSONString(savings));
-		Map<Integer,List<Stock>> stocks = stockService.findMapByPlayerId(playerBlob.getPlayerid());
+		Map<Integer,List<Stock>> stocks = StockManager.getInstance().findMapStocks(playerBlob.getPlayerid());
 		playerBlob.setStock(JSON.toJSONString(stocks));	
-		Toplist toplist = toplistService.findByPlayerId(playerBlob.getPlayerid());
-		float fMm = 0;
-		if (toplist!=null){
-			fMm = toplist.getMoney().floatValue();
-			playerBlob.setZan(toplist.getZan());
-		}
-
-		int top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),0,fMm);
-		playerBlob.setWeektop(top+1);
-		top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),1,fMm);
-		playerBlob.setMonthtop(top+1);
+//		Toplist toplist = toplistService.findByPlayerId(playerBlob.getPlayerid());
+//		float fMm = 0;
+//		if (toplist!=null){
+//			fMm = toplist.getMoney().floatValue();
+//			playerBlob.setZan(toplist.getZan());
+//		}
+//
+//		int top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),0,fMm);
+//		playerBlob.setWeektop(top+1);
+//		top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),1,fMm);
+//		playerBlob.setMonthtop(top+1);
 		
 		float margin = StockManager.getInstance().getMarginSec();
 		playerBlob.setQuotetime(margin);
-		playerBlob.setLastlogin(new Date());
 		//取需要更新的模块id
 		JSONObject obj = JSONObject.fromObject(playerBlob);	
 		return obj.toString();
@@ -86,14 +78,17 @@ public class LoginAction extends SavingAction {
 	}
 	
 	//
-	private Map<Integer,Saving> findUpdatedSavings(int playerId)
+	private synchronized Map<Integer,Saving> findUpdatedSavings(int playerId)
 	{
+		List<Saving> savings = SavingManager.getInstance().getSavingList(playerId);
+		Map<Integer,Saving>	 mdata = new HashMap<Integer,Saving>();
+		if (savings==null)
+			return mdata;
+		
 		Date currDate = new Date();
 	    Calendar cCurr = Calendar.getInstance(); 
 	    cCurr.setTime(currDate);
 	    Calendar c2 = Calendar.getInstance(); 
-		List<Saving> savings = savingService.findByPlayerId(playerId);
-		Map<Integer,Saving>	 mdata = new HashMap<Integer,Saving>();
 		Saving liveSaving = null;
 		boolean liveUpdate = false;
 		for (int i=0;i<savings.size();i++){
@@ -113,7 +108,7 @@ public class LoginAction extends SavingAction {
 					saving.setAmount(saving.getAmount()+inter);					
 				}else
 					inter = 0;		//不算利息
-			}else if (isSavingTimeout(saving))		//定期，看到期没有
+			}else if (isSavingTimeout(saving))		//定期到期
 			{
 				liveUpdate = true;
 				saving.setStatus((byte)1);
@@ -129,8 +124,7 @@ public class LoginAction extends SavingAction {
 			mdata.put(saving.getItemid(), usaving);
 		}
 		if (liveUpdate==true){
-			liveSaving.setUpdatetime(currDate);
-			savingService.updateLive(liveSaving);
+			SavingManager.getInstance().updateLiveSaving(liveSaving);
 			super.playerTopUpdate(playerId);			
 		}
 		
@@ -164,34 +158,23 @@ public class LoginAction extends SavingAction {
 	
 	public synchronized String login()
 	{
-		
-		log.warn("enter game,name:"+player.getPlayername()+",tel :"+player.getTel());
-		PlayerWithBLOBs playerBlob = playerService.findByKey(player.getPlayername(),null);
+		PlayerWithBLOBs playerBlob = DataManager.getInstance().findPlayer(player.getPlayername());
 		if (playerBlob==null)
 		{
-			String ret = register();
-			if (ret==null){
-				log.warn("register fail:name:"+player.getPlayername()+",tel"+player.getTel());
-				return null;
-			}
-			log.warn("register success:name:"+player.getPlayername()+",tel"+player.getTel());
-			playerBlob = playerService.findByKey(player.getPlayername(),player.getTel());
-			//return null;
+			return register();
 		}else if (!playerBlob.getTel().equals(player.getTel())){		//昵称已被注册
-			super.writeMsg(RetMsg.MSG_PlayerNameIsExist);
+//			super.writeMsg(RetMsg.MSG_PlayerNameIsExist);
 			return null;
 		}
+//		log.warn("enter game,name:"+player.getPlayername()+",tel :"+player.getTel());
 		
 		//System.out.println("player(");
 		String pdata = getPlayerJsonData(playerBlob);
 	
-		PlayerWithBLOBs p2 = new PlayerWithBLOBs();
-		p2.setPlayerid(playerBlob.getPlayerid());
-		p2.setLastlogin(playerBlob.getLastlogin());
-		playerService.updateByKey(p2);
-		write(pdata,"utf-8");
+		DataManager.getInstance().updateLogin(player.getPlayername());
+//		write(pdata,"utf-8");
 		//System.out.println("player("+playerBlob.getPlayername()+") login success");
-		return null;
+		return pdata;
 	}
 	
 	public String get()
@@ -218,7 +201,7 @@ public class LoginAction extends SavingAction {
 			log.debug("no player found:playerid:"+player.getPlayerid());
 			return null;
 		}
-		boolean ret = playerService.updateByKey(playerBlob);
+		boolean ret = DataManager.getInstance().updatePlayer(playerBlob);
 		
 		log.debug("update player("+ppObj.toString()+"):ret: "+ret);
 		writeMsg(RetMsg.MSG_OK);
@@ -232,17 +215,9 @@ public class LoginAction extends SavingAction {
 		this.player = player;
 	}
 
-	public String register(){
-			//System.out.println("玩家注册:"+player.getPlayername());
-			boolean bExist = playerService.have(player.getPlayername(),player.getTel());
-			if (bExist)
-			{
-				System.out.println("account exist :name:"+player.getPlayername()+",tel:"+player.getTel());
-				writeMsg(RetMsg.MSG_PlayerTelIsExist);//号码重复
-				return null;
-			}
+	public synchronized String register(){
+//			System.out.println("玩家注册:"+player.getPlayername());
 			PlayerWithBLOBs playerBlob = new PlayerWithBLOBs();
-			Date time = new Date(); 
 			
 			//注册奖励:
 			Init init = DataManager.getInstance().getInit();
@@ -251,18 +226,19 @@ public class LoginAction extends SavingAction {
 			}
 			
 	//		String ipAddr = getHttpRequest().getRemoteAddr();
+			Date time = new Date(); 
 			playerBlob.setAccountid(1);
 			playerBlob.setTel(player.getTel());
 			playerBlob.setPlayername(player.getPlayername());
 			playerBlob.setSex(player.getSex());
 			playerBlob.setCreatetime(time);
-//			String pwd = StringUtil.getRandomString(10);
-//			playerBlob.setPwd(MD5.MD5(pwd));
+			playerBlob.setLastlogin(time);
 			playerBlob.setPwd("0");
+			playerBlob.setZan(0);
 			playerBlob.setPlayerid(DataManager.getInstance().assignNextId());
-			boolean ret = playerService.add(playerBlob);
+			boolean ret = DataManager.getInstance().addPlayer(playerBlob);
 			if (ret==false){
-				super.writeMsg(RetMsg.MSG_SQLExecuteError);
+				super.writeMsg(RetMsg.MSG_PlayerNameIsExist);
 				return null;
 			}
 			//活期存款:
@@ -279,14 +255,15 @@ public class LoginAction extends SavingAction {
 				saving.setPlayerid(playerBlob.getPlayerid());
 				saving.setAmount(Float.valueOf(init.getMoney().intValue()));
 				saving.setCreatetime(time);
-				savingService.add(saving);
-				super.playerTopUpdate(playerBlob.getPlayerid());
+				SavingManager.getInstance().addSaving(saving.getPlayerid(), saving);
+//				super.playerTopUpdate(playerBlob.getPlayerid());
+				Map<Integer,Saving> savings = new HashMap<Integer,Saving>();
+				savings.put(savingCfg.getId(), saving);
+				playerBlob.setSaving(JSON.toJSONString(savings));
 			}
-			
-			//String pdata = getPlayerJsonData(playerBlob);
-			
-			//System.out.println("register player: "+pdata);
-			//write(pdata,"utf-8");
-			return "true";
+			JSONObject obj = JSONObject.fromObject(playerBlob);	
+//			log.warn("register success:name:"+player.getPlayername()+",tel"+player.getTel());
+//			write(obj.toString(),"utf-8");
+			return obj.toString();
 		}
 }

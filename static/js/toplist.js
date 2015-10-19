@@ -105,7 +105,7 @@ Toplist.prototype.showToplist = function(type,page)
 			 content += "<div class='cf_top'>";
  			 content += "        <table class='cf_top_header'>"
 			 content += "             <tr>"
-			 content += "               <td class='cftoplist_content'>姓名</td>"
+			 content += "               <td class='cftoplist_content'>昵称</td>"
 			 content += "               <td class='cftoplist_content'>资产</td>"
 			 content += "               <td class='cftoplist_c4'>排名</td>"
 			 content += "               <td class='cftoplist_c3'>赞</td>"

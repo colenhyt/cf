@@ -1,7 +1,6 @@
 package cn.hd.cf.action;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,8 +23,9 @@ import cn.hd.cf.service.ToplistService;
 import cn.hd.cf.tools.InsuredataService;
 import cn.hd.cf.tools.SavingdataService;
 import cn.hd.mgr.DataManager;
+import cn.hd.mgr.InsureManager;
+import cn.hd.mgr.SavingManager;
 import cn.hd.mgr.StockManager;
-import cn.hd.util.MybatisSessionFactory;
 
 public class SavingAction extends BaseAction {
 	public Saving		saving;
@@ -100,10 +100,10 @@ public class SavingAction extends BaseAction {
 	//更新活期存款金钱:
 	public String updatelive()
 	{
-		Saving currLive = savingService.find(saving.getPlayerid(), 1);
+		Saving currLive = SavingManager.getInstance().getSaving(saving.getPlayerid(), 1);
 		currLive.setAmount(saving.getAmount());
 		currLive.setUpdatetime(new Date());	
-		boolean update = savingService.updateLive(currLive);	
+		boolean update = SavingManager.getInstance().updateSavingAmount(currLive);	
 		
 		log.warn("活期存款更新:"+saving.getPlayerid()+";value="+currLive.getAmount()+";itemid="+currLive.getItemid());
 		 playerTopUpdate(saving.getPlayerid());
@@ -117,7 +117,7 @@ public class SavingAction extends BaseAction {
 	
 	public int pushLive(int playerId,float amount)
 	{
-		Saving saving2 = savingService.find(playerId,1);
+		Saving saving2 = SavingManager.getInstance().getSaving(playerId, 1);
 		if (saving2!=null){
 			float newAmount = saving2.getAmount()+amount;
 			if (newAmount<0)
@@ -133,16 +133,15 @@ public class SavingAction extends BaseAction {
 	}	
 	
 	protected boolean playerMoneyUpdate(Saving saving){
-		saving.setUpdatetime(new Date());	
 		System.out.println("活期存款更新:"+saving.getPlayerid()+";value="+saving.getAmount());
-		boolean u = savingService.updateLive(saving);	
+		boolean u = SavingManager.getInstance().updateLiveSaving(saving);	
 		 playerTopUpdate(saving.getPlayerid());
 		//更新排行榜金钱:
 		return u;
 	}
 	
-	public boolean playerTopUpdate(int playerid){
-		PlayerWithBLOBs player = playerService.findByPlayerId(playerid);
+	public synchronized boolean playerTopUpdate(int playerid){
+		PlayerWithBLOBs player = DataManager.getInstance().findPlayer(playerid);
 		if (player!=null){
 			float money = calculatePlayerMoney(playerid);
 			 toplistService.updateToplist(playerid,player.getPlayername(),money);			
@@ -159,22 +158,28 @@ public class SavingAction extends BaseAction {
 
 	public float calculatePlayerMoney(int playerId){
 		float amount = 0;
-		List<Saving> saving = savingService.findByPlayerId(playerId);
-		for (int i=0;i<saving.size();i++){
-			amount += saving.get(i).getAmount();
+		List<Saving> savings = SavingManager.getInstance().getSavingList(playerId);
+		if (savings!=null){
+			for (int i=0;i<savings.size();i++){
+				amount += savings.get(i).getAmount();
+			}			
 		}
-		List<Insure> insure = insureService.findByPlayerId(playerId);
-		for (int i=0;i<insure.size();i++){
-			amount += insure.get(i).getAmount();
+		List<Insure> insures = InsureManager.getInstance().getInsureList(playerId);
+		if (insures!=null){
+		for (int i=0;i<insures.size();i++){
+			amount += insures.get(i).getAmount();
 		}
-		List<Stock> stock = stockService.findByPlayerId(playerId);
-		for (int i=0;i<stock.size();i++){
-			Stock ps = stock.get(i);
-			if (ps==null) continue;
-			List<Quote> qq = StockManager.getInstance().getLastQuotes(ps.getItemid());
-			if (qq.size()>0)
-				amount += qq.get(0).getPrice()*ps.getQty();
-		}   	
+		}
+		List<Stock> stocks = StockManager.getInstance().getStockList(playerId);
+		if (stocks!=null){
+			for (int i=0;i<stocks.size();i++){
+				Stock ps = stocks.get(i);
+				if (ps==null) continue;
+				List<Quote> qq = StockManager.getInstance().getLastQuotes(ps.getItemid());
+				if (qq.size()>0)
+					amount += qq.get(0).getPrice()*ps.getQty();
+			}   			
+		}
 		
 		return amount;
 	}
@@ -233,7 +238,7 @@ public class SavingAction extends BaseAction {
 		//取钱:
 		if (saving.getAmount()<0){
 			float inAmount = 0 - saving.getAmount();
-			Saving saving2 = savingService.find(saving.getPlayerid(),saving.getItemid());
+			Saving saving2 = SavingManager.getInstance().getSaving(saving.getPlayerid(), saving.getItemid());
 			if (saving2==null){
 				super.writeMsg(RetMsg.MSG_NoSavingData);
 				return null;
@@ -270,7 +275,7 @@ public class SavingAction extends BaseAction {
 			saving.setQty(1);
 			saving.setType(savingCfg.getType());
 			saving.setPeriod(savingCfg.getPeriod());
-			exec = savingService.add(saving);		
+			exec = SavingManager.getInstance().addSaving(saving.getPlayerid(), saving);
 		}
 		
 		if (exec==false){
@@ -283,16 +288,18 @@ public class SavingAction extends BaseAction {
 		return null;
 	}
 
-	public Map<Integer,Insure> findUpdatedInsures(int playerId)
+	public synchronized Map<Integer,Insure> findUpdatedInsures(int playerId)
 		{
+			List<Insure> insures = InsureManager.getInstance().getInsureList(playerId);
+//			System.out.println("找到保险个数:"+playerId+" from db:"+insures.size()+",session:"+MybatisSessionFactory.getSession().toString());
+			Map<Integer,Insure>	mdata = new HashMap<Integer,Insure>();
+			if (insures==null)
+				return mdata;
+			
 			Date curr = new Date();
 		    Calendar cCurr = Calendar.getInstance(); 
 		    cCurr.setTime(curr);
 		    Calendar c2 = Calendar.getInstance(); 
-		
-			List<Insure> insures = insureService.findByPlayerId(playerId);
-//			System.out.println("找到保险个数:"+playerId+" from db:"+insures.size()+",session:"+MybatisSessionFactory.getSession().toString());
-			Map<Integer,Insure>	mdata = new HashMap<Integer,Insure>();
 			
 			try {		
 			for (int i=0;i<insures.size();i++){
@@ -318,7 +325,7 @@ public class SavingAction extends BaseAction {
 					}
 //					System.out.println("insure overdate:"+insure.getItemid());
 					//删除产品
-					insureService.delete(insure);
+					InsureManager.getInstance().deleteInsure(insure.getPlayerid(), insure);
 				}
 				
 				Insure uinsure = new Insure();

@@ -2,6 +2,7 @@ package cn.hd.cf.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
 import redis.clients.jedis.Jedis;
 import cn.hd.base.BaseService;
@@ -119,10 +120,12 @@ public class PlayerService extends BaseService {
 		return player;
 	}
 	
-	public synchronized boolean add(PlayerWithBLOBs record)
+	public synchronized boolean addPlayers(Vector<PlayerWithBLOBs> records)
 	{
 		try {
-		playerMapper.insertSelective(record);
+		for (int i=0;i<records.size();i++){
+			playerMapper.insert(records.get(i));
+		}			
 		DBCommit();
 		}catch (Exception e){
 			e.printStackTrace();
@@ -142,6 +145,21 @@ public class PlayerService extends BaseService {
 			e.printStackTrace();
 			return false;
 		}		
+		return true;
+	}
+	
+	public boolean updatePlayers(List<PlayerWithBLOBs> records)
+	{
+		try {
+			for (int i=0;i<records.size();i++){
+				PlayerWithBLOBs record = records.get(i);
+				playerMapper.updateByPrimaryKeySelective(record);
+			}
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}
 		return true;
 	}
 	

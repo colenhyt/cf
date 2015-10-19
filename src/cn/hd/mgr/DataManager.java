@@ -18,13 +18,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import net.sf.json.JSONObject;
+import org.apache.log4j.Logger;
+
 import redis.clients.jedis.Jedis;
 import cn.hd.base.BaseService;
-import cn.hd.cf.action.RetMsg;
+import cn.hd.cf.action.LoginAction;
 import cn.hd.cf.model.Init;
 import cn.hd.cf.model.Insure;
-import cn.hd.cf.model.Message;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Savingdata;
@@ -36,8 +36,10 @@ import cn.hd.cf.tools.InitdataService;
 import cn.hd.cf.tools.SavingdataService;
 import cn.hd.util.RedisClient;
 
-public class DataManager {
-	private int UPDATE_PERIOD = 20*30;		//20*60: 一小时
+public class DataManager extends MgrBase{
+	protected Logger  log = Logger.getLogger(getClass()); 
+	
+	private LoginAction loginAction;
 	public boolean useJedis;
 	public Jedis jedis;
 	public RedisClient redisClient;	
@@ -51,11 +53,11 @@ public class DataManager {
 	private Map<Integer,String>	insureMap;
 	private Map<String,PlayerWithBLOBs> playerMaps;
 	private List<Toplist>			currMonthList;
+	private Vector<PlayerWithBLOBs> newPlayersVect;
 	private Vector<PlayerWithBLOBs>	updatePlayersVect;
 	private Vector<Toplist>			updateToplistVect;
-	private Vector<Saving>	newSavingVect;
-	private int tick = 0;
 	private int nextPlayerId;
+	private DataThread dataThread;
 	
     private static DataManager uniqueInstance = null;  
 	
@@ -166,6 +168,25 @@ public class DataManager {
 		return nextPlayerId;
 	}
 	
+	public synchronized String login(String playerName,String tel,String sex){
+		PlayerWithBLOBs pp = new PlayerWithBLOBs();
+		pp.setPlayername(playerName);
+		pp.setTel(tel);
+		pp.setSex(Byte.valueOf(sex));
+		loginAction.setPlayer(pp);
+		return loginAction.login();
+	}
+	
+	public synchronized boolean addPlayer(PlayerWithBLOBs player){
+		if (playerMaps.containsKey(player.getPlayername()))
+			return false;
+		
+		playerMaps.put(player.getPlayername(), player);
+		dataThread.push(player);
+//		newPlayersVect.add(player);
+		return true;
+	}
+	
 	public synchronized PlayerWithBLOBs findPlayer(String playerName){
 		return playerMaps.get(playerName);
 	}
@@ -239,21 +260,25 @@ public class DataManager {
 		updateToplistVect.add(toplist);
 	}
 	
-	public void updatePlayer(PlayerWithBLOBs player)
+	public synchronized boolean updatePlayer(PlayerWithBLOBs player){
+		PlayerWithBLOBs pp = playerMaps.get(player.getPlayername());
+		if (pp!=null){
+			pp.setQuest(player.getQuest());
+			pp.setOpenstock(player.getOpenstock());
+			pp.setMoney(player.getMoney());
+			updatePlayersVect.add(pp);
+			return true;
+		}
+		return false;
+	}
+	
+	public synchronized void updateLogin(String playerName)
 	{
-		PlayerWithBLOBs cachePlayer = playerMaps.get(player.getPlayername());
-		if (cachePlayer==null){
+		PlayerWithBLOBs player = playerMaps.get(playerName);
+		if (player==null){
 			return;
 		}
-		cachePlayer.setExp(player.getExp());
-		cachePlayer.setSex(player.getSex());
-		cachePlayer.setQuest(player.getQuest());
-		cachePlayer.setOpenstock(player.getOpenstock());
-		System.out.println("更新内存玩家数据:"+player.getExp());
-		player.setPwd(cachePlayer.getPwd());
-		player.setAccountid(cachePlayer.getAccountid());
-		player.setCreatetime(cachePlayer.getCreatetime());
-		player.setZan(cachePlayer.getZan());
+		player.setLastlogin(new Date());
 		updatePlayersVect.add(player);
 	}
 	
@@ -263,16 +288,18 @@ public class DataManager {
     		redisClient = new RedisClient();
     		jedis = redisClient.jedis;
     	}
-		
-    	updatePlayersVect = new Vector<PlayerWithBLOBs>();
+    	loginAction = new LoginAction();
+    	
+    	newPlayersVect = new Vector<PlayerWithBLOBs>();
+       	updatePlayersVect = new Vector<PlayerWithBLOBs>();
     	updateToplistVect = new Vector<Toplist>();
     	
-    	newSavingVect = new Vector<Saving>();
-    	
-    	playerMaps = Collections.synchronizedMap(new HashMap<String,PlayerWithBLOBs>());
     	
     	InitdataService initdataService = new InitdataService();
     	init = initdataService.findInit();
+    	
+    	dataThread = new DataThread();
+    	dataThread.start();
     	
     	savingData = Collections.synchronizedMap(new HashMap<Integer,Saving>());
 		try {
@@ -289,6 +316,8 @@ public class DataManager {
 			e.printStackTrace();
 		}
 		
+		
+    	playerMaps = Collections.synchronizedMap(new HashMap<String,PlayerWithBLOBs>());
     	PlayerService playerService = new PlayerService();
 		List<PlayerWithBLOBs> players = playerService.findAll();
 		for (int i=0; i<players.size();i++){
@@ -297,7 +326,7 @@ public class DataManager {
 			if (player.getPlayerid()>nextPlayerId)
 				nextPlayerId = player.getPlayerid();			
 		}
-		System.out.println("load players :"+nextPlayerId);
+		System.out.println("load all players :"+players.size());
 		
     	ToplistService toplistService = new ToplistService();
     	currMonthList = Collections.synchronizedList(new ArrayList<Toplist>());
@@ -308,17 +337,7 @@ public class DataManager {
     	
     	
     }
-    private void updatePlayers(){
-		PlayerService playerService = new PlayerService();
-		for (int i=0;i<updatePlayersVect.size();i++){
-			playerService.updateByKey(updatePlayersVect.get(i));
-		}
-		playerService.DBCommit();
-		System.out.println("更新玩家:"+updatePlayersVect.size());
-		updatePlayersVect.clear();
-	}
-
-	private void updateToplists(){
+    private void updateToplists(){
 		ToplistService toplistService = new ToplistService();
 		for (int i=0;i<updateToplistVect.size();i++){
 			Toplist toplist = updateToplistVect.get(i);
@@ -328,17 +347,23 @@ public class DataManager {
 		System.out.println("更新排行榜:"+updatePlayersVect.size());
 		updatePlayersVect.clear();
 	}
-		
-	public void update(){
+
+	public synchronized void update(){
     	tick ++;
-//    	if (newPlayersVect.size()>0||tick%UPDATE_PERIOD==0){
-//    		pushPlayers();
-//    	}
+    	if (newPlayersVect.size()>BATCH_COUNT||tick%UPDATE_PERIOD_BATCH==0){
+    		PlayerService service= new PlayerService();
+    		service.addPlayers(newPlayersVect);
+    		log.warn("batch add players:"+newPlayersVect.size());
+    		newPlayersVect.clear();
+    	}    	
 //    	
-//    	if (updatePlayersVect.size()>0||tick%UPDATE_PERIOD==0){
-//    		updatePlayers();
-//    	}
-//    	
+    	if (updatePlayersVect.size()>BATCH_COUNT||tick%UPDATE_PERIOD_BATCH==0){
+    		PlayerService service= new PlayerService();
+    		service.updatePlayers(updatePlayersVect);
+    		log.warn("batch update players:"+updatePlayersVect.size());
+    		updatePlayersVect.clear();
+    	}     	
+    	
 //    	if (newSavingVect.size()>0||tick%UPDATE_PERIOD==0){
 //    		pushSavings();
 //    	}
@@ -352,5 +377,7 @@ public class DataManager {
     	DataManager stmgr = DataManager.getInstance();
     	SavingdataService ss = new SavingdataService();
     	Savingdata dd = ss.findActive();
+    	DataThread aa = new DataThread();
+    	aa.start();
     }
 }

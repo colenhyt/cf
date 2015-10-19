@@ -320,12 +320,12 @@ Login.prototype.login = function(){
 //     	return;
 //     }
      var ppobj = {playername:pname,sex:g_login.sex,tel:g_usertel};
-   	var dataParam = obj2ParamStr("player",ppobj);
+   	var dataParam = "playername="+pname+"&sex="+g_login.sex+"&tel="+g_usertel;
     var serverPlayer;
     var now = new Date();
     
 	try    {
-		$.ajax({type:"post",url:"/cf/login_login.do",data:dataParam,success:function(data){
+		$.ajax({type:"get",url:"/cf/login_login.jsp",data:dataParam,success:function(data){
 		 g_login.loginCallback(data);
 		 g_msg.destroyload();
 		}});

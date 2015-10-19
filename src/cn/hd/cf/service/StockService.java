@@ -12,6 +12,7 @@ import cn.hd.base.BaseService;
 import cn.hd.base.Bean;
 import cn.hd.cf.dao.StockMapper;
 import cn.hd.cf.model.Saving;
+import cn.hd.cf.model.SavingExample;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.StockExample;
 import cn.hd.cf.model.StockExample.Criteria;
@@ -32,6 +33,11 @@ public class StockService extends BaseService {
 	public StockService()
 	{
 		initMapper("stockMapper");
+	}
+	
+	public List<Stock> findAll(){
+		StockExample example = new StockExample();
+		return stockMapper.selectByExample(example);
 	}
 	
 	public List<Stock> findByPlayerId(int playerId)
@@ -56,7 +62,6 @@ public class StockService extends BaseService {
 		try {
 			stockMapper.deleteByPrimaryKey(record.getId());
 			DBCommit();	
-			StockManager.getInstance().deleteStock(record.getPlayerid(), record);
 		}catch (Exception e){
 			e.printStackTrace();
 			return false;
@@ -141,22 +146,5 @@ public class StockService extends BaseService {
 			jedis2.hset(key, record.getItemid().toString(),record.toString());
 		}	
 		jedis2.close();
-	}
-
-	public Map<Integer,List<Stock>> findMapByPlayerId(int playerId)
-	{
-		Map<Integer,List<Stock>> smap = new HashMap<Integer,List<Stock>>();
-		
-		List<Stock> ss = findByPlayerId(playerId);
-		for (int i=0;i<ss.size();i++){
-			List<Stock> list = smap.get(ss.get(i).getItemid());
-			if (list==null){
-				list = new ArrayList<Stock>();
-				smap.put(ss.get(i).getItemid(), list);
-			}
-			list.add(ss.get(i));
-		}
-		
-		return smap;
 	}
 }

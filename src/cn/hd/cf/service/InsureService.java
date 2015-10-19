@@ -9,12 +9,15 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.util.List;
+import java.util.Vector;
 
 import redis.clients.jedis.Jedis;
 import cn.hd.base.BaseService;
 import cn.hd.cf.dao.InsureMapper;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.InsureExample;
+import cn.hd.cf.model.Saving;
+import cn.hd.cf.model.SavingExample;
 import cn.hd.cf.model.InsureExample.Criteria;
 import cn.hd.mgr.DataManager;
 import cn.hd.util.MybatisSessionFactory;
@@ -127,22 +130,60 @@ public class InsureService extends BaseService {
 		return true;
 	}
 
-	public void initData(Jedis jedis2){
-		if (jedis2==null)
-			return;
-		
+	public List<Insure> findAll(){
 		InsureExample example = new InsureExample();
-		List<Insure> insures = insureMapper.selectByExample(example);
-		for (int i=0; i<insures.size();i++){
-			Insure insure = insures.get(i);
-			String key = insure.getPlayerid()+ITEM_KEY;
-			jedis2.del(key);
-		}
-		for (int i=0; i<insures.size();i++){
-			Insure record = insures.get(i);
-			String key = record.getPlayerid()+ITEM_KEY;
-			jedis2.hset(key, record.getItemid().toString(),record.toString());
+		return insureMapper.selectByExample(example);
+	}
+	
+	public synchronized boolean addInsures(Vector<Insure> records)
+	{		
+		try {
+			for (int i=0;i<records.size();i++){
+			insureMapper.insert(records.get(i));
+			}
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
 		}	
-		jedis2.close();
+		return true;
+	}
+
+	public synchronized boolean removeInsures(Vector<Insure> records)
+	{		
+		try {
+			for (int i=0;i<records.size();i++){
+				Insure record = records.get(i);
+				InsureExample example = new InsureExample();
+				Criteria criteria = example.createCriteria();
+				criteria.andPlayeridEqualTo(record.getPlayerid());
+				criteria.andItemidEqualTo(record.getItemid());
+				insureMapper.deleteByExample(example);			
+			}
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}	
+		return true;
+	}
+
+	public synchronized boolean updateInsures(Vector<Insure> records)
+	{		
+		try {
+			for (int i=0;i<records.size();i++){
+				Insure record = records.get(i);
+				InsureExample example = new InsureExample();
+				Criteria criteria = example.createCriteria();
+				criteria.andPlayeridEqualTo(record.getPlayerid());
+				criteria.andItemidEqualTo(record.getItemid());			
+				insureMapper.updateByExampleSelective(record, example);				
+			}
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}	
+		return true;
 	}	
 }

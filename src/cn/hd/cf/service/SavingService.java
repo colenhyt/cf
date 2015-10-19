@@ -2,6 +2,7 @@ package cn.hd.cf.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import redis.clients.jedis.Jedis;
 import cn.hd.base.BaseService;
@@ -28,6 +29,11 @@ public class SavingService extends BaseService {
 		initMapper("savingMapper");
 	}
 	
+	public List<Saving> findAll(){
+		SavingExample example = new SavingExample();
+		return savingMapper.selectByExample(example);
+	}
+	
 	public void initData(Jedis jedis2){
 		if (jedis2==null)
 			return;
@@ -46,17 +52,30 @@ public class SavingService extends BaseService {
 		}		
 		jedis2.close();
 	}	
-	public Saving find(int playerId,int itemid)
-	{
-		return SavingManager.getInstance().getSaving(playerId, itemid);
-	}
-	
-	public boolean add(Saving record)
+	public synchronized boolean add(Saving record)
 	{		
 		try {
 			savingMapper.insert(record);
 			DBCommit();
-			SavingManager.getInstance().addSaving(record.getPlayerid(), record);
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}	
+		return true;
+	}
+	
+	public synchronized boolean removeSavings(Vector<Saving> records)
+	{		
+		try {
+			for (int i=0;i<records.size();i++){
+				Saving record = records.get(i);
+				SavingExample example = new SavingExample();
+				Criteria criteria = example.createCriteria();
+				criteria.andPlayeridEqualTo(record.getPlayerid());
+				criteria.andItemidEqualTo(record.getItemid());
+				savingMapper.deleteByExample(example);			
+			}
+			DBCommit();
 		}catch (Exception e){
 			e.printStackTrace();
 			return false;
@@ -100,20 +119,6 @@ public class SavingService extends BaseService {
 		return true;
 	}
 
-	public boolean updateLive(Saving record)
-	{
-		record.setItemid(1);
-		return update(record);
-	}
-
-	public synchronized List<Saving> findByPlayerId(int playerId)
-	{
-		String jsonstr = SavingManager.getInstance().getSavings(playerId);
-    	List<Saving> list = BaseService.jsonToBeanList(jsonstr, Saving.class);
-		return list;
-	}	
-	
-
 	public synchronized List<Saving> getDBSavings(int playerId)
 	{
 		List<Saving> savings = new ArrayList<Saving>();
@@ -124,5 +129,38 @@ public class SavingService extends BaseService {
 		savings = savingMapper.selectByExample(example);
 		
 		return savings;
+	}
+
+	public synchronized boolean addSavings(Vector<Saving> records)
+	{		
+		try {
+			for (int i=0;i<records.size();i++){
+			savingMapper.insert(records.get(i));
+			}
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}	
+		return true;
+	}
+
+	public synchronized boolean updateSavings(Vector<Saving> records)
+	{		
+		try {
+			for (int i=0;i<records.size();i++){
+				Saving record = records.get(i);
+				SavingExample example = new SavingExample();
+				Criteria criteria = example.createCriteria();
+				criteria.andPlayeridEqualTo(record.getPlayerid());
+				criteria.andItemidEqualTo(record.getItemid());			
+				savingMapper.updateByExampleSelective(record, example);				
+			}
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}	
+		return true;
 	}		
 }

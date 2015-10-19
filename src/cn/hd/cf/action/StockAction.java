@@ -68,12 +68,12 @@ public class StockAction extends SavingAction {
 		return null;
 	}	
 	
-	public String add(){
+	public synchronized String add(){
 		if (stock.getQty()==0){
 			return null;
 		}
 		int ret = RetMsg.MSG_StockIsClosed;
-		if (StockManager.getInstance().isStockOpen()==false){
+		if (stockMgr.isStockOpen()==false){
 			writeMsg(ret);
 			return null;
 		}
@@ -84,12 +84,12 @@ public class StockAction extends SavingAction {
 			boolean exec = false;	
 			if (stock.getQty()>0){
 				stock.setCreatetime(new Date());
-				exec = stockService.add(stock);	
+				exec = stockMgr.addStock(stock.getPlayerid(), stock);	
 				System.out.println("购买股票:"+stock.getItemid()+",qty="+stock.getQty());
 			}else {
 				int qq = (0 - stock.getQty());
 				System.out.println("抛售股票:"+stock.getItemid()+",qty="+qq);
-				exec = stockService.removeStock(stock.getPlayerid(), stock.getItemid(), qq);
+				exec = stockMgr.deleteStock(stock.getPlayerid(), stock.getItemid(), qq);
 			}
 			if (exec==false){
 				//钱放回去:

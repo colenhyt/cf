@@ -1,0 +1,229 @@
+package cn.hd.mgr;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import cn.hd.base.BaseService;
+import cn.hd.cf.model.Insure;
+import cn.hd.cf.service.InsureService;
+import cn.hd.cf.tools.InsuredataService;
+
+
+public class InsureManager extends MgrBase{
+	private Map<Integer,String>	insureMap;
+	private Map<Integer,List<Insure>>	insuresMap;
+	private Vector<Insure>			newInsureVect;
+	private Vector<Insure>			updateInsureVect;
+	private Vector<Insure>			deleteInsureVect;
+	Insure insureCfg;
+	
+    public Insure getInsureCfg() {
+		return insureCfg;
+	}
+
+	private static InsureManager uniqueInstance = null;  
+	
+    public static InsureManager getInstance() {  
+        if (uniqueInstance == null) {  
+            uniqueInstance = new InsureManager();  
+        }  
+        return uniqueInstance;  
+     } 
+    
+    public void init(){
+    	InsuredataService insuredataService = new InsuredataService();
+    	insureCfg = insuredataService.findInsure(1);
+    	newInsureVect = new Vector<Insure>();
+    	updateInsureVect = new Vector<Insure>();
+    	deleteInsureVect = new Vector<Insure>();
+
+    	insureMap = new HashMap<Integer,String>();
+    	
+    	insuresMap = new HashMap<Integer,List<Insure>>();
+    	
+    	InsureService insureService = new InsureService();
+    	List<Insure> svs = insureService.findAll();
+    	for (int i=0;i<svs.size();i++){
+    		Insure s = svs.get(i);
+    		List<Insure> list = insuresMap.get(s.getPlayerid());
+    		if (list==null){
+    			list = new ArrayList<Insure>();
+    		}
+    		list.add(s);
+    	}
+    }
+    
+    public synchronized boolean updateLiveInsure(Insure record){
+    	record.setItemid(1);
+    	return updateInsureAmount(record);
+    }
+    
+    public synchronized boolean updateInsureAmount(Insure record){
+    	List<Insure> list = insuresMap.get(record.getPlayerid());
+    	if (list==null)
+    		return false;
+    	
+    	Insure s = null;
+    	for (int i=0;i<list.size();i++){
+			if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){
+    			s = list.get(i);
+    			break;
+    		}
+    	}    
+    	if (s!=null){
+    		s.setAmount(record.getAmount());
+    		s.setUpdatetime(new Date());
+    		updateInsureVect.add(s);
+    		return true;
+    	}
+    	return false;
+    }
+    
+    public synchronized boolean updateInsure(int playerId,Insure record){
+    	List<Insure> list = insuresMap.get(playerId);
+    	if (list==null)
+    		return false;
+    	
+    	boolean found = false;
+    	for (int i=0;i<list.size();i++){
+			if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){
+    			list.remove(i);
+    			found = true;
+    			break;
+    		}
+    	}
+    	if (!found){
+    		return false;
+    	}
+    	
+    	updateInsureVect.add(record);
+    	
+    	list.add(record);
+    	return true;
+    }
+    
+    public synchronized Insure getInsure(int playerId,int itemid){
+		Insure insure = null;
+    	List<Insure> list = insuresMap.get(playerId);
+    	if (list==null)
+    		return insure;
+    	
+    	for (int i=0;i<list.size();i++){
+    		if (list.get(i).getItemid().intValue()==itemid){
+    			insure = list.get(i);
+    			break;
+    		}
+    	}
+    	return insure;
+	}
+    
+    public synchronized String getInsures(int playerId){
+		String jsonstr = null;
+		if (insureMap.containsKey(playerId))
+		jsonstr = insureMap.get(playerId);
+		else {
+			InsureService service = new InsureService();
+			List<Insure> list = service.getDBInsures(playerId);
+			jsonstr = BaseService.beanListToJson(list, Insure.class);
+			insureMap.put(playerId, jsonstr);
+		}
+		return jsonstr;
+	}
+
+    
+    public synchronized List<Insure> getInsureList(int playerId){
+		return insuresMap.get(playerId);
+	}
+    
+	public synchronized boolean deleteInsure(int playerId,Insure record){
+		List<Insure> list = insuresMap.get(playerId);
+		if (list==null)
+			return false;
+		
+		boolean found = false;
+		for (int i=0;i<list.size();i++){
+			if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){
+				list.remove(i);
+				found = true;
+				break;
+			}
+		}
+		if (found){
+			System.out.println("删除后json: "+list.size());
+			deleteInsureVect.add(record);
+			return true;
+		}
+		return false;
+	}
+
+	public synchronized boolean addInsure(int playerId,Insure record){
+		List<Insure> list = insuresMap.get(playerId);
+		boolean found = false;
+		if (list==null){
+			list = new ArrayList<Insure>();
+			insuresMap.put(playerId, list);
+		}else {
+			for (int i=0;i<list.size();i++){
+				if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){
+					found = true;
+					break;
+				}
+			}
+		}
+		if (found){
+			return false;
+		}
+		list.add(record);
+		newInsureVect.add(record);
+		return true;
+	}
+
+	public synchronized void update(){
+    	tick ++;
+    	if (newInsureVect.size()>BATCH_COUNT||tick%UPDATE_PERIOD_BATCH==0){
+    		InsureService service= new InsureService();
+    		service.addInsures(newInsureVect);
+    		log.warn("batch add insures:"+newInsureVect.size());
+    		newInsureVect.clear();
+    	}
+    	
+    	if (updateInsureVect.size()>BATCH_COUNT||tick%UPDATE_PERIOD_BATCH==0){
+    		InsureService service= new InsureService();
+    		service.updateInsures(updateInsureVect);
+    		log.warn("batch update insures:"+updateInsureVect.size());
+    		updateInsureVect.clear();
+    	}    	
+    	
+    	if (deleteInsureVect.size()>BATCH_COUNT||tick%UPDATE_PERIOD_BATCH==0){
+    		InsureService service= new InsureService();
+    		service.removeInsures(deleteInsureVect);
+    		log.warn("batch remove insures:"+deleteInsureVect.size());
+    		deleteInsureVect.clear();
+    	}      	
+    	
+	}
+	
+	public static void main(String[] args) {
+		
+    	InsureManager stmgr = InsureManager.getInstance();
+    	stmgr.init();
+//    	Insure ss = new Insure();
+//    	ss.setItemid(2);
+//    	stmgr.addInsure(1, ss);
+//    	Insure s2 = new Insure();
+//    	s2.setPlayerid(1);
+//    	s2.setItemid(2);
+//    	stmgr.deleteInsure(1, s2);
+		Insure sa = new Insure();
+		sa.setPlayerid(265);
+		sa.setItemid(1);
+		sa.setAmount((float)30);
+		stmgr.deleteInsure(1, sa);
+		stmgr.addInsure(sa.getPlayerid(), sa);
+		stmgr.deleteInsure(sa.getPlayerid(), sa);
+    }
+}

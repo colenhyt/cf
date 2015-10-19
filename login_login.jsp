@@ -7,11 +7,12 @@
 <%@ page import="net.sf.json.JSONObject"%>
 <%
 String pname = request.getParameter("playername");
-String pwd = request.getParameter("pwd");
+String tel = request.getParameter("tel");
+String sex = request.getParameter("sex");
 
 //LoginAction  action = new LoginAction();
 //String pdata = action.loginSimple(playerid);
-String playerBlob = DataManager.getInstance().login(pname,pwd);
+String playerBlob = DataManager.getInstance().login(pname,tel,sex);
 response.getWriter().print(playerBlob);
 //System.out.println("aaa"+pwd);
 %>

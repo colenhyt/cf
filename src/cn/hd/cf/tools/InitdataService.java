@@ -82,6 +82,5 @@ public class InitdataService extends BaseService {
 			saving.setPlayerid(1);
 			saving.setAmount(Float.valueOf(1));
 			saving.setCreatetime(time);
-			savingService.add(saving);
 	 }
 }

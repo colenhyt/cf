@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Vector;
 
 import net.sf.json.JSONArray;
 
@@ -15,6 +16,8 @@ import org.apache.log4j.Logger;
 
 import cn.hd.base.Base;
 import cn.hd.base.BaseService;
+import cn.hd.cf.model.Insure;
+import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Stockdata;
@@ -23,7 +26,6 @@ import cn.hd.cf.tools.StockdataService;
 
 public class StockManager {
 	protected Logger  log = Logger.getLogger(getClass()); 
-	private static Logger logger = Logger.getLogger(StockManager.class); 
 	public int STOCK_QUOTE_PERIOD = 5;
 	private int STOCK_SAVE_PERIOD = 5;
 	private Date lastUpdateDate;
@@ -33,6 +35,10 @@ public class StockManager {
 	private List<Stockdata> stockData;
     private static StockManager uniqueInstance = null;  
 	private Map<Integer,String>	stockMap;
+	private Map<Integer,List<Stock>>	stocksMap;
+	private Vector<Stock>			newStockVect;
+	private Vector<Stock>			updateStockVect;
+	private Vector<Stock>			deleteStockVect;	
 	
     public static StockManager getInstance() {  
         if (uniqueInstance == null) {  
@@ -41,13 +47,28 @@ public class StockManager {
         return uniqueInstance;  
      } 
     
-    public StockManager(){
+    public void init(){
 		lastQuoteTime = System.currentTimeMillis();
 		lastUpdateDate = null;
+    	newStockVect = new Vector<Stock>();
+    	updateStockVect = new Vector<Stock>();
+    	deleteStockVect = new Vector<Stock>();		
 		StockdataService stockdataService = new StockdataService();
 		stockData = stockdataService.findActive();
 		quoteMap = new HashMap<Integer,LinkedList<Quote>>();
 		stockMap = new HashMap<Integer,String>();
+		stocksMap = new HashMap<Integer,List<Stock>>();
+		StockService stockService = new StockService();
+    	List<Stock> svs = stockService.findAll();
+    	for (int i=0;i<svs.size();i++){
+    		Stock s = svs.get(i);
+    		List<Stock> list = stocksMap.get(s.getPlayerid());
+    		if (list==null){
+    			list = new ArrayList<Stock>();
+    		}
+    		list.add(s);
+    	}		
+    	
 	   	for (int i=0;i<stockData.size();i++){
     		Stockdata  stock = stockData.get(i);
     		int fre = stock.getFreq();
@@ -76,6 +97,30 @@ public class StockManager {
 		return diffdd;
     }
         
+    
+	public synchronized Map<Integer,List<Stock>> findMapStocks(int playerId)
+	{
+		Map<Integer,List<Stock>> smap = new HashMap<Integer,List<Stock>>();
+		
+		List<Stock> ss = stocksMap.get(playerId);
+		if (ss==null)
+			return smap;
+		
+		for (int i=0;i<ss.size();i++){
+			List<Stock> list = smap.get(ss.get(i).getItemid());
+			if (list==null){
+				list = new ArrayList<Stock>();
+				smap.put(ss.get(i).getItemid(), list);
+			}
+			list.add(ss.get(i));
+		}
+		
+		return smap;
+	}
+    public synchronized List<Stock> getStockList(int playerId){
+		return stocksMap.get(playerId);
+	}
+    
     public List<Quote> getBigQuotes(int stockid){
     	LinkedList<Quote> details = quoteMap.get(stockid);
     	List<Quote> quotes = new ArrayList<Quote>();
@@ -182,43 +227,53 @@ public class StockManager {
 	}
     
     public synchronized boolean addStock(int playerId,Stock record){
-		String jsonstr = getStocks(playerId);
-		List<Stock> list = BaseService.jsonToBeanList(jsonstr, Stock.class);
+		List<Stock> list = stocksMap.get(playerId);
 		boolean found = false;
-		for (int i=0;i<list.size();i++){
-			if (list.get(i).getId().intValue()==record.getId().intValue()){
-				found = true;
-				break;
+		if (list==null){
+			list = new ArrayList<Stock>();
+			stocksMap.put(playerId, list);
+		}else {
+			for (int i=0;i<list.size();i++){
+				if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){
+					found = true;
+					break;
+				}
 			}
 		}
 		if (found){
 			return false;
 		}
 		list.add(record);
-		jsonstr = BaseService.beanListToJson(list,Stock.class);
-		stockMap.put(playerId, jsonstr);
-		System.out.println("增加内存股票:  "+jsonstr);
+		newStockVect.add(record);
 		return true;
 	}
 
-	public synchronized boolean deleteStock(int playerId,Stock record){
-		String jsonstr = getStocks(playerId);
-		List<Stock> list = BaseService.jsonToBeanList(jsonstr, Stock.class);
-		boolean found = false;
+	public synchronized boolean deleteStock(int playerId,int stockId,int qty){
+		List<Stock> list = stocksMap.get(playerId);
+		int needRemoveQty = qty;
+		boolean exec = false;
 		for (int i=0;i<list.size();i++){
-			if (list.get(i).getId().intValue()==record.getId().intValue()){
-				list.remove(i);
-				found = true;
+			Stock ss = list.get(i);
+			if (ss.getItemid().intValue()!=stockId)
+				continue;
+			
+			if (ss.getQty()<=needRemoveQty){
+				needRemoveQty -= ss.getQty();
+				deleteStockVect.add(ss);
+				System.out.println("删除:"+needRemoveQty);
+			}else {
+				ss.setQty(ss.getQty()-needRemoveQty);
+				ss.setAmount(ss.getQty()*ss.getPrice());
+				System.out.println("更新:"+needRemoveQty);
+				needRemoveQty = 0;
+				updateStock(playerId,ss);
+			}
+			if (needRemoveQty==0) {
+				exec = true;
 				break;
 			}
-		}
-		if (found){
-			jsonstr = BaseService.beanListToJson(list,Stock.class);
-			System.out.println("删除内存股票: "+jsonstr);
-			stockMap.put(playerId, jsonstr);
-			return true;
-		}
-		return false;
+		}		
+		return exec;
 	}
 
 	public synchronized String getStocks(int playerId){
@@ -235,8 +290,10 @@ public class StockManager {
 	}
 
 	public synchronized boolean updateStock(int playerId,Stock record){
-		String jsonstr = getStocks(playerId);
-		List<Stock> list = BaseService.jsonToBeanList(jsonstr, Stock.class);
+		List<Stock> list = stocksMap.get(playerId);
+		if (list==null)
+			return false;
+		
 		boolean found = false;
 		for (int i=0;i<list.size();i++){
 			if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){
@@ -249,9 +306,7 @@ public class StockManager {
 			return false;
 		}
 		list.add(record);
-		jsonstr = BaseService.beanListToJson(list,Stock.class);
-		System.out.println("更新内存股票:  "+jsonstr);
-		stockMap.put(playerId, jsonstr);
+		System.out.println("更新内存股票:  "+record);
 		return true;
 	}
 
