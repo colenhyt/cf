@@ -9,6 +9,7 @@ import cn.hd.cf.model.Insure;
 import cn.hd.cf.service.InsureService;
 import cn.hd.cf.tools.InsuredataService;
 import cn.hd.mgr.DataManager;
+import cn.hd.mgr.InsureManager;
 
 public class InsureAction extends SavingAction {
 	private Insure		insure;
@@ -28,17 +29,16 @@ public class InsureAction extends SavingAction {
 		if (ret==0){
 			insure.setCreatetime(new Date());
 			insure.setUpdatetime(new Date());
-			Insure incfg = insuredataService.findInsure(insure.getItemid());
+			Insure incfg = InsureManager.getInstance().getInsureCfg(insure.getItemid());
 			insure.setPeriod(incfg.getPeriod()*insure.getQty());
 			insure.setType(incfg.getType());
-			boolean add = insureService.add(insure);	
+			boolean add = InsureManager.getInstance().addInsure(insure.getPlayerid(), insure);	
 			if (add==false){
 				//钱放回去:
 				super.pushLive(insure.getPlayerid(),  insure.getAmount());
 				ret = RetMsg.MSG_SQLExecuteError;
 			}
 			super.playerTopUpdate(insure.getPlayerid());
-			//insureService.DBConnClose();
 		}else {
 			System.out.println("insure没找到存款吗:"+ret);
 		}
@@ -52,7 +52,6 @@ public class InsureAction extends SavingAction {
 		String strInsure = JSON.toJSONString(insures);
 		write(strInsure,"utf-8");
 		//if (insures.size()<=0)
-		System.out.println("find insures: "+insures.size());
 		return null;
 	}
 	

@@ -9,20 +9,21 @@ import java.util.Vector;
 
 import cn.hd.base.BaseService;
 import cn.hd.cf.model.Insure;
+import cn.hd.cf.model.Insuredata;
 import cn.hd.cf.service.InsureService;
 import cn.hd.cf.tools.InsuredataService;
 
 
 public class InsureManager extends MgrBase{
 	private Map<Integer,String>	insureMap;
+	private Map<Integer,Insure>	insureCfgMap;
 	private Map<Integer,List<Insure>>	insuresMap;
 	private Vector<Insure>			newInsureVect;
 	private Vector<Insure>			updateInsureVect;
 	private Vector<Insure>			deleteInsureVect;
-	Insure insureCfg;
 	
-    public Insure getInsureCfg() {
-		return insureCfg;
+    public synchronized Insure getInsureCfg(int itemId) {
+		return insureCfgMap.get(itemId);
 	}
 
 	private static InsureManager uniqueInstance = null;  
@@ -35,8 +36,14 @@ public class InsureManager extends MgrBase{
      } 
     
     public void init(){
+    	insureCfgMap = new HashMap<Integer,Insure>();
     	InsuredataService insuredataService = new InsuredataService();
-    	insureCfg = insuredataService.findInsure(1);
+    	List<Insure> data = insuredataService.findInsures();
+    	for (int i=0;i<data.size();i++){
+    		Insure insure = data.get(i);
+    		if (!insureCfgMap.containsKey(insure.getId()))
+    			insureCfgMap.put(insure.getId(), insure);
+    	}
     	newInsureVect = new Vector<Insure>();
     	updateInsureVect = new Vector<Insure>();
     	deleteInsureVect = new Vector<Insure>();

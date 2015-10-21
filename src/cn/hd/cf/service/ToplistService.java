@@ -25,17 +25,8 @@ public class ToplistService extends BaseService {
 	private ToplistMapper toplistMapper;
 	private static String ITEM_KEY = "toplist";
 	
-	public Toplist findByPlayerId(int playerId){
+	public synchronized Toplist findByPlayerId(int playerId){
 		Toplist toplist = null;
-		if (jedis!=null){
-		String jsonObj = jedis.hget(ITEM_KEY,Integer.valueOf(playerId).toString());
-		if (jsonObj!=null){
-			toplist = (Toplist)Bean.toBean(jsonObj, Toplist.class);
-		}
-		jedis.close();
-		return toplist;
-		}
-		
 		ToplistExample example=new ToplistExample();
 		Criteria criteria=example.createCriteria();		
 		criteria.andPlayeridEqualTo(playerId);

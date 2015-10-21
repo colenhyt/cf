@@ -40,17 +40,11 @@ public class DataManager extends MgrBase{
 	protected Logger  log = Logger.getLogger(getClass()); 
 	
 	private LoginAction loginAction;
-	public boolean useJedis;
-	public Jedis jedis;
-	public RedisClient redisClient;	
-	
 	private Init	init;
 	public Init getInit() {
 		return init;
 	}
 
-	private Map<Integer,Saving>		savingData;
-	private Map<Integer,String>	insureMap;
 	private Map<String,PlayerWithBLOBs> playerMaps;
 	private List<Toplist>			currMonthList;
 	private Vector<PlayerWithBLOBs> newPlayersVect;
@@ -96,7 +90,6 @@ public class DataManager extends MgrBase{
     
     public DataManager(){
     	nextPlayerId = 0;
-    	jedis = null;
     	try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 		} catch (ClassNotFoundException e) {
@@ -109,61 +102,9 @@ public class DataManager extends MgrBase{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	insureMap = new HashMap<Integer,String>();
      }
 	
-    public synchronized boolean addInsure(int playerId,Insure record){
-    	String instr = getInsures(playerId);
-    	List<Insure> list = BaseService.jsonToBeanList(instr, Insure.class);
-    	boolean found = false;
-    	for (int i=0;i<list.size();i++){
-			if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){
-    			found = true;
-    			break;
-    		}
-    	}
-    	if (found){
-    		return false;
-    	}
-    	list.add(record);
-		instr = BaseService.beanListToJson(list,Insure.class);
-		insureMap.put(playerId, instr);
-    	return true;
-    }
-	
-    public synchronized boolean deleteInsure(int playerId,Insure record){
-    	String instr = getInsures(playerId);
-    	List<Insure> list = BaseService.jsonToBeanList(instr, Insure.class);
-    	boolean found = false;
-    	for (int i=0;i<list.size();i++){
-			if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){
-    			list.remove(i);
-    			found = true;
-    			break;
-    		}
-    	}
-    	if (found){
-    		instr = BaseService.beanListToJson(list,Insure.class);
-    		insureMap.put(playerId, instr);
-    		return true;
-    	}
-    	return false;
-    }
-    
-    public synchronized String getInsures(int playerId){
-    	String instr = null;
-    	if (insureMap.containsKey(playerId))
-    	instr = insureMap.get(playerId);
-    	else {
-    		InsureService inser = new InsureService();
-    		List<Insure> list = inser.getDBInsures(playerId);
-    		instr = BaseService.beanListToJson(list, Insure.class);
-    		insureMap.put(playerId, instr);
-    	}
-    	return instr;
-    }
-    
-	public synchronized int assignNextId(){
+    public synchronized int assignNextId(){
 		nextPlayerId++;
 		return nextPlayerId;
 	}
@@ -265,7 +206,7 @@ public class DataManager extends MgrBase{
 		if (pp!=null){
 			pp.setQuest(player.getQuest());
 			pp.setOpenstock(player.getOpenstock());
-			pp.setMoney(player.getMoney());
+			pp.setExp(player.getExp());
 			updatePlayersVect.add(pp);
 			return true;
 		}
@@ -283,11 +224,6 @@ public class DataManager extends MgrBase{
 	}
 	
     public void init(){
-    	useJedis = false;
-    	if (useJedis==true){
-    		redisClient = new RedisClient();
-    		jedis = redisClient.jedis;
-    	}
     	loginAction = new LoginAction();
     	
     	newPlayersVect = new Vector<PlayerWithBLOBs>();
@@ -299,23 +235,7 @@ public class DataManager extends MgrBase{
     	init = initdataService.findInit();
     	
     	dataThread = new DataThread();
-    	dataThread.start();
-    	
-    	savingData = Collections.synchronizedMap(new HashMap<Integer,Saving>());
-		try {
-	    	SavingdataService savingdataService = new SavingdataService();
-	    	Savingdata  sdata = savingdataService.findActive();
-	    	String savingstr;
-			savingstr = new String(sdata.getData(),"utf-8");
-			List<Saving> list = savingdataService.jsonToBeanList(savingstr, Saving.class);
-			for (int i=0;i<list.size();i++){
-				savingData.put(list.get(i).getId(), list.get(i));
-			}
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+    	dataThread.start();    	
 		
     	playerMaps = Collections.synchronizedMap(new HashMap<String,PlayerWithBLOBs>());
     	PlayerService playerService = new PlayerService();

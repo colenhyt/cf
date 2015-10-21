@@ -29,24 +29,7 @@ import cn.hd.mgr.StockManager;
 
 public class SavingAction extends BaseAction {
 	public Saving		saving;
-	protected InsuredataService insuredataService;
-	public InsuredataService getInsuredataService() {
-		return insuredataService;
-	}
-
-	public void setInsuredataService(InsuredataService insuredataService) {
-		this.insuredataService = insuredataService;
-	}
 	
-	private SavingdataService savingdataService;
-	public SavingdataService getSavingdataService() {
-		return savingdataService;
-	}
-
-	public void setSavingdataService(SavingdataService savingdataService) {
-		this.savingdataService = savingdataService;
-	}
-
 	public Saving getSaving() {
 		return saving;
 	}
@@ -56,9 +39,7 @@ public class SavingAction extends BaseAction {
 	}
 
 	protected SavingService savingService;
-	protected InsureService insureService;
 	protected StockService stockService;
-	protected ToplistService toplistService;
 	protected PlayerService playerService;
 	
 	public PlayerService getPlayerService() {
@@ -69,28 +50,12 @@ public class SavingAction extends BaseAction {
 		this.playerService = playerService;
 	}
 
-	public ToplistService getToplistService() {
-		return toplistService;
-	}
-
-	public void setToplistService(ToplistService toplistService) {
-		this.toplistService = toplistService;
-	}
-
 	public StockService getStockService() {
 		return stockService;
 	}
 
 	public void setStockService(StockService stockService) {
 		this.stockService = stockService;
-	}
-
-	public InsureService getInsureService() {
-		return insureService;
-	}
-
-	public void setInsureService(InsureService insureService) {
-		this.insureService = insureService;
 	}
 
 	public SavingService getSavingService() {
@@ -144,6 +109,7 @@ public class SavingAction extends BaseAction {
 		PlayerWithBLOBs player = DataManager.getInstance().findPlayer(playerid);
 		if (player!=null){
 			float money = calculatePlayerMoney(playerid);
+			ToplistService toplistService = new ToplistService();
 			 toplistService.updateToplist(playerid,player.getPlayername(),money);			
 				//System.out.println("排行榜金钱更新:"+playerid+";money="+money);
 			return true;
@@ -209,7 +175,7 @@ public class SavingAction extends BaseAction {
 	
 	protected float getLiveInter(Saving saving)
 	{
-		Saving savingCfg = savingdataService.findSaving(1);
+		Saving savingCfg = SavingManager.getInstance().getSavingCfg(1);
 		 Calendar c2 = Calendar.getInstance(); 
         c2.setTime(saving.getUpdatetime());
         Date currDate = new Date();
@@ -266,7 +232,7 @@ public class SavingAction extends BaseAction {
 			
 			pushLive(saving.getPlayerid(), 0 - saving.getAmount());
 			
-			Saving savingCfg = savingdataService.findSaving(saving.getItemid());
+			Saving savingCfg = SavingManager.getInstance().getSavingCfg(saving.getItemid());
 			System.out.println("存钱:"+saving.getPlayerid()+":itemid="+saving.getItemid());
 			saving.setName(savingCfg.getName());
 			saving.setCreatetime(new Date());
@@ -308,7 +274,7 @@ public class SavingAction extends BaseAction {
 		        c2.setTime(insure.getUpdatetime());
 				float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
 				float periodMinutes = insure.getPeriod()*60; //天:分钟
-				System.out.println("(peroid:"+insure.getPeriod()+") diffdd:"+diffdd+",periodMinutes:"+periodMinutes);
+//				System.out.println("(peroid:"+insure.getPeriod()+") diffdd:"+diffdd+",periodMinutes:"+periodMinutes);
 	//			periodMinutes = 5;
 				//到期:
 				if ((diffdd-periodMinutes)>0.001)
@@ -316,7 +282,7 @@ public class SavingAction extends BaseAction {
 					//理财产品,得到收益:
 					if (insure.getType()!=null&&insure.getType()==1){
 					
-						Insure incfg = insuredataService.findInsure(insure.getItemid());
+						Insure incfg = InsureManager.getInstance().getInsureCfg(insure.getItemid());
 						inter = incfg.getProfit()*insure.getQty();
 						DataManager.getInstance().onMoneyChanged(insure.getPlayerid(),inter);
 						pushLive(playerId, insure.getAmount()+inter);
@@ -345,8 +311,8 @@ public class SavingAction extends BaseAction {
 		}
 
 	public SavingAction(){
-		init("savingService","savingdataService","playerService",
-				"insureService","stockService","toplistService","insuredataService");
+		init("savingService","playerService",
+				"stockService");
 	}
 	
 }

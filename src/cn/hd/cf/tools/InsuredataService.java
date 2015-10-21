@@ -44,16 +44,12 @@ public class InsuredataService extends BaseService {
 		return true;
 	}
 	
-	public Insure findInsure(int id)
+	public List<Insure> findInsures()
 	{
 		try {
 			Insuredata data = findActive();
 			String str = new String(data.getData(),"utf-8");
-			List<Insure> list = jsonToBeanList(str, Insure.class);
-			for (int i=0;i<list.size();i++){
-				if (list.get(i).getId()==id)
-					return list.get(i);
-			}
+			return jsonToBeanList(str, Insure.class);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

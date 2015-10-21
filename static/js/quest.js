@@ -189,7 +189,7 @@ Quest.prototype.doneQuest = function(quest){
     	}
     }    
     if (doneCount>=items.length){
-     alert('任务已全部完成:'+doneCount);
+     //alert('任务已全部完成:'+doneCount);
 		try  {
 	   		var dataParam = "playerid="+g_player.data.playerid;
 			$.ajax({type:"post",url:"/cf/player_donetask.do",data:dataParam,success:function(dataobj){
@@ -243,6 +243,9 @@ Quest.prototype.onBuyItem = function(tname,item,qty){
 	}
 	
 	var items = g_player.data.quest
+	if (items==null)
+		return;
+		
     for (var i=0;i<items.length;i++){
 		if (items[i].status==QUEST_STATUS.ACTIVE) {
 	    	var quest = this.findItem(items[i].id);

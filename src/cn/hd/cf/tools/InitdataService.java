@@ -73,14 +73,5 @@ public class InitdataService extends BaseService {
 			Date time = new Date(); 
 		 SavingdataService savingdataService = new SavingdataService();
 		 SavingService savingService = new SavingService();
-			Saving savingCfg = savingdataService.findSaving((byte)0);
-			Saving saving = new Saving();
-			saving.setName(savingCfg.getName());
-			saving.setPeriod(savingCfg.getPeriod());
-			saving.setRate(savingCfg.getRate());
-			saving.setType(savingCfg.getType());
-			saving.setPlayerid(1);
-			saving.setAmount(Float.valueOf(1));
-			saving.setCreatetime(time);
 	 }
 }

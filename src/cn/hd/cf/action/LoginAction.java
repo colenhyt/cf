@@ -44,17 +44,18 @@ public class LoginAction extends SavingAction {
 		playerBlob.setSaving(JSON.toJSONString(savings));
 		Map<Integer,List<Stock>> stocks = StockManager.getInstance().findMapStocks(playerBlob.getPlayerid());
 		playerBlob.setStock(JSON.toJSONString(stocks));	
-//		Toplist toplist = toplistService.findByPlayerId(playerBlob.getPlayerid());
-//		float fMm = 0;
-//		if (toplist!=null){
-//			fMm = toplist.getMoney().floatValue();
-//			playerBlob.setZan(toplist.getZan());
-//		}
-//
-//		int top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),0,fMm);
-//		playerBlob.setWeektop(top+1);
-//		top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),1,fMm);
-//		playerBlob.setMonthtop(top+1);
+		ToplistService toplistService = new ToplistService();
+		Toplist toplist = toplistService.findByPlayerId(playerBlob.getPlayerid());
+		float fMm = 0;
+		if (toplist!=null){
+			fMm = toplist.getMoney().floatValue();
+			playerBlob.setZan(toplist.getZan());
+		}
+
+		int top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),0,fMm);
+		playerBlob.setWeektop(top+1);
+		top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),1,fMm);
+		playerBlob.setMonthtop(top+1);
 		
 		float margin = StockManager.getInstance().getMarginSec();
 		playerBlob.setQuotetime(margin);
@@ -243,7 +244,7 @@ public class LoginAction extends SavingAction {
 			}
 			//活期存款:
 			if (init!=null&&init.getMoney()>0){
-				Saving savingCfg = SavingManager.getInstance().getSavingCfg();
+				Saving savingCfg = SavingManager.getInstance().getSavingCfg(1);
 				Saving saving = new Saving();
 				saving.setName(savingCfg.getName());
 				saving.setPeriod(savingCfg.getPeriod());

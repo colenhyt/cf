@@ -73,13 +73,6 @@ public class InsureService extends BaseService {
 		}
 		return fileContent;
 	}	
-	public List<Insure> findByPlayerId(int playerId)
-	{
-		String instr = DataManager.getInstance().getInsures(playerId);
-		List<Insure> list = BaseService.jsonToBeanList(instr, Insure.class);
-		return list;
-	}
-	
 	public List<Insure> getDBInsures(int playerId)
 	{
 		InsureExample example = new InsureExample();
@@ -103,7 +96,6 @@ public class InsureService extends BaseService {
 		try {
 		insureMapper.insert(record);
 		DBCommit();
-		DataManager.getInstance().addInsure(record.getPlayerid(), record);
 		}catch (Exception e){
 			e.printStackTrace();
 			return false;
@@ -122,7 +114,6 @@ public class InsureService extends BaseService {
 			criteria.andItemidEqualTo(record.getItemid());
 			insureMapper.deleteByExample(example);
 			DBCommit();	
-			DataManager.getInstance().deleteInsure(record.getPlayerid(), record);
 		}catch (Exception e){
 			e.printStackTrace();
 			return false;

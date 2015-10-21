@@ -9,12 +9,15 @@ import java.util.Vector;
 
 import cn.hd.base.BaseService;
 import cn.hd.cf.model.Saving;
+import cn.hd.cf.model.Saving;
 import cn.hd.cf.service.SavingService;
+import cn.hd.cf.tools.SavingdataService;
 import cn.hd.cf.tools.SavingdataService;
 
 
 public class SavingManager extends MgrBase{
 	private Map<Integer,String>	savingMap;
+	private Map<Integer,Saving>	savingCfgMap;	
 	private Map<Integer,List<Saving>>	savingsMap;
 	private Vector<Saving>			newSavingVect;
 	private Vector<Saving>			updateSavingVect;
@@ -22,8 +25,8 @@ public class SavingManager extends MgrBase{
 	Saving savingCfg;
 	private DataThread dataThread;
 	
-    public Saving getSavingCfg() {
-		return savingCfg;
+    public Saving getSavingCfg(int itemId) {
+		return savingCfgMap.get(itemId);
 	}
 
 	private static SavingManager uniqueInstance = null;  
@@ -36,8 +39,14 @@ public class SavingManager extends MgrBase{
      } 
     
     public void init(){
+    	savingCfgMap = new HashMap<Integer,Saving>();
     	SavingdataService savingdataService = new SavingdataService();
-    	savingCfg = savingdataService.findSaving(1);
+    	List<Saving> data = savingdataService.findSavings();
+    	for (int i=0;i<data.size();i++){
+    		Saving saving = data.get(i);
+    		if (!savingCfgMap.containsKey(saving.getId()))
+    			savingCfgMap.put(saving.getId(), saving);
+    	}
     	newSavingVect = new Vector<Saving>();
     	updateSavingVect = new Vector<Saving>();
     	deleteSavingVect = new Vector<Saving>();

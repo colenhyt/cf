@@ -28,8 +28,6 @@ public class BaseService extends Base{
 	 * @param objs 需要初始化变量列表
 	 */
 	protected  void initMapper(String...objs){
-		jedis = DataManager.getInstance().jedis;
-		
 		try {
 			for(String obj:objs){
 				if(obj!=null && obj.trim().length()>0){

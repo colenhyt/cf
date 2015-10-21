@@ -40,15 +40,11 @@ public class SavingdataService extends BaseService {
 		return null;
 	}
 	
-	public Saving findSaving(int id){
+	public List<Saving> findSavings(){
 		try {
 			Savingdata data = findActive();
 			String str = new String(data.getData(),"utf-8");
-			List<Saving> list = jsonToBeanList(str, Saving.class);
-			for (int i=0;i<list.size();i++){
-				if (list.get(i).getId()==id)
-					return list.get(i);
-			}
+			return jsonToBeanList(str, Saving.class);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
