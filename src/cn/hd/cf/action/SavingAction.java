@@ -26,6 +26,7 @@ import cn.hd.mgr.DataManager;
 import cn.hd.mgr.InsureManager;
 import cn.hd.mgr.SavingManager;
 import cn.hd.mgr.StockManager;
+import cn.hd.mgr.ToplistManager;
 
 public class SavingAction extends BaseAction {
 	public Saving		saving;
@@ -109,8 +110,7 @@ public class SavingAction extends BaseAction {
 		PlayerWithBLOBs player = DataManager.getInstance().findPlayer(playerid);
 		if (player!=null){
 			float money = calculatePlayerMoney(playerid);
-			ToplistService toplistService = new ToplistService();
-			 toplistService.updateToplist(playerid,player.getPlayername(),money);			
+			 ToplistManager.getInstance().updateToplist(playerid,player.getPlayername(),money);			
 				//System.out.println("排行榜金钱更新:"+playerid+";money="+money);
 			return true;
 		}
@@ -284,7 +284,6 @@ public class SavingAction extends BaseAction {
 					
 						Insure incfg = InsureManager.getInstance().getInsureCfg(insure.getItemid());
 						inter = incfg.getProfit()*insure.getQty();
-						DataManager.getInstance().onMoneyChanged(insure.getPlayerid(),inter);
 						pushLive(playerId, insure.getAmount()+inter);
 					}else {		//保险到期，移除
 						inter = -1;

@@ -19,6 +19,7 @@ import cn.hd.cf.service.ToplistService;
 import cn.hd.mgr.DataManager;
 import cn.hd.mgr.SavingManager;
 import cn.hd.mgr.StockManager;
+import cn.hd.mgr.ToplistManager;
 
 import com.alibaba.fastjson.JSON;
 
@@ -44,17 +45,16 @@ public class LoginAction extends SavingAction {
 		playerBlob.setSaving(JSON.toJSONString(savings));
 		Map<Integer,List<Stock>> stocks = StockManager.getInstance().findMapStocks(playerBlob.getPlayerid());
 		playerBlob.setStock(JSON.toJSONString(stocks));	
-		ToplistService toplistService = new ToplistService();
-		Toplist toplist = toplistService.findByPlayerId(playerBlob.getPlayerid());
+		Toplist toplist = ToplistManager.getInstance().findByPlayerId(playerBlob.getPlayerid());
 		float fMm = 0;
 		if (toplist!=null){
 			fMm = toplist.getMoney().floatValue();
 			playerBlob.setZan(toplist.getZan());
 		}
 
-		int top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),0,fMm);
+		int top = ToplistManager.getInstance().findCountByGreaterMoney(playerBlob.getPlayerid(),0,fMm);
 		playerBlob.setWeektop(top+1);
-		top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),1,fMm);
+		top = ToplistManager.getInstance().findCountByGreaterMoney(playerBlob.getPlayerid(),1,fMm);
 		playerBlob.setMonthtop(top+1);
 		
 		float margin = StockManager.getInstance().getMarginSec();
@@ -62,20 +62,6 @@ public class LoginAction extends SavingAction {
 		//取需要更新的模块id
 		JSONObject obj = JSONObject.fromObject(playerBlob);	
 		return obj.toString();
-	}
-	
-	public static void initToplist(PlayerWithBLOBs playerBlob,ToplistService toplistService)
-	{
-		Toplist toplist = toplistService.findByPlayerId(playerBlob.getPlayerid());
-		float fMm = 0;
-		if (toplist!=null){
-			fMm = toplist.getMoney().floatValue();
-			playerBlob.setZan(toplist.getZan());
-		}
-//		int top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),0,fMm);
-//		playerBlob.setWeektop(top+1);
-//		top = toplistService.findCountByGreaterMoney(playerBlob.getPlayerid(),1,fMm);
-//		playerBlob.setMonthtop(top+1);	
 	}
 	
 	//
@@ -159,6 +145,7 @@ public class LoginAction extends SavingAction {
 	
 	public synchronized String login()
 	{
+//		log.warn("enter game:"+player.getPlayername()+",tel :"+player.getTel());
 		PlayerWithBLOBs playerBlob = DataManager.getInstance().findPlayer(player.getPlayername());
 		if (playerBlob==null)
 		{
@@ -167,7 +154,8 @@ public class LoginAction extends SavingAction {
 //			super.writeMsg(RetMsg.MSG_PlayerNameIsExist);
 			return null;
 		}
-//		log.warn("enter game,name:"+player.getPlayername()+",tel :"+player.getTel());
+		
+		log.warn("login success:"+player.getPlayername()+",tel :"+player.getTel());
 		
 		//System.out.println("player(");
 		String pdata = getPlayerJsonData(playerBlob);

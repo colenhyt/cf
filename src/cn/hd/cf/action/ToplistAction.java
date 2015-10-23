@@ -8,35 +8,23 @@ import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.service.ToplistService;
+import cn.hd.mgr.DataManager;
+import cn.hd.mgr.ToplistManager;
 
 public class ToplistAction extends BaseAction {
 	private Toplist toplist;
-	private ToplistService toplistService;
-	private PlayerService playerService;
-	
-	public PlayerService getPlayerService() {
-		return playerService;
-	}
 
-	public void setPlayerService(PlayerService playerService) {
-		this.playerService = playerService;
-	}
-
-	public ToplistAction(){
-		init("toplistService","playerService");
-	}
-	
 	public String list(){
-		List<Toplist> weeklist = toplistService.findByType(0);
-		List<Toplist> monthlist = toplistService.findByType(1);
+		List<Toplist> weeklist = ToplistManager.getInstance().findByType(0);
+		List<Toplist> monthlist = ToplistManager.getInstance().findByType(1);
 		
 		System.out.println("get toplist playerid:"+toplist.getPlayerid());
-		Toplist weektop = toplistService.findByPlayerId(toplist.getPlayerid());
+		Toplist weektop = ToplistManager.getInstance().findByPlayerId(toplist.getPlayerid());
 		Toplist monthtop = null;
 		if (weektop!=null){
 			float fMm = weektop.getMoney().floatValue();
-			int week = toplistService.findCountByGreaterMoney(toplist.getPlayerid(),0,fMm);
-			int mm = toplistService.findCountByGreaterMoney(toplist.getPlayerid(),1,fMm);
+			int week = ToplistManager.getInstance().findCountByGreaterMoney(toplist.getPlayerid(),0,fMm);
+			int mm = ToplistManager.getInstance().findCountByGreaterMoney(toplist.getPlayerid(),1,fMm);
 			weektop.setTop(week+1);
 			monthtop = new Toplist();
 			monthtop.setPlayername(weektop.getPlayername());
@@ -58,7 +46,7 @@ public class ToplistAction extends BaseAction {
 	}
 	
 	public String monthlist(){
-		List<Toplist> tt = toplistService.findByType(1);
+		List<Toplist> tt = ToplistManager.getInstance().findByType(1);
 		//System.out.println("get list :"+tt.size());
 		JSONArray jsonObject = JSONArray.fromObject(tt);
 		
@@ -67,12 +55,8 @@ public class ToplistAction extends BaseAction {
 	}
 	
 	public String zan(){
-		Toplist toplist2 = toplistService.findByPlayerId(toplist.getPlayerid());
-		System.out.println("toplist zan: playerid="+toplist.getPlayerid()+",zan="+toplist.getZan());
-		if (toplist2!=null){
-			toplist2.setZan(toplist.getZan());
-			toplistService.updateZan(toplist2);
-		}
+		log.warn("toplist zan: playerid="+toplist.getPlayerid()+",zan="+toplist.getZan());
+		ToplistManager.getInstance().updateZan(toplist);
 		return null;
 	}
 	
@@ -82,14 +66,6 @@ public class ToplistAction extends BaseAction {
 
 	public void setToplist(Toplist toplist) {
 		this.toplist = toplist;
-	}
-
-	public ToplistService getToplistService() {
-		return toplistService;
-	}
-
-	public void setToplistService(ToplistService toplistService) {
-		this.toplistService = toplistService;
 	}
 
 }

@@ -1,6 +1,5 @@
 package cn.hd.mgr;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -9,7 +8,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -39,10 +37,8 @@ public class DataManager extends MgrBase{
 	}
 
 	public Map<String,PlayerWithBLOBs> playerMaps;
-	private List<Toplist>			currMonthList;
 	private Vector<PlayerWithBLOBs> newPlayersVect;
 	private Vector<PlayerWithBLOBs>	updatePlayersVect;
-	private Vector<Toplist>			updateToplistVect;
 	private int nextPlayerId;
 	private DataThread dataThread;
 	
@@ -137,63 +133,6 @@ public class DataManager extends MgrBase{
 		return player;
 	}
 	
-	public int getTop(int playerid,float fMoney,int type){
-		synchronized(currMonthList){
-			for (int i=0;i<currMonthList.size();i++){
-				Toplist top22 = currMonthList.get(i);
-				if (top22.getPlayerid()==playerid
-						||top22.getMoney().floatValue()<=fMoney){
-					return i;
-				}
-			}		
-			return currMonthList.size()+1;
-			
-		}
-	}
-	
-	private void sortToplist(){
-		synchronized(currMonthList){
-			Collections.sort(currMonthList, new Comparator<Toplist>() {
-	            public int compare(Toplist arg0, Toplist arg1) {
-	                return arg0.getMoney().compareTo(arg1.getMoney());
-	            }
-	        });			
-		}
-	}
-	
-	public void onMoneyChanged(int playerid,float fChangedMoney){
-		String playername = null;
-		boolean needResort = false;
-		for (int i=0;i<currMonthList.size();i++){
-			Toplist topi = currMonthList.get(i);
-			if (topi.getPlayerid()==playerid){
-				playername = topi.getPlayername();
-				float newMoney = topi.getMoney().floatValue()+fChangedMoney;
-				if (newMoney>0){
-					 topi.setMoney(BigDecimal.valueOf(newMoney));
-					 needResort = true;
-					break;
-				}
-			}
-		}
-		
-		if (needResort){
-			sortToplist();
-		}
-		
-		if (playername==null){
-			PlayerWithBLOBs player = findPlayer(playerid);
-			if (player!=null)
-			 playername = player.getPlayername();
-		}
-		
-		Toplist toplist = new Toplist();
-		toplist.setPlayerid(playerid);
-		toplist.setPlayername(playername);
-		toplist.setMoney(BigDecimal.valueOf(fChangedMoney));
-		updateToplistVect.add(toplist);
-	}
-	
 	public synchronized boolean updatePlayer(PlayerWithBLOBs player){
 		PlayerWithBLOBs pp = playerMaps.get(player.getPlayername());
 		if (pp!=null){
@@ -232,7 +171,6 @@ public class DataManager extends MgrBase{
     	
     	newPlayersVect = new Vector<PlayerWithBLOBs>();
        	updatePlayersVect = new Vector<PlayerWithBLOBs>();
-    	updateToplistVect = new Vector<Toplist>();
     	
     	
     	InitdataService initdataService = new InitdataService();
@@ -252,27 +190,8 @@ public class DataManager extends MgrBase{
 		}
 		System.out.println("load all players :"+players.size());
 		
-    	ToplistService toplistService = new ToplistService();
-    	currMonthList = Collections.synchronizedList(new ArrayList<Toplist>());
-    	List<Toplist> monlist = toplistService.findCurrMonthToplists();
-    	for (int i=0;i<monlist.size();i++){
-    		currMonthList.add(monlist.get(i));
-    	}
-    	
-    	
     }
-    private void updateToplists(){
-		ToplistService toplistService = new ToplistService();
-		for (int i=0;i<updateToplistVect.size();i++){
-			Toplist toplist = updateToplistVect.get(i);
-			toplistService.changeToplist(toplist.getPlayerid(),toplist.getPlayername(),toplist.getMoney().doubleValue());
-		}
-		toplistService.DBCommit();
-		System.out.println("更新排行榜:"+updatePlayersVect.size());
-		updatePlayersVect.clear();
-	}
-
-	public synchronized void update(){
+    public synchronized void update(){
     	tick ++;
     	if (newPlayersVect.size()>BATCH_COUNT||tick%UPDATE_PERIOD_BATCH==0){
     		PlayerService service= new PlayerService();
@@ -291,9 +210,6 @@ public class DataManager extends MgrBase{
 //    	if (newSavingVect.size()>0||tick%UPDATE_PERIOD==0){
 //    		pushSavings();
 //    	}
-    	if (updateToplistVect.size()>0||tick%UPDATE_PERIOD==0){
-    		updateToplists();
-    	}
     	
 	}
     

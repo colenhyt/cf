@@ -201,31 +201,6 @@ public class ToplistManager {
 		return tops;
 	}
 
-	public boolean changeToplist(int playerid,String playerName,double money){
-		Toplist toplist = findByPlayerId(playerid);
-		if (toplist==null){
-			Toplist newtop = new Toplist();
-			newtop.setPlayerid(playerid);
-			newtop.setPlayername(playerName);
-			newtop.setCreatetime(new Date());
-			newtop.setUpdatetime(new Date());
-			newtop.setMoney(BigDecimal.valueOf(money));
-			newtop.setZan(0);
-			add(newtop);				
-			//System.out.println("增加最新排行榜记录: "+newtop.getPlayername()+":"+newtop.getMoney());
-		}else {
-			double topMoney = toplist.getMoney().doubleValue();
-			topMoney += money;
-			if (topMoney>0.01){
-				toplist.setMoney(BigDecimal.valueOf(topMoney));
-				toplist.setUpdatetime(new Date());
-				updateByKey(toplist);
-				//System.out.println("更新排行榜财富: "+toplist.getPlayername()+":"+topMoney+","+toplist.getMoney());
-			}
-		}
-		return true;		
-	}
-	
 	public static void main(String[] args){
 		Toplist record = new Toplist();
 		record.setPlayerid(280);
