@@ -12,6 +12,7 @@ import cn.hd.cf.service.SavingService;
 public class DataThread extends Thread {
 	private Vector<PlayerWithBLOBs> newPlayersVect;
 	private Vector<Saving>			newSavingVect;
+	private Vector<Saving>			updateSavingVect;
 	private Vector<PlayerWithBLOBs>	updatePlayersVect;	
 	private int tick;
 	protected Logger  log = Logger.getLogger(getClass()); 
@@ -20,28 +21,29 @@ public class DataThread extends Thread {
 		newPlayersVect = new Vector<PlayerWithBLOBs>();
 		updatePlayersVect = new Vector<PlayerWithBLOBs>();
 		newSavingVect = new Vector<Saving>();
+		updateSavingVect = new Vector<Saving>();
 	}
 	
 	public synchronized void push(PlayerWithBLOBs record){
-//		newPlayersVect.add(record);
-//		tick++;
+		newPlayersVect.add(record);
 	}
 	
 	public synchronized void updatePlayer(PlayerWithBLOBs record){
-//		updatePlayersVect.add(record);
-//		tick++;
+		updatePlayersVect.add(record);
 	}
 	
 	public synchronized void pushSaving(Saving record){
-//		newSavingVect.add(record);
-//		tick++;
+		newSavingVect.add(record);
+	}
+	
+	public synchronized void updateSaving(Saving record){
+		updateSavingVect.add(record);
 	}
 	
 	public void run() {
 		while (1==1){
-//			synchronized(this)
-			{
-	        if (tick>0){
+				synchronized(this)
+				{
 	        	if (newPlayersVect.size()>0){
 		    		PlayerService service= new PlayerService();
 		    		service.addPlayers(newPlayersVect);
@@ -62,17 +64,22 @@ public class DataThread extends Thread {
 		    		log.warn("batch add saving :"+newSavingVect.size());
 		    		newSavingVect.clear();    	    			
 	    		}
-		
-	    		tick = 0;
-	        }else{
+	        	
+	    		if (updateSavingVect.size()>0){
+		    		SavingService service2= new SavingService();
+		    		service2.updateSavings(updateSavingVect);
+		    		log.warn("batch update saving :"+updateSavingVect.size());
+		    		updateSavingVect.clear();    	    			
+	    		}		
+				}
+				
 	        	try {
-					super.sleep(50);
+//	        		System.out.println("size :"+DataManager.getInstance().playerMaps.size());
+					super.sleep(3000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-	        }
-			}
 		}
 
     }	

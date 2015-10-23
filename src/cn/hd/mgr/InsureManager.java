@@ -59,6 +59,7 @@ public class InsureManager extends MgrBase{
     		List<Insure> list = insuresMap.get(s.getPlayerid());
     		if (list==null){
     			list = new ArrayList<Insure>();
+    			insuresMap.put(s.getPlayerid(), list);
     		}
     		list.add(s);
     	}

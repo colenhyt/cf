@@ -65,6 +65,7 @@ public class StockManager {
     		List<Stock> list = stocksMap.get(s.getPlayerid());
     		if (list==null){
     			list = new ArrayList<Stock>();
+    			stocksMap.put(s.getPlayerid(), list);
     		}
     		list.add(s);
     	}		

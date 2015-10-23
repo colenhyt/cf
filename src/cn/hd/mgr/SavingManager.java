@@ -65,6 +65,7 @@ public class SavingManager extends MgrBase{
     		List<Saving> list = savingsMap.get(s.getPlayerid());
     		if (list==null){
     			list = new ArrayList<Saving>();
+    			savingsMap.put(s.getPlayerid(), list);
     		}
     		list.add(s);
     	}
@@ -90,7 +91,8 @@ public class SavingManager extends MgrBase{
     	if (s!=null){
     		s.setAmount(record.getAmount());
     		s.setUpdatetime(new Date());
-    		updateSavingVect.add(s);
+    		dataThread.updateSaving(s);
+//    		updateSavingVect.add(s);
     		return true;
     	}
     	return false;

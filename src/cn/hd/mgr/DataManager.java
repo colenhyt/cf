@@ -1,6 +1,5 @@
 package cn.hd.mgr;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -20,21 +19,15 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
-import redis.clients.jedis.Jedis;
-import cn.hd.base.BaseService;
 import cn.hd.cf.action.LoginAction;
 import cn.hd.cf.model.Init;
-import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.PlayerWithBLOBs;
-import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Savingdata;
 import cn.hd.cf.model.Toplist;
-import cn.hd.cf.service.InsureService;
 import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.service.ToplistService;
 import cn.hd.cf.tools.InitdataService;
 import cn.hd.cf.tools.SavingdataService;
-import cn.hd.util.RedisClient;
 
 public class DataManager extends MgrBase{
 	protected Logger  log = Logger.getLogger(getClass()); 
@@ -45,7 +38,7 @@ public class DataManager extends MgrBase{
 		return init;
 	}
 
-	private Map<String,PlayerWithBLOBs> playerMaps;
+	public Map<String,PlayerWithBLOBs> playerMaps;
 	private List<Toplist>			currMonthList;
 	private Vector<PlayerWithBLOBs> newPlayersVect;
 	private Vector<PlayerWithBLOBs>	updatePlayersVect;
@@ -207,7 +200,17 @@ public class DataManager extends MgrBase{
 			pp.setQuest(player.getQuest());
 			pp.setOpenstock(player.getOpenstock());
 			pp.setExp(player.getExp());
-			updatePlayersVect.add(pp);
+			dataThread.updatePlayer(pp);
+			return true;
+		}
+		return false;
+	}
+	
+	public synchronized boolean updateZan(int playerid,int zan){
+		PlayerWithBLOBs pp = findPlayer(playerid);
+		if (pp!=null){
+			pp.setZan(zan);
+			dataThread.updatePlayer(pp);
 			return true;
 		}
 		return false;
@@ -220,10 +223,11 @@ public class DataManager extends MgrBase{
 			return;
 		}
 		player.setLastlogin(new Date());
-		updatePlayersVect.add(player);
+//		updatePlayersVect.add(player);
 	}
 	
     public void init(){
+
     	loginAction = new LoginAction();
     	
     	newPlayersVect = new Vector<PlayerWithBLOBs>();
