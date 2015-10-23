@@ -1,18 +1,10 @@
 package cn.hd.cf.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import redis.clients.jedis.Jedis;
 import cn.hd.base.BaseService;
-import cn.hd.base.Bean;
 import cn.hd.cf.dao.StockMapper;
-import cn.hd.cf.model.Saving;
-import cn.hd.cf.model.SavingExample;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.StockExample;
 import cn.hd.cf.model.StockExample.Criteria;
@@ -127,24 +119,5 @@ public class StockService extends BaseService {
 			return false;
 		}			
 		return true;
-	}
-
-	public void initData(Jedis jedis2){
-		if (jedis2==null)
-			return;
-		
-		StockExample example = new StockExample();
-		List<Stock> stocks = stockMapper.selectByExample(example);
-		for (int i=0; i<stocks.size();i++){
-			Stock stock = stocks.get(i);
-			String key = stock.getPlayerid()+ITEM_KEY;
-			jedis2.del(key);
-		}
-		for (int i=0; i<stocks.size();i++){
-			Stock record = stocks.get(i);
-			String key = record.getPlayerid()+ITEM_KEY;
-			jedis2.hset(key, record.getItemid().toString(),record.toString());
-		}	
-		jedis2.close();
 	}
 }

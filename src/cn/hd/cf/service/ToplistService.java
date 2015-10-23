@@ -5,17 +5,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import redis.clients.jedis.Jedis;
 import cn.hd.base.BaseService;
-import cn.hd.base.Bean;
 import cn.hd.cf.dao.ToplistMapper;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.model.ToplistExample;
@@ -35,29 +28,6 @@ public class ToplistService extends BaseService {
 			toplist = list.get(0);
 		
 		return toplist;
-	}
-	
-	private List<Toplist> findToplistAfterDate(Date date){
-		List<Toplist> tops = new ArrayList<Toplist>();
-		
-		if (jedis!=null){
-			Map<String,String> mapJsons = jedis.hgetAll(ITEM_KEY);
-			Collection<String> l = mapJsons.values();
-			for (Iterator<String> iter = l.iterator(); iter.hasNext();) {
-				  String str = (String)iter.next();
-				Toplist top = (Toplist)Bean.toBean(str,Toplist.class);
-				if (top.getUpdatetime().compareTo(date)>0){
-					  tops.add(top);
-				}
-				  System.out.println(str);
-			}
-			Collections.sort(tops, new Comparator<Toplist>() {
-	            public int compare(Toplist arg0, Toplist arg1) {
-	                return arg0.getMoney().compareTo(arg1.getMoney());
-	            }
-	        });			
-		}
-		return tops;
 	}
 	
 	public List<Toplist> findCurrMonthToplists(){
@@ -94,16 +64,6 @@ public class ToplistService extends BaseService {
 		}
 		
 		Date fristDate = getFirstDate(type);
-		if (jedis!=null){
-			List<Toplist> tops2 = findToplistAfterDate(fristDate);
-			for (int i=0;i<tops2.size();i++){
-				Toplist top22 = tops2.get(i);
-				if (top22.getPlayerid()==top.getPlayerid()
-						||top22.getMoney().floatValue()<=top.getMoney().floatValue()){
-					return i;
-				}
-			}		
-		}
 		
 		ToplistExample example=new ToplistExample();
 		Criteria criteria=example.createCriteria();		
@@ -113,24 +73,13 @@ public class ToplistService extends BaseService {
 		return cc;
 	}	
 	
-	public int add(Toplist record){
-		if (jedis!=null){
-			jedis.hset(ITEM_KEY, record.getPlayerid().toString(), record.toString());
-			jedis.close();
-			return 0;
-		}
-		
+	public int add(Toplist record){	
 		toplistMapper.insert(record);
 		DBCommit();
 		return 0;
 	}
 	
 	public int updateByKey(Toplist record){
-		if (jedis!=null){
-			jedis.hset(ITEM_KEY, record.getPlayerid().toString(), record.toString());
-			jedis.close();
-			return 0;
-		}
 		
 		toplistMapper.updateByPrimaryKey(record);
 		DBCommit();
@@ -156,19 +105,6 @@ public class ToplistService extends BaseService {
 		initMapper("toplistMapper");
 	}
 	
-	public void initData(Jedis jedis2){
-		if (jedis2==null)
-			return;
-		
-		ToplistExample example = new ToplistExample();
-		List<Toplist> tops = toplistMapper.selectByExample(example);
-		jedis2.del(ITEM_KEY);
-		for (int i=0; i<tops.size();i++){
-			Toplist record = tops.get(i);
-			jedis2.hset(ITEM_KEY, record.getPlayerid().toString(),record.toString());
-		}	
-		jedis2.close();		
-	}
 	public ToplistMapper getToplistMapper() {
 		return toplistMapper;
 	}
@@ -240,14 +176,6 @@ public class ToplistService extends BaseService {
 		List<Toplist> tops = new ArrayList<Toplist>();
 		
 		Date firstDate = getFirstDate(type);
-		if (jedis!=null){
-			List<Toplist> tops2 = findToplistAfterDate(firstDate);
-			for (int i=0;i<tops2.size();i++){
-				if (i>=20) break;
-				tops.add(tops2.get(i));
-			}			
-			return tops;
-		}
 		
 		ToplistExample example=new ToplistExample();
 		Criteria criteria=example.createCriteria();		

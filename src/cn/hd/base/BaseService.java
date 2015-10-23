@@ -8,8 +8,6 @@ import java.util.Queue;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import redis.clients.jedis.Jedis;
-import cn.hd.mgr.DataManager;
 import cn.hd.util.MybatisSessionFactory;
 
 
@@ -19,7 +17,6 @@ import cn.hd.util.MybatisSessionFactory;
  * 2011-6-14
  */
 public class BaseService extends Base{
-	protected Jedis jedis;
 	public static byte DATA_STATUS_INACTIVE = 0;
 	public static byte DATA_STATUS_ACTIVE = 1;
 	

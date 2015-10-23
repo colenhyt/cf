@@ -4,9 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
-import redis.clients.jedis.Jedis;
 import cn.hd.base.BaseService;
-import cn.hd.base.Bean;
 import cn.hd.cf.dao.PlayerMapper;
 import cn.hd.cf.dao.QuestMapper;
 import cn.hd.cf.dao.SigninMapper;
@@ -52,19 +50,6 @@ public class PlayerService extends BaseService {
 		initMapper("playerMapper","signinMapper","questMapper");
 	}
 	
-	public int initData(Jedis jedis2){
-		int nextPlayerId = 0;
-		PlayerExample example = new PlayerExample();
-		List<PlayerWithBLOBs> players = playerMapper.selectByExampleWithBLOBs(example);
-		for (int i=0; i<players.size();i++){
-			PlayerWithBLOBs player = players.get(i);
-			if (player.getPlayerid()>nextPlayerId)
-				nextPlayerId = player.getPlayerid();
-			
-		}
-		return nextPlayerId;
-	}
-	
 	public List<PlayerWithBLOBs> findAll(){
 		PlayerExample example = new PlayerExample();
 		return playerMapper.selectByExampleWithBLOBs(example);		
@@ -101,14 +86,6 @@ public class PlayerService extends BaseService {
 	}	
 	public PlayerWithBLOBs findByPlayerId(int playerid){
 		PlayerWithBLOBs player = null;
-		if (jedis!=null){
-		String jsonObj = jedis.hget(ITEM_KEY,Integer.valueOf(playerid).toString());
-		if (jsonObj!=null){
-			player = (PlayerWithBLOBs)Bean.toBean(jsonObj, PlayerWithBLOBs.class);
-		}
-		jedis.close();
-		return player;
-		}
 		
 		PlayerExample example = new PlayerExample();
 		Criteria criteria=example.createCriteria();
@@ -187,17 +164,6 @@ public class PlayerService extends BaseService {
 
 	public PlayerWithBLOBs find(int playerid){
 			PlayerWithBLOBs player = null;
-			if (jedis!=null){
-			String jsonObj = jedis.hget(ITEM_KEY,Integer.valueOf(playerid).toString());
-			if (jsonObj!=null){
-				player = (PlayerWithBLOBs)Bean.toBean(jsonObj, PlayerWithBLOBs.class);
-	//			if (!player.getPwd().equals(strPwd))
-	//				return null;
-			}
-			jedis.close();
-			return player;
-			}
-			
 			PlayerExample example = new PlayerExample();
 			Criteria criteria=example.createCriteria();
 			criteria.andPlayeridEqualTo(Integer.valueOf(playerid));

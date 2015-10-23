@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import redis.clients.jedis.Jedis;
 import cn.hd.base.BaseService;
 import cn.hd.cf.dao.SavingMapper;
 import cn.hd.cf.model.Saving;
@@ -34,24 +33,6 @@ public class SavingService extends BaseService {
 		return savingMapper.selectByExample(example);
 	}
 	
-	public void initData(Jedis jedis2){
-		if (jedis2==null)
-			return;
-		
-		SavingExample example = new SavingExample();
-		List<Saving> savings = savingMapper.selectByExample(example);
-		for (int i=0; i<savings.size();i++){
-			Saving saving = savings.get(i);
-			String key = saving.getPlayerid()+ITEM_KEY;
-			jedis2.del(key);
-		}
-		for (int i=0; i<savings.size();i++){
-			Saving record = savings.get(i);
-			String key = record.getPlayerid()+ITEM_KEY;
-			jedis2.hset(key, record.getItemid().toString(),record.toString());
-		}		
-		jedis2.close();
-	}	
 	public synchronized boolean add(Saving record)
 	{		
 		try {

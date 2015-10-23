@@ -11,15 +11,11 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Vector;
 
-import redis.clients.jedis.Jedis;
 import cn.hd.base.BaseService;
 import cn.hd.cf.dao.InsureMapper;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.InsureExample;
-import cn.hd.cf.model.Saving;
-import cn.hd.cf.model.SavingExample;
 import cn.hd.cf.model.InsureExample.Criteria;
-import cn.hd.mgr.DataManager;
 import cn.hd.util.MybatisSessionFactory;
 
 public class InsureService extends BaseService {
@@ -84,11 +80,6 @@ public class InsureService extends BaseService {
 	
 	public boolean add(Insure record)
 	{
-		if (jedis!=null){
-			String key = record.getPlayerid()+ITEM_KEY;
-			jedis.hset(key, record.getItemid().toString(), record.toString());
-			jedis.close();
-		}
 		Connection conn = MybatisSessionFactory.getSession().getConnection();
 		
 		System.out.println("增加保险:"+record.toString()+"conn:"+conn.toString());
