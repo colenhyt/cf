@@ -19,9 +19,6 @@ public class SavingManager extends MgrBase{
 	private Map<Integer,String>	savingMap;
 	private Map<Integer,Saving>	savingCfgMap;	
 	private Map<Integer,List<Saving>>	savingsMap;
-	private Vector<Saving>			newSavingVect;
-	private Vector<Saving>			updateSavingVect;
-	private Vector<Saving>			deleteSavingVect;
 	Saving savingCfg;
 	
     public Saving getSavingCfg(int itemId) {
@@ -46,9 +43,6 @@ public class SavingManager extends MgrBase{
     		if (!savingCfgMap.containsKey(saving.getId()))
     			savingCfgMap.put(saving.getId(), saving);
     	}
-    	newSavingVect = new Vector<Saving>();
-    	updateSavingVect = new Vector<Saving>();
-    	deleteSavingVect = new Vector<Saving>();
 
     	savingMap = new HashMap<Integer,String>();
     	
@@ -114,7 +108,7 @@ public class SavingManager extends MgrBase{
     		return false;
     	}
     	
-    	updateSavingVect.add(record);
+    	dataThread.updateSaving(record);
     	
     	list.add(record);
     	return true;
@@ -168,7 +162,7 @@ public class SavingManager extends MgrBase{
 		}
 		if (found){
 			System.out.println("删除后json: "+list.size());
-			deleteSavingVect.add(record);
+			dataThread.deleteSaving(record);
 			return true;
 		}
 		return false;
@@ -192,36 +186,10 @@ public class SavingManager extends MgrBase{
 			return false;
 		}
 		list.add(record);
-//		newSavingVect.add(record);
 		dataThread.pushSaving(record);
 		return true;
 	}
 
-	public synchronized void update(){
-    	tick ++;
-    	if (newSavingVect.size()>BATCH_COUNT||tick%UPDATE_PERIOD_BATCH==0){
-    		SavingService service= new SavingService();
-    		service.addSavings(newSavingVect);
-    		log.warn("batch add savings:"+newSavingVect.size());
-    		newSavingVect.clear();
-    	}
-    	
-    	if (updateSavingVect.size()>BATCH_COUNT||tick%UPDATE_PERIOD_BATCH==0){
-    		SavingService service= new SavingService();
-    		service.updateSavings(updateSavingVect);
-    		log.warn("batch update savings:"+updateSavingVect.size());
-    		updateSavingVect.clear();
-    	}    	
-    	
-    	if (deleteSavingVect.size()>BATCH_COUNT||tick%UPDATE_PERIOD_BATCH==0){
-    		SavingService service= new SavingService();
-    		service.removeSavings(deleteSavingVect);
-    		log.warn("batch remove savings:"+deleteSavingVect.size());
-    		deleteSavingVect.clear();
-    	}      	
-    	
-	}
-	
 	public static void main(String[] args) {
 		
     	SavingManager stmgr = SavingManager.getInstance();

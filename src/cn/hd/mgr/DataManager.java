@@ -37,8 +37,6 @@ public class DataManager extends MgrBase{
 	}
 
 	public Map<String,PlayerWithBLOBs> playerMaps;
-	private Vector<PlayerWithBLOBs> newPlayersVect;
-	private Vector<PlayerWithBLOBs>	updatePlayersVect;
 	private int nextPlayerId;
 	private DataThread dataThread;
 	
@@ -162,16 +160,12 @@ public class DataManager extends MgrBase{
 			return;
 		}
 		player.setLastlogin(new Date());
-//		updatePlayersVect.add(player);
+		dataThread.updatePlayer(player);
 	}
 	
     public void init(){
 
     	loginAction = new LoginAction();
-    	
-    	newPlayersVect = new Vector<PlayerWithBLOBs>();
-       	updatePlayersVect = new Vector<PlayerWithBLOBs>();
-    	
     	
     	InitdataService initdataService = new InitdataService();
     	init = initdataService.findInit();
@@ -191,28 +185,6 @@ public class DataManager extends MgrBase{
 		System.out.println("load all players :"+players.size());
 		
     }
-    public synchronized void update(){
-    	tick ++;
-    	if (newPlayersVect.size()>BATCH_COUNT||tick%UPDATE_PERIOD_BATCH==0){
-    		PlayerService service= new PlayerService();
-    		service.addPlayers(newPlayersVect);
-    		log.warn("batch add players:"+newPlayersVect.size());
-    		newPlayersVect.clear();
-    	}    	
-//    	
-    	if (updatePlayersVect.size()>BATCH_COUNT||tick%UPDATE_PERIOD_BATCH==0){
-    		PlayerService service= new PlayerService();
-    		service.updatePlayers(updatePlayersVect);
-    		log.warn("batch update players:"+updatePlayersVect.size());
-    		updatePlayersVect.clear();
-    	}     	
-    	
-//    	if (newSavingVect.size()>0||tick%UPDATE_PERIOD==0){
-//    		pushSavings();
-//    	}
-    	
-	}
-    
     public static void main(String[] args) {
     	DataManager stmgr = DataManager.getInstance();
     	SavingdataService ss = new SavingdataService();

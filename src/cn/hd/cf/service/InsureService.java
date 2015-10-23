@@ -78,40 +78,6 @@ public class InsureService extends BaseService {
 		return insures;
 	}	
 	
-	public boolean add(Insure record)
-	{
-		Connection conn = MybatisSessionFactory.getSession().getConnection();
-		
-		System.out.println("增加保险:"+record.toString()+"conn:"+conn.toString());
-		
-		try {
-		insureMapper.insert(record);
-		DBCommit();
-		}catch (Exception e){
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
-	
-	public boolean delete(Insure record)
-	{
-		System.out.println("删除记录:"+record.toString());
-		
-		try {
-			InsureExample example = new InsureExample();
-			Criteria criteria = example.createCriteria();
-			criteria.andPlayeridEqualTo(record.getPlayerid());
-			criteria.andItemidEqualTo(record.getItemid());
-			insureMapper.deleteByExample(example);
-			DBCommit();	
-		}catch (Exception e){
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
-
 	public List<Insure> findAll(){
 		InsureExample example = new InsureExample();
 		return insureMapper.selectByExample(example);

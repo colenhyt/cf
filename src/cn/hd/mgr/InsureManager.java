@@ -18,9 +18,6 @@ public class InsureManager extends MgrBase{
 	private Map<Integer,String>	insureMap;
 	private Map<Integer,Insure>	insureCfgMap;
 	private Map<Integer,List<Insure>>	insuresMap;
-	private Vector<Insure>			newInsureVect;
-	private Vector<Insure>			updateInsureVect;
-	private Vector<Insure>			deleteInsureVect;
 	
     public synchronized Insure getInsureCfg(int itemId) {
 		return insureCfgMap.get(itemId);
@@ -44,9 +41,6 @@ public class InsureManager extends MgrBase{
     		if (!insureCfgMap.containsKey(insure.getId()))
     			insureCfgMap.put(insure.getId(), insure);
     	}
-    	newInsureVect = new Vector<Insure>();
-    	updateInsureVect = new Vector<Insure>();
-    	deleteInsureVect = new Vector<Insure>();
     	dataThread = new DataThread();
     	dataThread.start();    	
 
@@ -65,55 +59,6 @@ public class InsureManager extends MgrBase{
     		}
     		list.add(s);
     	}
-    }
-    
-    public synchronized boolean updateLiveInsure(Insure record){
-    	record.setItemid(1);
-    	return updateInsureAmount(record);
-    }
-    
-    public synchronized boolean updateInsureAmount(Insure record){
-    	List<Insure> list = insuresMap.get(record.getPlayerid());
-    	if (list==null)
-    		return false;
-    	
-    	Insure s = null;
-    	for (int i=0;i<list.size();i++){
-			if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){
-    			s = list.get(i);
-    			break;
-    		}
-    	}    
-    	if (s!=null){
-    		s.setAmount(record.getAmount());
-    		s.setUpdatetime(new Date());
-    		updateInsureVect.add(s);
-    		return true;
-    	}
-    	return false;
-    }
-    
-    public synchronized boolean updateInsure(int playerId,Insure record){
-    	List<Insure> list = insuresMap.get(playerId);
-    	if (list==null)
-    		return false;
-    	
-    	boolean found = false;
-    	for (int i=0;i<list.size();i++){
-			if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){
-    			list.remove(i);
-    			found = true;
-    			break;
-    		}
-    	}
-    	if (!found){
-    		return false;
-    	}
-    	
-    	updateInsureVect.add(record);
-    	
-    	list.add(record);
-    	return true;
     }
     
     public synchronized Insure getInsure(int playerId,int itemid){

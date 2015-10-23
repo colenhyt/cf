@@ -201,7 +201,7 @@ public class SavingAction extends BaseAction {
 		Saving newsaving = new Saving();
 		newsaving.setItemid(saving.getItemid());
 		newsaving.setPlayerid(saving.getPlayerid());
-		//取钱:
+		//取出存款:
 		if (saving.getAmount()<0){
 			float inAmount = 0 - saving.getAmount();
 			Saving saving2 = SavingManager.getInstance().getSaving(saving.getPlayerid(), saving.getItemid());
@@ -227,7 +227,7 @@ public class SavingAction extends BaseAction {
 				newsaving.setProfit((float)iInter);				
 			}
 			pushLive(saving.getPlayerid(), inAmount);		//放回活期;
-			exec = savingService.remove(saving);	
+			exec = SavingManager.getInstance().deleteSaving(saving.getPlayerid(),saving);	
 		}else {
 			
 			pushLive(saving.getPlayerid(), 0 - saving.getAmount());
