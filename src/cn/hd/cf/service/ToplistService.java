@@ -7,9 +7,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
 import cn.hd.base.BaseService;
 import cn.hd.cf.dao.ToplistMapper;
+import cn.hd.cf.model.Toplist;
+import cn.hd.cf.model.ToplistExample;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.model.ToplistExample;
 import cn.hd.cf.model.ToplistExample.Criteria;
@@ -17,6 +20,13 @@ import cn.hd.cf.model.ToplistExample.Criteria;
 public class ToplistService extends BaseService {
 	private ToplistMapper toplistMapper;
 	private static String ITEM_KEY = "toplist";
+	
+	public synchronized List<Toplist> findAll(){
+		List<Toplist> list = null;
+		ToplistExample example=new ToplistExample();
+		list = toplistMapper.selectByExample(example);
+		return list;
+	}
 	
 	public synchronized Toplist findByPlayerId(int playerId){
 		Toplist toplist = null;
@@ -78,6 +88,38 @@ public class ToplistService extends BaseService {
 		DBCommit();
 		return 0;
 	}
+	
+	public synchronized boolean addToplists(Vector<Toplist> records)
+	{		
+		try {
+			for (int i=0;i<records.size();i++){
+			toplistMapper.insert(records.get(i));
+			}
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}	
+		return true;
+	}
+
+	public synchronized boolean updateToplists(Vector<Toplist> records)
+	{		
+		try {
+			for (int i=0;i<records.size();i++){
+				Toplist record = records.get(i);
+				ToplistExample example = new ToplistExample();
+				Criteria criteria = example.createCriteria();
+				criteria.andPlayeridEqualTo(record.getPlayerid());
+				toplistMapper.updateByExampleSelective(record, example);				
+			}
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}	
+		return true;
+	}	
 	
 	public int updateByKey(Toplist record){
 		

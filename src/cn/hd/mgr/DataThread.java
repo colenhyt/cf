@@ -6,15 +6,18 @@ import org.apache.log4j.Logger;
 
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
+import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.service.SavingService;
+import cn.hd.cf.service.ToplistService;
 
 public class DataThread extends Thread {
 	private Vector<PlayerWithBLOBs> newPlayersVect;
 	private Vector<Saving>			newSavingVect;
 	private Vector<Saving>			updateSavingVect;
 	private Vector<PlayerWithBLOBs>	updatePlayersVect;	
-	private int tick;
+	private Vector<Toplist>			newToplistVect;
+	private Vector<Toplist>			updateToplistVect;		
 	protected Logger  log = Logger.getLogger(getClass()); 
 	
 	public DataThread(){
@@ -39,6 +42,14 @@ public class DataThread extends Thread {
 	public synchronized void updateSaving(Saving record){
 		updateSavingVect.add(record);
 	}
+	
+	public synchronized void pushToplist(Toplist record){
+		newToplistVect.add(record);
+	}
+	
+	public synchronized void updateToplist(Toplist record){
+		updateToplistVect.add(record);
+	}	
 	
 	public void run() {
 		while (1==1){
@@ -70,7 +81,21 @@ public class DataThread extends Thread {
 		    		service2.updateSavings(updateSavingVect);
 		    		log.warn("batch update saving :"+updateSavingVect.size());
 		    		updateSavingVect.clear();    	    			
-	    		}		
+	    		}	
+	    		
+	    		if (newToplistVect.size()>0){
+		    		ToplistService service2= new ToplistService();
+		    		service2.addToplists(newToplistVect);
+		    		log.warn("batch add toplist :"+newToplistVect.size());
+		    		newToplistVect.clear();    	    			
+	    		}
+	        	
+	    		if (updateToplistVect.size()>0){
+	    			ToplistService service2= new ToplistService();
+		    		service2.updateToplists(updateToplistVect);
+		    		log.warn("batch update toplist :"+updateToplistVect.size());
+		    		updateToplistVect.clear();    	    			
+	    		}	    		
 				}
 				
 	        	try {
