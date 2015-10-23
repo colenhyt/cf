@@ -24,7 +24,7 @@ import cn.hd.cf.model.Stockdata;
 import cn.hd.cf.service.StockService;
 import cn.hd.cf.tools.StockdataService;
 
-public class StockManager {
+public class StockManager extends MgrBase{
 	protected Logger  log = Logger.getLogger(getClass()); 
 	public int STOCK_QUOTE_PERIOD = 5;
 	private int STOCK_SAVE_PERIOD = 5;
@@ -36,9 +36,6 @@ public class StockManager {
     private static StockManager uniqueInstance = null;  
 	private Map<Integer,String>	stockMap;
 	private Map<Integer,List<Stock>>	stocksMap;
-	private Vector<Stock>			newStockVect;
-	private Vector<Stock>			updateStockVect;
-	private Vector<Stock>			deleteStockVect;	
 	
     public static StockManager getInstance() {  
         if (uniqueInstance == null) {  
@@ -50,9 +47,6 @@ public class StockManager {
     public void init(){
 		lastQuoteTime = System.currentTimeMillis();
 		lastUpdateDate = null;
-    	newStockVect = new Vector<Stock>();
-    	updateStockVect = new Vector<Stock>();
-    	deleteStockVect = new Vector<Stock>();		
 		StockdataService stockdataService = new StockdataService();
 		stockData = stockdataService.findActive();
 		quoteMap = new HashMap<Integer,LinkedList<Quote>>();
@@ -69,6 +63,9 @@ public class StockManager {
     		}
     		list.add(s);
     	}		
+    	
+    	dataThread = new DataThread();
+    	dataThread.start();    	
     	
 	   	for (int i=0;i<stockData.size();i++){
     		Stockdata  stock = stockData.get(i);
@@ -245,7 +242,7 @@ public class StockManager {
 			return false;
 		}
 		list.add(record);
-		newStockVect.add(record);
+		dataThread.pushStock(record);
 		return true;
 	}
 
@@ -260,14 +257,14 @@ public class StockManager {
 			
 			if (ss.getQty()<=needRemoveQty){
 				needRemoveQty -= ss.getQty();
-				deleteStockVect.add(ss);
+				dataThread.deleteStock(ss);
 				System.out.println("删除:"+needRemoveQty);
 			}else {
 				ss.setQty(ss.getQty()-needRemoveQty);
 				ss.setAmount(ss.getQty()*ss.getPrice());
 				System.out.println("更新:"+needRemoveQty);
 				needRemoveQty = 0;
-				updateStock(playerId,ss);
+				dataThread.updateStock(ss);
 			}
 			if (needRemoveQty==0) {
 				exec = true;
@@ -288,27 +285,6 @@ public class StockManager {
 			stockMap.put(playerId, jsonstr);
 		}
 		return jsonstr;
-	}
-
-	public synchronized boolean updateStock(int playerId,Stock record){
-		List<Stock> list = stocksMap.get(playerId);
-		if (list==null)
-			return false;
-		
-		boolean found = false;
-		for (int i=0;i<list.size();i++){
-			if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){
-				list.remove(i);
-				found = true;
-				break;
-			}
-		}
-		if (!found){
-			return false;
-		}
-		list.add(record);
-		System.out.println("更新内存股票:  "+record);
-		return true;
 	}
 
 	public static void main(String[] args) {

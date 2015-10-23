@@ -23,7 +23,6 @@ public class SavingManager extends MgrBase{
 	private Vector<Saving>			updateSavingVect;
 	private Vector<Saving>			deleteSavingVect;
 	Saving savingCfg;
-	private DataThread dataThread;
 	
     public Saving getSavingCfg(int itemId) {
 		return savingCfgMap.get(itemId);

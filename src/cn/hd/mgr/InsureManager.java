@@ -47,6 +47,8 @@ public class InsureManager extends MgrBase{
     	newInsureVect = new Vector<Insure>();
     	updateInsureVect = new Vector<Insure>();
     	deleteInsureVect = new Vector<Insure>();
+    	dataThread = new DataThread();
+    	dataThread.start();    	
 
     	insureMap = new HashMap<Integer,String>();
     	
@@ -162,7 +164,7 @@ public class InsureManager extends MgrBase{
 		}
 		if (found){
 			System.out.println("删除后json: "+list.size());
-			deleteInsureVect.add(record);
+			dataThread.deleteInsure(record);
 			return true;
 		}
 		return false;
@@ -186,35 +188,10 @@ public class InsureManager extends MgrBase{
 			return false;
 		}
 		list.add(record);
-		newInsureVect.add(record);
+		dataThread.pushInsure(record);
 		return true;
 	}
 
-	public synchronized void update(){
-    	tick ++;
-    	if (newInsureVect.size()>BATCH_COUNT||tick%UPDATE_PERIOD_BATCH==0){
-    		InsureService service= new InsureService();
-    		service.addInsures(newInsureVect);
-    		log.warn("batch add insures:"+newInsureVect.size());
-    		newInsureVect.clear();
-    	}
-    	
-    	if (updateInsureVect.size()>BATCH_COUNT||tick%UPDATE_PERIOD_BATCH==0){
-    		InsureService service= new InsureService();
-    		service.updateInsures(updateInsureVect);
-    		log.warn("batch update insures:"+updateInsureVect.size());
-    		updateInsureVect.clear();
-    	}    	
-    	
-    	if (deleteInsureVect.size()>BATCH_COUNT||tick%UPDATE_PERIOD_BATCH==0){
-    		InsureService service= new InsureService();
-    		service.removeInsures(deleteInsureVect);
-    		log.warn("batch remove insures:"+deleteInsureVect.size());
-    		deleteInsureVect.clear();
-    	}      	
-    	
-	}
-	
 	public static void main(String[] args) {
 		
     	InsureManager stmgr = InsureManager.getInstance();

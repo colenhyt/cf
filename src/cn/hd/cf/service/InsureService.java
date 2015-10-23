@@ -131,7 +131,7 @@ public class InsureService extends BaseService {
 		return true;
 	}
 
-	public synchronized boolean removeInsures(Vector<Insure> records)
+	public synchronized boolean deleteInsures(Vector<Insure> records)
 	{		
 		try {
 			for (int i=0;i<records.size();i++){
@@ -139,7 +139,7 @@ public class InsureService extends BaseService {
 				InsureExample example = new InsureExample();
 				Criteria criteria = example.createCriteria();
 				criteria.andPlayeridEqualTo(record.getPlayerid());
-				criteria.andItemidEqualTo(record.getItemid());
+				criteria.andItemidEqualTo(record.getItemid());			
 				insureMapper.deleteByExample(example);			
 			}
 			DBCommit();

@@ -2,6 +2,7 @@ package cn.hd.cf.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import cn.hd.base.BaseService;
 import cn.hd.cf.dao.StockMapper;
@@ -113,11 +114,62 @@ public class StockService extends BaseService {
 		try {
 			stockMapper.updateByPrimaryKeySelective(record);
 			DBCommit();
-			StockManager.getInstance().updateStock(record.getPlayerid(), record);
 		}catch (Exception e){
 			e.printStackTrace();
 			return false;
 		}			
+		return true;
+	}
+
+	public synchronized boolean addStocks(Vector<Stock> records)
+	{		
+		try {
+			for (int i=0;i<records.size();i++){
+			stockMapper.insert(records.get(i));
+			}
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}	
+		return true;
+	}
+
+	public synchronized boolean deleteStocks(Vector<Stock> records)
+	{		
+		try {
+			for (int i=0;i<records.size();i++){
+				Stock record = records.get(i);
+				StockExample example = new StockExample();
+				Criteria criteria = example.createCriteria();
+				criteria.andPlayeridEqualTo(record.getPlayerid());
+				criteria.andItemidEqualTo(record.getItemid());			
+				stockMapper.deleteByExample(example);			
+			}
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}	
+		return true;
+	}
+
+	public synchronized boolean updateStocks(Vector<Stock> records)
+	{		
+		try {
+			for (int i=0;i<records.size();i++){
+				Stock record = records.get(i);
+				StockExample example = new StockExample();
+				Criteria criteria = example.createCriteria();
+				criteria.andPlayeridEqualTo(record.getPlayerid());
+				criteria.andItemidEqualTo(record.getItemid());			
+				stockMapper.updateByExampleSelective(record, example);				
+			}
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}	
 		return true;
 	}
 }

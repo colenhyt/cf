@@ -143,5 +143,24 @@ public class SavingService extends BaseService {
 			return false;
 		}	
 		return true;
+	}
+
+	public synchronized boolean deleteSavings(Vector<Saving> records)
+	{		
+		try {
+			for (int i=0;i<records.size();i++){
+				Saving record = records.get(i);
+				SavingExample example = new SavingExample();
+				Criteria criteria = example.createCriteria();
+				criteria.andPlayeridEqualTo(record.getPlayerid());
+				criteria.andItemidEqualTo(record.getItemid());			
+				savingMapper.deleteByExample(example);		
+			}
+			DBCommit();
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}	
+		return true;
 	}		
 }

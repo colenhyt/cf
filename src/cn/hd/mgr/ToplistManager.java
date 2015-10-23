@@ -10,14 +10,11 @@ import java.util.Date;
 import java.util.List;
 
 import cn.hd.cf.model.Toplist;
-import cn.hd.cf.model.ToplistExample;
-import cn.hd.cf.model.ToplistExample.Criteria;
 import cn.hd.cf.service.ToplistService;
 	
-public class ToplistManager {
+public class ToplistManager extends MgrBase{
 	List<Toplist>		toplists;
     private static ToplistManager uniqueInstance = null;  
-	private DataThread dataThread;
 	
     public static ToplistManager getInstance() {  
         if (uniqueInstance == null) {  

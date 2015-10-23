@@ -8,5 +8,6 @@ public class MgrBase {
 	protected final int UPDATE_PERIOD = 20*30;		//20*60: 一小时
 	protected final int BATCH_COUNT = 200;
 	protected final int UPDATE_PERIOD_BATCH = 40;	//2分钟
+	protected DataThread dataThread;
 
 }
