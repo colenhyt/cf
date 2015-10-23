@@ -26,6 +26,9 @@ public class ToplistManager extends MgrBase{
     public void init(){
     	ToplistService service= new ToplistService();
     	toplists = service.findAll();
+    	if (toplists==null)
+    		toplists = new ArrayList<Toplist>();
+    	
     	dataThread = new DataThread();
     	dataThread.start();    	
     	

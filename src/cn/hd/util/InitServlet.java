@@ -10,6 +10,7 @@ import cn.hd.mgr.EventManager;
 import cn.hd.mgr.InsureManager;
 import cn.hd.mgr.SavingManager;
 import cn.hd.mgr.StockManager;
+import cn.hd.mgr.ToplistManager;
 
 public class InitServlet extends HttpServlet{
 	protected Logger  log = Logger.getLogger(getClass()); 
@@ -19,7 +20,9 @@ public class InitServlet extends HttpServlet{
 		SavingManager.getInstance().init();
 		InsureManager.getInstance().init();
 		StockManager.getInstance().init();
+		ToplistManager.getInstance().init();
 		EventManager.getInstance().start();
+		
 		log.info("pingan moneylife init successful!");
 	}
 }
