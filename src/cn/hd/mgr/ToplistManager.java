@@ -44,19 +44,6 @@ public class ToplistManager extends MgrBase{
 		return null;
 	}
 	
-	public synchronized List<Toplist> findCurrMonthToplists(){
-		Date currMontDate = getFirstDate(1);
-		List<Toplist> monthlist = new ArrayList<Toplist>();
-		for (int i=0;i<toplists.size();i++){
-			Toplist top = toplists.get(i);
-			if (top.getUpdatetime().compareTo(currMontDate)>0){
-				monthlist.add(top);
-			}
-		}
-		Collections.sort(monthlist);
-		return monthlist;
-	}
-	
 	public int findCountByGreaterMoney(int playerid,int type,float fPMoney){
 		Toplist top = findByPlayerId(playerid);
 		int intMoney = Float.valueOf(fPMoney).intValue();
@@ -86,7 +73,7 @@ public class ToplistManager extends MgrBase{
 		for (int i=0;i<toplists.size();i++){
 			Toplist top2 = toplists.get(i);
 			int later = top2.getUpdatetime().compareTo(fristDate);
-			if (top2.getMoney().floatValue()>=fMoney.floatValue()&&later>=0){
+			if (top2.getMoney().floatValue()>fMoney.floatValue()&&later>0){
 				cc++;
 			}
 		}
@@ -114,8 +101,7 @@ public class ToplistManager extends MgrBase{
 		Toplist top = findByPlayerId(toplist.getPlayerid());
 		if (top!=null){
 			top.setZan(toplist.getZan());
-			ToplistService service = new ToplistService();
-			service.updateZan(top);
+			dataThread.updateToplistZan(toplist);
 		}
 		
 		return 0;
@@ -192,7 +178,7 @@ public class ToplistManager extends MgrBase{
 				list.add(top);
 			}
 		}
-		Collections.sort(list);		
+		Collections.sort(list);
 		for (int i=0;i<list.size();i++){
 			if (i>=20) break;
 			tops.add(list.get(i));
@@ -202,9 +188,13 @@ public class ToplistManager extends MgrBase{
 	}
 
 	public static void main(String[] args){
+		ToplistManager.getInstance().init();
+		ToplistManager.getInstance().findByType(0);
 		Toplist record = new Toplist();
 		record.setPlayerid(280);
 		record.setZan(3);
+		record.setMoney(BigDecimal.valueOf(52300));
+		ToplistManager.getInstance().add(record);
 	}
 
 }

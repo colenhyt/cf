@@ -164,7 +164,7 @@ public class Toplist implements Comparable {
 
     	BigDecimal otherMoney = sdto.getMoney();
 
-          return this.getMoney().compareTo(otherMoney);
+          return otherMoney.compareTo(this.getMoney());
     }
     
     /**

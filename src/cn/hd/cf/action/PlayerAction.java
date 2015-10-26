@@ -2,6 +2,7 @@ package cn.hd.cf.action;
 
 import cn.hd.base.BaseAction;
 import cn.hd.cf.service.PlayerService;
+import cn.hd.mgr.DataManager;
 
 public class PlayerAction extends BaseAction {
 	
@@ -9,16 +10,14 @@ public class PlayerAction extends BaseAction {
 	}
 	
 	public String signin(){
-		PlayerService playerService = new PlayerService();
 		String pid = getHttpRequest().getParameter("playerid");
-		playerService.addSignin(Integer.valueOf(pid));
+		DataManager.getInstance().addSignin(Integer.valueOf(pid));
 		return null;
 	}
 	
 	public String donetask(){
-		PlayerService playerService = new PlayerService();
 		String pid = getHttpRequest().getParameter("playerid");
-		playerService.addDoneQuest(Integer.valueOf(pid));
+		DataManager.getInstance().addDoneQuest(Integer.valueOf(pid));
 		return null;
 	}
 }

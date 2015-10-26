@@ -143,6 +143,14 @@ public class DataManager extends MgrBase{
 		return false;
 	}
 	
+	public synchronized void addSignin(int playerid){
+		dataThread.addSignin(playerid);
+	}
+	
+	public synchronized void addDoneQuest(int playerid){
+		dataThread.addDoneQuest(playerid);
+	}
+	
 	public synchronized boolean updateZan(int playerid,int zan){
 		PlayerWithBLOBs pp = findPlayer(playerid);
 		if (pp!=null){

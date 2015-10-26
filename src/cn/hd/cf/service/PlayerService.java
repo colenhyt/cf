@@ -111,12 +111,14 @@ public class PlayerService extends BaseService {
 		return true;
 	}
 	
-	public boolean addDoneQuest(int playerId){
+	public boolean addDoneQuests(Vector<Integer> playerids){
 		try {
+			for (int i=0;i<playerids.size();i++){
 			Quest record = new Quest();
-			record.setPlayerid(playerId);
+			record.setPlayerid(playerids.get(i));
 			record.setCrdate(new Date());
 			questMapper.insertSelective(record);
+			}
 		DBCommit();
 		}catch (Exception e){
 			e.printStackTrace();
@@ -175,12 +177,14 @@ public class PlayerService extends BaseService {
 			return player;
 		}
 
-	public boolean addSignin(int playerId){
+	public boolean addSignins(Vector<Integer> playerids){
 		try {
-			Signin record = new Signin();
-			record.setPlayerid(playerId);
-			record.setCrdate(new Date());
-		signinMapper.insertSelective(record);
+			for (int i=0;i<playerids.size();i++){
+				Signin record = new Signin();
+				record.setPlayerid(playerids.get(i));
+				record.setCrdate(new Date());
+			signinMapper.insertSelective(record);				
+			}
 		DBCommit();
 		}catch (Exception e){
 			e.printStackTrace();

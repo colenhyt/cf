@@ -28,6 +28,9 @@ public class DataThread extends Thread {
 	private Vector<Stock>			deleteStockVect;
 	private Vector<Toplist>			newToplistVect;
 	private Vector<Toplist>			updateToplistVect;		
+	private Vector<Toplist>			updateToplistZanVect;		
+	private Vector<Integer>			signinVect;
+	private Vector<Integer>			doneQuestVect;
 	protected Logger  log = Logger.getLogger(getClass()); 
 	
 	public DataThread(){
@@ -46,6 +49,10 @@ public class DataThread extends Thread {
 		
 		newToplistVect = new Vector<Toplist>();
 		updateToplistVect = new Vector<Toplist>();
+		updateToplistZanVect = new Vector<Toplist>();
+		
+		signinVect = new Vector<Integer>();
+		doneQuestVect = new Vector<Integer>();
 	}
 	
 	public synchronized void push(PlayerWithBLOBs record){
@@ -97,6 +104,18 @@ public class DataThread extends Thread {
 		updateToplistVect.add(record);
 	}	
 	
+	public synchronized void updateToplistZan(Toplist record){
+		updateToplistZanVect.add(record);
+	}	
+	
+	public synchronized void addSignin(int playerid){
+		signinVect.add(playerid);
+	}
+	
+	public synchronized void addDoneQuest(int playerid){
+		doneQuestVect.add(playerid);
+	}
+		
 	public void run() {
 		while (1==1){
 				synchronized(this)
@@ -104,14 +123,14 @@ public class DataThread extends Thread {
 	        	if (newPlayersVect.size()>0){
 		    		PlayerService service= new PlayerService();
 		    		service.addPlayers(newPlayersVect);
-		    		log.warn("batch add plsyer :"+newPlayersVect.size());
+		    		log.warn("batch add players :"+newPlayersVect.size());
 		    		newPlayersVect.clear(); 	        		
 	        	}
 	        	
 	        	if (updatePlayersVect.size()>0){
 		    		PlayerService service= new PlayerService();
 		    		service.updatePlayers(updatePlayersVect);
-		    		log.warn("batch update plsyer :"+updatePlayersVect.size());
+		    		log.warn("batch update players :"+updatePlayersVect.size());
 		    		updatePlayersVect.clear(); 	        		
 	        	}
 	        	
@@ -184,6 +203,29 @@ public class DataThread extends Thread {
 		    		log.warn("batch update toplist :"+updateToplistVect.size());
 		    		updateToplistVect.clear();    	    			
 	    		}	    		
+	        	
+	    		if (updateToplistZanVect.size()>0){
+	    			ToplistService service2= new ToplistService();
+		    		service2.updateToplists(updateToplistZanVect);
+		    		log.warn("batch update toplist zan:"+updateToplistZanVect.size());
+		    		updateToplistZanVect.clear();    	    			
+	    		}
+	        	
+	    		if (signinVect.size()>0){
+	    			PlayerService service2= new PlayerService();
+		    		service2.addSignins(signinVect);
+		    		log.warn("batch add signins:"+signinVect.size());
+		    		signinVect.clear();    	    			
+	    		}	    		
+				
+	        	
+	    		if (doneQuestVect.size()>0){
+	    			PlayerService service2= new PlayerService();
+		    		service2.addDoneQuests(doneQuestVect);
+		    		log.warn("batch add donequest:"+doneQuestVect.size());
+		    		doneQuestVect.clear();    	    			
+	    		}
+	    		
 				}
 				
 	        	try {
