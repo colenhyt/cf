@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -13,19 +12,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
 import cn.hd.cf.action.LoginAction;
 import cn.hd.cf.model.Init;
 import cn.hd.cf.model.PlayerWithBLOBs;
-import cn.hd.cf.model.Savingdata;
-import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.PlayerService;
-import cn.hd.cf.service.ToplistService;
 import cn.hd.cf.tools.InitdataService;
-import cn.hd.cf.tools.SavingdataService;
 
 public class DataManager extends MgrBase{
 	protected Logger  log = Logger.getLogger(getClass()); 
@@ -36,7 +30,8 @@ public class DataManager extends MgrBase{
 		return init;
 	}
 
-	public Map<String,PlayerWithBLOBs> playerMaps;
+	public Map<String,Integer> playerIdMaps;
+	public Map<Integer,PlayerWithBLOBs> playerMaps;
 	private int nextPlayerId;
 	private DataThread dataThread;
 	
@@ -106,29 +101,26 @@ public class DataManager extends MgrBase{
 	}
 	
 	public synchronized boolean addPlayer(PlayerWithBLOBs player){
-		if (playerMaps.containsKey(player.getPlayername()))
+		if (playerMaps.containsKey(player.getPlayerid()))
 			return false;
 		
-		playerMaps.put(player.getPlayername(), player);
+		playerMaps.put(player.getPlayerid(), player);
+		playerIdMaps.put(player.getPlayername(), player.getPlayerid());
 		dataThread.push(player);
 //		newPlayersVect.add(player);
 		return true;
 	}
 	
 	public synchronized PlayerWithBLOBs findPlayer(String playerName){
-		return playerMaps.get(playerName);
+		Integer playerid = playerIdMaps.get(playerName);
+		if (playerid!=null){
+			return playerMaps.get(playerid);
+		}
+		return null;
 	}
 	
 	public synchronized PlayerWithBLOBs findPlayer(int playerid){
-		PlayerWithBLOBs player = null;
-		Collection<PlayerWithBLOBs> l = playerMaps.values();
-		for (Iterator<PlayerWithBLOBs> iter = l.iterator(); iter.hasNext();) {
-			PlayerWithBLOBs pp = (PlayerWithBLOBs)iter.next();
-			if (pp.getPlayerid()==playerid){
-				player = pp;
-			}
-		}	
-		return player;
+		return playerMaps.get(playerid);
 	}
 	
 	public synchronized boolean updatePlayer(PlayerWithBLOBs player){
@@ -181,12 +173,14 @@ public class DataManager extends MgrBase{
     	dataThread = new DataThread();
     	dataThread.start();    	
 		
-    	playerMaps = Collections.synchronizedMap(new HashMap<String,PlayerWithBLOBs>());
+    	playerIdMaps = Collections.synchronizedMap(new HashMap<String,Integer>());
+    	playerMaps = Collections.synchronizedMap(new HashMap<Integer,PlayerWithBLOBs>());
     	PlayerService playerService = new PlayerService();
 		List<PlayerWithBLOBs> players = playerService.findAll();
 		for (int i=0; i<players.size();i++){
 			PlayerWithBLOBs player = players.get(i);
-			playerMaps.put(player.getPlayername(), player);
+			playerMaps.put(player.getPlayerid(), player);
+			playerIdMaps.put(player.getPlayername(), player.getPlayerid());
 			if (player.getPlayerid()>nextPlayerId)
 				nextPlayerId = player.getPlayerid();			
 		}
@@ -195,9 +189,22 @@ public class DataManager extends MgrBase{
     }
     public static void main(String[] args) {
     	DataManager stmgr = DataManager.getInstance();
-    	SavingdataService ss = new SavingdataService();
-    	Savingdata dd = ss.findActive();
-    	DataThread aa = new DataThread();
-    	aa.start();
+    	SavingManager.getInstance().init();
+		InsureManager.getInstance().init();
+		StockManager.getInstance().init();
+		ToplistManager.getInstance().init();    	
+    	stmgr.init();
+    	float count = 500;
+    	long s = System.currentTimeMillis();
+    	for (int i=0;i<count;i++){
+    		String s2 = String.valueOf(i);
+    		String str = stmgr.login(s2, s2, "1");
+    	}
+    	float e = System.currentTimeMillis()-s;
+    	System.out.println("run "+count+", cost time : "+e+"ms,"+(e/count)+"s/1000");
+//    	SavingdataService ss = new SavingdataService();
+//    	Savingdata dd = ss.findActive();
+//    	DataThread aa = new DataThread();
+//    	aa.start();
     }
 }

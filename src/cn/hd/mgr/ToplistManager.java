@@ -5,15 +5,19 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javassist.bytecode.Descriptor.Iterator;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.ToplistService;
 	
 public class ToplistManager extends MgrBase{
-	List<Toplist>		toplists;
+	Map<Integer,Toplist>		toplistMsp;
     private static ToplistManager uniqueInstance = null;  
 	
     public static ToplistManager getInstance() {  
@@ -24,24 +28,24 @@ public class ToplistManager extends MgrBase{
      } 
     
     public void init(){
+    	toplistMsp = Collections.synchronizedMap(new HashMap<Integer,Toplist>());
     	ToplistService service= new ToplistService();
-    	toplists = service.findAll();
-    	if (toplists==null)
-    		toplists = new ArrayList<Toplist>();
+    	List<Toplist> toplists = service.findAll();
+    	if (toplists!=null){
+    		for (int i=0;i<toplists.size();i++){
+    			Toplist top = toplists.get(i);
+    			if (!toplistMsp.containsKey(top.getPlayerid())){
+    				toplistMsp.put(top.getPlayerid(), top);
+    			}
+    		}
+    	}
     	
     	dataThread = new DataThread();
     	dataThread.start();    	
     	
     }
-	public synchronized Toplist findByPlayerId(int playerId){
-		for (int i=0;i<toplists.size();i++){
-			Toplist top = toplists.get(i);
-			if (top.getPlayerid().intValue()==playerId){
-				return top;
-			}
-		}
-		
-		return null;
+	public synchronized Toplist findByPlayerId(int playerId){		
+		return toplistMsp.get(playerId);
 	}
 	
 	public int findCountByGreaterMoney(int playerid,int type,float fPMoney){
@@ -70,8 +74,8 @@ public class ToplistManager extends MgrBase{
 		
 		int cc = 0;
 		Date fristDate = getFirstDate(type);
-		for (int i=0;i<toplists.size();i++){
-			Toplist top2 = toplists.get(i);
+		Collection<Toplist> toplists = toplistMsp.values();
+		for (Toplist top2:toplists){
 			int later = top2.getUpdatetime().compareTo(fristDate);
 			if (top2.getMoney().floatValue()>fMoney.floatValue()&&later>0){
 				cc++;
@@ -81,18 +85,8 @@ public class ToplistManager extends MgrBase{
 	}	
 	
 	public synchronized int add(Toplist record){	
-		toplists.add(record);
+		toplistMsp.put(record.getPlayerid(), record);
 		dataThread.pushToplist(record);
-		return 0;
-	}
-	
-	public synchronized int updateByKey(Toplist record){
-		Toplist top = findByPlayerId(record.getPlayerid());
-		if (top!=null){
-			top.setMoney(record.getMoney());
-			top.setUpdatetime(new Date());
-			dataThread.updateToplist(top);
-		}		
 		return 0;
 	}
 	
@@ -107,27 +101,15 @@ public class ToplistManager extends MgrBase{
 		return 0;
 	}
 	
-	public synchronized boolean updateToplist(int playerid,String playerName,double money){
-		Toplist toplist = findByPlayerId(playerid);
-		if (toplist==null){
-			Toplist newtop = new Toplist();
-			newtop.setPlayerid(playerid);
-			newtop.setPlayername(playerName);
-			newtop.setCreatetime(new Date());
-			newtop.setUpdatetime(new Date());
-			newtop.setMoney(BigDecimal.valueOf(money));
-			newtop.setZan(0);
-			add(newtop);				
-			//System.out.println("增加最新排行榜记录: "+newtop.getPlayername()+":"+newtop.getMoney());
-		}else {
-			double topMoney = toplist.getMoney().doubleValue();
-			if (Math.abs(money-topMoney)>0.01){
-				toplist.setMoney(BigDecimal.valueOf(money));
-				toplist.setUpdatetime(new Date());
-				updateByKey(toplist);
-				//System.out.println("更新排行榜财富: "+toplist.getPlayername()+":"+topMoney+","+toplist.getMoney());
-			}
-		}
+	public synchronized boolean addToplist(int playerid,String playerName,double money){
+		Toplist newtop = new Toplist();
+		newtop.setPlayerid(playerid);
+		newtop.setPlayername(playerName);
+		newtop.setCreatetime(new Date());
+		newtop.setUpdatetime(new Date());
+		newtop.setMoney(BigDecimal.valueOf(money));
+		newtop.setZan(0);
+		add(newtop);				
 		return true;		
 	}
 
@@ -172,8 +154,8 @@ public class ToplistManager extends MgrBase{
 		Date firstDate = getFirstDate(type);
 		
 		List<Toplist> list = new ArrayList<Toplist>();
-		for (int i=0;i<toplists.size();i++){
-			Toplist top = toplists.get(i);
+		Collection<Toplist> toplists = toplistMsp.values();
+		for (Toplist top:toplists){		
 			if (top.getUpdatetime().compareTo(firstDate)>0){
 				list.add(top);
 			}
@@ -185,6 +167,24 @@ public class ToplistManager extends MgrBase{
 		}
 		//System.out.println("取排行榜(type:"+type+"):开始时间:"+firstDate.toString()+",记录数:"+tops.size());
 		return tops;
+	}
+
+	public synchronized boolean updateToplist(int playerid,String playerName,double money){
+		Toplist toplist = findByPlayerId(playerid);
+		if (toplist==null){
+			addToplist(playerid,playerName,money);				
+			//System.out.println("增加最新排行榜记录: "+newtop.getPlayername()+":"+newtop.getMoney());
+		}else {
+			double topMoney = toplist.getMoney().doubleValue();
+			if (Math.abs(money-topMoney)>1){
+				toplist.setMoney(BigDecimal.valueOf(money));
+				Date a = new Date();
+				toplist.setUpdatetime(a);
+				dataThread.updateToplist(toplist);
+//				//System.out.println("更新排行榜财富: "+toplist.getPlayername()+":"+topMoney+","+toplist.getMoney());
+			}
+		}
+		return true;		
 	}
 
 	public static void main(String[] args){
