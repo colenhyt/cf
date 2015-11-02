@@ -48,7 +48,7 @@ public class ToplistManager extends MgrBase{
 		return toplistMsp.get(playerId);
 	}
 	
-	public int findCountByGreaterMoney(int playerid,int type,float fPMoney){
+	public synchronized int findCountByGreaterMoney(int playerid,int type,float fPMoney){
 		Toplist top = findByPlayerId(playerid);
 		int intMoney = Float.valueOf(fPMoney).intValue();
 		BigDecimal fMoney = BigDecimal.valueOf(intMoney);
@@ -178,9 +178,12 @@ public class ToplistManager extends MgrBase{
 			double topMoney = toplist.getMoney().doubleValue();
 			if (Math.abs(money-topMoney)>1){
 				toplist.setMoney(BigDecimal.valueOf(money));
-				Date a = new Date();
-				toplist.setUpdatetime(a);
-				dataThread.updateToplist(toplist);
+				
+				Toplist  top2 = new Toplist();
+				top2.setMoney(toplist.getMoney());
+				top2.setPlayerid(toplist.getPlayerid());
+				top2.setUpdatetime(new Date());
+				dataThread.updateToplist(top2);
 //				//System.out.println("更新排行榜财富: "+toplist.getPlayername()+":"+topMoney+","+toplist.getMoney());
 			}
 		}

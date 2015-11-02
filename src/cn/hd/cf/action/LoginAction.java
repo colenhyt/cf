@@ -52,14 +52,13 @@ public class LoginAction extends SavingAction {
 			playerBlob.setZan(toplist.getZan());
 		}
 
-		int top = ToplistManager.getInstance().findCountByGreaterMoney(playerBlob.getPlayerid(),0,fMm);
-		playerBlob.setWeektop(top+1);
-		top = ToplistManager.getInstance().findCountByGreaterMoney(playerBlob.getPlayerid(),1,fMm);
-		playerBlob.setMonthtop(top+1);
+		//800ms/1k
+//		int top = ToplistManager.getInstance().findCountByGreaterMoney(playerBlob.getPlayerid(),0,fMm);
+//		playerBlob.setWeektop(top+1);
 		
 		float margin = StockManager.getInstance().getMarginSec();
 		playerBlob.setQuotetime(margin);
-		//取需要更新的模块id
+//		//取需要更新的模块id
 		JSONObject obj = JSONObject.fromObject(playerBlob);	
 		return obj.toString();
 	}
@@ -151,17 +150,18 @@ public class LoginAction extends SavingAction {
 		{
 			return register();
 		}else if (!playerBlob.getTel().equals(player.getTel())){		//昵称已被注册
-//			super.writeMsg(RetMsg.MSG_PlayerNameIsExist);
-			return null;
+			Message msg = new Message();
+			msg.setCode(RetMsg.MSG_PlayerNameIsExist);
+			JSONObject obj = JSONObject.fromObject(msg);			
+			return obj.toString();
 		}
 		
-		log.warn("login success:"+player.getPlayername()+",tel :"+player.getTel());
+//		log.warn("login success:"+player.getPlayername()+",tel :"+player.getTel());
 		
 		//System.out.println("player(");
 		String pdata = getPlayerJsonData(playerBlob);
-	
-		DataManager.getInstance().updateLogin(player.getPlayername());
-//		write(pdata,"utf-8");
+//	
+		DataManager.getInstance().updateLogin(playerBlob);
 		//System.out.println("player("+playerBlob.getPlayername()+") login success");
 		return pdata;
 	}
@@ -248,6 +248,7 @@ public class LoginAction extends SavingAction {
 //				super.playerTopUpdate(playerBlob.getPlayerid());
 				Map<Integer,Saving> savings = new HashMap<Integer,Saving>();
 				savings.put(savingCfg.getId(), saving);
+//				ToplistManager.getInstance().addToplist(playerBlob.getPlayerid(),playerBlob.getPlayername(),saving.getAmount());	
 				playerBlob.setSaving(JSON.toJSONString(savings));
 			}
 			JSONObject obj = JSONObject.fromObject(playerBlob);	

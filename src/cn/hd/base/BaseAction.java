@@ -97,7 +97,7 @@ public class BaseAction extends BaseService{
 		Message msg = new Message();
 		msg.setCode(code);
 		JSONObject obj = JSONObject.fromObject(msg);
-		write(obj.toString(),"utf-8");			
+		write(obj.toString(),"utf-8");
 	}
 	
 	public void writeMsg2(int code,String desc){

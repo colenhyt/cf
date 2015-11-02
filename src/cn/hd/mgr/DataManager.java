@@ -124,12 +124,18 @@ public class DataManager extends MgrBase{
 	}
 	
 	public synchronized boolean updatePlayer(PlayerWithBLOBs player){
-		PlayerWithBLOBs pp = playerMaps.get(player.getPlayername());
+		PlayerWithBLOBs pp = playerMaps.get(player.getPlayerid());
 		if (pp!=null){
 			pp.setQuest(player.getQuest());
 			pp.setOpenstock(player.getOpenstock());
 			pp.setExp(player.getExp());
-			dataThread.updatePlayer(pp);
+			
+			PlayerWithBLOBs p = new PlayerWithBLOBs();
+			p.setPlayerid(pp.getPlayerid());
+			p.setQuest(pp.getQuest());
+			p.setOpenstock(pp.getOpenstock());
+			p.setExp(pp.getExp());
+			dataThread.updatePlayer(p);
 			return true;
 		}
 		return false;
@@ -153,14 +159,14 @@ public class DataManager extends MgrBase{
 		return false;
 	}
 	
-	public synchronized void updateLogin(String playerName)
+	public synchronized void updateLogin(PlayerWithBLOBs player)
 	{
-		PlayerWithBLOBs player = playerMaps.get(playerName);
-		if (player==null){
-			return;
-		}
 		player.setLastlogin(new Date());
-		dataThread.updatePlayer(player);
+		
+		PlayerWithBLOBs p = new PlayerWithBLOBs();
+		p.setPlayerid(player.getPlayerid());
+		p.setLastlogin(player.getLastlogin());
+		dataThread.updatePlayer(p);
 	}
 	
     public void init(){
@@ -194,7 +200,7 @@ public class DataManager extends MgrBase{
 		StockManager.getInstance().init();
 		ToplistManager.getInstance().init();    	
     	stmgr.init();
-    	float count = 500;
+    	float count = 1000;
     	long s = System.currentTimeMillis();
     	for (int i=0;i<count;i++){
     		String s2 = String.valueOf(i);
