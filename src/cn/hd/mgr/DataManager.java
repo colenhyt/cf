@@ -11,8 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONObject;
+
 import org.apache.log4j.Logger;
 
+import cn.hd.base.Config;
 import cn.hd.cf.action.LoginAction;
 import cn.hd.cf.model.Init;
 import cn.hd.cf.model.Insure;
@@ -21,6 +24,7 @@ import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.tools.InitdataService;
+import cn.hd.util.FileUtil;
 
 import com.alibaba.fastjson.JSON;
 
@@ -29,6 +33,7 @@ public class DataManager extends MgrBase{
 	
 	private LoginAction loginAction;
 	private Init	init;
+	public Config cfg;
 	public Init getInit() {
 		return init;
 	}
@@ -168,14 +173,10 @@ public class DataManager extends MgrBase{
 	public synchronized boolean updatePlayer(PlayerWithBLOBs player){
 		PlayerWithBLOBs pp = playerMaps.get(player.getPlayerid());
 		if (pp!=null){
-			pp.setQuest(player.getQuest());
-			pp.setOpenstock(player.getOpenstock());
 			pp.setExp(player.getExp());
 			
 			PlayerWithBLOBs p = new PlayerWithBLOBs();
 			p.setPlayerid(pp.getPlayerid());
-			p.setQuest(pp.getQuest());
-			p.setOpenstock(pp.getOpenstock());
 			p.setExp(pp.getExp());
 			dataThread.updatePlayer(p);
 			return true;
@@ -201,18 +202,16 @@ public class DataManager extends MgrBase{
 		return false;
 	}
 	
-	public synchronized void updateLogin(PlayerWithBLOBs player)
-	{
-		player.setLastlogin(new Date());
+	public void init(){
+		String path = Thread.currentThread().getContextClassLoader().getResource("/").getPath();
+		String cfgstr = FileUtil.readFile(path+"config.properties");
+		if (cfgstr==null||cfgstr.trim().length()<=0){
+			return;
+		}
+		JSONObject ppObj = JSONObject.fromObject(cfgstr);
+		cfg = (Config)JSONObject.toBean(ppObj,Config.class);
+		System.out.println(cfgstr);
 		
-		PlayerWithBLOBs p = new PlayerWithBLOBs();
-		p.setPlayerid(player.getPlayerid());
-		p.setLastlogin(player.getLastlogin());
-		dataThread.updatePlayer(p);
-	}
-	
-    public void init(){
-
     	loginAction = new LoginAction();
     	
     	InitdataService initdataService = new InitdataService();
@@ -247,6 +246,7 @@ public class DataManager extends MgrBase{
     	for (int i=0;i<count;i++){
     		String s2 = String.valueOf(i);
     		String str = stmgr.login(s2, s2, "1");
+//    		System.out.println(str);
     	}
     	float e = System.currentTimeMillis()-s;
     	System.out.println("run "+count+", cost time : "+e+"ms,"+(e/count)+"s/1000");

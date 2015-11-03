@@ -52,6 +52,7 @@ public class PlayerService extends BaseService {
 	
 	public List<PlayerWithBLOBs> findAll(){
 		PlayerExample example = new PlayerExample();
+		Criteria criteria=example.createCriteria();
 		return playerMapper.selectByExampleWithBLOBs(example);		
 	}
 	
