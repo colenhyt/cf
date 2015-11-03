@@ -45,19 +45,17 @@ public class LoginAction extends SavingAction {
 		playerBlob.setSaving(JSON.toJSONString(savings));
 		Map<Integer,List<Stock>> stocks = StockManager.getInstance().findMapStocks(playerBlob.getPlayerid());
 		playerBlob.setStock(JSON.toJSONString(stocks));	
-		Toplist toplist = ToplistManager.getInstance().findByPlayerId(playerBlob.getPlayerid());
-		float fMm = 0;
-		if (toplist!=null){
-			fMm = toplist.getMoney().floatValue();
-			playerBlob.setZan(toplist.getZan());
-		}
+//		Toplist toplist = ToplistManager.getInstance().findByPlayerId(playerBlob.getPlayerid());
+//		float fMm = 0;
+//		if (toplist!=null){
+//			fMm = toplist.getMoney().floatValue();
+//			playerBlob.setZan(toplist.getZan());
+//		}
 
 		//800ms/1k
 //		int top = ToplistManager.getInstance().findCountByGreaterMoney(playerBlob.getPlayerid(),0,fMm);
 //		playerBlob.setWeektop(top+1);
 		
-		float margin = StockManager.getInstance().getMarginSec();
-		playerBlob.setQuotetime(margin);
 //		//取需要更新的模块id
 		JSONObject obj = JSONObject.fromObject(playerBlob);	
 		return obj.toString();
@@ -132,7 +130,6 @@ public class LoginAction extends SavingAction {
 	
 //		PlayerWithBLOBs p2 = new PlayerWithBLOBs();
 //		p2.setPlayerid(playerid);
-//		p2.setLastlogin(playerBlob.getLastlogin());
 //		playerService.updateByKey(p2);
 			
 //		playerService.DBConnClose();
@@ -158,10 +155,6 @@ public class LoginAction extends SavingAction {
 		
 //		log.warn("login success:"+player.getPlayername()+",tel :"+player.getTel());
 		
-		//System.out.println("player(");
-//		String pdata = getPlayerJsonData(playerBlob);
-//	
-		DataManager.getInstance().updateLogin(playerBlob);
 		//System.out.println("player("+playerBlob.getPlayername()+") login success");
 		return serialize(playerBlob);
 	}
@@ -228,7 +221,6 @@ public class LoginAction extends SavingAction {
 			playerBlob.setPlayername(player.getPlayername());
 			playerBlob.setSex(player.getSex());
 			playerBlob.setCreatetime(time);
-			playerBlob.setLastlogin(time);
 			playerBlob.setPwd("0");
 			playerBlob.setZan(0);
 			playerBlob.setPlayerid(DataManager.getInstance().assignNextId());
