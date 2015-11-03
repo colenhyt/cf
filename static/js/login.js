@@ -136,11 +136,7 @@ Login.prototype.onImgClick = function(image)
 			this.msg("选择您的性别");
 			return;
 		}
-//		if (tdata!=null&&tdata.playername!=tag.value)
-//			this.register();
-//		else{
-			this.login();
-//		}
+		this.login();
 	}
 }
 
@@ -206,6 +202,14 @@ Login.prototype.loadInsureData = function(indata){
 	return msg;
 }
 
+Login.prototype.loadData2 = function(obj){
+	g_player.data = obj;
+	g_player.data.quest = cfeval(obj.quest);
+	g_player.saving = {};
+	g_player.insure = {};
+	g_player.stock = {};
+}
+
 Login.prototype.loadData = function(obj){
 	g_player.data = obj;
 	g_player.data.quest = cfeval(obj.quest);
@@ -254,14 +258,94 @@ Login.prototype.msgtip = function(loginMsg){
 	}
 }
 
+Login.prototype.syncLoadData = function(playerid){
+	try    {
+		var dataParam = "playerid="+playerid+"&type=1";
+		$.ajax({type:"get",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
+		 g_login.syncLoadDataCallback_saving(data);
+		}});
+		
+		dataParam = "playerid="+playerid+"&type=2";
+		$.ajax({type:"get",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
+		 g_login.syncLoadDataCallback_insure(data);
+		}});
+		
+		dataParam = "playerid="+playerid+"&type=3";
+		$.ajax({type:"get",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
+		 g_login.syncLoadDataCallback_stock(data);
+		}});
+		
+		dataParam = "playerid="+playerid+"&type=4";
+		$.ajax({type:"get",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
+		 g_login.syncLoadDataCallback_top(data);
+		}});
+		
+	}   catch  (e)   {
+	    logerr(e.name  +   " :  "   +  dataParam);
+	   return false;
+	}
+}
+
+Login.prototype.syncLoadDataCallback_saving = function(data){
+    var msg = [];
+    alert("saving:"+data);
+	var sdata = cfeval(data);
+	for (itemid in sdata){
+		var item = store.get(g_saving.name)[itemid];
+		if (!item) continue;
+		if (item.type==0||sdata[itemid].profit<=0)
+			g_player.saving[itemid] = sdata[itemid];
+		//存款利息提示:
+		if (sdata[itemid].profit>0){
+			msg.push({type:g_saving.name,t:parseInt(item.type),name:item.name,profit:parseInt(sdata[itemid].profit)});
+		}
+	} 
+	g_login.msgtip(msg);
+}
+
+Login.prototype.syncLoadDataCallback_insure = function(data){
+    alert("insure:"+data);
+	var msg = [];
+	var idata = cfeval(data);
+	for (itemid in idata){
+		var item = store.get(g_insure.name)[itemid];
+		if (!item) continue;
+		
+		if (idata[itemid].profit==0)
+		  g_player.insure[itemid]= idata[itemid];
+		 else { //保险产品到期
+			msg.push({type:g_insure.name,t:parseInt(item.type),name:item.name,profit:parseInt(idata[itemid].profit)});
+		 }
+	}
+	g_login.msgtip(msg);
+}
+
+Login.prototype.syncLoadDataCallback_stock = function(data){
+    alert("stock:"+data);
+	var sdata = cfeval(data);
+	if (sdata.length>0)
+	 g_player.stock = sdata;
+	
+	g_player.setStockIds();
+}
+
+Login.prototype.syncLoadDataCallback_top = function(data){
+     alert("top:"+data);
+ g_player.data.weektop = parseInt(data);
+ g_player.flushPageview();
+}
+
 Login.prototype.loginCallback = function(obj){
 	var objdata = cfeval(obj);
 	if (objdata.code!=null&&objdata.code>0){
 	 this.msg('登陆失败: '+ERR_MSG[objdata.code]);
+	 g_logindata = null;
 	 return;
 	}
 		
-    var player = objdata;
+	g_logindata.playerid = parseInt(objdata);
+	
+    var player = g_logindata;
 	
 	//进入场景:先remove login页面元素
 	$('#inputnickdiv').remove();
@@ -280,8 +364,8 @@ Login.prototype.loginCallback = function(obj){
 	 	
 	 store.set(g_player.name,player);
 	 
-     var loginMsg = this.loadData(objdata);
-	this.msgtip(loginMsg);
+     var loginMsg = this.loadData2(objdata);
+	//this.msgtip(loginMsg);
     
     g_playerlog.addlog();
     
@@ -296,8 +380,10 @@ Login.prototype.loginCallback = function(obj){
     }
     
     
+    this.syncLoadData(player.playerid);
+    
     //player props
-    g_player.flushPageview();
+   // g_player.flushPageview();
     	   
 	if (dlog[1]==true)
 	{
@@ -319,8 +405,8 @@ Login.prototype.login = function(){
 //     	alert("本地数据缺失，登录失败");
 //     	return;
 //     }
-     var ppobj = {playername:pname,sex:g_login.sex,tel:g_usertel};
-   	var dataParam = "playername="+pname+"&sex="+g_login.sex+"&tel="+g_usertel;
+    g_logindata = {playername:pname,sex:g_login.sex,tel:g_usertel};
+   	var dataParam = "playername="+g_logindata.playername+"&sex="+g_logindata.sex+"&tel="+g_logindata.tel;
     var serverPlayer;
     var now = new Date();
     

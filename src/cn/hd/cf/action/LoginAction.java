@@ -64,7 +64,7 @@ public class LoginAction extends SavingAction {
 	}
 	
 	//
-	private synchronized Map<Integer,Saving> findUpdatedSavings(int playerId)
+	public synchronized Map<Integer,Saving> findUpdatedSavings(int playerId)
 	{
 		List<Saving> savings = SavingManager.getInstance().getSavingList(playerId);
 		Map<Integer,Saving>	 mdata = new HashMap<Integer,Saving>();
@@ -159,11 +159,11 @@ public class LoginAction extends SavingAction {
 //		log.warn("login success:"+player.getPlayername()+",tel :"+player.getTel());
 		
 		//System.out.println("player(");
-		String pdata = getPlayerJsonData(playerBlob);
+//		String pdata = getPlayerJsonData(playerBlob);
 //	
 		DataManager.getInstance().updateLogin(playerBlob);
 		//System.out.println("player("+playerBlob.getPlayername()+") login success");
-		return pdata;
+		return String.valueOf(playerBlob.getPlayerid());
 	}
 	
 	public String get()
@@ -246,14 +246,11 @@ public class LoginAction extends SavingAction {
 				saving.setCreatetime(time);
 				SavingManager.getInstance().addSaving(saving.getPlayerid(), saving);
 //				super.playerTopUpdate(playerBlob.getPlayerid());
-				Map<Integer,Saving> savings = new HashMap<Integer,Saving>();
-				savings.put(savingCfg.getId(), saving);
 //				ToplistManager.getInstance().addToplist(playerBlob.getPlayerid(),playerBlob.getPlayername(),saving.getAmount());	
-				playerBlob.setSaving(JSON.toJSONString(savings));
 			}
-			JSONObject obj = JSONObject.fromObject(playerBlob);	
+//			JSONObject obj = JSONObject.fromObject(playerBlob);	
 //			log.warn("register success:name:"+player.getPlayername()+",tel"+player.getTel());
 //			write(obj.toString(),"utf-8");
-			return obj.toString();
+			return String.valueOf(playerBlob.getPlayerid());
 		}
 }

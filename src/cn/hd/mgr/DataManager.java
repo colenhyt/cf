@@ -5,11 +5,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -17,9 +15,14 @@ import org.apache.log4j.Logger;
 
 import cn.hd.cf.action.LoginAction;
 import cn.hd.cf.model.Init;
+import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.PlayerWithBLOBs;
+import cn.hd.cf.model.Saving;
+import cn.hd.cf.model.Stock;
 import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.tools.InitdataService;
+
+import com.alibaba.fastjson.JSON;
 
 public class DataManager extends MgrBase{
 	protected Logger  log = Logger.getLogger(getClass()); 
@@ -99,6 +102,45 @@ public class DataManager extends MgrBase{
 		loginAction.setPlayer(pp);
 		return loginAction.login();
 	}
+	
+	public synchronized String getData(int playerid,int typeid){
+		String data = "";
+		if (typeid==1){
+		 data = get_saving(playerid);
+		}else if (typeid==2){
+			data = get_insure(playerid);
+		}else if (typeid==3){
+			data = get_stock(playerid);
+		}else if (typeid==4){
+		int top = get_top(playerid);
+		data = String.valueOf(top);
+		}
+		return data;
+	}
+
+	public synchronized String get_saving(int playerid){
+		Map<Integer,Saving> data = loginAction.findUpdatedSavings(playerid);
+		return JSON.toJSONString(data);
+	}
+	
+	public synchronized String get_insure(int playerid){
+		Map<Integer,Insure> data = loginAction.findUpdatedInsures(playerid);
+		return JSON.toJSONString(data);
+	}
+	
+	public synchronized String get_stock(int playerid){
+		Map<Integer,List<Stock>> data = StockManager.getInstance().findMapStocks(playerid);
+		return JSON.toJSONString(data);
+	}
+	
+	public synchronized int get_top(int playerid){
+		float fMm = loginAction.calculatePlayerMoney(playerid);
+
+		int top = ToplistManager.getInstance().findCountByGreaterMoney(playerid,0,fMm);
+		//800ms/1k
+		return top+1;
+	}
+	
 	
 	public synchronized boolean addPlayer(PlayerWithBLOBs player){
 		if (playerMaps.containsKey(player.getPlayerid()))
@@ -200,7 +242,7 @@ public class DataManager extends MgrBase{
 		StockManager.getInstance().init();
 		ToplistManager.getInstance().init();    	
     	stmgr.init();
-    	float count = 1000;
+    	float count = 50000;
     	long s = System.currentTimeMillis();
     	for (int i=0;i<count;i++){
     		String s2 = String.valueOf(i);
