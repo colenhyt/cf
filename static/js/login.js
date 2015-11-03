@@ -202,17 +202,8 @@ Login.prototype.loadInsureData = function(indata){
 	return msg;
 }
 
-Login.prototype.loadData2 = function(obj){
-	g_player.data = obj;
-	g_player.data.quest = cfeval(obj.quest);
-	g_player.saving = {};
-	g_player.insure = {};
-	g_player.stock = {};
-}
-
 Login.prototype.loadData = function(obj){
 	g_player.data = obj;
-	g_player.data.quest = cfeval(obj.quest);
 	g_player.saving = {};
 	var msg = [];
 	var sdata = cfeval(obj.saving);
@@ -260,26 +251,32 @@ Login.prototype.msgtip = function(loginMsg){
 
 Login.prototype.syncLoadData = function(playerid){
 	try    {
+    	g_login.loadCount = 0;
+	
 		var dataParam = "playerid="+playerid+"&type=1";
 		$.ajax({type:"get",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
 		 g_login.syncLoadDataCallback_saving(data);
 		}});
+    	g_login.loadCount++;
 		
 		dataParam = "playerid="+playerid+"&type=2";
 		$.ajax({type:"get",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
 		 g_login.syncLoadDataCallback_insure(data);
 		}});
+    	g_login.loadCount++;
 		
 		dataParam = "playerid="+playerid+"&type=3";
 		$.ajax({type:"get",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
 		 g_login.syncLoadDataCallback_stock(data);
 		}});
+    	g_login.loadCount++;
 		
 		dataParam = "playerid="+playerid+"&type=4";
 		$.ajax({type:"get",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
 		 g_login.syncLoadDataCallback_top(data);
 		}});
-		
+    	g_login.loadCount++;
+				
 	}   catch  (e)   {
 	    logerr(e.name  +   " :  "   +  dataParam);
 	   return false;
@@ -288,7 +285,6 @@ Login.prototype.syncLoadData = function(playerid){
 
 Login.prototype.syncLoadDataCallback_saving = function(data){
     var msg = [];
-    alert("saving:"+data);
 	var sdata = cfeval(data);
 	for (itemid in sdata){
 		var item = store.get(g_saving.name)[itemid];
@@ -301,10 +297,11 @@ Login.prototype.syncLoadDataCallback_saving = function(data){
 		}
 	} 
 	g_login.msgtip(msg);
+	g_login.callbackDone();
+	
 }
 
 Login.prototype.syncLoadDataCallback_insure = function(data){
-    alert("insure:"+data);
 	var msg = [];
 	var idata = cfeval(data);
 	for (itemid in idata){
@@ -318,21 +315,29 @@ Login.prototype.syncLoadDataCallback_insure = function(data){
 		 }
 	}
 	g_login.msgtip(msg);
+	g_login.callbackDone();
 }
 
 Login.prototype.syncLoadDataCallback_stock = function(data){
-    alert("stock:"+data);
 	var sdata = cfeval(data);
 	if (sdata.length>0)
 	 g_player.stock = sdata;
 	
 	g_player.setStockIds();
+	
+	g_login.callbackDone();
 }
 
 Login.prototype.syncLoadDataCallback_top = function(data){
-     alert("top:"+data);
  g_player.data.weektop = parseInt(data);
- g_player.flushPageview();
+ g_login.callbackDone();
+}
+
+Login.prototype.callbackDone = function(){
+ g_login.loadCount--;
+ if (g_login.loadCount<=0)
+  g_player.flushPageview();
+
 }
 
 Login.prototype.loginCallback = function(obj){
@@ -343,7 +348,9 @@ Login.prototype.loginCallback = function(obj){
 	 return;
 	}
 		
-	g_logindata.playerid = parseInt(objdata);
+	g_logindata.playerid = parseInt(objdata.playerid);
+	g_logindata.exp = parseInt(objdata.exp);
+	g_logindata.quotetime = objdata.quotetime;
 	
     var player = g_logindata;
 	
@@ -359,13 +366,12 @@ Login.prototype.loginCallback = function(obj){
 	var lastPlayer = logindata[logindata.length-1];
 	if (lastPlayer==null||lastPlayer.playerid!=player.playerid){
 	 logindata.push(player);
-	 store.set(this.name,logindata);
+	 store.set(g_login.name,logindata);
 	 }
 	 	
 	 store.set(g_player.name,player);
 	 
-     var loginMsg = this.loadData2(objdata);
-	//this.msgtip(loginMsg);
+    g_player.loginback(player);
     
     g_playerlog.addlog();
     

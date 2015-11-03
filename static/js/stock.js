@@ -154,7 +154,7 @@ Stock.prototype.show = function(){
 	playAudioHandler('open1');	
 	this.hasTip = false;
 	
-	if (g_player.data.openstock!=1){
+	if (g_player.isopenstock()!=1){
 		g_msg.open2("证券开户","您需要开通证券账户才能投资股票，请点击'确认'按钮开通","g_stock.confirmOpen",1,1,1,null,"g_stock.onClose");
 	}else {
 		var myDate = new Date();
@@ -171,7 +171,7 @@ Stock.prototype.show = function(){
 }
 
 Stock.prototype.confirmOpen = function(){
-	g_player.updateData({openstock:1});
+	g_player.setOpenstock();
 	g_msg.hide();
 	g_msg.tip("证券账户已开通");
 	this.show();
@@ -524,7 +524,7 @@ Stock.prototype.findQuoteLostTime = function(){
 	if (!g_player.data||!g_player.data.lastlogin) return 0;
 	
 	var now = Date.parse(new Date());
-	var enterTime = (now - g_player.data.lastlogin.time)/1000;		//进入系统时间(秒);
+	var enterTime = (now - g_player.data.lastlogin)/1000;		//进入系统时间(秒);
 	var quotePassTime = parseInt(enterTime+g_player.data.quotetime);
 	var mm = quotePassTime%QUOTETIME;
 	var lsec = QUOTETIME - mm;

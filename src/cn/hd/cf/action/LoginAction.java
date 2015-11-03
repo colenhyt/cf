@@ -163,7 +163,7 @@ public class LoginAction extends SavingAction {
 //	
 		DataManager.getInstance().updateLogin(playerBlob);
 		//System.out.println("player("+playerBlob.getPlayername()+") login success");
-		return String.valueOf(playerBlob.getPlayerid());
+		return serialize(playerBlob);
 	}
 	
 	public String get()
@@ -204,6 +204,13 @@ public class LoginAction extends SavingAction {
 		this.player = player;
 	}
 
+	private synchronized String serialize(PlayerWithBLOBs player){
+		float margin = StockManager.getInstance().getMarginSec();
+	  String data = "{playerid:"+player.getPlayerid()+",exp:"+player.getExp()+",quotetime:"+margin;
+	  data += "}";
+	  return data;
+	}
+	
 	public synchronized String register(){
 //			System.out.println("玩家注册:"+player.getPlayername());
 			PlayerWithBLOBs playerBlob = new PlayerWithBLOBs();
@@ -251,6 +258,6 @@ public class LoginAction extends SavingAction {
 //			JSONObject obj = JSONObject.fromObject(playerBlob);	
 //			log.warn("register success:name:"+player.getPlayername()+",tel"+player.getTel());
 //			write(obj.toString(),"utf-8");
-			return String.valueOf(playerBlob.getPlayerid());
+			return serialize(playerBlob);
 		}
 }

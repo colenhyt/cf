@@ -164,17 +164,12 @@ Player.prototype.clone = function(data) {
 	data.playername = pl.playername;
 	data.exp = pl.exp;
 	data.sex = pl.sex;
-	data.openstock = pl.openstock;
-	if (pl.quest!=null)
-		data.quest = pl.quest.concat();
 }
 
 Player.prototype.syncPlayerData = function(){
 	var data = {};
 	this.clone(data);
-	data.quest = JSON.stringify(data.quest);
 	var updateStr = "playerdata="+JSON.stringify(data);
-	//alert("任务同步到服务器:"+data.quest);
 	try  {
 		$.ajax({type:"post",url:"/cf/login_update.do",data:updateStr,success:function(dataobj){
 			var obj = cfeval(dataobj);
@@ -215,6 +210,46 @@ Player.prototype.broke = function() {
   {
    
   }
+}
+
+
+Player.prototype.loginback = function(data){
+  var key = g_player.name+"_"+data.playername;
+  var playerdata = store.get(key);
+  if (playerdata==null){
+    playerdata = data;
+    playerdata.openstock = 0;
+    store.set(key,playerdata);
+  }
+  
+  playerdata.lastlogin = Date.parse(new Date());
+  playerdata.quotetime = data.quotetime;
+    
+  	g_player.data = playerdata;
+	g_player.saving = {};
+	g_player.insure = {};
+	g_player.stock = {};
+	
+    store.set(key,playerdata);
+}
+
+Player.prototype.isopenstock = function(){
+  var key = g_player.name+"_"+g_player.data.playername;
+  var playerdata = store.get(key);
+  if (playerdata==null)
+   return 0;
+  
+  return playerdata.openstock;
+}
+
+Player.prototype.setOpenstock = function(){
+  var key = g_player.name+"_"+g_player.data.playername;
+  var playerdata = store.get(key);
+  if (playerdata!=null){
+   playerdata.openstock = 1;
+  }
+   store.set(key,playerdata);
+  
 }
 
 Player.prototype.prize = function(prizes) {
@@ -294,21 +329,6 @@ Player.prototype.getOfftimeInsure = function() {
 		var ctime = this.insure[itemid].createtime;
 		if (mills-ctime<3000){
 			itemids.push(itemid);
-		}
-	}
-	return itemids;
-}
-
-//未完成任务；
-//快到期保险产品
-Player.prototype.getQuests = function(status) {
-	var itemids = [];
-	if (!this.data||!this.data.quest)
-		return itemids;
-		
-	for (var i=0;i<this.data.quest.length;i++){
-		if (this.data.quest[i].status==status){
-			itemids.push(this.data.quest[i].itemid);
 		}
 	}
 	return itemids;

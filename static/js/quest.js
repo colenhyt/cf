@@ -27,7 +27,7 @@ Quest.prototype.init = function(duration){
 
 Quest.prototype.buildPage = function(page)
 {
-	var quest = g_player.data.quest;
+	var quest = store.get(g_quest.questkey());
 	
 	if (quest==null) quest = [];
 	
@@ -112,22 +112,17 @@ Quest.prototype.gotoQuest = function(id){
 	this.hide();
 }
 
-Quest.prototype.acceptQuest = function(id){
-//alert(id);
-    for (var i=0;i<g_player.quest.length;i++){
-	if (g_player.quest[i].id==id) {
-	    g_msg.show("quest has been received",MSG.INFO);
-	    return;
-	}
-    }
-    g_player.quest.push({id:id});
-    var strQuest = JSON.stringify(g_player.quest);
-    g_player.updateData({quest:strQuest});
-    
+Quest.prototype.questkey = function(){
+ return g_player.data.playername+"_"+g_quest.name;
 }
 
 Quest.prototype.onAcceptDaily = function(){
-	var pquest =  g_player.data.quest?g_player.data.quest:[];
+    var datakey = g_quest.questkey();
+	var pquest = store.get(datakey);
+	if (pquest==null){
+	  pquest = [];
+	}
+	
 	if (pquest.length>=2)
 	{
 	 return;
@@ -160,12 +155,13 @@ Quest.prototype.onAcceptDaily = function(){
 		pquest.push({id:ttdata[index].id,accept:jsonCurr,status:QUEST_STATUS.ACTIVE});
 		ttdata.splice(index,1);
 	}
-	g_player.updateData({quest:pquest});
+	store.set(datakey,pquest);
     return true;
 }
 
 Quest.prototype.doneQuest = function(quest){
-	var items = g_player.data.quest
+	var datakey = g_quest.questkey();
+    var items = store.get(datakey);
     for (var i=0;i<items.length;i++){
     	var item = items[i];
 	if (item.id==quest.id) {
@@ -174,12 +170,13 @@ Quest.prototype.doneQuest = function(quest){
 			continue;
 		}
 		items[i].status = QUEST_STATUS.DONE;
-		g_player.updateData({"quest":items});
 		g_msg.tip("任务<span style='color:red'>"+quest.name+"</span>完成，请领取奖励");
 		//g_player.prize(quest.prize);		//奖励手工领取
 	    break;
 	}
     }
+    store.set(datakey,items);
+    
     //当天任务是否已全部完成:
     var doneCount = 0;
     for (var i=0;i<items.length;i++){
@@ -209,7 +206,7 @@ Quest.prototype.getQuetPrize = function(id){
    var pz = cfeval(item.prize);
    g_player.prize(pz);
    //移除:
-	var quests = g_player.data.quest;
+	var quests = store.get(g_quest.questkey());
 	var index;
 	for (var i=0;i<quests.length;i++)
 	{
@@ -221,7 +218,7 @@ Quest.prototype.getQuetPrize = function(id){
 	playAudioHandler('money');	
 	g_msg.tip("成功领取任务奖励:"+itemStr2(pz,","));
 	quests.splice(index,1);
-	g_player.updateData({quest:quests});
+	store.set(g_quest.questkey(),quests);
 	
 	this.buildPage(0);
 }
@@ -242,7 +239,7 @@ Quest.prototype.onBuyItem = function(tname,item,qty){
 		type = QUEST_TYPE.SAVING;
 	}
 	
-	var items = g_player.data.quest
+	var items = store.get(g_quest.questkey());
 	if (items==null)
 		return;
 		
@@ -256,13 +253,28 @@ Quest.prototype.onBuyItem = function(tname,item,qty){
 		}
     }
 }
+//未完成任务；
+//快到期保险产品
+Quest.prototype.getQuests = function(status) {
+    var items = store.get(g_quest.questkey());
+	var itemids = [];
+	if (!items)
+		return itemids;
+		
+	for (var i=0;i<items.length;i++){
+		if (items[i].status==status){
+			itemids.push(items[i].itemid);
+		}
+	}
+	return itemids;
+}
 
 Quest.prototype.update = function(){
 	this.count ++;
 	if (this.count%3!=0)return;
 	
 	var tag = document.getElementById("tag"+this.name);
-	var questids = g_player.getQuests(QUEST_STATUS.ACTIVE);
+	var questids = g_quest.getQuests(QUEST_STATUS.ACTIVE);
 	if (questids.length>0&&tag){
 		var tip = tag.innerHTML;
 		var index = tip.indexOf("icon_quest_on.png");

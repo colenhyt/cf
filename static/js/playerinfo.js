@@ -147,8 +147,6 @@ Playerinfo.prototype.showOneInfo = function(playerid){
 				serverPlayer.data = obj;
 				if (obj.saving)
 					serverPlayer.saving = cfeval(obj.saving);
-				if (obj.quest)
-					serverPlayer.data.quest = cfeval(obj.quest);
 				if (obj.stock)
 					serverPlayer.stock = cfeval(obj.stock);
 				if (obj.insure)
