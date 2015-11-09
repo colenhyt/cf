@@ -12,12 +12,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javassist.bytecode.Descriptor.Iterator;
+import net.sf.json.JSONArray;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.ToplistService;
+import cn.hd.util.RedisClient;
+
+import com.alibaba.fastjson.JSON;
 	
 public class ToplistManager extends MgrBase{
 	Map<Integer,Toplist>		toplistMsp;
+	private RedisClient		jedisClient;
     private static ToplistManager uniqueInstance = null;  
 	
     public static ToplistManager getInstance() {  
@@ -28,6 +32,8 @@ public class ToplistManager extends MgrBase{
      } 
     
     public void init(){
+    	jedisClient = new RedisClient();
+    	
     	toplistMsp = Collections.synchronizedMap(new HashMap<Integer,Toplist>());
     	ToplistService service= new ToplistService();
     	List<Toplist> toplists = service.findAll();
@@ -41,7 +47,7 @@ public class ToplistManager extends MgrBase{
     	}
     	
     	dataThread = new DataThread();
-    	dataThread.start();    	
+//    	dataThread.start();    	
     	
     }
 	public synchronized Toplist findByPlayerId(int playerId){		
@@ -154,8 +160,10 @@ public class ToplistManager extends MgrBase{
 		Date firstDate = getFirstDate(type);
 		
 		List<Toplist> list = new ArrayList<Toplist>();
-		Collection<Toplist> toplists = toplistMsp.values();
-		for (Toplist top:toplists){		
+//		Collection<Toplist> toplists = toplistMsp.values();
+		List<String> topliststrs = jedisClient.shardedJedis.hvals("toplist");
+		for (String t:topliststrs){		
+			Toplist top = (Toplist)JSON.parseObject(t, Toplist.class);
 			if (top.getUpdatetime().compareTo(firstDate)>0){
 				list.add(top);
 			}
@@ -190,14 +198,27 @@ public class ToplistManager extends MgrBase{
 		return true;		
 	}
 
+	public String list(int playerid,int type){
+			List<Toplist> weeklist = findByType(type);
+			List<Toplist> monthlist = findByType(1);
+			JSONArray jsonObject = new JSONArray();
+			jsonObject.add(weeklist);
+			jsonObject.add(monthlist);			
+			return jsonObject.toString();
+		}
+
 	public static void main(String[] args){
 		ToplistManager.getInstance().init();
-		ToplistManager.getInstance().findByType(0);
-		Toplist record = new Toplist();
-		record.setPlayerid(280);
-		record.setZan(3);
-		record.setMoney(BigDecimal.valueOf(52300));
-		ToplistManager.getInstance().add(record);
+		long st = System.currentTimeMillis();
+		String str = ToplistManager.getInstance().list(0,0);
+		System.out.println(str);
+		System.out.println("cost time: "+(System.currentTimeMillis()-st)+"ms");
+//		ToplistManager.getInstance().findByType(0);
+//		Toplist record = new Toplist();
+//		record.setPlayerid(280);
+//		record.setZan(3);
+//		record.setMoney(BigDecimal.valueOf(52300));
+//		ToplistManager.getInstance().add(record);
 	}
 
 }

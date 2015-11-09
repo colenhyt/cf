@@ -275,8 +275,8 @@ Toplist.prototype.syncData2 = function(){
 	g_msg.showload("g_toplist.syncData2");
 	
 	try  {
-		var data= "toplist.playerid="+g_player.data.playerid;
-		$.ajax({type:"post",url:"/cf/toplist_list.do",data:data,success:function(data){
+		var data= "playerid="+g_player.data.playerid;
+		$.ajax({type:"post",url:"/cf/toplist_get.jsp",data:data,success:function(data){
 		 var obj = cfeval (data);
 		 g_toplist.updateData(obj);
          g_msg.destroyload();
