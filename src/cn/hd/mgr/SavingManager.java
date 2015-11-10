@@ -46,10 +46,6 @@ public class SavingManager extends MgrBase{
 
     	savingMap = new HashMap<Integer,String>();
     	
-    	jedisClient = new RedisClient();
-    	dataThread = new DataThread();
-    	dataThread.start();
-    	
     	savingsMap = new HashMap<Integer,List<Saving>>();
     	
     	if (!jedisClient.jedis.exists(super.DATAKEY_SAVING))

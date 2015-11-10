@@ -41,8 +41,6 @@ public class InsureManager extends MgrBase{
     		if (!insureCfgMap.containsKey(insure.getId()))
     			insureCfgMap.put(insure.getId(), insure);
     	}
-    	dataThread = new DataThread();
-    	dataThread.start();    	
 
     	insureMap = new HashMap<Integer,String>();
     	

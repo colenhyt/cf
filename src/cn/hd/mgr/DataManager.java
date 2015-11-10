@@ -42,7 +42,6 @@ public class DataManager extends MgrBase {
 	public Map<String, Integer> playerIdMaps;
 	public Map<Integer, PlayerWithBLOBs> playerMaps;
 	private int nextPlayerId;
-	private DataThread dataThread;
 
 	private static DataManager uniqueInstance = null;
 
@@ -229,7 +228,6 @@ public class DataManager extends MgrBase {
 	}
 
 	public void init() {
-		jedisClient = new RedisClient();
 		
 //		String path = Thread.currentThread().getContextClassLoader()
 //				.getResource("/").getPath();
@@ -246,8 +244,6 @@ public class DataManager extends MgrBase {
 		InitdataService initdataService = new InitdataService();
 		init = initdataService.findInit();
 
-		dataThread = new DataThread();
-		 dataThread.start();
 
 		playerIdMaps = Collections
 				.synchronizedMap(new HashMap<String, Integer>());

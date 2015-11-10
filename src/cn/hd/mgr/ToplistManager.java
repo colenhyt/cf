@@ -45,9 +45,6 @@ public class ToplistManager extends MgrBase{
     		}
     	}
     	
-    	dataThread = new DataThread();
-//    	dataThread.start();    	
-    	
     }
 	public synchronized Toplist findByPlayerId(int playerId){		
 		return toplistMsp.get(playerId);

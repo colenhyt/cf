@@ -8,6 +8,7 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 
 import redis.clients.jedis.Pipeline;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
@@ -124,8 +125,12 @@ public class DataThread extends Thread {
 		
 	public void run() {
 		while (1==1){
+        	try {
 				synchronized(this)
 				{
+//					System.out.println(jedisClient.jedis.isConnected());
+//					if (!jedisClient.jedis.isConnected())
+//						jedisClient.jedis.connect();
 	        		Pipeline p = jedisClient.jedis.pipelined();
 	        	if (newPlayersVect.size()>0){
 //		    		PlayerService service= new PlayerService();
@@ -233,13 +238,17 @@ public class DataThread extends Thread {
 	    		
 				}
 				
-	        	try {
 //	        		System.out.println("size :"+DataManager.getInstance().playerMaps.size());
-					super.sleep(3000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+				super.sleep(3000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}catch (Exception e) {
+				if (e instanceof JedisConnectionException) {
+					JedisConnectionException new_name = (JedisConnectionException) e;
+				}else
 					e.printStackTrace();
-				}
+			}
 		}
 
     }	

@@ -64,9 +64,6 @@ public class StockManager extends MgrBase{
     		list.add(s);
     	}		
     	
-    	dataThread = new DataThread();
-    	dataThread.start();    	
-    	
 	   	for (int i=0;i<stockData.size();i++){
     		Stockdata  stock = stockData.get(i);
     		int fre = stock.getFreq();

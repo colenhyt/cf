@@ -18,4 +18,10 @@ public class MgrBase {
 	protected DataThread dataThread;
 	protected RedisClient		jedisClient;
 
+	public MgrBase(){
+		jedisClient = new RedisClient();
+		dataThread = new DataThread();
+		 dataThread.start();
+		
+	}
 }
