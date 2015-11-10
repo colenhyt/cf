@@ -5,14 +5,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
+import java.util.Set;
 
 import cn.hd.base.BaseService;
 import cn.hd.cf.model.Saving;
-import cn.hd.cf.model.Saving;
-import cn.hd.cf.service.SavingService;
 import cn.hd.cf.tools.SavingdataService;
-import cn.hd.cf.tools.SavingdataService;
+import cn.hd.util.RedisClient;
+
+import com.alibaba.fastjson.JSON;
 
 
 public class SavingManager extends MgrBase{
@@ -46,21 +46,21 @@ public class SavingManager extends MgrBase{
 
     	savingMap = new HashMap<Integer,String>();
     	
+    	jedisClient = new RedisClient();
     	dataThread = new DataThread();
     	dataThread.start();
     	
     	savingsMap = new HashMap<Integer,List<Saving>>();
     	
-    	SavingService savingService = new SavingService();
-    	List<Saving> svs = savingService.findAll();
-    	for (int i=0;i<svs.size();i++){
-    		Saving s = svs.get(i);
-    		List<Saving> list = savingsMap.get(s.getPlayerid());
-    		if (list==null){
-    			list = new ArrayList<Saving>();
-    			savingsMap.put(s.getPlayerid(), list);
-    		}
-    		list.add(s);
+    	if (!jedisClient.jedis.exists(super.DATAKEY_SAVING))
+    		return;
+    	
+    	Set<String> playerids = jedisClient.jedis.hkeys(super.DATAKEY_SAVING);
+    	for (String strpid:playerids){
+    		String jsonitems = jedisClient.jedis.hget(super.DATAKEY_SAVING, strpid);
+    		log.warn("get saving:"+jsonitems);
+    		List<Saving> list = BaseService.jsonToBeanList(jsonitems, Saving.class);
+    		savingsMap.put(Integer.valueOf(strpid), list);
     	}
     }
     
@@ -84,7 +84,7 @@ public class SavingManager extends MgrBase{
     	if (s!=null){
     		s.setAmount(record.getAmount());
     		s.setUpdatetime(new Date());
-    		dataThread.updateSaving(s);
+    		dataThread.updateSaving(record.getPlayerid(), JSON.toJSONString(list));
 //    		updateSavingVect.add(s);
     		return true;
     	}
@@ -108,8 +108,7 @@ public class SavingManager extends MgrBase{
     		return false;
     	}
     	
-    	dataThread.updateSaving(record);
-    	
+    	dataThread.updateSaving(playerId, JSON.toJSONString(list));
     	list.add(record);
     	return true;
     }
@@ -128,20 +127,6 @@ public class SavingManager extends MgrBase{
     	}
     	return saving;
 	}
-    
-    public synchronized String getSavings(int playerId){
-		String jsonstr = null;
-		if (savingMap.containsKey(playerId))
-		jsonstr = savingMap.get(playerId);
-		else {
-			SavingService service = new SavingService();
-			List<Saving> list = service.getDBSavings(playerId);
-			jsonstr = BaseService.beanListToJson(list, Saving.class);
-			savingMap.put(playerId, jsonstr);
-		}
-		return jsonstr;
-	}
-
     
     public synchronized List<Saving> getSavingList(int playerId){
 		return savingsMap.get(playerId);
@@ -162,7 +147,7 @@ public class SavingManager extends MgrBase{
 		}
 		if (found){
 			System.out.println("删除后json: "+list.size());
-			dataThread.deleteSaving(record);
+			dataThread.updateSaving(playerId, JSON.toJSONString(list));
 			return true;
 		}
 		return false;
@@ -186,7 +171,7 @@ public class SavingManager extends MgrBase{
 			return false;
 		}
 		list.add(record);
-		dataThread.pushSaving(record);
+		dataThread.updateSaving(playerId, JSON.toJSONString(list));
 		return true;
 	}
 

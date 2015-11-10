@@ -5,8 +5,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,14 +22,14 @@ import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
-import cn.hd.cf.service.PlayerService;
 import cn.hd.cf.tools.InitdataService;
-import cn.hd.util.FileUtil;
+import cn.hd.util.RedisClient;
 
 import com.alibaba.fastjson.JSON;
 
 public class DataManager extends MgrBase {
 	protected Logger log = Logger.getLogger(getClass());
+	public List<String> pps = new ArrayList<String>();
 
 	private LoginAction loginAction;
 	private Init init;
@@ -159,38 +159,32 @@ public class DataManager extends MgrBase {
 		playerMaps.put(player.getPlayerid(), player);
 		playerIdMaps.put(player.getPlayername(), player.getPlayerid());
 		dataThread.push(player);
-		// newPlayersVect.add(player);
 		return true;
 	}
 
 	public synchronized PlayerWithBLOBs findPlayer(String playerName) {
 		Integer playerid = playerIdMaps.get(playerName);
 		if (playerid == null) {
-			PlayerService playerService = new PlayerService();
-			PlayerWithBLOBs player = playerService.findByName(playerName);
-			if (player!=null){
-				playerid = player.getPlayerid();
-				playerMaps.put(player.getPlayerid(), player);
-				playerIdMaps.put(player.getPlayername(), player.getPlayerid());				
-			}
+			return null;
 		}
 		return findPlayer(playerid);
 	}
 
 	public synchronized PlayerWithBLOBs findPlayer(int playerid) {
+//		String jsonstr = jedisClient.jedis.hget(super.DATAKEY_PLAYER, String.valueOf(playerid));
+//		if (jsonstr==null){
+//			return null;
+//		}
 		PlayerWithBLOBs player = playerMaps.get(playerid);
 		return player;
+//		return (PlayerWithBLOBs)JSON.parse(jsonstr);
 	}
 
 	public synchronized boolean updatePlayer(PlayerWithBLOBs player) {
 		PlayerWithBLOBs pp = playerMaps.get(player.getPlayerid());
 		if (pp != null) {
 			pp.setExp(player.getExp());
-
-			PlayerWithBLOBs p = new PlayerWithBLOBs();
-			p.setPlayerid(pp.getPlayerid());
-			p.setExp(pp.getExp());
-			dataThread.updatePlayer(p);
+			dataThread.updatePlayer(pp);
 			return true;
 		}
 		return false;
@@ -218,29 +212,34 @@ public class DataManager extends MgrBase {
 		playerIdMaps.clear();
 		playerMaps.clear();
 		nextPlayerId = 0;
-		PlayerService playerService = new PlayerService();
-		List<PlayerWithBLOBs> players = playerService.findAll();
-		for (int i = 0; i < players.size(); i++) {
-			PlayerWithBLOBs player = players.get(i);
+//		PlayerService playerService = new PlayerService();
+//		List<PlayerWithBLOBs> players = playerService.findAll();
+//		for (int i = 0; i < players.size(); i++) {
+//			PlayerWithBLOBs player = players.get(i);
+		List<String> items = jedisClient.jedis.hvals(super.DATAKEY_PLAYER);
+		for (int i=0;i<items.size();i++){
+			PlayerWithBLOBs player = (PlayerWithBLOBs)JSON.parseObject(items.get(i),PlayerWithBLOBs.class);
 			playerMaps.put(player.getPlayerid(), player);
 			playerIdMaps.put(player.getPlayername(), player.getPlayerid());
 			if (player.getPlayerid() > nextPlayerId)
 				nextPlayerId = player.getPlayerid();
 		}
-		System.out.println("load all players :" + players.size());
+		System.out.println("load all players :" + items.size());
 
 	}
 
 	public void init() {
-		String path = Thread.currentThread().getContextClassLoader()
-				.getResource("/").getPath();
-		String cfgstr = FileUtil.readFile(path + "config.properties");
-		if (cfgstr == null || cfgstr.trim().length() <= 0) {
-			return;
-		}
-		JSONObject ppObj = JSONObject.fromObject(cfgstr);
-		cfg = (Config) JSONObject.toBean(ppObj, Config.class);
-		System.out.println(cfgstr);
+		jedisClient = new RedisClient();
+		
+//		String path = Thread.currentThread().getContextClassLoader()
+//				.getResource("/").getPath();
+//		String cfgstr = FileUtil.readFile(path + "config.properties");
+//		if (cfgstr == null || cfgstr.trim().length() <= 0) {
+//			return;
+//		}
+//		JSONObject ppObj = JSONObject.fromObject(cfgstr);
+//		cfg = (Config) JSONObject.toBean(ppObj, Config.class);
+//		System.out.println(cfgstr);
 
 		loginAction = new LoginAction();
 
@@ -248,7 +247,7 @@ public class DataManager extends MgrBase {
 		init = initdataService.findInit();
 
 		dataThread = new DataThread();
-		// dataThread.start();
+		 dataThread.start();
 
 		playerIdMaps = Collections
 				.synchronizedMap(new HashMap<String, Integer>());

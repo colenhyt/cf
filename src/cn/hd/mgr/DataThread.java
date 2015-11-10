@@ -1,9 +1,13 @@
 package cn.hd.mgr;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
+import redis.clients.jedis.Pipeline;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
@@ -11,13 +15,18 @@ import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.InsureService;
 import cn.hd.cf.service.PlayerService;
-import cn.hd.cf.service.SavingService;
 import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.ToplistService;
+import cn.hd.util.RedisClient;
+
+import com.alibaba.fastjson.JSON;
 
 public class DataThread extends Thread {
+	private RedisClient		jedisClient;
 	private Vector<PlayerWithBLOBs> newPlayersVect;
 	private Vector<PlayerWithBLOBs>	updatePlayersVect;	
+	private Map<Integer,String>		updateSavingMap;
+	
 	private Vector<Saving>			newSavingVect;
 	private Vector<Saving>			updateSavingVect;
 	private Vector<Saving>			deleteSavingVect;
@@ -34,8 +43,13 @@ public class DataThread extends Thread {
 	protected Logger  log = Logger.getLogger(getClass()); 
 	
 	public DataThread(){
+		jedisClient = new RedisClient();
+		
 		newPlayersVect = new Vector<PlayerWithBLOBs>();
 		updatePlayersVect = new Vector<PlayerWithBLOBs>();
+		
+		updateSavingMap  = new HashMap<Integer,String>();
+		
 		newSavingVect = new Vector<Saving>();
 		updateSavingVect = new Vector<Saving>();
 		deleteSavingVect = new Vector<Saving>();
@@ -84,16 +98,8 @@ public class DataThread extends Thread {
 		deleteStockVect.add(record);
 	}
 	
-	public synchronized void pushSaving(Saving record){
-		newSavingVect.add(record);
-	}
-	
-	public synchronized void updateSaving(Saving record){
-		updateSavingVect.add(record);
-	}
-	
-	public synchronized void deleteSaving(Saving record){
-		deleteSavingVect.add(record);
+	public synchronized void updateSaving(int playerid,String jsonSavings){
+		updateSavingMap.put(playerid, jsonSavings);
 	}
 	
 	public synchronized void pushToplist(Toplist record){
@@ -120,40 +126,38 @@ public class DataThread extends Thread {
 		while (1==1){
 				synchronized(this)
 				{
+	        		Pipeline p = jedisClient.jedis.pipelined();
 	        	if (newPlayersVect.size()>0){
-		    		PlayerService service= new PlayerService();
-		    		service.addPlayers(newPlayersVect);
+//		    		PlayerService service= new PlayerService();
+//		    		service.addPlayers(newPlayersVect);
+	        		for (int i=0;i<newPlayersVect.size();i++){
+	        			PlayerWithBLOBs item = newPlayersVect.get(i);
+	        			log.warn("batch add players :"+JSON.toJSONString(item));
+	        			p.hset(DataManager.getInstance().DATAKEY_PLAYER, String.valueOf(item.getPlayerid()), JSON.toJSONString(item));
+	        		}
 		    		log.warn("batch add players :"+newPlayersVect.size());
 		    		newPlayersVect.clear(); 	        		
 	        	}
 	        	
 	        	if (updatePlayersVect.size()>0){
-		    		PlayerService service= new PlayerService();
-		    		service.updatePlayers(updatePlayersVect);
+	        		for (int i=0;i<updatePlayersVect.size();i++){
+	        			PlayerWithBLOBs item = updatePlayersVect.get(i);
+	        			p.hset(DataManager.getInstance().DATAKEY_PLAYER, String.valueOf(item.getPlayerid()), JSON.toJSONString(item));
+	        		}
 		    		log.warn("batch update players :"+updatePlayersVect.size());
 		    		updatePlayersVect.clear(); 	        		
 	        	}
 	        	
-	    		if (newSavingVect.size()>0){
-		    		SavingService service2= new SavingService();
-		    		service2.addSavings(newSavingVect);
-		    		log.warn("batch add saving :"+newSavingVect.size());
-		    		newSavingVect.clear();    	    			
-	    		}
-	        	
-	    		if (deleteSavingVect.size()>0){
-		    		SavingService service2= new SavingService();
-		    		service2.deleteSavings(deleteSavingVect);
-		    		log.warn("batch delete saving :"+deleteSavingVect.size());
-		    		deleteSavingVect.clear();    	    			
+	    		if (updateSavingMap.size()>0){
+	        		Set<Integer> ps = updateSavingMap.keySet();
+	        		for (int playerid:ps){
+	        			String json = updateSavingMap.get(playerid);
+	        			p.hset(DataManager.getInstance().DATAKEY_SAVING, String.valueOf(playerid), json);
+	        		}
+		    		log.warn("batch update saving :"+updateSavingMap.size());
+		    		updateSavingMap.clear();    	    			
 	    		}
 	    		
-	    		if (updateSavingVect.size()>0){
-		    		SavingService service2= new SavingService();
-		    		service2.updateSavings(updateSavingVect);
-		    		log.warn("batch update saving :"+updateSavingVect.size());
-		    		updateSavingVect.clear();    	    			
-	    		}	
 	        	
 	    		if (newInsureVect.size()>0){
 		    		InsureService service2= new InsureService();
@@ -210,6 +214,7 @@ public class DataThread extends Thread {
 		    		log.warn("batch update toplist zan:"+updateToplistZanVect.size());
 		    		updateToplistZanVect.clear();    	    			
 	    		}
+        		p.sync();
 	        	
 	    		if (signinVect.size()>0){
 	    			PlayerService service2= new PlayerService();

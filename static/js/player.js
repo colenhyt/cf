@@ -224,6 +224,8 @@ Player.prototype.loginback = function(data){
   
   playerdata.lastlogin = Date.parse(new Date());
   playerdata.quotetime = data.quotetime;
+  playerdata.playerid = data.playerid;
+  playerdata.exp = data.exp;
     
   	g_player.data = playerdata;
 	g_player.saving = {};

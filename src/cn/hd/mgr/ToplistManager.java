@@ -21,7 +21,6 @@ import com.alibaba.fastjson.JSON;
 	
 public class ToplistManager extends MgrBase{
 	Map<Integer,Toplist>		toplistMsp;
-	private RedisClient		jedisClient;
     private static ToplistManager uniqueInstance = null;  
 	
     public static ToplistManager getInstance() {  
