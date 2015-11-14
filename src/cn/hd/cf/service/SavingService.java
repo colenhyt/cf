@@ -95,7 +95,7 @@ public class SavingService extends BaseService {
 		return true;
 	}
 
-	public synchronized boolean updateSavings(Vector<Saving> records)
+	public synchronized boolean updateSavings(List<Saving> records)
 	{		
 		try {
 			for (int i=0;i<records.size();i++){

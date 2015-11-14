@@ -15,6 +15,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 
+import redis.clients.jedis.Jedis;
 import cn.hd.base.Config;
 import cn.hd.cf.action.LoginAction;
 import cn.hd.cf.model.Init;
@@ -215,7 +216,8 @@ public class DataManager extends MgrBase {
 //		List<PlayerWithBLOBs> players = playerService.findAll();
 //		for (int i = 0; i < players.size(); i++) {
 //			PlayerWithBLOBs player = players.get(i);
-		List<String> items = jedisClient.jedis.hvals(super.DATAKEY_PLAYER);
+		Jedis jedis = jedisClient.getJedis();
+		List<String> items = jedis.hvals(super.DATAKEY_PLAYER);
 		for (int i=0;i<items.size();i++){
 			PlayerWithBLOBs player = (PlayerWithBLOBs)JSON.parseObject(items.get(i),PlayerWithBLOBs.class);
 			playerMaps.put(player.getPlayerid(), player);
@@ -223,6 +225,7 @@ public class DataManager extends MgrBase {
 			if (player.getPlayerid() > nextPlayerId)
 				nextPlayerId = player.getPlayerid();
 		}
+		jedisClient.returnResource(jedis);
 		System.out.println("load all players :" + items.size());
 
 	}

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONArray;
+import redis.clients.jedis.Jedis;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.ToplistService;
 import cn.hd.util.RedisClient;
@@ -157,13 +158,15 @@ public class ToplistManager extends MgrBase{
 		
 		List<Toplist> list = new ArrayList<Toplist>();
 //		Collection<Toplist> toplists = toplistMsp.values();
-		List<String> topliststrs = jedisClient.shardedJedis.hvals("toplist");
+		Jedis jedis = jedisClient.getJedis();
+		List<String> topliststrs = jedis.hvals(super.DATAKEY_TOPLIST);
 		for (String t:topliststrs){		
 			Toplist top = (Toplist)JSON.parseObject(t, Toplist.class);
 			if (top.getUpdatetime().compareTo(firstDate)>0){
 				list.add(top);
 			}
 		}
+		jedisClient.returnResource(jedis);
 		Collections.sort(list);
 		for (int i=0;i<list.size();i++){
 			if (i>=20) break;

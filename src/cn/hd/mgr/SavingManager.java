@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import redis.clients.jedis.Jedis;
 import cn.hd.base.BaseService;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.tools.SavingdataService;
@@ -48,16 +49,20 @@ public class SavingManager extends MgrBase{
     	
     	savingsMap = new HashMap<Integer,List<Saving>>();
     	
-    	if (!jedisClient.jedis.exists(super.DATAKEY_SAVING))
+    	Jedis jedis = jedisClient.getJedis();
+    	if (!jedis.exists(super.DATAKEY_SAVING)){
+    		jedisClient.returnResource(jedis);
     		return;
+    	}
     	
-    	Set<String> playerids = jedisClient.jedis.hkeys(super.DATAKEY_SAVING);
+    	Set<String> playerids = jedis.hkeys(super.DATAKEY_SAVING);
     	for (String strpid:playerids){
-    		String jsonitems = jedisClient.jedis.hget(super.DATAKEY_SAVING, strpid);
+    		String jsonitems = jedis.hget(super.DATAKEY_SAVING, strpid);
     		log.warn("get saving:"+jsonitems);
     		List<Saving> list = BaseService.jsonToBeanList(jsonitems, Saving.class);
     		savingsMap.put(Integer.valueOf(strpid), list);
     	}
+    	jedisClient.returnResource(jedis);
     }
     
     public synchronized boolean updateLiveSaving(Saving record){

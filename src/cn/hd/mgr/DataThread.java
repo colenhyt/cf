@@ -7,6 +7,7 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import cn.hd.cf.model.Insure;
@@ -131,13 +132,13 @@ public class DataThread extends Thread {
 //					System.out.println(jedisClient.jedis.isConnected());
 //					if (!jedisClient.jedis.isConnected())
 //						jedisClient.jedis.connect();
-	        		Pipeline p = jedisClient.jedis.pipelined();
+					Jedis jedis = jedisClient.getJedis();
+	        		Pipeline p = jedis.pipelined();
 	        	if (newPlayersVect.size()>0){
 //		    		PlayerService service= new PlayerService();
 //		    		service.addPlayers(newPlayersVect);
 	        		for (int i=0;i<newPlayersVect.size();i++){
 	        			PlayerWithBLOBs item = newPlayersVect.get(i);
-	        			log.warn("batch add players :"+JSON.toJSONString(item));
 	        			p.hset(DataManager.getInstance().DATAKEY_PLAYER, String.valueOf(item.getPlayerid()), JSON.toJSONString(item));
 	        		}
 		    		log.warn("batch add players :"+newPlayersVect.size());
@@ -220,7 +221,7 @@ public class DataThread extends Thread {
 		    		updateToplistZanVect.clear();    	    			
 	    		}
         		p.sync();
-	        	
+        		jedisClient.returnResource(jedis);
 	    		if (signinVect.size()>0){
 	    			PlayerService service2= new PlayerService();
 		    		service2.addSignins(signinVect);

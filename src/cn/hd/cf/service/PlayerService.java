@@ -147,7 +147,6 @@ public class PlayerService extends BaseService {
 	{
 		try {
 			playerMapper.updateByPrimaryKeySelective(record);
-			DBCommit();
 		}catch (Exception e){
 			e.printStackTrace();
 			return false;
