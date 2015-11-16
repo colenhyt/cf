@@ -226,7 +226,7 @@ public class DataManager extends MgrBase {
 				nextPlayerId = player.getPlayerid();
 		}
 		jedisClient.returnResource(jedis);
-		System.out.println("load all players :" + items.size());
+		log.warn("load all players :" + items.size());
 
 	}
 

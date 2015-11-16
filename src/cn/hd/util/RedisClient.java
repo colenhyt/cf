@@ -32,7 +32,7 @@ public class RedisClient {
         initialPool(); 
         initialShardedPool(); 
         shardedJedis = shardedJedisPool.getResource(); 
-        jedis = jedisPool.getResource(); 
+//        jedis = jedisPool.getResource(); 
     } 
  
     /**
@@ -74,17 +74,18 @@ public class RedisClient {
      * @return Jedis
      */
     public synchronized Jedis getJedis() {  
-//        if (jedisPool == null) {  
-//        	initialPool();
-//        }
-//        Jedis jedis = null;
-//        try {  
-//            if (jedisPool != null) {  
-//                jedis = jedisPool.getResource(); 
-//            }
-//        } catch (Exception e) {  
-//            System.out.println("Get jedis error : "+e);
-//        }finally{
+        if (jedisPool == null) {  
+        	initialPool();
+        }
+        Jedis jedis = null;
+        try {  
+            if (jedisPool != null) {  
+                jedis = jedisPool.getResource(); 
+            }
+        } catch (Exception e) {  
+            System.out.println("Get jedis error : "+e);
+        }
+//        finally{
 //            returnResource(jedis);
 //        }
         return jedis;
@@ -96,9 +97,9 @@ public class RedisClient {
      * @param jedis
      */
     public void returnResource(final Jedis jedis) {
-//        if (jedis != null && jedisPool !=null) {
-//            jedisPool.returnResource(jedis);
-//        }
+        if (jedis != null && jedisPool !=null) {
+            jedisPool.returnResource(jedis);
+        }
     }
          
     public void show() {     

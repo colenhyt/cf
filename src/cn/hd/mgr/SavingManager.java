@@ -58,11 +58,12 @@ public class SavingManager extends MgrBase{
     	Set<String> playerids = jedis.hkeys(super.DATAKEY_SAVING);
     	for (String strpid:playerids){
     		String jsonitems = jedis.hget(super.DATAKEY_SAVING, strpid);
-    		log.warn("get saving:"+jsonitems);
-    		List<Saving> list = BaseService.jsonToBeanList(jsonitems, Saving.class);
+//    		log.warn("get saving:"+jsonitems);
+    		List<Saving> list = JSON.parseArray(jsonitems, Saving.class);
     		savingsMap.put(Integer.valueOf(strpid), list);
     	}
     	jedisClient.returnResource(jedis);
+    	log.warn("load savings :" + playerids.size());
     }
     
     public synchronized boolean updateLiveSaving(Saving record){
