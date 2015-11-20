@@ -29,11 +29,9 @@ public class DataThread extends Thread {
 	private Vector<PlayerWithBLOBs>	updatePlayersVect;	
 	private Map<Integer,String>		updateSavingMap;
 	
-	private Vector<Saving>			newSavingVect;
-	private Vector<Saving>			updateSavingVect;
-	private Vector<Saving>			deleteSavingVect;
-	private Vector<Insure>			newInsureVect;
-	private Vector<Insure>			deleteInsureVect;
+	private Map<Integer,String>		updateInsureMap;
+	private Map<Integer,String>		updateStockMap;
+	
 	private Vector<Stock>			newStockVect;
 	private Vector<Stock>			updateStockVect;
 	private Vector<Stock>			deleteStockVect;
@@ -52,12 +50,9 @@ public class DataThread extends Thread {
 		
 		updateSavingMap  = new HashMap<Integer,String>();
 		
-		newSavingVect = new Vector<Saving>();
-		updateSavingVect = new Vector<Saving>();
-		deleteSavingVect = new Vector<Saving>();
+		updateInsureMap = new HashMap<Integer,String>();
 		
-		newInsureVect = new Vector<Insure>();
-		deleteInsureVect = new Vector<Insure>();
+		updateStockMap = new HashMap<Integer,String>();
 		
 		newStockVect = new Vector<Stock>();
 		deleteStockVect = new Vector<Stock>();		
@@ -79,41 +74,24 @@ public class DataThread extends Thread {
 		updatePlayersVect.add(record);
 	}
 	
-	public synchronized void pushInsure(Insure record){
-		newInsureVect.add(record);
-	}
-	
-	public synchronized void deleteInsure(Insure record){
-		deleteInsureVect.add(record);
-	}
-	
-	
-	public synchronized void pushStock(Stock record){
-		newStockVect.add(record);
-	}
-	
 	public synchronized void updateStock(Stock record){
 		updateStockVect.add(record);
-	}
-	
-	public synchronized void deleteStock(Stock record){
-		deleteStockVect.add(record);
 	}
 	
 	public synchronized void updateSaving(int playerid,String jsonSavings){
 		updateSavingMap.put(playerid, jsonSavings);
 	}
 	
-	public synchronized void pushToplist(Toplist record){
-		newToplistVect.add(record);
+	public synchronized void updateInsure(int playerid,String jsonInsures){
+		updateInsureMap.put(playerid, jsonInsures);
+	}
+	
+	public synchronized void updateStock(int playerid,String jsonStocks){
+		updateStockMap.put(playerid, jsonStocks);
 	}
 	
 	public synchronized void updateToplist(Toplist record){
 		updateToplistVect.add(record);
-	}	
-	
-	public synchronized void updateToplistZan(Toplist record){
-		updateToplistZanVect.add(record);
 	}	
 	
 	public synchronized void addSignin(int playerid){
@@ -160,45 +138,30 @@ public class DataThread extends Thread {
 	        			String json = updateSavingMap.get(playerid);
 	        			p.hset(DataManager.getInstance().DATAKEY_SAVING, String.valueOf(playerid), json);
 	        		}
-		    		log.warn("batch update saving :"+updateSavingMap.size());
+		    		log.warn("batch set saving :"+updateSavingMap.size());
 		    		updateSavingMap.clear();    	    			
 	    		}
 	    		
 	        	
-	    		if (newInsureVect.size()>0){
-		    		InsureService service2= new InsureService();
-		    		service2.addInsures(newInsureVect);
-		    		log.warn("batch add insure :"+newInsureVect.size());
-		    		newInsureVect.clear();    	    			
+	    		if (updateInsureMap.size()>0){
+	        		Set<Integer> ps = updateInsureMap.keySet();
+	        		for (int playerid:ps){
+	        			String json = updateInsureMap.get(playerid);
+	        			p.hset(DataManager.getInstance().DATAKEY_INSURE, String.valueOf(playerid), json);
+	        		}
+		    		log.warn("batch set insure :"+updateInsureMap.size());
+		    		updateInsureMap.clear();    	    			
 	    		}
 	        	
-	    		if (deleteInsureVect.size()>0){
-	    			InsureService service2= new InsureService();
-		    		service2.deleteInsures(deleteInsureVect);
-		    		log.warn("batch delete insure :"+deleteInsureVect.size());
-		    		deleteInsureVect.clear();    	    			
-	    		}
-	        	
-	    		if (newStockVect.size()>0){
-		    		StockService service2= new StockService();
-		    		service2.addStocks(newStockVect);
-		    		log.warn("batch add stock :"+newStockVect.size());
-		    		newStockVect.clear();    	    			
-	    		}
-	        	
-	    		if (updateStockVect.size()>0){
-	    			StockService service2= new StockService();
-		    		service2.updateStocks(updateStockVect);
-		    		log.warn("batch update stock :"+updateStockVect.size());
-		    		updateStockVect.clear();    	    			
-	    		}
-	    		
-	    		if (deleteStockVect.size()>0){
-	    			StockService service2= new StockService();
-		    		service2.deleteStocks(deleteStockVect);
-		    		log.warn("batch delete stock :"+deleteStockVect.size());
-		    		deleteStockVect.clear();    	    			
-	    		}
+	    		if (updateStockMap.size()>0){
+	        		Set<Integer> ps = updateStockMap.keySet();
+	        		for (int playerid:ps){
+	        			String json = updateStockMap.get(playerid);
+	        			p.hset(DataManager.getInstance().DATAKEY_STOCK, String.valueOf(playerid), json);
+	        		}
+		    		log.warn("batch set stock :"+updateStockMap.size());
+		    		updateStockMap.clear();    	    			
+	    		}	    	
 	    		
 	    		if (newToplistVect.size()>0){
 		    		ToplistService service2= new ToplistService();
@@ -208,20 +171,17 @@ public class DataThread extends Thread {
 	    		}
 	        	
 	    		if (updateToplistVect.size()>0){
-	    			ToplistService service2= new ToplistService();
-		    		service2.updateToplists(updateToplistVect);
+	    			for (int i=0;i<updateToplistVect.size();i++){
+		    			Toplist toplist = updateToplistVect.get(i);
+	        			p.hset(DataManager.getInstance().DATAKEY_TOPLIST, String.valueOf(toplist.getPlayerid()), JSON.toJSONString(toplist));
+	    				
+	    			}
 		    		log.warn("batch update toplist :"+updateToplistVect.size());
 		    		updateToplistVect.clear();    	    			
 	    		}	    		
-	        	
-	    		if (updateToplistZanVect.size()>0){
-	    			ToplistService service2= new ToplistService();
-		    		service2.updateToplists(updateToplistZanVect);
-		    		log.warn("batch update toplist zan:"+updateToplistZanVect.size());
-		    		updateToplistZanVect.clear();    	    			
-	    		}
         		p.sync();
         		jedisClient.returnResource(jedis);
+        		
 	    		if (signinVect.size()>0){
 	    			PlayerService service2= new PlayerService();
 		    		service2.addSignins(signinVect);

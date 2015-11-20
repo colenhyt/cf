@@ -140,7 +140,7 @@ Playerinfo.prototype.showOneInfo = function(playerid){
 	if (!g_playerinfo.showPlayerId) return;
 	
 	try    { 
-			$.ajax({url:"/cf/login_get.do?player.playerid="+g_playerinfo.showPlayerId,success:function(data){
+			$.ajax({url:"/cf/toplist_getinfo.jsp?playerid="+g_playerinfo.showPlayerId,success:function(data){
 			var obj = cfeval(data);
 			if (obj!=null){
 			    var serverPlayer = {};

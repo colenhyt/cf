@@ -320,8 +320,7 @@ Login.prototype.syncLoadDataCallback_insure = function(data){
 
 Login.prototype.syncLoadDataCallback_stock = function(data){
 	var sdata = cfeval(data);
-	if (sdata.length>0)
-	 g_player.stock = sdata;
+    g_player.stock = sdata;
 	
 	g_player.setStockIds();
 	

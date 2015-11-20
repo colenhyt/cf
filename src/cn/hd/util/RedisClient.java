@@ -12,9 +12,7 @@ import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.ShardedJedis;
 import redis.clients.jedis.ShardedJedisPool;
 import redis.clients.jedis.SortingParams;
-import cn.hd.base.BaseService;
 import cn.hd.cf.model.Saving;
-import cn.hd.cf.model.Toplist;
 
 import com.alibaba.fastjson.JSON;
 
@@ -407,66 +405,90 @@ public class RedisClient {
     	long s = System.currentTimeMillis();
 //    	DataManager.getInstance().init();
 //    	System.out.println("init 5w ,cost time:"+(System.currentTimeMillis()-s)+"ms");
-    	int count = 10000;
-//    	Pipeline p = jedis.pipelined();
-//    	for (int i=0;i<count;i++){
-//    		String key = "k"+i;
-////    		jedis.set(key, value);
+    	int count = 500000;
+    	Jedis jedis = this.getJedis();
+    	Pipeline p = jedis.pipelined();
+    	for (int i=0;i<count;i++){
+    		String key = "name"+i;
+    		
 //    		Toplist t = new Toplist();
 //    		t.setUpdatetime(new Date());
 //    		t.setPlayerid(i);
 //    		t.setCreatetime(new Date());
 //    		t.setZan(3);
-//    		t.setPlayername("aaa"+i);
+//    		t.setPlayername(key);
 //    		t.setMoney(BigDecimal.valueOf(300));
-////    		JSONObject obj = JSONObject.fromObject(t);	
-////    		String str = JSON.toJSONString(t);
-////    		System.out.println(str);
-////    		System.out.println(JSON.toJSONString(t));
-////    		shardedJedis.hset("toplist", t.getPlayername(), JSON.toJSONString(t));
-////    		jedis.hset("toplist", t.getPlayername(), JSON.toJSONString(t));
-////    		System.out.println(i);
-//    		p.hset("toplist", t.getPlayername(), JSON.toJSONString(t));
-//    	}
+//    		p.hset("toplist", String.valueOf(t.getPlayerid()), JSON.toJSONString(t));
+//    		PlayerWithBLOBs player = new PlayerWithBLOBs();
+//    		player.setPlayerid(i);
+//    		player.setPlayername(key);
+//    		player.setExp(i);
+//    		player.setSex((byte)0);
+//    		player.setCreatetime(new Date());
+//    		p.hset("player", player.getPlayername(), JSON.toJSONString(player));
+//    		List<Saving> list = new ArrayList<Saving>();
+//    		Saving saving = new Saving();
+//    		saving.setItemid(1);
+//    		saving.setPlayerid(i);
+//    		saving.setQty(1);
+//    		saving.setAmount(Float.valueOf(300));
+//    		saving.setCreatetime(new Date());
+//    		saving.setUpdatetime(new Date());
+//    		list.add(saving);
+//    		p.hset("saving", String.valueOf(saving.getPlayerid()), JSON.toJSONString(list));
+    		
+//    		shardedJedis.hset("toplist", t.getPlayername(), JSON.toJSONString(t));
+//    		jedis.hset("toplist", t.getPlayername(), JSON.toJSONString(t));
+//    		System.out.println(i);
+    	}
 //    	p.sync();
-    	Pipeline p = jedis.pipelined();
-    	List<Saving> ss = new ArrayList<Saving>();
-    	for (int i=0;i<10;i++){
-    		Saving s1 = new Saving();
-    		s1.setAmount(Float.valueOf(100));
-    		s1.setItemid(i);
-    		ss.add(s1);
-    	}
-    	p.hset("saving", "111", JSON.toJSONString(ss));
-    	System.out.println("json saving:"+JSON.toJSONString(ss));
-    	p.sync();
-    	
-    	
-    	String jsonitems = jedis.hget("saving", "111");
-    	List<Saving> list = BaseService.jsonToBeanList(jsonitems, Saving.class);
-    	System.out.println("json saving:"+jsonitems+",list:"+list.size());
-   	//set list 100000 strings,cost time:9533ms;pipline:set list 100000 strings,cost time:1123ms
-    	System.out.println("set list "+count+" strings,cost time:"+(System.currentTimeMillis()-s)+"ms");
-//    	s = System.currentTimeMillis();
-//    	for (int i=0;i<count;i++){
-//    		String key = "k"+i;
-//    		String value = jedis.get(key);
+//    	List<Saving> ss = new ArrayList<Saving>();
+//    	for (int i=0;i<10;i++){
+//    		Saving s1 = new Saving();
+//    		s1.setAmount(Float.valueOf(100));
+//    		s1.setItemid(i);
+//    		ss.add(s1);
 //    	}
+//    	p.hset("saving", "111", JSON.toJSONString(ss));
+//    	System.out.println("json saving:"+JSON.toJSONString(ss));
+//    	p.sync();
+//    	
+    	System.out.println("init "+count+" ,cost time:"+(System.currentTimeMillis()-s)+"ms");
     	s = System.currentTimeMillis();
-//    	List<String> vs =shardedJedis.lrange("toplist", 0, 100);
-//    	Map<String,String> ms = shardedJedis.hgetAll("toplist");
-    	List<String> vs = jedis.hvals("player");
-    	jedis.close();
-    	List<Toplist> ts = new ArrayList<Toplist>();
-    	for (int i=0;i<vs.size();i++){
-//    		System.out.println(vs.get(i));
-    		Toplist pp = (Toplist)JSON.parseObject(vs.get(i), Toplist.class);
-//    		System.out.println(p.getPlayerid()+p.getPlayername());
-//    		ts.add(p);
+//    	List<String> values = jedis.hvals("toplist");
+//    	System.out.println("get toplist "+values.size()+",cost time"+(System.currentTimeMillis()-s)+"ms");
+   	for (int i=0;i<1;i++){
+    		String a = jedis.hget("saving", String.valueOf(i));
+//    		System.out.println(a);
+    		List<Saving> list = JSON.parseArray(a, Saving.class);
     	}
-//    	System.out.println(shardedJedis.lindex("listxxx", 3000));
-    	System.out.println("get list "+vs.size()+" strings,cost time:"+(System.currentTimeMillis()-s)+"ms");
-     	
+    	System.out.println("get saving 1w,cost time"+(System.currentTimeMillis()-s)+"ms");
+    	
+//    	String jsonitems = jedis.hget("saving", "111");
+//    	List<Saving> list = BaseService.jsonToBeanList(jsonitems, Saving.class);
+//    	System.out.println("json saving:"+jsonitems+",list:"+list.size());
+//   	//set list 100000 strings,cost time:9533ms;pipline:set list 100000 strings,cost time:1123ms
+//    	System.out.println("set list "+count+" strings,cost time:"+(System.currentTimeMillis()-s)+"ms");
+////    	s = System.currentTimeMillis();
+////    	for (int i=0;i<count;i++){
+////    		String key = "k"+i;
+////    		String value = jedis.get(key);
+////    	}
+//    	s = System.currentTimeMillis();
+////    	List<String> vs =shardedJedis.lrange("toplist", 0, 100);
+////    	Map<String,String> ms = shardedJedis.hgetAll("toplist");
+//    	List<String> vs = jedis.hvals("player");
+//    	jedis.close();
+//    	List<Toplist> ts = new ArrayList<Toplist>();
+//    	for (int i=0;i<vs.size();i++){
+////    		System.out.println(vs.get(i));
+//    		Toplist pp = (Toplist)JSON.parseObject(vs.get(i), Toplist.class);
+////    		System.out.println(p.getPlayerid()+p.getPlayername());
+////    		ts.add(p);
+//    	}
+////    	System.out.println(shardedJedis.lindex("listxxx", 3000));
+//    	System.out.println("get list "+vs.size()+" strings,cost time:"+(System.currentTimeMillis()-s)+"ms");
+//     	
     }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

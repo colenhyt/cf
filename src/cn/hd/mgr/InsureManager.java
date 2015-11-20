@@ -1,15 +1,22 @@
 package cn.hd.mgr;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
+
+import redis.clients.jedis.Jedis;
+
+import com.alibaba.fastjson.JSON;
 
 import cn.hd.base.BaseService;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Insuredata;
+import cn.hd.cf.model.Saving;
 import cn.hd.cf.service.InsureService;
 import cn.hd.cf.tools.InsuredataService;
 
@@ -42,21 +49,20 @@ public class InsureManager extends MgrBase{
     			insureCfgMap.put(insure.getId(), insure);
     	}
 
-    	insureMap = new HashMap<Integer,String>();
+    	insureMap = Collections.synchronizedMap(new HashMap<Integer,String>());
     	
     	insuresMap = new HashMap<Integer,List<Insure>>();
     	
-    	InsureService insureService = new InsureService();
-    	List<Insure> svs = insureService.findAll();
-    	for (int i=0;i<svs.size();i++){
-    		Insure s = svs.get(i);
-    		List<Insure> list = insuresMap.get(s.getPlayerid());
-    		if (list==null){
-    			list = new ArrayList<Insure>();
-    			insuresMap.put(s.getPlayerid(), list);
-    		}
-    		list.add(s);
+    	Jedis jedis = jedisClient.getJedis();   	
+    	Set<String> playerids = jedis.hkeys(super.DATAKEY_INSURE);
+    	for (String strpid:playerids){
+    		String jsonitems = jedis.hget(super.DATAKEY_INSURE, strpid);
+    		log.warn("get insure:"+jsonitems);
+    		List<Insure> list = JSON.parseArray(jsonitems, Insure.class);
+    		insuresMap.put(Integer.valueOf(strpid), list);
     	}
+    	jedisClient.returnResource(jedis);
+    	log.warn("load insures :" + playerids.size());    	
     }
     
     public synchronized Insure getInsure(int playerId,int itemid){
@@ -107,7 +113,7 @@ public class InsureManager extends MgrBase{
 		}
 		if (found){
 			System.out.println("删除后json: "+list.size());
-			dataThread.deleteInsure(record);
+			dataThread.updateInsure(playerId, JSON.toJSONString(list));
 			return true;
 		}
 		return false;
@@ -131,7 +137,7 @@ public class InsureManager extends MgrBase{
 			return false;
 		}
 		list.add(record);
-		dataThread.pushInsure(record);
+		dataThread.updateInsure(playerId, JSON.toJSONString(list));
 		return true;
 	}
 

@@ -2,17 +2,23 @@ package cn.hd.mgr;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.Vector;
 
 import net.sf.json.JSONArray;
 
 import org.apache.log4j.Logger;
+
+import redis.clients.jedis.Jedis;
+
+import com.alibaba.fastjson.JSON;
 
 import cn.hd.base.Base;
 import cn.hd.base.BaseService;
@@ -49,20 +55,20 @@ public class StockManager extends MgrBase{
 		lastUpdateDate = null;
 		StockdataService stockdataService = new StockdataService();
 		stockData = stockdataService.findActive();
-		quoteMap = new HashMap<Integer,LinkedList<Quote>>();
-		stockMap = new HashMap<Integer,String>();
-		stocksMap = new HashMap<Integer,List<Stock>>();
-		StockService stockService = new StockService();
-    	List<Stock> svs = stockService.findAll();
-    	for (int i=0;i<svs.size();i++){
-    		Stock s = svs.get(i);
-    		List<Stock> list = stocksMap.get(s.getPlayerid());
-    		if (list==null){
-    			list = new ArrayList<Stock>();
-    			stocksMap.put(s.getPlayerid(), list);
-    		}
-    		list.add(s);
-    	}		
+		quoteMap = Collections.synchronizedMap(new HashMap<Integer,LinkedList<Quote>>());
+		stockMap = Collections.synchronizedMap(new HashMap<Integer,String>());
+		stocksMap = Collections.synchronizedMap(new HashMap<Integer,List<Stock>>());
+    	
+    	Jedis jedis = jedisClient.getJedis();   	
+    	Set<String> playerids = jedis.hkeys(super.DATAKEY_STOCK);
+    	for (String strpid:playerids){
+    		String jsonitems = jedis.hget(super.DATAKEY_STOCK, strpid);
+    		log.warn("get stock:"+jsonitems);
+    		List<Stock> list = JSON.parseArray(jsonitems, Stock.class);
+    		stocksMap.put(Integer.valueOf(strpid), list);
+    	}
+    	jedisClient.returnResource(jedis);
+    	log.warn("load stocks :" + playerids.size());    
     	
 	   	for (int i=0;i<stockData.size();i++){
     		Stockdata  stock = stockData.get(i);
@@ -227,47 +233,43 @@ public class StockManager extends MgrBase{
 		if (list==null){
 			list = new ArrayList<Stock>();
 			stocksMap.put(playerId, list);
-		}else {
-			for (int i=0;i<list.size();i++){
-				if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){
-					found = true;
-					break;
-				}
-			}
-		}
-		if (found){
-			return false;
 		}
 		list.add(record);
-		dataThread.pushStock(record);
+		dataThread.updateStock(playerId, JSON.toJSONString(list));
 		return true;
 	}
 
 	public synchronized boolean deleteStock(int playerId,int stockId,int qty){
 		List<Stock> list = stocksMap.get(playerId);
 		int needRemoveQty = qty;
+		boolean updated = false;
 		boolean exec = false;
 		for (int i=0;i<list.size();i++){
 			Stock ss = list.get(i);
 			if (ss.getItemid().intValue()!=stockId)
 				continue;
 			
+			updated = true;
+			
 			if (ss.getQty()<=needRemoveQty){
 				needRemoveQty -= ss.getQty();
-				dataThread.deleteStock(ss);
-				System.out.println("删除:"+needRemoveQty);
+				list.remove(i);
+				i--;
+				System.out.println("删除:"+ss.getQty());
 			}else {
 				ss.setQty(ss.getQty()-needRemoveQty);
 				ss.setAmount(ss.getQty()*ss.getPrice());
-				System.out.println("更新:"+needRemoveQty);
+				System.out.println("更新:"+ss.getQty());
 				needRemoveQty = 0;
-				dataThread.updateStock(ss);
+//				dataThread.updateStock(ss);
 			}
 			if (needRemoveQty==0) {
 				exec = true;
 				break;
 			}
 		}		
+		if (updated)
+			dataThread.updateStock(playerId, JSON.toJSONString(list));
 		return exec;
 	}
 
@@ -288,9 +290,28 @@ public class StockManager extends MgrBase{
 //    	String a = "{'id':3,'name':'万科A','desc':'最大房地产股','price':18.7,'unit':100}";
 //    	JSONObject obj = JSONObject.fromObject(a);
     	StockManager stmgr = StockManager.getInstance();
+    	stmgr.init();
+    	stmgr.jedisClient.getJedis().flushAll();
     	//stmgr.getLastQuotes(8);
     	//stmgr.update();
-    	stmgr.isStockOpen();
+    	Stock record = new Stock();
+    	record.setItemid(1);
+    	record.setQty(100);
+    	record.setPrice(Float.valueOf(10));
+    	stmgr.addStock(2, record);
+    	
+    	record = new Stock();
+    	record.setItemid(1);
+    	record.setPrice(Float.valueOf(10));
+    	record.setQty(200);
+    	stmgr.addStock(2, record);
 
+    	record = new Stock();
+    	record.setItemid(1);
+    	record.setPrice(Float.valueOf(10));
+    	record.setQty(300);
+    	stmgr.addStock(2, record);
+    	
+    	stmgr.deleteStock(2, 1, 800);
     }
 }

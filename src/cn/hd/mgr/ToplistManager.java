@@ -14,14 +14,15 @@ import java.util.Map;
 
 import net.sf.json.JSONArray;
 import redis.clients.jedis.Jedis;
+import cn.hd.cf.action.ToplistAction;
 import cn.hd.cf.model.Toplist;
-import cn.hd.cf.service.ToplistService;
 import cn.hd.util.RedisClient;
 
 import com.alibaba.fastjson.JSON;
 	
 public class ToplistManager extends MgrBase{
 	Map<Integer,Toplist>		toplistMsp;
+	ToplistAction				topAction;
     private static ToplistManager uniqueInstance = null;  
 	
     public static ToplistManager getInstance() {  
@@ -32,19 +33,19 @@ public class ToplistManager extends MgrBase{
      } 
     
     public void init(){
-    	jedisClient = new RedisClient();
+    	topAction = new ToplistAction();
     	
     	toplistMsp = Collections.synchronizedMap(new HashMap<Integer,Toplist>());
-    	ToplistService service= new ToplistService();
-    	List<Toplist> toplists = service.findAll();
-    	if (toplists!=null){
-    		for (int i=0;i<toplists.size();i++){
-    			Toplist top = toplists.get(i);
-    			if (!toplistMsp.containsKey(top.getPlayerid())){
-    				toplistMsp.put(top.getPlayerid(), top);
-    			}
-    		}
+   	
+    	Jedis jedis = jedisClient.getJedis();   	
+    	List<String> itemstrs = jedis.hvals(super.DATAKEY_TOPLIST);
+    	for (String str:itemstrs){
+    		Toplist item = (Toplist)JSON.parseObject(str, Toplist.class);
+//    		log.warn("get toplist:"+str);
+    		toplistMsp.put(item.getPlayerid(), item);
     	}
+    	jedisClient.returnResource(jedis);
+    	log.warn("load toplist :" + itemstrs.size());    	
     	
     }
 	public synchronized Toplist findByPlayerId(int playerId){		
@@ -87,32 +88,30 @@ public class ToplistManager extends MgrBase{
 		return cc;
 	}	
 	
-	public synchronized int add(Toplist record){	
-		toplistMsp.put(record.getPlayerid(), record);
-		dataThread.pushToplist(record);
-		return 0;
-	}
-	
 	public synchronized int updateZan(Toplist toplist){
 		System.out.println("update zan: "+(toplist==null));
 		Toplist top = findByPlayerId(toplist.getPlayerid());
 		if (top!=null){
 			top.setZan(toplist.getZan());
-			dataThread.updateToplistZan(toplist);
+			dataThread.updateToplist(top);
 		}
 		
 		return 0;
 	}
 	
 	public synchronized boolean addToplist(int playerid,String playerName,double money){
-		Toplist newtop = new Toplist();
-		newtop.setPlayerid(playerid);
-		newtop.setPlayername(playerName);
-		newtop.setCreatetime(new Date());
-		newtop.setUpdatetime(new Date());
-		newtop.setMoney(BigDecimal.valueOf(money));
-		newtop.setZan(0);
-		add(newtop);				
+		Toplist newtop = toplistMsp.get(playerid);
+		if (newtop==null) {
+			newtop = new Toplist();
+			newtop.setPlayerid(playerid);
+			newtop.setPlayername(playerName);
+			newtop.setCreatetime(new Date());
+			newtop.setUpdatetime(new Date());
+			newtop.setMoney(BigDecimal.valueOf(money));
+			newtop.setZan(0);
+			toplistMsp.put(newtop.getPlayerid(), newtop);
+			dataThread.updateToplist(newtop);		
+		}
 		return true;		
 	}
 
@@ -157,17 +156,13 @@ public class ToplistManager extends MgrBase{
 		Date firstDate = getFirstDate(type);
 		
 		List<Toplist> list = new ArrayList<Toplist>();
-//		Collection<Toplist> toplists = toplistMsp.values();
-		Jedis jedis = jedisClient.getJedis();
-		List<String> topliststrs = jedis.hvals(super.DATAKEY_TOPLIST);
-		for (String t:topliststrs){		
-			Toplist top = (Toplist)JSON.parseObject(t, Toplist.class);
+		Collection<Toplist> toplists = toplistMsp.values();
+		for (Toplist top:toplists){
 			if (top.getUpdatetime().compareTo(firstDate)>0){
 				list.add(top);
 			}
 		}
-		jedisClient.returnResource(jedis);
-		Collections.sort(list);
+		Collections.sort((List<Toplist>)list);
 		for (int i=0;i<list.size();i++){
 			if (i>=20) break;
 			tops.add(list.get(i));
@@ -185,25 +180,19 @@ public class ToplistManager extends MgrBase{
 			double topMoney = toplist.getMoney().doubleValue();
 			if (Math.abs(money-topMoney)>1){
 				toplist.setMoney(BigDecimal.valueOf(money));
-				
-				Toplist  top2 = new Toplist();
-				top2.setMoney(toplist.getMoney());
-				top2.setPlayerid(toplist.getPlayerid());
-				top2.setUpdatetime(new Date());
-				dataThread.updateToplist(top2);
+				toplist.setUpdatetime(new Date());
+				dataThread.updateToplist(toplist);
 //				//System.out.println("更新排行榜财富: "+toplist.getPlayername()+":"+topMoney+","+toplist.getMoney());
 			}
 		}
 		return true;		
 	}
-
+	
 	public String list(int playerid,int type){
-			List<Toplist> weeklist = findByType(type);
-			List<Toplist> monthlist = findByType(1);
-			JSONArray jsonObject = new JSONArray();
-			jsonObject.add(weeklist);
-			jsonObject.add(monthlist);			
-			return jsonObject.toString();
+		Toplist toplist = new Toplist();
+		toplist.setPlayerid(playerid);
+		topAction.setToplist(toplist);	
+			return topAction.list();
 		}
 
 	public static void main(String[] args){

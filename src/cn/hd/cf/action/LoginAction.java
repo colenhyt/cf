@@ -159,18 +159,12 @@ public class LoginAction extends SavingAction {
 		return serialize(playerBlob);
 	}
 	
-	public String get()
+	public String get(PlayerWithBLOBs playerBlob)
 	{
-		PlayerWithBLOBs playerBlob = playerService.findByPlayerId(player.getPlayerid());
-		if (playerBlob==null)
-		{
-			log.debug("no player found:playerid:"+player.getPlayerid());
-			return null;
-		}
 		String pdata = getPlayerJsonData(playerBlob);
-		write(pdata,"utf-8");
+//		write(pdata,"utf-8");
 		log.debug("player("+pdata+") found");
-		return null;
+		return pdata;
 	}
 	
 	public String update()

@@ -4,11 +4,7 @@ import java.util.List;
 
 import net.sf.json.JSONArray;
 import cn.hd.base.BaseAction;
-import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Toplist;
-import cn.hd.cf.service.PlayerService;
-import cn.hd.cf.service.ToplistService;
-import cn.hd.mgr.DataManager;
 import cn.hd.mgr.ToplistManager;
 
 public class ToplistAction extends BaseAction {
@@ -24,8 +20,10 @@ public class ToplistAction extends BaseAction {
 		if (weektop!=null){
 			float fMm = weektop.getMoney().floatValue();
 			int week = ToplistManager.getInstance().findCountByGreaterMoney(toplist.getPlayerid(),0,fMm);
-			int mm = ToplistManager.getInstance().findCountByGreaterMoney(toplist.getPlayerid(),1,fMm);
 			weektop.setTop(week+1);
+			weeklist.add(weektop);
+
+			int mm = ToplistManager.getInstance().findCountByGreaterMoney(toplist.getPlayerid(),1,fMm);
 			monthtop = new Toplist();
 			monthtop.setPlayername(weektop.getPlayername());
 			monthtop.setPlayerid(weektop.getPlayerid());
@@ -33,7 +31,6 @@ public class ToplistAction extends BaseAction {
 			monthtop.setMoney(weektop.getMoney());
 			monthtop.setTop(mm+1);
 			
-			weeklist.add(weektop);
 			monthlist.add(monthtop);
 		}
 
@@ -41,8 +38,8 @@ public class ToplistAction extends BaseAction {
 		jsonObject.add(weeklist);
 		jsonObject.add(monthlist);
 		//System.out.println("取得排行榜数据:week:"+weeklist.size()+",month:"+monthlist.size());
-		write(jsonObject.toString(),"utf-8");
-		return null;
+//		write(jsonObject.toString(),"utf-8");
+		return jsonObject.toString();
 	}
 	
 	public String monthlist(){

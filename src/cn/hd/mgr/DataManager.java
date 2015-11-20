@@ -1,17 +1,10 @@
 package cn.hd.mgr;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 
@@ -24,7 +17,6 @@ import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.tools.InitdataService;
-import cn.hd.util.RedisClient;
 
 import com.alibaba.fastjson.JSON;
 
@@ -51,35 +43,6 @@ public class DataManager extends MgrBase {
 			uniqueInstance = new DataManager();
 		}
 		return uniqueInstance;
-	}
-
-	private void initStock(PlayerWithBLOBs player) {
-		Connection conn = null;
-		Statement stat = null;
-		try {
-			conn = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/hdcf", "root", "123a123@");
-			stat = conn.createStatement();
-			ResultSet rs = stat
-					.executeQuery("SELECT amount FROM stock where playerid="
-							+ player.getPlayerid());
-			while (rs.next()) {
-				float mm = rs.getFloat(1);
-				// System.out.println(mm);
-			}
-			rs.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				stat.close();
-				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 	}
 
 	public DataManager() {
@@ -132,6 +95,15 @@ public class DataManager extends MgrBase {
 		return JSON.toJSONString(data);
 	}
 
+
+	public String get_info(int playerid){
+		PlayerWithBLOBs player = playerMaps.get(playerid);
+		if (player==null)
+			return null;
+		
+		return loginAction.getPlayerJsonData(player);
+	}
+	
 	public synchronized String get_insure(int playerid) {
 		Map<Integer, Insure> data = loginAction.findUpdatedInsures(playerid);
 		return JSON.toJSONString(data);
@@ -262,11 +234,11 @@ public class DataManager extends MgrBase {
 		StockManager.getInstance().init();
 		ToplistManager.getInstance().init();
 		stmgr.init();
-		float count = 50000;
+		float count = 500000;
 		long s = System.currentTimeMillis();
 		for (int i = 0; i < count; i++) {
-			String s2 = String.valueOf(i);
-			String str = stmgr.login(s2, s2, "1");
+//			String s2 = String.valueOf(i);
+//			String str = stmgr.login(s2, s2, "1");
 			// System.out.println(str);
 		}
 		float e = System.currentTimeMillis() - s;

@@ -1,6 +1,7 @@
 package cn.hd.mgr;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -8,16 +9,13 @@ import java.util.Map;
 import java.util.Set;
 
 import redis.clients.jedis.Jedis;
-import cn.hd.base.BaseService;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.tools.SavingdataService;
-import cn.hd.util.RedisClient;
 
 import com.alibaba.fastjson.JSON;
 
 
 public class SavingManager extends MgrBase{
-	private Map<Integer,String>	savingMap;
 	private Map<Integer,Saving>	savingCfgMap;	
 	private Map<Integer,List<Saving>>	savingsMap;
 	Saving savingCfg;
@@ -45,16 +43,9 @@ public class SavingManager extends MgrBase{
     			savingCfgMap.put(saving.getId(), saving);
     	}
 
-    	savingMap = new HashMap<Integer,String>();
+    	savingsMap = Collections.synchronizedMap(new HashMap<Integer,List<Saving>>());
     	
-    	savingsMap = new HashMap<Integer,List<Saving>>();
-    	
-    	Jedis jedis = jedisClient.getJedis();
-    	if (!jedis.exists(super.DATAKEY_SAVING)){
-    		jedisClient.returnResource(jedis);
-    		return;
-    	}
-    	
+    	Jedis jedis = jedisClient.getJedis();   	
     	Set<String> playerids = jedis.hkeys(super.DATAKEY_SAVING);
     	for (String strpid:playerids){
     		String jsonitems = jedis.hget(super.DATAKEY_SAVING, strpid);
