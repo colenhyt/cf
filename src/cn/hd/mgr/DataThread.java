@@ -118,6 +118,7 @@ public class DataThread extends Thread {
 	        		for (int i=0;i<newPlayersVect.size();i++){
 	        			PlayerWithBLOBs item = newPlayersVect.get(i);
 	        			p.hset(DataManager.getInstance().DATAKEY_PLAYER, String.valueOf(item.getPlayerid()), JSON.toJSONString(item));
+	        			p.hset(DataManager.getInstance().DATAKEY_PLAYER_ID, item.getPlayername(),String.valueOf(item.getPlayerid()));
 	        		}
 		    		log.warn("batch add players :"+newPlayersVect.size());
 		    		newPlayersVect.clear(); 	        		

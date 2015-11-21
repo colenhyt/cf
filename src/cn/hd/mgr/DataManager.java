@@ -137,23 +137,37 @@ public class DataManager extends MgrBase {
 	public synchronized PlayerWithBLOBs findPlayer(String playerName) {
 		Integer playerid = playerIdMaps.get(playerName);
 		if (playerid == null) {
-			return null;
+			Jedis jedis = jedisClient.getJedis();
+			String idstr = jedis.hget(super.DATAKEY_PLAYER_ID, playerName);
+			jedisClient.returnResource(jedis);
+			if (idstr!=null){
+				playerid = Integer.valueOf(idstr);
+				playerIdMaps.put(idstr, playerid);
+			}else
+				return null;
 		}
 		return findPlayer(playerid);
 	}
 
 	public synchronized PlayerWithBLOBs findPlayer(int playerid) {
-//		String jsonstr = jedisClient.jedis.hget(super.DATAKEY_PLAYER, String.valueOf(playerid));
-//		if (jsonstr==null){
-//			return null;
-//		}
 		PlayerWithBLOBs player = playerMaps.get(playerid);
+		if (player==null){
+			Jedis jedis = jedisClient.getJedis();
+			String itemstr = jedis.hget(super.DATAKEY_PLAYER, String.valueOf(playerid));
+			if (itemstr!=null){
+				player = (PlayerWithBLOBs)JSON.parseObject(itemstr,PlayerWithBLOBs.class);
+				playerMaps.put(player.getPlayerid(), player);
+				if (!playerIdMaps.containsKey(player.getPlayername())){
+					playerIdMaps.put(player.getPlayername(), playerid);
+				}
+			}
+			jedisClient.returnResource(jedis);			
+		}
 		return player;
-//		return (PlayerWithBLOBs)JSON.parse(jsonstr);
 	}
 
 	public synchronized boolean updatePlayer(PlayerWithBLOBs player) {
-		PlayerWithBLOBs pp = playerMaps.get(player.getPlayerid());
+		PlayerWithBLOBs pp = findPlayer(player.getPlayerid());
 		if (pp != null) {
 			pp.setExp(player.getExp());
 			dataThread.updatePlayer(pp);
@@ -229,11 +243,18 @@ public class DataManager extends MgrBase {
 
 	public static void main(String[] args) {
 		DataManager stmgr = DataManager.getInstance();
-		SavingManager.getInstance().init();
-		InsureManager.getInstance().init();
-		StockManager.getInstance().init();
-		ToplistManager.getInstance().init();
 		stmgr.init();
+		stmgr.findPlayer(33);
+		stmgr.findPlayer("ppnane");
+		PlayerWithBLOBs pp = new PlayerWithBLOBs();
+		pp.setPlayerid(33);
+		pp.setPlayername("ppnane");
+		stmgr.addPlayer(pp);
+//		SavingManager.getInstance().init();
+//		InsureManager.getInstance().init();
+//		StockManager.getInstance().init();
+//		ToplistManager.getInstance().init();
+//		stmgr.init();
 		float count = 500000;
 		long s = System.currentTimeMillis();
 		for (int i = 0; i < count; i++) {

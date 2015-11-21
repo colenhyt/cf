@@ -6,6 +6,7 @@ import cn.hd.util.RedisClient;
 
 public class MgrBase {
 	public final String DATAKEY_PLAYER = "player";
+	public final String DATAKEY_PLAYER_ID = "playerid";
 	public final String DATAKEY_SAVING = "saving";
 	public final String DATAKEY_INSURE = "insure";
 	public final String DATAKEY_STOCK = "stock";
