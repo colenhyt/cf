@@ -494,6 +494,7 @@ public class RedisClient {
 ////    	System.out.println(shardedJedis.lindex("listxxx", 3000));
 //    	System.out.println("get list "+vs.size()+" strings,cost time:"+(System.currentTimeMillis()-s)+"ms");
 //     	
+    	returnResource(jedis);
     }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

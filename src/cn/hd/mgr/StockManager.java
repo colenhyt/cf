@@ -303,7 +303,6 @@ public class StockManager extends MgrBase{
 //    	JSONObject obj = JSONObject.fromObject(a);
     	StockManager stmgr = StockManager.getInstance();
     	stmgr.init();
-    	stmgr.jedisClient.getJedis().flushAll();
     	//stmgr.getLastQuotes(8);
     	//stmgr.update();
     	Stock record = new Stock();
