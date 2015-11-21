@@ -20,16 +20,21 @@ import com.alibaba.fastjson.JSON;
 
 public class RedisClient {
 
+	private String serverIp;
+	private int serverPort;
 	private Jedis jedis;//非切片额客户端连接
     private JedisPool jedisPool;//非切片连接池
     private ShardedJedis shardedJedis;//切片额客户端连接
     private ShardedJedisPool shardedJedisPool;//切片连接池
     
-    public RedisClient() 
+    public RedisClient(RedisConfig cfg) 
     { 
+    	serverIp = cfg.getServerIp();
+    	serverPort = cfg.getServerPort();
+    	
         initialPool(); 
-        initialShardedPool(); 
-        shardedJedis = shardedJedisPool.getResource(); 
+//        initialShardedPool(); 
+//        shardedJedis = shardedJedisPool.getResource(); 
 //        jedis = jedisPool.getResource(); 
     } 
  
@@ -44,7 +49,7 @@ public class RedisClient {
         config.setMaxWaitMillis(1000*3000l); 
         config.setTestOnBorrow(false); 
         
-        jedisPool = new JedisPool(config,"127.0.0.1",6379);
+        jedisPool = new JedisPool(config,serverIp,serverPort);
     }
     
     /** 
@@ -61,7 +66,7 @@ public class RedisClient {
         config.setTestOnReturn(true);
         // slave链接 
         List<JedisShardInfo> shards = new ArrayList<JedisShardInfo>(); 
-        shards.add(new JedisShardInfo("127.0.0.1", 6379, "master")); 
+        shards.add(new JedisShardInfo(serverIp, serverPort, "master")); 
 
         // 构造池 
         shardedJedisPool = new ShardedJedisPool(config, shards); 
@@ -492,7 +497,10 @@ public class RedisClient {
     }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		RedisClient redis = new RedisClient();
+		RedisConfig cfg = new RedisConfig();
+		cfg.setServerIp("127.1.1.11");
+		cfg.setServerPort(6379);
+		RedisClient redis = new RedisClient(cfg);
 //		redis.jedis.flushAll();
 		redis.testPerformance();
 	}

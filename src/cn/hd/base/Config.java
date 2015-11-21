@@ -1,8 +1,17 @@
 package cn.hd.base;
 
+import cn.hd.util.RedisConfig;
+
 public class Config {
 	private int serverid = 0;
 	private int count = 0;
+	private RedisConfig redisCfg = null;
+	public RedisConfig getRedisCfg() {
+		return redisCfg;
+	}
+	public void setRedisCfg(RedisConfig redisCfg) {
+		this.redisCfg = redisCfg;
+	}
 	public int getServerid() {
 		return serverid;
 	}

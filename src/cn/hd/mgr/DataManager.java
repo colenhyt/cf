@@ -26,7 +26,6 @@ public class DataManager extends MgrBase {
 
 	private LoginAction loginAction;
 	private Init init;
-	public Config cfg;
 
 	public Init getInit() {
 		return init;

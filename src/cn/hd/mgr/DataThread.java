@@ -10,16 +10,13 @@ import org.apache.log4j.Logger;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.exceptions.JedisConnectionException;
-import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.PlayerWithBLOBs;
-import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Toplist;
-import cn.hd.cf.service.InsureService;
 import cn.hd.cf.service.PlayerService;
-import cn.hd.cf.service.StockService;
 import cn.hd.cf.service.ToplistService;
 import cn.hd.util.RedisClient;
+import cn.hd.util.RedisConfig;
 
 import com.alibaba.fastjson.JSON;
 
@@ -42,8 +39,8 @@ public class DataThread extends Thread {
 	private Vector<Integer>			doneQuestVect;
 	protected Logger  log = Logger.getLogger(getClass()); 
 	
-	public DataThread(){
-		jedisClient = new RedisClient();
+	public DataThread(RedisConfig cfg){
+		jedisClient = new RedisClient(cfg);
 		
 		newPlayersVect = new Vector<PlayerWithBLOBs>();
 		updatePlayersVect = new Vector<PlayerWithBLOBs>();
