@@ -39,25 +39,6 @@ public class SavingAction extends BaseAction {
 		this.saving = saving;
 	}
 
-	protected StockService stockService;
-	protected PlayerService playerService;
-	
-	public PlayerService getPlayerService() {
-		return playerService;
-	}
-
-	public void setPlayerService(PlayerService playerService) {
-		this.playerService = playerService;
-	}
-
-	public StockService getStockService() {
-		return stockService;
-	}
-
-	public void setStockService(StockService stockService) {
-		this.stockService = stockService;
-	}
-
 	//更新活期存款金钱:
 	public String updatelive()
 	{
@@ -300,9 +281,4 @@ public class SavingAction extends BaseAction {
 			return mdata;
 		}
 
-	public SavingAction(){
-		init("playerService",
-				"stockService");
-	}
-	
 }

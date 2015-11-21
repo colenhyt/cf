@@ -26,9 +26,6 @@ import com.alibaba.fastjson.JSON;
 public class LoginAction extends SavingAction {
 	private PlayerWithBLOBs player;
 	
-	public LoginAction(){
-	}
-	
 	public String connect(){
 		Message msg = new Message();
 		msg.setCode(0);
@@ -115,30 +112,6 @@ public class LoginAction extends SavingAction {
 		return mdata;
 	}
 
-	public String loginSimple(int playerid)
-	{
-		
-		PlayerWithBLOBs playerBlob = playerService.find(playerid);
-		if (playerBlob==null)
-		{
-			System.out.println("no player found:playerid:"+playerid);
-			return null;
-		}
-		//System.out.println("player(");
-		JSONObject obj = JSONObject.fromObject(playerBlob);	
-		String pdata = obj.toString();
-	
-//		PlayerWithBLOBs p2 = new PlayerWithBLOBs();
-//		p2.setPlayerid(playerid);
-//		playerService.updateByKey(p2);
-			
-//		playerService.DBConnClose();
-		//write(pdata,"utf-8");
-		
-		//System.out.println("player("+playerBlob.getPlayername()+") login success");
-		return pdata;
-	}
-	
 	public synchronized String login()
 	{
 //		log.warn("enter game:"+player.getPlayername()+",tel :"+player.getTel());

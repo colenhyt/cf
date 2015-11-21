@@ -6,9 +6,6 @@ import cn.hd.mgr.DataManager;
 
 public class PlayerAction extends BaseAction {
 	
-	public PlayerAction(){
-	}
-	
 	public String signin(){
 		String pid = getHttpRequest().getParameter("playerid");
 		DataManager.getInstance().addSignin(Integer.valueOf(pid));

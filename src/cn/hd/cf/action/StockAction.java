@@ -29,7 +29,6 @@ public class StockAction extends SavingAction {
 	}
 
 	public StockAction(){
-		init();
 		stockMgr = StockManager.getInstance();
 	}
 	
