@@ -103,7 +103,7 @@ public class StockManager extends MgrBase{
 	{
 		Map<Integer,List<Stock>> smap = new HashMap<Integer,List<Stock>>();
 		
-		List<Stock> ss = stocksMap.get(playerId);
+		List<Stock> ss = getStockList(playerId);
 		if (ss==null)
 			return smap;
 		
@@ -119,7 +119,17 @@ public class StockManager extends MgrBase{
 		return smap;
 	}
     public synchronized List<Stock> getStockList(int playerId){
-		return stocksMap.get(playerId);
+    	List<Stock> list = stocksMap.get(playerId);
+    	if (list==null){
+			Jedis jedis = jedisClient.getJedis();
+			String liststr = jedis.hget(super.DATAKEY_STOCK, String.valueOf(playerId));
+			jedisClient.returnResource(jedis);    		
+			if (liststr!=null){
+				list = JSON.parseArray(liststr, Stock.class);
+				stocksMap.put(playerId, list);
+			}
+    	}	
+    	return list;		
 	}
     
     public List<Quote> getBigQuotes(int stockid){
@@ -228,8 +238,7 @@ public class StockManager extends MgrBase{
 	}
     
     public synchronized boolean addStock(int playerId,Stock record){
-		List<Stock> list = stocksMap.get(playerId);
-		boolean found = false;
+		List<Stock> list = getStockList(playerId);
 		if (list==null){
 			list = new ArrayList<Stock>();
 			stocksMap.put(playerId, list);
@@ -240,7 +249,10 @@ public class StockManager extends MgrBase{
 	}
 
 	public synchronized boolean deleteStock(int playerId,int stockId,int qty){
-		List<Stock> list = stocksMap.get(playerId);
+		List<Stock> list = getStockList(playerId);
+		if (list==null)
+			return false;
+		
 		int needRemoveQty = qty;
 		boolean updated = false;
 		boolean exec = false;

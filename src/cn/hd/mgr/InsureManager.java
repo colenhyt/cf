@@ -22,7 +22,6 @@ import cn.hd.cf.tools.InsuredataService;
 
 
 public class InsureManager extends MgrBase{
-	private Map<Integer,String>	insureMap;
 	private Map<Integer,Insure>	insureCfgMap;
 	private Map<Integer,List<Insure>>	insuresMap;
 	
@@ -49,9 +48,7 @@ public class InsureManager extends MgrBase{
     			insureCfgMap.put(insure.getId(), insure);
     	}
 
-    	insureMap = Collections.synchronizedMap(new HashMap<Integer,String>());
-    	
-    	insuresMap = new HashMap<Integer,List<Insure>>();
+    	insuresMap = Collections.synchronizedMap(new HashMap<Integer,List<Insure>>());
     	
     	Jedis jedis = jedisClient.getJedis();   	
     	Set<String> playerids = jedis.hkeys(super.DATAKEY_INSURE);
@@ -67,7 +64,7 @@ public class InsureManager extends MgrBase{
     
     public synchronized Insure getInsure(int playerId,int itemid){
 		Insure insure = null;
-    	List<Insure> list = insuresMap.get(playerId);
+    	List<Insure> list = getInsureList(playerId);
     	if (list==null)
     		return insure;
     	
@@ -80,26 +77,22 @@ public class InsureManager extends MgrBase{
     	return insure;
 	}
     
-    public synchronized String getInsures(int playerId){
-		String jsonstr = null;
-		if (insureMap.containsKey(playerId))
-		jsonstr = insureMap.get(playerId);
-		else {
-			InsureService service = new InsureService();
-			List<Insure> list = service.getDBInsures(playerId);
-			jsonstr = BaseService.beanListToJson(list, Insure.class);
-			insureMap.put(playerId, jsonstr);
-		}
-		return jsonstr;
-	}
-
-    
     public synchronized List<Insure> getInsureList(int playerId){
-		return insuresMap.get(playerId);
+    	List<Insure> list = insuresMap.get(playerId);
+    	if (list==null){
+			Jedis jedis = jedisClient.getJedis();
+			String liststr = jedis.hget(super.DATAKEY_INSURE, String.valueOf(playerId));
+			jedisClient.returnResource(jedis);    		
+			if (liststr!=null){
+				list = JSON.parseArray(liststr, Insure.class);
+				insuresMap.put(playerId, list);
+			}
+    	}
+    	return list;
 	}
     
 	public synchronized boolean deleteInsure(int playerId,Insure record){
-		List<Insure> list = insuresMap.get(playerId);
+		List<Insure> list = getInsureList(playerId);
 		if (list==null)
 			return false;
 		
@@ -120,7 +113,7 @@ public class InsureManager extends MgrBase{
 	}
 
 	public synchronized boolean addInsure(int playerId,Insure record){
-		List<Insure> list = insuresMap.get(playerId);
+		List<Insure> list = getInsureList(playerId);
 		boolean found = false;
 		if (list==null){
 			list = new ArrayList<Insure>();

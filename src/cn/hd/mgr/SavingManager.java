@@ -63,7 +63,7 @@ public class SavingManager extends MgrBase{
     }
     
     public synchronized boolean updateSavingAmount(Saving record){
-    	List<Saving> list = savingsMap.get(record.getPlayerid());
+    	List<Saving> list = getSavingList(record.getPlayerid());
     	if (list==null)
     		return false;
     	
@@ -85,7 +85,7 @@ public class SavingManager extends MgrBase{
     }
     
     public synchronized boolean updateSaving(int playerId,Saving record){
-    	List<Saving> list = savingsMap.get(playerId);
+    	List<Saving> list = getSavingList(playerId);
     	if (list==null)
     		return false;
     	
@@ -101,14 +101,14 @@ public class SavingManager extends MgrBase{
     		return false;
     	}
     	
-    	dataThread.updateSaving(playerId, JSON.toJSONString(list));
     	list.add(record);
+    	dataThread.updateSaving(playerId, JSON.toJSONString(list));
     	return true;
     }
     
     public synchronized Saving getSaving(int playerId,int itemid){
 		Saving saving = null;
-    	List<Saving> list = savingsMap.get(playerId);
+    	List<Saving> list = getSavingList(playerId);
     	if (list==null)
     		return saving;
     	
@@ -122,11 +122,21 @@ public class SavingManager extends MgrBase{
 	}
     
     public synchronized List<Saving> getSavingList(int playerId){
-		return savingsMap.get(playerId);
+    	List<Saving> list = savingsMap.get(playerId);
+    	if (list==null){
+			Jedis jedis = jedisClient.getJedis();
+			String liststr = jedis.hget(super.DATAKEY_SAVING, String.valueOf(playerId));
+			jedisClient.returnResource(jedis);    		
+			if (liststr!=null){
+				list = JSON.parseArray(liststr, Saving.class);
+				savingsMap.put(playerId, list);
+			}
+    	}	
+    	return list;
 	}
     
 	public synchronized boolean deleteSaving(int playerId,Saving record){
-		List<Saving> list = savingsMap.get(playerId);
+		List<Saving> list = getSavingList(playerId);
 		if (list==null)
 			return false;
 		
@@ -147,7 +157,7 @@ public class SavingManager extends MgrBase{
 	}
 
 	public synchronized boolean addSaving(int playerId,Saving record){
-		List<Saving> list = savingsMap.get(playerId);
+		List<Saving> list = getSavingList(playerId);
 		boolean found = false;
 		if (list==null){
 			list = new ArrayList<Saving>();

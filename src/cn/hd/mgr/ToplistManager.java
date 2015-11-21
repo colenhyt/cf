@@ -21,7 +21,7 @@ import cn.hd.util.RedisClient;
 import com.alibaba.fastjson.JSON;
 	
 public class ToplistManager extends MgrBase{
-	Map<Integer,Toplist>		toplistMsp;
+	Map<Integer,Toplist>		toplistMap;
 	ToplistAction				topAction;
     private static ToplistManager uniqueInstance = null;  
 	
@@ -35,21 +35,38 @@ public class ToplistManager extends MgrBase{
     public void init(){
     	topAction = new ToplistAction();
     	
-    	toplistMsp = Collections.synchronizedMap(new HashMap<Integer,Toplist>());
+    	toplistMap = Collections.synchronizedMap(new HashMap<Integer,Toplist>());
    	
-    	Jedis jedis = jedisClient.getJedis();   	
-    	List<String> itemstrs = jedis.hvals(super.DATAKEY_TOPLIST);
-    	for (String str:itemstrs){
-    		Toplist item = (Toplist)JSON.parseObject(str, Toplist.class);
-//    		log.warn("get toplist:"+str);
-    		toplistMsp.put(item.getPlayerid(), item);
-    	}
-    	jedisClient.returnResource(jedis);
-    	log.warn("load toplist :" + itemstrs.size());    	
+    	load();
     	
     }
-	public synchronized Toplist findByPlayerId(int playerId){		
-		return toplistMsp.get(playerId);
+    
+    private synchronized void load(){
+    	toplistMap.clear();
+    	
+    	Jedis jedis = jedisClient.getJedis();   	
+    	List<String> itemstrs = jedis.hvals(super.DATAKEY_TOPLIST);
+    	jedisClient.returnResource(jedis);
+    	for (String str:itemstrs){
+    		Toplist item = (Toplist)JSON.parseObject(str, Toplist.class);
+    		if (!toplistMap.containsKey(item.getPlayerid()))
+    			toplistMap.put(item.getPlayerid(), item);
+    	}
+    	log.warn("load toplist :" + itemstrs.size());      	
+    }
+    
+	public synchronized Toplist findByPlayerId(int playerid){		
+		Toplist item = toplistMap.get(playerid);
+		if (item==null){
+			Jedis jedis = jedisClient.getJedis();
+			String itemstr = jedis.hget(super.DATAKEY_TOPLIST, String.valueOf(playerid));
+			jedisClient.returnResource(jedis);			
+			if (itemstr!=null){
+				item = (Toplist)JSON.parseObject(itemstr, Toplist.class);
+				toplistMap.put(playerid, item);
+			}
+		}		
+		return item;
 	}
 	
 	public synchronized int findCountByGreaterMoney(int playerid,int type,float fPMoney){
@@ -76,9 +93,10 @@ public class ToplistManager extends MgrBase{
 			}
 		}
 		
+		load();
 		int cc = 0;
 		Date fristDate = getFirstDate(type);
-		Collection<Toplist> toplists = toplistMsp.values();
+		Collection<Toplist> toplists = toplistMap.values();
 		for (Toplist top2:toplists){
 			int later = top2.getUpdatetime().compareTo(fristDate);
 			if (top2.getMoney().floatValue()>fMoney.floatValue()&&later>0){
@@ -100,7 +118,7 @@ public class ToplistManager extends MgrBase{
 	}
 	
 	public synchronized boolean addToplist(int playerid,String playerName,double money){
-		Toplist newtop = toplistMsp.get(playerid);
+		Toplist newtop = findByPlayerId(playerid);
 		if (newtop==null) {
 			newtop = new Toplist();
 			newtop.setPlayerid(playerid);
@@ -109,7 +127,7 @@ public class ToplistManager extends MgrBase{
 			newtop.setUpdatetime(new Date());
 			newtop.setMoney(BigDecimal.valueOf(money));
 			newtop.setZan(0);
-			toplistMsp.put(newtop.getPlayerid(), newtop);
+			toplistMap.put(newtop.getPlayerid(), newtop);
 			dataThread.updateToplist(newtop);		
 		}
 		return true;		
@@ -155,8 +173,9 @@ public class ToplistManager extends MgrBase{
 		
 		Date firstDate = getFirstDate(type);
 		
+		load();
 		List<Toplist> list = new ArrayList<Toplist>();
-		Collection<Toplist> toplists = toplistMsp.values();
+		Collection<Toplist> toplists = toplistMap.values();
 		for (Toplist top:toplists){
 			if (top.getUpdatetime().compareTo(firstDate)>0){
 				list.add(top);

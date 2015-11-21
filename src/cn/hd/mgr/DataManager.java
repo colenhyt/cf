@@ -97,7 +97,7 @@ public class DataManager extends MgrBase {
 
 
 	public String get_info(int playerid){
-		PlayerWithBLOBs player = playerMaps.get(playerid);
+		PlayerWithBLOBs player = this.findPlayer(playerid);
 		if (player==null)
 			return null;
 		
@@ -125,7 +125,8 @@ public class DataManager extends MgrBase {
 	}
 
 	public synchronized boolean addPlayer(PlayerWithBLOBs player) {
-		if (playerMaps.containsKey(player.getPlayerid()))
+		PlayerWithBLOBs pp = findPlayer(player.getPlayerid());
+		if (pp!=null)
 			return false;
 
 		playerMaps.put(player.getPlayerid(), player);
@@ -154,14 +155,14 @@ public class DataManager extends MgrBase {
 		if (player==null){
 			Jedis jedis = jedisClient.getJedis();
 			String itemstr = jedis.hget(super.DATAKEY_PLAYER, String.valueOf(playerid));
+			jedisClient.returnResource(jedis);			
 			if (itemstr!=null){
 				player = (PlayerWithBLOBs)JSON.parseObject(itemstr,PlayerWithBLOBs.class);
-				playerMaps.put(player.getPlayerid(), player);
+				playerMaps.put(playerid, player);
 				if (!playerIdMaps.containsKey(player.getPlayername())){
 					playerIdMaps.put(player.getPlayername(), playerid);
 				}
 			}
-			jedisClient.returnResource(jedis);			
 		}
 		return player;
 	}
@@ -194,7 +195,7 @@ public class DataManager extends MgrBase {
 		return false;
 	}
 
-	public synchronized void load() {
+	private synchronized void load() {
 		playerIdMaps.clear();
 		playerMaps.clear();
 		nextPlayerId = 0;

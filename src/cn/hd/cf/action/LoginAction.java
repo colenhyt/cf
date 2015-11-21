@@ -96,7 +96,7 @@ public class LoginAction extends SavingAction {
 			{
 				liveUpdate = true;
 				saving.setStatus((byte)1);
-				savingService.update(saving);
+				SavingManager.getInstance().updateSaving(playerId, saving);
 				log.debug(saving.getItemid()+"存款到期, 得到利息: "+inter);
 			}
 			Saving usaving = new Saving();

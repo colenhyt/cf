@@ -39,7 +39,6 @@ public class SavingAction extends BaseAction {
 		this.saving = saving;
 	}
 
-	protected SavingService savingService;
 	protected StockService stockService;
 	protected PlayerService playerService;
 	
@@ -57,10 +56,6 @@ public class SavingAction extends BaseAction {
 
 	public void setStockService(StockService stockService) {
 		this.stockService = stockService;
-	}
-
-	public SavingService getSavingService() {
-		return savingService;
 	}
 
 	//更新活期存款金钱:
@@ -118,10 +113,6 @@ public class SavingAction extends BaseAction {
 		return false;
 	}
 	
-	public void setSavingService(SavingService savingService) {
-		this.savingService = savingService;
-	}
-
 	public float calculatePlayerMoney(int playerId){
 		float amount = 0;
 		List<Saving> savings = SavingManager.getInstance().getSavingList(playerId);
@@ -310,7 +301,7 @@ public class SavingAction extends BaseAction {
 		}
 
 	public SavingAction(){
-		init("savingService","playerService",
+		init("playerService",
 				"stockService");
 	}
 	
