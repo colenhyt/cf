@@ -138,6 +138,9 @@ public class DataManager extends MgrBase {
 		Integer playerid = playerIdMaps.get(playerName);
 		if (playerid == null) {
 			Jedis jedis = jedisClient.getJedis();
+			if (!jedis.hexists(super.DATAKEY_PLAYER_ID, playerName)){
+				return null;
+			}
 			String idstr = jedis.hget(super.DATAKEY_PLAYER_ID, playerName);
 			jedisClient.returnResource(jedis);
 			if (idstr!=null){
