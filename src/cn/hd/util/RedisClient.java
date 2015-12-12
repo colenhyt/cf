@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -19,6 +21,7 @@ import com.alibaba.fastjson.JSON;
 
 
 public class RedisClient {
+	protected Logger log = Logger.getLogger(getClass());
 
 	private String serverIp;
 	private int serverPort;
@@ -86,7 +89,7 @@ public class RedisClient {
                 jedis = jedisPool.getResource(); 
             }
         } catch (Exception e) {  
-            System.out.println("Get jedis error : "+e);
+        	//log.error("Get jedis error : "+e);
         }
 //        finally{
 //            returnResource(jedis);

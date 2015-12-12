@@ -108,6 +108,9 @@ public class DataThread extends Thread {
 //					if (!jedisClient.jedis.isConnected())
 //						jedisClient.jedis.connect();
 					Jedis jedis = jedisClient.getJedis();
+					if (jedis==null){
+						continue;
+					}
 	        		Pipeline p = jedis.pipelined();
 	        	if (newPlayersVect.size()>0){
 //		    		PlayerService service= new PlayerService();

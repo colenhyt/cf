@@ -28,10 +28,10 @@ public class MgrBase {
 	public MgrBase(){
 		String path = "";
 		path = Thread.currentThread().getContextClassLoader().getResource("/").getPath();
-String cfgstr = FileUtil.readFile(path + "config.properties");
-if (cfgstr == null || cfgstr.trim().length() <= 0) {
-	return;
-}
+		String cfgstr = FileUtil.readFile(path + "config.properties");
+		if (cfgstr == null || cfgstr.trim().length() <= 0) {
+			return;
+		}
 	cfg = (Config) JSON.parseObject(cfgstr, Config.class);
 		jedisClient = new RedisClient(cfg.getRedisCfg());
 		dataThread = new DataThread(cfg.getRedisCfg());

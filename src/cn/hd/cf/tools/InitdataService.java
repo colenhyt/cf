@@ -32,6 +32,10 @@ public class InitdataService extends BaseService {
 	
 	public Initdata findActive()
 	{
+		if (initdataMapper==null){
+			log.error("could not load init from db,mysql may not be connected");
+			return null;
+		}
 		InitdataExample example = new InitdataExample();
 		Criteria criteria = example.createCriteria();
 		criteria.andStatusEqualTo(Byte.valueOf(DATA_STATUS_ACTIVE));

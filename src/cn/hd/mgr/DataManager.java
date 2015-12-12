@@ -137,16 +137,16 @@ public class DataManager extends MgrBase {
 	public synchronized PlayerWithBLOBs findPlayer(String playerName) {
 		Integer playerid = playerIdMaps.get(playerName);
 		if (playerid == null) {
-			Jedis jedis = jedisClient.getJedis();
-			if (!jedis.hexists(super.DATAKEY_PLAYER_ID, playerName)){
-				return null;
-			}
-			String idstr = jedis.hget(super.DATAKEY_PLAYER_ID, playerName);
-			jedisClient.returnResource(jedis);
-			if (idstr!=null){
-				playerid = Integer.valueOf(idstr);
-				playerIdMaps.put(idstr, playerid);
-			}else
+//			Jedis jedis = jedisClient.getJedis();
+//			if (!jedis.hexists(super.DATAKEY_PLAYER_ID, playerName)){
+//				return null;
+//			}
+//			String idstr = jedis.hget(super.DATAKEY_PLAYER_ID, playerName);
+//			jedisClient.returnResource(jedis);
+//			if (idstr!=null){
+//				playerid = Integer.valueOf(idstr);
+//				playerIdMaps.put(idstr, playerid);
+//			}else
 				return null;
 		}
 		return findPlayer(playerid);
@@ -155,16 +155,19 @@ public class DataManager extends MgrBase {
 	public synchronized PlayerWithBLOBs findPlayer(int playerid) {
 		PlayerWithBLOBs player = playerMaps.get(playerid);
 		if (player==null){
-			Jedis jedis = jedisClient.getJedis();
-			String itemstr = jedis.hget(super.DATAKEY_PLAYER, String.valueOf(playerid));
-			jedisClient.returnResource(jedis);			
-			if (itemstr!=null){
-				player = (PlayerWithBLOBs)JSON.parseObject(itemstr,PlayerWithBLOBs.class);
-				playerMaps.put(playerid, player);
-				if (!playerIdMaps.containsKey(player.getPlayername())){
-					playerIdMaps.put(player.getPlayername(), playerid);
-				}
-			}
+//			Jedis jedis = jedisClient.getJedis();
+//			if (!jedis.hexists(super.DATAKEY_PLAYER, String.valueOf(playerid))){
+//				return null;
+//			}			
+//			String itemstr = jedis.hget(super.DATAKEY_PLAYER, String.valueOf(playerid));
+//			jedisClient.returnResource(jedis);			
+//			if (itemstr!=null){
+//				player = (PlayerWithBLOBs)JSON.parseObject(itemstr,PlayerWithBLOBs.class);
+//				playerMaps.put(playerid, player);
+//				if (!playerIdMaps.containsKey(player.getPlayername())){
+//					playerIdMaps.put(player.getPlayername(), playerid);
+//				}
+//			}
 		}
 		return player;
 	}
@@ -206,6 +209,10 @@ public class DataManager extends MgrBase {
 //		for (int i = 0; i < players.size(); i++) {
 //			PlayerWithBLOBs player = players.get(i);
 		Jedis jedis = jedisClient.getJedis();
+		if (jedis==null){
+			log.error("could not get redis,redis may not be run");
+			return;
+		}
 		List<String> items = jedis.hvals(super.DATAKEY_PLAYER);
 		for (int i=0;i<items.size();i++){
 			PlayerWithBLOBs player = (PlayerWithBLOBs)JSON.parseObject(items.get(i),PlayerWithBLOBs.class);
