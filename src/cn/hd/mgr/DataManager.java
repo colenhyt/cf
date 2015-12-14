@@ -65,10 +65,10 @@ public class DataManager extends MgrBase {
 		return nextPlayerId;
 	}
 
-	public synchronized String login(String playerName, String tel, String sex) {
+	public synchronized String login(String playerName, String openId, String sex) {
 		PlayerWithBLOBs pp = new PlayerWithBLOBs();
 		pp.setPlayername(playerName);
-		pp.setTel(tel);
+		pp.setOpenid(openId);
 		pp.setSex(Byte.valueOf(sex));
 		loginAction.setPlayer(pp);
 		return loginAction.login();

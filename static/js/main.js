@@ -21,13 +21,13 @@ Main.prototype.init = function(){
 	
 	//g_event.triggerEvent();
 	 
-	var tel = getPar("tel");
+	var openid = getPar("OPENID");
 	//!isNumValue(tel)
-	if (!tel||tel.length<=0){
+	if (!openid||openid.length<=0){
 		gameErr("获取初始化参数失败，无法进入游戏!");
 		return;
 	}
-	g_usertel = tel;
+	g_openid = openid;
 	
 	var nickname = getPar("nickname");
 	if (nickname)

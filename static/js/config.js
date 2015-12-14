@@ -12,7 +12,7 @@ var g_game;
 
 var g_username = null;
 
-var g_usertel = null;
+var g_openid = null;
 
 var ZAN_COUNT = 10;	//每天点赞次数限制
 

@@ -410,8 +410,8 @@ Login.prototype.login = function(){
 //     	alert("本地数据缺失，登录失败");
 //     	return;
 //     }
-    g_logindata = {playername:pname,sex:g_login.sex,tel:g_usertel};
-   	var dataParam = "playername="+g_logindata.playername+"&sex="+g_logindata.sex+"&tel="+g_logindata.tel;
+    g_logindata = {playername:pname,sex:g_login.sex,openid:g_openid};
+   	var dataParam = "playername="+g_logindata.playername+"&sex="+g_logindata.sex+"&openid="+g_logindata.openid;
     var serverPlayer;
     var now = new Date();
     
