@@ -119,7 +119,7 @@ public class LoginAction extends SavingAction {
 		if (playerBlob==null)
 		{
 			return register();
-		}else if (!playerBlob.getOpenid().equals(player.getOpenid())){		//昵称已被注册
+		}else if (playerBlob.getOpenid()==null||!playerBlob.getOpenid().equals(player.getOpenid())){		//昵称已被注册
 			Message msg = new Message();
 			msg.setCode(RetMsg.MSG_PlayerNameIsExist);
 			JSONObject obj = JSONObject.fromObject(msg);			
