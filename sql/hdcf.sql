@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50018
 File Encoding         : 65001
 
-Date: 2015-12-12 11:50:05
+Date: 2015-12-14 16:35:36
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -181,28 +181,22 @@ CREATE TABLE `player` (
   `pwd` varchar(300) NOT NULL,
   `accountid` int(11) NOT NULL COMMENT '账号id',
   `tel` varchar(20) NOT NULL,
+  `openid` varchar(20) default NULL,
   `sex` tinyint(4) NOT NULL default '0',
   `openstock` tinyint(4) default NULL,
   `money` float(11,2) default NULL,
   `exp` int(11) NOT NULL default '0' COMMENT '等级',
   `job` tinyint(4) default '1',
-  `saving` varchar(3000) default NULL,
-  `insure` varchar(3000) default NULL COMMENT '保险',
-  `finan` varchar(3000) default NULL,
-  `stock` varchar(3000) default NULL COMMENT '股票',
-  `quest` varchar(3000) default NULL COMMENT '任务',
-  `base` blob,
-  `event` blob COMMENT '随机事件',
-  `feelings` blob,
   `zan` int(11) NOT NULL default '0',
   `createtime` datetime NOT NULL COMMENT '创建时间',
   `lastlogin` datetime default NULL,
   `version` int(11) default '0' COMMENT '数据结构版本号',
-  `versions` varchar(500) default NULL COMMENT '各模块数据版本号',
-  `stockdata` varchar(100) default NULL,
   `weektop` int(11) default NULL,
   `monthtop` int(11) default NULL,
   `quotetime` float(11,4) default NULL,
+  `insure` varchar(100) default NULL,
+  `saving` varchar(100) default NULL,
+  `stock` varchar(100) default NULL,
   PRIMARY KEY  (`playerid`),
   UNIQUE KEY `idx_tel` USING BTREE (`tel`,`playername`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
