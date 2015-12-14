@@ -50,28 +50,28 @@ public class PlayerService extends BaseService {
 		initMapper("playerMapper","signinMapper","questMapper");
 	}
 	
-	public List<PlayerWithBLOBs> findAll(){
+	public List<Player> findAll(){
 		PlayerExample example = new PlayerExample();
 		Criteria criteria=example.createCriteria();
-		return playerMapper.selectByExampleWithBLOBs(example);		
+		return playerMapper.selectByExample(example);		
 	}
 	
-	public PlayerWithBLOBs findByName(String playerName){
-		PlayerWithBLOBs player = null;
+	public Player findByName(String playerName){
+		Player player = null;
 	
 		PlayerExample example = new PlayerExample();
 		Criteria criteria=example.createCriteria();
 		criteria.andPlayernameEqualTo(playerName);
 //		criteria.andPwdEqualTo(strPwd);
-		List<PlayerWithBLOBs> players = playerMapper.selectByExampleWithBLOBs(example);
+		List<Player> players = playerMapper.selectByExample(example);
 		if (players.size()>0)
 			player = players.get(0);
 		
 		return player;
 	}
 	
-	public PlayerWithBLOBs findByKey(String playerName,String playerTel){
-		PlayerWithBLOBs player = null;
+	public Player findByKey(String playerName,String playerTel){
+		Player player = null;
 	
 		synchronized(this){
 		PlayerExample example = new PlayerExample();
@@ -79,19 +79,19 @@ public class PlayerService extends BaseService {
 		criteria.andPlayernameEqualTo(playerName);
 		if (playerTel!=null)
 			criteria.andTelEqualTo(playerTel);
-		List<PlayerWithBLOBs> players = playerMapper.selectByExampleWithBLOBs(example);
+		List<Player> players = playerMapper.selectByExample(example);
 		if (players.size()>0)
 			player = players.get(0);
 		}
 		return player;
 	}	
-	public PlayerWithBLOBs findByPlayerId(int playerid){
-		PlayerWithBLOBs player = null;
+	public Player findByPlayerId(int playerid){
+		Player player = null;
 		
 		PlayerExample example = new PlayerExample();
 		Criteria criteria=example.createCriteria();
 		criteria.andPlayeridEqualTo(Integer.valueOf(playerid));
-		List<PlayerWithBLOBs> players = playerMapper.selectByExampleWithBLOBs(example);
+		List<Player> players = playerMapper.selectByExample(example);
 		if (players.size()>0)
 			player = players.get(0);
 		
@@ -164,13 +164,13 @@ public class PlayerService extends BaseService {
 		return players.size()>0;	
 	}
 
-	public PlayerWithBLOBs find(int playerid){
-			PlayerWithBLOBs player = null;
+	public Player find(int playerid){
+			Player player = null;
 			PlayerExample example = new PlayerExample();
 			Criteria criteria=example.createCriteria();
 			criteria.andPlayeridEqualTo(Integer.valueOf(playerid));
 	//		criteria.andPwdEqualTo(strPwd);
-			List<PlayerWithBLOBs> players = playerMapper.selectByExampleWithBLOBs(example);
+			List<Player> players = playerMapper.selectByExample(example);
 			if (players.size()>0)
 				player = players.get(0);
 			
