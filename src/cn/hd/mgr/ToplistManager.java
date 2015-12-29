@@ -95,7 +95,7 @@ public class ToplistManager extends MgrBase{
 		
 		load();
 		int cc = 0;
-		Date fristDate = getFirstDate(type);
+		Date fristDate = getFirstDate(type,new Date());
 		Collection<Toplist> toplists = toplistMap.values();
 		for (Toplist top2:toplists){
 			int later = top2.getUpdatetime().compareTo(fristDate);
@@ -133,9 +133,9 @@ public class ToplistManager extends MgrBase{
 		return true;		
 	}
 
-	private Date getFirstDate(int type){
+	private Date getFirstDate(int type,Date startDate){
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-		Date today = new Date();
+		Date today = startDate;
 		Calendar cl = Calendar. getInstance();
 		cl.setTime(today);
 		int year = cl.get(Calendar.YEAR);
@@ -168,10 +168,38 @@ public class ToplistManager extends MgrBase{
 		return firstDate;
 	}
 	
+	public synchronized List<Toplist> getMonthItems(String month){
+		List<Toplist> tops = new ArrayList<Toplist>();
+		
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+		Date startDate = null;
+		try {
+			startDate = sdf.parse(month);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		Date firstDate = getFirstDate(1,startDate);
+		
+		load();
+		List<Toplist> list = new ArrayList<Toplist>();
+		Collection<Toplist> toplists = toplistMap.values();
+		for (Toplist top:toplists){
+			if (top.getUpdatetime().compareTo(firstDate)>0){
+				list.add(top);
+			}
+		}
+		Collections.sort((List<Toplist>)list);
+		for (int i=0;i<list.size();i++){
+			tops.add(list.get(i));
+		}		
+		return tops;
+	}
+	
 	public synchronized List<Toplist> findByType(int type){
 		List<Toplist> tops = new ArrayList<Toplist>();
 		
-		Date firstDate = getFirstDate(type);
+		Date firstDate = getFirstDate(type,new Date());
 		
 		load();
 		List<Toplist> list = new ArrayList<Toplist>();

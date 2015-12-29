@@ -102,7 +102,7 @@ public class FileUtil {
 			}
 
 		} else {
-			System.err.println("Does not exist！");
+			System.err.println("File Does not exist:"+file.getAbsolutePath());
 		}
 
 		return output;
