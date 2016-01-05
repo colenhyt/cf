@@ -21,13 +21,35 @@ Login.prototype.init = function(){
 	{
 		store.set(this.name,[]);
 	} 
-    this.draw();
+	
+	for (var i=0;i<tdata.length;i++){
+	  var data = tdata[i];
+	  if (data.openid==g_openid){
+	   g_username = data.playername;
+ 		this.sex = data.sex;
+ 		break;
+	  }
+	}	
+	
+	//已有用户自动登录:
+	if (g_username!=null){
+	   this.login();
+	}else
+      this.draw();
 }
 
 Login.prototype.draw = function()
 {
 	var localdata = store.get(this.name);
-	var tdata = localdata[localdata.length-1];
+	var tdata = null;
+	for (var i=0;i<localdata.length;i++){
+	  var data = localdata[i];
+	  if (data.openid==g_openid){
+	   tdata = data;
+ 		break;
+	  }
+	}	
+	
 	var imgs = login_imgs;
    	if (tdata!=null){
  		this.sex = tdata.sex;
@@ -111,6 +133,13 @@ Login.prototype.drawChoseBorder = function(sex)
 Login.prototype.msg = function(msg)
 {
 	var tag = document.getElementById("errmsg");
+	if (tag==null){
+      var div = document.createElement("div");
+      div.id = "errmsg";
+      div.className = "cflogin_tip";
+      document.body.appendChild(div); 	
+      tag = document.getElementById("errmsg");
+	}
 	tag.innerHTML = msg;
 }
 
@@ -296,6 +325,7 @@ Login.prototype.syncLoadDataCallback_saving = function(data){
 			msg.push({type:g_saving.name,t:parseInt(item.type),name:item.name,profit:parseInt(sdata[itemid].profit)});
 		}
 	} 
+	g_bank.onEnter();
 	g_login.msgtip(msg);
 	g_login.callbackDone();
 	
@@ -348,6 +378,7 @@ Login.prototype.loginCallback = function(obj){
 	}
 		
 	g_logindata.playerid = parseInt(objdata.playerid);
+	g_logindata.openid = objdata.openid;
 	g_logindata.exp = parseInt(objdata.exp);
 	g_logindata.quotetime = objdata.quotetime;
 	
@@ -403,14 +434,16 @@ Login.prototype.loginCallback = function(obj){
 Login.prototype.login = function(){
 	g_msg.showload("g_login.login");
 	
-	var tag = document.getElementById("inputnick");
-	var pname = tag.value;	
+	if (g_username==null){
+      var tag = document.getElementById("inputnick");
+	  g_username = tag.value;	
+	}
 //     var player = store.get(g_player.name);
 //     if (player==null){
 //     	alert("本地数据缺失，登录失败");
 //     	return;
 //     }
-    g_logindata = {playername:pname,sex:g_login.sex,openid:g_openid};
+    g_logindata = {playername:g_username,sex:g_login.sex,openid:g_openid};
    	var dataParam = "playername="+g_logindata.playername+"&sex="+g_logindata.sex+"&openid="+g_logindata.openid;
     var serverPlayer;
     var now = new Date();

@@ -152,8 +152,6 @@ Saving.prototype.doBuy = function(id){
 }
 	
 Saving.prototype.requestBuy = function(id,qty,amount){
- g_msg.showload("g_saving.requestBuy",true);
- 
 	 if (id){
 		g_saving.buyItem = {itemid:id,playerid:g_player.data.playerid,
 			qty:qty,price:amount,amount:amount};
@@ -166,6 +164,8 @@ Saving.prototype.requestBuy = function(id,qty,amount){
 		 g_msg.tip('您没有这么多钱存入');
 		return;
 	 }	
+	 
+ g_msg.showload("g_saving.requestBuy",true);
 	 
 	var dataParam = obj2ParamStr(g_saving.name,g_saving.buyItem);
 	try    {

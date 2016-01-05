@@ -71,10 +71,11 @@ Stock.prototype.loadPlayerLastQuote = function()
 
 Stock.prototype.loadPageLastQuote = function()
 {
-	g_msg.showload("g_stock.loadPageLastQuote");
 	
 	var stockids = g_stock.currPageIds;
 	if (!stockids) return;
+	
+	g_msg.showload("g_stock.loadPageLastQuote");
 	
 	var jids = "stockids="+JSON.stringify(stockids);
 	try  {
@@ -405,7 +406,6 @@ Stock.prototype.doBuy = function()
 }
 
 Stock.prototype.requestBuy = function(id,qty,ps) {
- g_msg.showload("g_stock.requestBuy",true);
  
  if (id){
   g_stock.buyItem = {itemid:id,playerid:g_player.data.playerid,
@@ -413,6 +413,7 @@ Stock.prototype.requestBuy = function(id,qty,ps) {
  }
  
  if (!g_stock.buyItem) return false; 
+  g_msg.showload("g_stock.requestBuy",true);
  
 	var dataParam = obj2ParamStr(g_stock.name,g_stock.buyItem);
 	try    {

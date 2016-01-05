@@ -321,7 +321,6 @@ Game.prototype.enter = function(sexImg)
 Game.prototype.onEnter = function(){
 	g_insure.onEnter();
 	g_stock.onEnter();
-	g_bank.onEnter();
 	
   var bankDiv=document.createElement("div");
   bankDiv.className="cfbank_div";

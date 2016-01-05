@@ -305,7 +305,6 @@ Insure.prototype.doBuy = function(id,qty) {
 }
 
 Insure.prototype.requestBuy = function(id,qty,amount) {
- g_msg.showload("g_insure.requestBuy",true);
  
  if (id){
  var item = store.get(g_insure.name)[id];
@@ -315,6 +314,7 @@ Insure.prototype.requestBuy = function(id,qty,amount) {
  
  if (!g_insure.buyItem) return false; 
  
+ g_msg.showload("g_insure.requestBuy",true);
 	var dataParam = obj2ParamStr(g_insure.name,g_insure.buyItem);
 	try    {
 		$.ajax({type:"post",url:"/cf/insure_add.do",data:dataParam,success:function(data){

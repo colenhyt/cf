@@ -132,12 +132,13 @@ Playerinfo.prototype.showPie = function(data,divName){
 }
 
 Playerinfo.prototype.showOneInfo = function(playerid){
-	g_msg.showload("g_playerinfo.showOneInfo");
 	
 	if (playerid)
 	 g_playerinfo.showPlayerId = playerid;
 	 
 	if (!g_playerinfo.showPlayerId) return;
+	
+	g_msg.showload("g_playerinfo.showOneInfo");
 	
 	try    { 
 			$.ajax({url:"/cf/toplist_getinfo.jsp?playerid="+g_playerinfo.showPlayerId,success:function(data){
