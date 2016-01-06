@@ -114,7 +114,7 @@ public class LoginAction extends SavingAction {
 
 	public synchronized String login()
 	{
-//		log.warn("enter game:"+player.getPlayername()+",tel :"+player.getTel());
+//		log.warn("enter game:"+player.getPlayername()+",openid :"+player.getOpenid());
 		PlayerWithBLOBs playerBlob = DataManager.getInstance().findPlayer(player.getPlayername());
 		if (playerBlob==null)
 		{
@@ -167,6 +167,7 @@ public class LoginAction extends SavingAction {
 	private synchronized String serialize(PlayerWithBLOBs player){
 		float margin = StockManager.getInstance().getMarginSec();
 	  String data = "{playerid:"+player.getPlayerid()+",exp:"+player.getExp()+",quotetime:"+margin;
+	  data += ",openid:"+player.getOpenid();
 	  data += "}";
 	  return data;
 	}

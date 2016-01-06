@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.exceptions.JedisConnectionException;
+import cn.hd.cf.model.Player;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Toplist;
@@ -22,8 +23,8 @@ import com.alibaba.fastjson.JSON;
 
 public class DataThread extends Thread {
 	private RedisClient		jedisClient;
-	private Vector<PlayerWithBLOBs> newPlayersVect;
-	private Vector<PlayerWithBLOBs>	updatePlayersVect;	
+	private Vector<Player> newPlayersVect;
+	private Vector<Player>	updatePlayersVect;	
 	private Map<Integer,String>		updateSavingMap;
 	
 	private Map<Integer,String>		updateInsureMap;
@@ -42,8 +43,8 @@ public class DataThread extends Thread {
 	public DataThread(RedisConfig cfg){
 		jedisClient = new RedisClient(cfg);
 		
-		newPlayersVect = new Vector<PlayerWithBLOBs>();
-		updatePlayersVect = new Vector<PlayerWithBLOBs>();
+		newPlayersVect = new Vector<Player>();
+		updatePlayersVect = new Vector<Player>();
 		
 		updateSavingMap  = new HashMap<Integer,String>();
 		
@@ -116,7 +117,7 @@ public class DataThread extends Thread {
 //		    		PlayerService service= new PlayerService();
 //		    		service.addPlayers(newPlayersVect);
 	        		for (int i=0;i<newPlayersVect.size();i++){
-	        			PlayerWithBLOBs item = newPlayersVect.get(i);
+	        			Player item = newPlayersVect.get(i);
 	        			p.hset(DataManager.getInstance().DATAKEY_PLAYER, String.valueOf(item.getPlayerid()), JSON.toJSONString(item));
 	        			p.hset(DataManager.getInstance().DATAKEY_PLAYER_ID, item.getPlayername(),String.valueOf(item.getPlayerid()));
 	        		}
@@ -126,7 +127,7 @@ public class DataThread extends Thread {
 	        	
 	        	if (updatePlayersVect.size()>0){
 	        		for (int i=0;i<updatePlayersVect.size();i++){
-	        			PlayerWithBLOBs item = updatePlayersVect.get(i);
+	        			Player item = updatePlayersVect.get(i);
 	        			p.hset(DataManager.getInstance().DATAKEY_PLAYER, String.valueOf(item.getPlayerid()), JSON.toJSONString(item));
 	        		}
 		    		log.warn("batch update players :"+updatePlayersVect.size());

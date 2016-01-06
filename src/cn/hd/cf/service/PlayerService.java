@@ -98,7 +98,7 @@ public class PlayerService extends BaseService {
 		return player;
 	}
 	
-	public synchronized boolean addPlayers(List<Player> records)
+	public synchronized boolean addPlayers(Vector<Player> records)
 	{
 		try {
 		for (int i=0;i<records.size();i++){

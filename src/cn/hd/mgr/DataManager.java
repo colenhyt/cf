@@ -258,26 +258,12 @@ public class DataManager extends MgrBase {
 		stmgr.findPlayer("ppnane");
 		PlayerWithBLOBs pp = new PlayerWithBLOBs();
 		pp.setPlayerid(33);
-		pp.setPlayername("ppnane");
 		stmgr.addPlayer(pp);
 //		SavingManager.getInstance().init();
 //		InsureManager.getInstance().init();
 //		StockManager.getInstance().init();
 //		ToplistManager.getInstance().init();
 //		stmgr.init();
-		float count = 500000;
-		long s = System.currentTimeMillis();
-		for (int i = 0; i < count; i++) {
-//			String s2 = String.valueOf(i);
-//			String str = stmgr.login(s2, s2, "1");
-			// System.out.println(str);
-		}
-		float e = System.currentTimeMillis() - s;
-		System.out.println("run " + count + ", cost time : " + e + "ms,"
-				+ (e / count) + "s/1000");
-		// SavingdataService ss = new SavingdataService();
-		// Savingdata dd = ss.findActive();
-		// DataThread aa = new DataThread();
-		// aa.start();
+
 	}
 }

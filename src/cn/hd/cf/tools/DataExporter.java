@@ -2,6 +2,7 @@ package cn.hd.cf.tools;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import redis.clients.jedis.Jedis;
 import cn.hd.base.Config;
@@ -38,7 +39,7 @@ public class DataExporter {
 	public void flushPlayerDB(){
 		List<String> itemstrs = getRedis(MgrBase.DATAKEY_PLAYER);
 		PlayerService  service = new PlayerService();
-		List<Player>  newP = new ArrayList<Player>();
+		Vector<Player>  newP = new Vector<Player>();
 		List<Player>  updateP = new ArrayList<Player>();
     	for (String str:itemstrs){
 			Player item = (Player)JSON.parseObject(str, Player.class);
