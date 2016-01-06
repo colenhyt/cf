@@ -4,6 +4,7 @@
 <%@ page import="cn.hd.util.*"%>
 <%@ page import="redis.clients.jedis.*"%> 
 <%
+request.setCharacterEncoding("UTF-8"); 
 String playername = request.getParameter("playername");
 String straccount = request.getParameter("accountid");
 String strsex = request.getParameter("sex");

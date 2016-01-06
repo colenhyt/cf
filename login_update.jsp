@@ -6,6 +6,7 @@
 <%@ page import="redis.clients.jedis.*"%> 
 <%@ page import="net.sf.json.JSONObject"%>
 <%
+request.setCharacterEncoding("UTF-8"); 
 String pp = request.getParameter("player");
 
 JSONObject ppObj = JSONObject.fromObject(pp);
