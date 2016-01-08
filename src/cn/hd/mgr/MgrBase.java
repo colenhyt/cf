@@ -3,6 +3,8 @@ package cn.hd.mgr;
 
 import java.net.URL;
 
+import net.sf.json.JSONObject;
+
 import org.apache.log4j.Logger;
 
 import cn.hd.base.Config;
@@ -26,6 +28,9 @@ public class MgrBase {
 	protected DataThread dataThread;
 	protected RedisClient		jedisClient;
 	public Config cfg;
+	public JSONObject cfgObj;
+	public String openidurl;
+	public String openidparam;
 
 	public MgrBase(){
 		String path = "./WEB-INF/classes/";
@@ -36,6 +41,9 @@ public class MgrBase {
 		if (cfgstr == null || cfgstr.trim().length() <= 0) {
 			return;
 		}
+		cfgObj = JSONObject.fromObject(cfgstr);
+		openidurl = cfgObj.getString("openidurl");
+		openidparam = cfgObj.getString("openidparam");
 	cfg = (Config) JSON.parseObject(cfgstr, Config.class);
 		jedisClient = new RedisClient(cfg.getRedisCfg());
 		dataThread = new DataThread(cfg.getRedisCfg());

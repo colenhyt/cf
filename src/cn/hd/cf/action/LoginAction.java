@@ -20,6 +20,7 @@ import cn.hd.mgr.DataManager;
 import cn.hd.mgr.SavingManager;
 import cn.hd.mgr.StockManager;
 import cn.hd.mgr.ToplistManager;
+import cn.hd.util.HttpXmlClient;
 
 import com.alibaba.fastjson.JSON;
 
@@ -32,6 +33,14 @@ public class LoginAction extends SavingAction {
 		JSONObject obj = JSONObject.fromObject(msg);
 		write(obj.toString(),"utf-8");
 		return null;
+	}
+	
+	public int appServerCheck(String openid){
+    	Map<String, String> params = new HashMap<String, String>();  
+    	params.put(DataManager.getInstance().openidparam, openid); 
+    	String json = HttpXmlClient.post(DataManager.getInstance().openidurl, params);  
+    	log.warn(json);
+		return 0;
 	}
 	
 	public synchronized String getPlayerJsonData(PlayerWithBLOBs playerBlob)

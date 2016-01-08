@@ -6,13 +6,10 @@
 <%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%
 request.setCharacterEncoding("UTF-8"); 
-String playername = request.getParameter("playername");
-String straccount = request.getParameter("accountid");
-String strsex = request.getParameter("sex");
-int accountid = Integer.valueOf(straccount).intValue();
-int sex = Integer.valueOf(strsex).intValue();
+String activityGameToken = request.getParameter("activityGameToken");
 
-String addplayer = DataManager.getInstance().register(playername,accountid,(byte)sex);
-response.getWriter().print(addplayer);
+String rpsStr="{ CODE: 00,MSG: Operation successfully,openId:"+activityGameToken+"}";
+rpsStr = "{ code: 01,message: Operation failed.}";
+response.getWriter().print(rpsStr);
 //System.out.println("add"+addplayer);
 %>
