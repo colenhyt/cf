@@ -6,10 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import net.sf.json.JSONObject;
+
 import org.apache.log4j.Logger;
 
 import redis.clients.jedis.Jedis;
-import cn.hd.base.Config;
 import cn.hd.cf.action.LoginAction;
 import cn.hd.cf.model.Init;
 import cn.hd.cf.model.Insure;
@@ -65,11 +68,14 @@ public class DataManager extends MgrBase {
 		return nextPlayerId;
 	}
 
-	public synchronized String login(String playerName, String openId, String sex) {
+	public synchronized String login(String jsonStr,HttpServletRequest request) {
+		String loginStr = jsonStr+",ip:"+loginAction.getIpAddress(request);
+		log.warn("login: "+loginStr);
+		JSONObject jsonobj = JSONObject.fromObject(jsonStr);
 		PlayerWithBLOBs pp = new PlayerWithBLOBs();
-		pp.setPlayername(playerName);
-		pp.setOpenid(openId);
-		pp.setSex(Byte.valueOf(sex));
+		pp.setPlayername(jsonobj.getString("playername"));
+		pp.setOpenid(jsonobj.getString("openid"));
+		pp.setSex(Byte.valueOf(jsonobj.getString("sex")));
 		loginAction.setPlayer(pp);
 		return loginAction.login();
 	}

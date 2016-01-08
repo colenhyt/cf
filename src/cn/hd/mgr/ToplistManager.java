@@ -125,7 +125,8 @@ public class ToplistManager extends MgrBase{
 			newtop.setPlayername(playerName);
 			newtop.setCreatetime(new Date());
 			newtop.setUpdatetime(new Date());
-			newtop.setMoney(BigDecimal.valueOf(money));
+			int imoney = Double.valueOf(money).intValue();
+			newtop.setMoney(BigDecimal.valueOf(imoney));
 			newtop.setZan(0);
 			toplistMap.put(newtop.getPlayerid(), newtop);
 			dataThread.updateToplist(newtop);		
@@ -220,13 +221,14 @@ public class ToplistManager extends MgrBase{
 
 	public synchronized boolean updateToplist(int playerid,String playerName,double money){
 		Toplist toplist = findByPlayerId(playerid);
+		int imoney = Double.valueOf(money).intValue();
 		if (toplist==null){
-			addToplist(playerid,playerName,money);				
+			addToplist(playerid,playerName,imoney);				
 			//System.out.println("增加最新排行榜记录: "+newtop.getPlayername()+":"+newtop.getMoney());
 		}else {
 			double topMoney = toplist.getMoney().doubleValue();
-			if (Math.abs(money-topMoney)>1){
-				toplist.setMoney(BigDecimal.valueOf(money));
+			if (Math.abs(imoney-topMoney)>1){
+				toplist.setMoney(BigDecimal.valueOf(imoney));
 				toplist.setUpdatetime(new Date());
 				dataThread.updateToplist(toplist);
 //				//System.out.println("更新排行榜财富: "+toplist.getPlayername()+":"+topMoney+","+toplist.getMoney());
@@ -244,6 +246,8 @@ public class ToplistManager extends MgrBase{
 
 	public static void main(String[] args){
 		ToplistManager.getInstance().init();
+		double a = 3.91948171;
+		int ia = Double.valueOf(a).intValue();
 		long st = System.currentTimeMillis();
 		String str = ToplistManager.getInstance().list(0,0);
 		System.out.println(str);

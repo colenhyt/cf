@@ -95,30 +95,35 @@ public class SavingAction extends BaseAction {
 	}
 	
 	public float calculatePlayerMoney(int playerId){
-		float amount = 0;
 		List<Saving> savings = SavingManager.getInstance().getSavingList(playerId);
+		float savingamount = 0;
 		if (savings!=null){
 			for (int i=0;i<savings.size();i++){
-				amount += savings.get(i).getAmount();
+				savingamount += savings.get(i).getAmount();
 			}			
 		}
+		savingamount = Float.valueOf(savingamount).intValue();
+		float insureamount = 0;
 		List<Insure> insures = InsureManager.getInstance().getInsureList(playerId);
 		if (insures!=null){
 		for (int i=0;i<insures.size();i++){
-			amount += insures.get(i).getAmount();
+			insureamount += insures.get(i).getAmount();
 		}
 		}
+		insureamount = Float.valueOf(insureamount).intValue();
 		List<Stock> stocks = StockManager.getInstance().getStockList(playerId);
+		float stockamount = 0;
 		if (stocks!=null){
 			for (int i=0;i<stocks.size();i++){
 				Stock ps = stocks.get(i);
 				if (ps==null) continue;
 				List<Quote> qq = StockManager.getInstance().getLastQuotes(ps.getItemid());
 				if (qq.size()>0)
-					amount += qq.get(0).getPrice()*ps.getQty();
+					stockamount += qq.get(0).getPrice()*ps.getQty();
 			}   			
 		}
-		
+		stockamount = Float.valueOf(stockamount).intValue();
+		float amount = savingamount + insureamount + stockamount;
 		return amount;
 	}
 
