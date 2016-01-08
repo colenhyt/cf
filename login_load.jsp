@@ -3,6 +3,7 @@
 <%@ page import="cn.hd.cf.action.*"%>
 <%@ page import="cn.hd.cf.service.*"%>
 <%@ page import="cn.hd.util.*"%>
+<%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%
 String pid = request.getParameter("playerid");
 String type = request.getParameter("type");

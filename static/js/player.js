@@ -119,7 +119,7 @@ Player.prototype.getTotal = function(data) {
 		 stock += items[i].qty*items[i].price;
 		}
 	}
-	total = parseInt(saving+saving2+insure+stock);
+	total = parseInt(saving)+parseInt(saving2)+parseInt(insure)+parseInt(stock);
 	return {saving:parseInt(saving),saving2:parseInt(saving2),insure:parseInt(insure),stock:parseInt(stock),total:total};
 }
 

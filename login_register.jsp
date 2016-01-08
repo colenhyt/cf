@@ -3,6 +3,7 @@
 <%@ page import="cn.hd.cf.service.*"%>
 <%@ page import="cn.hd.util.*"%>
 <%@ page import="redis.clients.jedis.*"%> 
+<%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%
 request.setCharacterEncoding("UTF-8"); 
 String playername = request.getParameter("playername");

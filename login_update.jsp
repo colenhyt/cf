@@ -5,6 +5,7 @@
 <%@ page import="cn.hd.util.*"%>
 <%@ page import="redis.clients.jedis.*"%> 
 <%@ page import="net.sf.json.JSONObject"%>
+<%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%
 request.setCharacterEncoding("UTF-8"); 
 String pp = request.getParameter("player");
