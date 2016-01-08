@@ -41,9 +41,9 @@ public class MgrBase {
 		if (cfgstr == null || cfgstr.trim().length() <= 0) {
 			return;
 		}
-		cfgObj = JSONObject.fromObject(cfgstr);
-		openidurl = cfgObj.getString("openidurl");
-		openidparam = cfgObj.getString("openidparam");
+//		cfgObj = JSONObject.fromObject(cfgstr);
+//		openidurl = cfgObj.getString("openidurl");
+//		openidparam = cfgObj.getString("openidparam");
 	cfg = (Config) JSON.parseObject(cfgstr, Config.class);
 		jedisClient = new RedisClient(cfg.getRedisCfg());
 		dataThread = new DataThread(cfg.getRedisCfg());
