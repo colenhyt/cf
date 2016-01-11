@@ -77,7 +77,11 @@ content += "             </div>"
 Saving.prototype.outContent = function(id,item,pitem){
    var dftProfit = ForDight(pitem.amount * (item.rate/100));
    var timeout = timeoutDesc(pitem,item);
- 	   
+   var savedesc = "取出定期存款，将无法获得利息收益";
+ 	if (timeout=="已到期"){
+ 	 savedesc = "已到期，请取出并获得本金和利息";
+ 	 timeout = "";
+ 	}   
 	var content =      "        <div class='cfsaving_div'>"
  content += "        <div><span class='cpgapedetail_h2 left'>"+item.name+"取款</span>"
   content += "<span class='cpgapedetail_h3'>(1年=现实24小时)</span>"
@@ -95,7 +99,7 @@ content += "             <tr>"
  content += "               <td>预计利息: <span>"+dftProfit+"</span></td>"
 content += "              </tr>"
 content += "             <tr>"
- content += "               <td><span style='color:red'>取出定期存款，将无法获得利息收益</span></td>"
+ content += "               <td><span style='color:red'>"+savedesc+"</span></td>"
 content += "              </tr>"
 content += "          </table>     "
 		content += "             </div>"

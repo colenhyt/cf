@@ -20,6 +20,7 @@ Login.prototype.init = function(){
 	if (tdata==null)
 	{
 		store.set(this.name,[]);
+		tdata = store.get(this.name);
 	} 
 	
 	for (var i=0;i<tdata.length;i++){
@@ -30,7 +31,7 @@ Login.prototype.init = function(){
  		break;
 	  }
 	}	
-	
+
 	//已有用户自动登录:
 	if (g_username!=null){
 	   this.login();

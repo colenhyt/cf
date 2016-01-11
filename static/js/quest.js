@@ -113,6 +113,7 @@ Quest.prototype.gotoQuest = function(id){
 }
 
 Quest.prototype.questkey = function(){
+if (g_player.data!=null)
  return g_player.data.playername+"_"+g_quest.name;
 }
 
@@ -270,6 +271,10 @@ Quest.prototype.getQuests = function(status) {
 }
 
 Quest.prototype.update = function(){
+	if (!g_game.enter) {
+		return;
+	}
+	
 	this.count ++;
 	if (this.count%3!=0)return;
 	
