@@ -210,7 +210,6 @@ public class SavingAction extends BaseAction {
 			pushLive(saving.getPlayerid(), 0 - saving.getAmount());
 			
 			Saving savingCfg = SavingManager.getInstance().getSavingCfg(saving.getItemid());
-			System.out.println("存钱:"+saving.getPlayerid()+":itemid="+saving.getItemid());
 			saving.setName(savingCfg.getName());
 			saving.setCreatetime(new Date());
 			saving.setUpdatetime(new Date());
@@ -220,6 +219,7 @@ public class SavingAction extends BaseAction {
 			saving.setPeriod(savingCfg.getPeriod());
 			exec = SavingManager.getInstance().addSaving(saving.getPlayerid(), saving);
 		}
+		log.warn(saving.getPlayerid()+" add saving itemid="+saving.getItemid()+",rst:"+exec+",amount:"+saving.getAmount());
 		
 		if (exec==false){
 			pushLive(saving.getPlayerid(), saving.getAmount() );

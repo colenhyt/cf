@@ -206,6 +206,11 @@ public class DataManager extends MgrBase {
 		return false;
 	}
 
+	public synchronized List<String> getplayers() {
+		Jedis jedis = jedisClient.getJedis();
+		return jedis.hvals(super.DATAKEY_PLAYER);
+	}
+	
 	private synchronized void load() {
 		playerIdMaps.clear();
 		playerMaps.clear();
@@ -247,7 +252,11 @@ public class DataManager extends MgrBase {
 		loginAction = new LoginAction();
 
 		InitdataService initdataService = new InitdataService();
-		init = initdataService.findInit();
+		try {
+			init = initdataService.findInit();
+		}catch (Exception e){
+			log.warn("could not connect mysql");
+		}
 
 
 		playerIdMaps = Collections

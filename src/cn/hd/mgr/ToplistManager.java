@@ -169,18 +169,22 @@ public class ToplistManager extends MgrBase{
 		return firstDate;
 	}
 	
-	public synchronized List<Toplist> getMonthItems(String month){
+	public synchronized List<Toplist> getTopItems(String startMonth,boolean isFirst){
 		List<Toplist> tops = new ArrayList<Toplist>();
 		
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-		Date startDate = null;
-		try {
-			startDate = sdf.parse(month);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
-		Date firstDate = getFirstDate(1,startDate);
+		Date startDate = new Date();
+		if (startMonth!=null&&startMonth.length()>0){
+			try {
+				startDate = sdf.parse(startMonth);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}		
+		}
+		Date firstDate = startDate;
+		if (!isFirst)
+			getFirstDate(1,startDate);
 		
 		load();
 		List<Toplist> list = new ArrayList<Toplist>();
@@ -212,7 +216,7 @@ public class ToplistManager extends MgrBase{
 		}
 		Collections.sort((List<Toplist>)list);
 		for (int i=0;i<list.size();i++){
-			if (i>=20) break;
+			if (i>=100) break;
 			tops.add(list.get(i));
 		}
 		//System.out.println("取排行榜(type:"+type+"):开始时间:"+firstDate.toString()+",记录数:"+tops.size());

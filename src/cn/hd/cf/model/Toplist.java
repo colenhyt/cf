@@ -4,6 +4,15 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class Toplist implements Comparable {
+	private String updateTimeStr;
+	public String getUpdateTimeStr() {
+		return updateTimeStr;
+	}
+
+	public void setUpdateTimeStr(String updateTimeStr) {
+		this.updateTimeStr = updateTimeStr;
+	}
+
 	private String openid;
     public String getOpenid() {
 		return openid;

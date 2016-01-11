@@ -55,21 +55,35 @@ public class DataExporter {
 			service.updatePlayers(updateP);
     	}		
 	}
-	public void exportToplist(){
+	public void exportPlayer(){
+		DataManager.getInstance().init();
+		List<String> items = DataManager.getInstance().getplayers();
+		System.out.println("get players:"+items.size());
+		String content = new String();
+		for (String item:items){
+			Player p = (Player)JSON.parseObject(item, Player.class);
+			p.setCreateTimeStr(p.getCreatetime().toLocaleString());
+			content += JSON.toJSONString(p)+"\n";
+		}
+		FileUtil.writeFile("./player.data", content);;
+		System.out.println("get player:"+content);
+	}
+	
+	public void exportToplist(String startMonth){
 		ToplistManager.getInstance().init();
 		DataManager.getInstance().init();
-		String monthStr = "2015-11-12";
-		List<Toplist> items = ToplistManager.getInstance().getMonthItems(monthStr);
-		System.out.println("get month("+monthStr+") toplist:"+items.size());
+		List<Toplist> items = ToplistManager.getInstance().getTopItems(startMonth,true);
 		String content = new String();
 		for (Toplist item:items){
 			Player p = DataManager.getInstance().findPlayer(item.getPlayerid());
 			if (p!=null){
 				item.setOpenid(p.getOpenid());
 			}
+			item.setUpdateTimeStr(item.getUpdatetime().toLocaleString());
 			content += JSON.toJSONString(item)+"\n";
 		}
 		FileUtil.writeFile("./toplist.data", content);;
+		System.out.println("get toplist:"+content);
 	}
 	
 	public void exportItems(String itemkey){
@@ -83,7 +97,8 @@ public class DataExporter {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		DataExporter exporter = new DataExporter();
-		exporter.exportToplist();
+		exporter.exportToplist(args[0]);
+		exporter.exportPlayer();
 //    	for (String str:itemstrs){
 //    		Toplist item = (Toplist)JSON.parseObject(str, Toplist.class);
 //    		System.out.println("toplist:"+str);
