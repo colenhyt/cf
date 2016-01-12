@@ -55,7 +55,6 @@ public class InsureManager extends MgrBase{
     	Set<String> playerids = jedis.hkeys(super.DATAKEY_INSURE);
     	for (String strpid:playerids){
     		String jsonitems = jedis.hget(super.DATAKEY_INSURE, strpid);
-    		log.warn("get insure:"+jsonitems);
     		List<Insure> list = JSON.parseArray(jsonitems, Insure.class);
     		insuresMap.put(Integer.valueOf(strpid), list);
     	}
