@@ -122,6 +122,11 @@ var MSG_PlayerTelIsExist = 5;
 var MSG_WrongPlayerNameOrPwd = 6;
 var MSG_StockIsClosed = 7;
 var MSG_PlayerNameIsExist = 8;
+var MSG_SavingNotExist = 9;
+var MSG_SavingIsExist = 10;
+var MSG_InsureNotExist = 11;
+var MSG_InsureIsExist = 12;
+var MSG_StockNotExist = 13;
 
 var ERR_MSG ={};
 ERR_MSG[MSG_SQLExecuteError] = "sql出错";
@@ -132,6 +137,11 @@ ERR_MSG[MSG_PlayerTelIsExist] = "重复电话号码";
 ERR_MSG[MSG_WrongPlayerNameOrPwd] = "用户名或密码不正确";
 ERR_MSG[MSG_StockIsClosed] = "股市已关闭,不能买卖";
 ERR_MSG[MSG_PlayerNameIsExist] = "该昵称已存在";
+ERR_MSG[MSG_SavingNotExist] = "你没有该存款，不能取出";
+ERR_MSG[MSG_SavingIsExist] = "已有该存款，不能重复存入";
+ERR_MSG[MSG_InsureNotExist] = "你没有该保险，不能删除";
+ERR_MSG[MSG_InsureIsExist] = "已有该保险，不能重复购买";
+ERR_MSG[MSG_StockNotExist] = "找不到该股票，无法购买";
 
 function loadStyle(url){
     var link = document.createElement('link');
