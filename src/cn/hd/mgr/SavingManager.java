@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import redis.clients.jedis.Jedis;
+import cn.hd.cf.action.RetMsg;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.tools.SavingdataService;
 
@@ -138,10 +139,10 @@ public class SavingManager extends MgrBase{
     	return list;
 	}
     
-	public synchronized boolean deleteSaving(int playerId,Saving record){
+	public synchronized int deleteSaving(int playerId,Saving record){
 		List<Saving> list = getSavingList(playerId);
 		if (list==null)
-			return false;
+			return RetMsg.MSG_SavingNotExist;
 		
 		boolean found = false;
 		for (int i=0;i<list.size();i++){
@@ -152,14 +153,13 @@ public class SavingManager extends MgrBase{
 			}
 		}
 		if (found){
-			System.out.println("删除后json: "+list.size());
 			dataThread.updateSaving(playerId, JSON.toJSONString(list));
-			return true;
+			return RetMsg.MSG_OK;
 		}
-		return false;
+		return RetMsg.MSG_SavingNotExist;
 	}
 
-	public synchronized boolean addSaving(int playerId,Saving record){
+	public synchronized int addSaving(int playerId,Saving record){
 		List<Saving> list = getSavingList(playerId);
 		boolean found = false;
 		if (list==null){
@@ -174,11 +174,11 @@ public class SavingManager extends MgrBase{
 			}
 		}
 		if (found){
-			return false;
+			return RetMsg.MSG_SavingIsExist;
 		}
 		list.add(record);
 		dataThread.updateSaving(playerId, JSON.toJSONString(list));
-		return true;
+		return RetMsg.MSG_OK;
 	}
 
 	public static void main(String[] args) {

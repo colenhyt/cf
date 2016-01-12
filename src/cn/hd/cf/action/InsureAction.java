@@ -32,15 +32,16 @@ public class InsureAction extends SavingAction {
 			Insure incfg = InsureManager.getInstance().getInsureCfg(insure.getItemid());
 			insure.setPeriod(incfg.getPeriod()*insure.getQty());
 			insure.setType(incfg.getType());
-			boolean add = InsureManager.getInstance().addInsure(insure.getPlayerid(), insure);	
-			if (add==false){
+			ret = InsureManager.getInstance().addInsure(insure.getPlayerid(), insure);	
+			if (ret!=RetMsg.MSG_OK){
 				//钱放回去:
+				log.warn("pid:"+insure.getPlayerid()+", warn, insure error"+insure.getPlayerid());
 				super.pushLive(insure.getPlayerid(),  insure.getAmount());
-				ret = RetMsg.MSG_SQLExecuteError;
 			}
 			super.playerTopUpdate(insure.getPlayerid());
+			log.info("pid:"+insure.getPlayerid()+" add insure itemid="+insure.getItemid()+",ret:"+ret+",amount:"+insure.getAmount());
 		}else {
-			System.out.println("insure没找到存款吗:"+ret);
+			log.warn("pid:"+insure.getPlayerid()+" error,saving not found for insure:"+ret);
 		}
 		writeMsg(ret);
 		return null;

@@ -22,6 +22,7 @@ import com.alibaba.fastjson.JSON;
 
 import cn.hd.base.Base;
 import cn.hd.base.BaseService;
+import cn.hd.cf.action.RetMsg;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Quote;
@@ -63,10 +64,10 @@ public class StockManager extends MgrBase{
     	Set<String> playerids = jedis.hkeys(super.DATAKEY_STOCK);
     	for (String strpid:playerids){
     		String jsonitems = jedis.hget(super.DATAKEY_STOCK, strpid);
-    		log.warn("get stock:"+jsonitems);
     		List<Stock> list = JSON.parseArray(jsonitems, Stock.class);
     		stocksMap.put(Integer.valueOf(strpid), list);
     	}
+    	
     	jedisClient.returnResource(jedis);
     	log.warn("load stocks :" + playerids.size());    
     	
@@ -237,7 +238,7 @@ public class StockManager extends MgrBase{
 
 	}
     
-    public synchronized boolean addStock(int playerId,Stock record){
+    public synchronized int addStock(int playerId,Stock record){
 		List<Stock> list = getStockList(playerId);
 		if (list==null){
 			list = new ArrayList<Stock>();
@@ -245,17 +246,16 @@ public class StockManager extends MgrBase{
 		}
 		list.add(record);
 		dataThread.updateStock(playerId, JSON.toJSONString(list));
-		return true;
+		return RetMsg.MSG_OK;
 	}
 
-	public synchronized boolean deleteStock(int playerId,int stockId,int qty){
+	public synchronized int deleteStock(int playerId,int stockId,int qty){
 		List<Stock> list = getStockList(playerId);
 		if (list==null)
-			return false;
+			return RetMsg.MSG_StockNotExist;
 		
 		int needRemoveQty = qty;
 		boolean updated = false;
-		boolean exec = false;
 		for (int i=0;i<list.size();i++){
 			Stock ss = list.get(i);
 			if (ss.getItemid().intValue()!=stockId)
@@ -267,22 +267,21 @@ public class StockManager extends MgrBase{
 				needRemoveQty -= ss.getQty();
 				list.remove(i);
 				i--;
-				System.out.println("删除:"+ss.getQty());
+				log.warn("delete stock:"+ss.getQty());
 			}else {
 				ss.setQty(ss.getQty()-needRemoveQty);
 				ss.setAmount(ss.getQty()*ss.getPrice());
-				System.out.println("更新:"+ss.getQty());
+				log.warn("update stock:"+ss.getQty());
 				needRemoveQty = 0;
 //				dataThread.updateStock(ss);
 			}
 			if (needRemoveQty==0) {
-				exec = true;
 				break;
 			}
 		}		
 		if (updated)
 			dataThread.updateStock(playerId, JSON.toJSONString(list));
-		return exec;
+		return RetMsg.MSG_OK;
 	}
 
 	public synchronized String getStocks(int playerId){

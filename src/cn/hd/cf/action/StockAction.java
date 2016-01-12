@@ -80,24 +80,22 @@ public class StockAction extends SavingAction {
 		//先扣钱:
 		ret = super.pushLive(stock.getPlayerid(), inAmount);
 		if (ret==0){
-			boolean exec = false;	
 			if (stock.getQty()>0){
 				stock.setCreatetime(new Date());
-				exec = stockMgr.addStock(stock.getPlayerid(), stock);	
-				System.out.println("购买股票:"+stock.getItemid()+",qty="+stock.getQty());
+				ret = stockMgr.addStock(stock.getPlayerid(), stock);	
 			}else {
 				int qq = (0 - stock.getQty());
-				System.out.println("抛售股票:"+stock.getItemid()+",qty="+qq);
-				exec = stockMgr.deleteStock(stock.getPlayerid(), stock.getItemid(), qq);
+				ret = stockMgr.deleteStock(stock.getPlayerid(), stock.getItemid(), qq);
 			}
-			if (exec==false){
+			if (ret!=RetMsg.MSG_OK){
 				//钱放回去:
+				log.warn("pid:"+stock.getPlayerid()+", warn,stock error:"+stock.getPlayerid()+",item:"+stock.getItemid()+",qty:"+stock.getQty());
 				super.pushLive(stock.getPlayerid(),  stock.getAmount());
-				ret = RetMsg.MSG_SQLExecuteError;
 			}
+			log.info("pid:"+stock.getPlayerid()+" buy stock:,itemid="+stock.getItemid()+",qty="+stock.getQty()+",ret:"+ret);
 			super.playerTopUpdate(stock.getPlayerid());
 		}else {
-			System.out.println("没找到存款吗:"+ret);
+			log.warn("pid:"+stock.getPlayerid()+",error,player saving not found for stock:"+ret);
 		}
 		writeMsg(ret);
 		return null;

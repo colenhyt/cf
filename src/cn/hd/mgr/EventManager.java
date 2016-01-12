@@ -1,10 +1,13 @@
 package cn.hd.mgr;
 
+import org.apache.log4j.Logger;
+
 
 public class EventManager extends java.util.TimerTask{
 	public static int TICK_PERIOD = 3000;
     private static EventManager uniqueInstance = null;  
 	private Boolean isStart;
+	protected Logger  log = Logger.getLogger(getClass()); 
 	
     public static EventManager getInstance() {  
         if (uniqueInstance == null) {  
@@ -19,7 +22,8 @@ public class EventManager extends java.util.TimerTask{
 	
 	public void start(){
 		if (isStart) return;
-		System.out.println("EventManager start....");
+		
+		log.info("EventManager start....");
 		
 		isStart = true;
 		

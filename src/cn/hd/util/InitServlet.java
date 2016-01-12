@@ -23,6 +23,6 @@ public class InitServlet extends HttpServlet{
 		ToplistManager.getInstance().init();
 		EventManager.getInstance().start();
 		
-		log.info("pingan moneylife init successful!");
+		log.warn("pingan moneylife startup successful!");
 	}
 }

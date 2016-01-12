@@ -14,6 +14,7 @@ import redis.clients.jedis.Jedis;
 import com.alibaba.fastjson.JSON;
 
 import cn.hd.base.BaseService;
+import cn.hd.cf.action.RetMsg;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Insuredata;
 import cn.hd.cf.model.Saving;
@@ -91,10 +92,10 @@ public class InsureManager extends MgrBase{
     	return list;
 	}
     
-	public synchronized boolean deleteInsure(int playerId,Insure record){
+	public synchronized int deleteInsure(int playerId,Insure record){
 		List<Insure> list = getInsureList(playerId);
 		if (list==null)
-			return false;
+			return RetMsg.MSG_InsureNotExist;
 		
 		boolean found = false;
 		for (int i=0;i<list.size();i++){
@@ -105,14 +106,13 @@ public class InsureManager extends MgrBase{
 			}
 		}
 		if (found){
-			System.out.println("删除后json: "+list.size());
 			dataThread.updateInsure(playerId, JSON.toJSONString(list));
-			return true;
+			return RetMsg.MSG_OK;
 		}
-		return false;
+		return RetMsg.MSG_InsureNotExist;
 	}
 
-	public synchronized boolean addInsure(int playerId,Insure record){
+	public synchronized int addInsure(int playerId,Insure record){
 		List<Insure> list = getInsureList(playerId);
 		boolean found = false;
 		if (list==null){
@@ -127,11 +127,11 @@ public class InsureManager extends MgrBase{
 			}
 		}
 		if (found){
-			return false;
+			return RetMsg.MSG_InsureIsExist;
 		}
 		list.add(record);
 		dataThread.updateInsure(playerId, JSON.toJSONString(list));
-		return true;
+		return RetMsg.MSG_OK;
 	}
 
 	public static void main(String[] args) {

@@ -123,7 +123,7 @@ public class LoginAction extends SavingAction {
 
 	public synchronized String login()
 	{
-//		log.warn("enter game:"+player.getPlayername()+",openid :"+player.getOpenid());
+		log.info("openid:"+player.getOpenid()+" enter game:"+player.getPlayername());
 		PlayerWithBLOBs playerBlob = DataManager.getInstance().findPlayer(player.getPlayername());
 		if (playerBlob==null)
 		{
@@ -135,9 +135,8 @@ public class LoginAction extends SavingAction {
 			return obj.toString();
 		}
 		
-//		log.warn("login success:"+player.getPlayername()+",tel :"+player.getTel());
+		log.warn("openid:"+player.getOpenid()+",pid:"+playerBlob.getPlayerid()+" login success,name:"+player.getPlayername());
 		
-		//System.out.println("player("+playerBlob.getPlayername()+") login success");
 		return serialize(playerBlob);
 	}
 	
@@ -225,7 +224,7 @@ public class LoginAction extends SavingAction {
 //				ToplistManager.getInstance().addToplist(playerBlob.getPlayerid(),playerBlob.getPlayername(),saving.getAmount());	
 			}
 //			JSONObject obj = JSONObject.fromObject(playerBlob);	
-//			log.warn("register success:name:"+player.getPlayername()+",tel"+player.getTel());
+			log.warn("openid:"+playerBlob.getOpenid()+", pid:"+playerBlob.getPlayerid()+",register success:,name:"+player.getPlayername());
 //			write(obj.toString(),"utf-8");
 			return serialize(playerBlob);
 		}

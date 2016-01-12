@@ -47,7 +47,7 @@ public class SavingAction extends BaseAction {
 		currLive.setUpdatetime(new Date());	
 		boolean update = SavingManager.getInstance().updateSavingAmount(currLive);	
 		
-		log.warn("活期存款更新:"+saving.getPlayerid()+";value="+currLive.getAmount()+";itemid="+currLive.getItemid());
+		log.warn("pid:"+saving.getPlayerid()+" livesaving update value="+currLive.getAmount()+";itemid="+currLive.getItemid());
 		 playerTopUpdate(saving.getPlayerid());
 		 
 		if (update==false){
@@ -69,13 +69,13 @@ public class SavingAction extends BaseAction {
 			playerMoneyUpdate(saving2);		
 			return RetMsg.MSG_OK;
 		}else {
-			System.out.println("could not found livsaving for playerid:"+playerId);
+			log.warn("pid:"+playerId+",error,could not found livsaving for playerid:");
 			return RetMsg.MSG_NoSavingData;
 		}
 	}	
 	
 	protected boolean playerMoneyUpdate(Saving saving){
-		System.out.println("活期存款更新:"+saving.getPlayerid()+";value="+saving.getAmount());
+		log.info("pid:"+saving.getPlayerid()+" liveupdate value="+saving.getAmount());
 		boolean u = SavingManager.getInstance().updateLiveSaving(saving);	
 		 playerTopUpdate(saving.getPlayerid());
 		//更新排行榜金钱:
@@ -174,10 +174,10 @@ public class SavingAction extends BaseAction {
 			return null;
 		}
 		
-		boolean exec = false;
 		Saving newsaving = new Saving();
 		newsaving.setItemid(saving.getItemid());
 		newsaving.setPlayerid(saving.getPlayerid());
+		int ret = RetMsg.MSG_OK;
 		//取出存款:
 		if (saving.getAmount()<0){
 			float inAmount = 0 - saving.getAmount();
@@ -204,7 +204,7 @@ public class SavingAction extends BaseAction {
 				newsaving.setProfit((float)iInter);				
 			}
 			pushLive(saving.getPlayerid(), inAmount);		//放回活期;
-			exec = SavingManager.getInstance().deleteSaving(saving.getPlayerid(),saving);	
+			ret = SavingManager.getInstance().deleteSaving(saving.getPlayerid(),saving);
 		}else {
 			
 			pushLive(saving.getPlayerid(), 0 - saving.getAmount());
@@ -217,13 +217,15 @@ public class SavingAction extends BaseAction {
 			saving.setQty(1);
 			saving.setType(savingCfg.getType());
 			saving.setPeriod(savingCfg.getPeriod());
-			exec = SavingManager.getInstance().addSaving(saving.getPlayerid(), saving);
+			ret = SavingManager.getInstance().addSaving(saving.getPlayerid(), saving);
 		}
-		log.warn(saving.getPlayerid()+" add saving itemid="+saving.getItemid()+",rst:"+exec+",amount:"+saving.getAmount());
+		log.info("pid:"+saving.getPlayerid()+" add saving itemid="+saving.getItemid()+",ret:"+ret+",amount:"+saving.getAmount());
 		
-		if (exec==false){
+		//放回去
+		if (ret!=RetMsg.MSG_OK){
+			log.warn("pid:"+saving.getPlayerid()+",error,saving: "+saving.getPlayerid());
 			pushLive(saving.getPlayerid(), saving.getAmount() );
-			super.writeMsg(RetMsg.MSG_SQLExecuteError);
+			super.writeMsg(ret);
 		}else {
 			JSONObject obj = JSONObject.fromObject(newsaving);
 			super.writeMsg2(RetMsg.MSG_OK,obj.toString());
