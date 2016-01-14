@@ -29,10 +29,6 @@ Main.prototype.init = function(){
 	}
 	g_openid = openid;
 	
-	var nickname = getPar("nickname");
-	if (nickname)
-	 g_username = nickname;
-	
     var canvas = document.createElement("canvas");
     canvas.width = getSizes().SceneWidth;
     canvas.height = getSizes().SceneHeight;

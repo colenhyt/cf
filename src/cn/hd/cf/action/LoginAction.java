@@ -103,7 +103,7 @@ public class LoginAction extends SavingAction {
 				liveUpdate = true;
 				saving.setStatus((byte)1);
 				SavingManager.getInstance().updateSaving(playerId, saving);
-				log.debug(saving.getItemid()+"存款到期, 得到利息: "+inter);
+				log.debug("pid:"+playerId+" saving timeout,get inter:"+saving.getItemid()+",inter: "+inter);
 			}
 			Saving usaving = new Saving();
 			usaving.setItemid(saving.getItemid());
@@ -123,7 +123,13 @@ public class LoginAction extends SavingAction {
 
 	public synchronized String login()
 	{
-		log.info("openid:"+player.getOpenid()+" enter game:"+player.getPlayername());
+		String loginstr = "";
+		if (player.getOpenid()!=null&&player.getOpenid().length()>0)
+			loginstr += "openid:'"+player.getOpenid()+"'";
+		if (player.getPlayername()!=null&&player.getPlayername().length()>0)
+			loginstr += ",pname:"+player.getPlayername();
+		loginstr += " enter game";
+		log.info(loginstr);
 		PlayerWithBLOBs playerBlob = DataManager.getInstance().findPlayer(player.getPlayername());
 		if (playerBlob==null)
 		{
@@ -135,7 +141,7 @@ public class LoginAction extends SavingAction {
 			return obj.toString();
 		}
 		
-		log.warn("openid:"+player.getOpenid()+",pid:"+playerBlob.getPlayerid()+" login success,name:"+player.getPlayername());
+		log.warn("openid:'"+player.getOpenid()+"',pid:"+playerBlob.getPlayerid()+" login success,name:"+player.getPlayername());
 		
 		return serialize(playerBlob);
 	}
@@ -224,7 +230,7 @@ public class LoginAction extends SavingAction {
 //				ToplistManager.getInstance().addToplist(playerBlob.getPlayerid(),playerBlob.getPlayername(),saving.getAmount());	
 			}
 //			JSONObject obj = JSONObject.fromObject(playerBlob);	
-			log.warn("openid:"+playerBlob.getOpenid()+", pid:"+playerBlob.getPlayerid()+",register success:,name:"+player.getPlayername());
+			log.warn("openid:'"+playerBlob.getOpenid()+"', pid:"+playerBlob.getPlayerid()+",register success:,name:"+player.getPlayername());
 //			write(obj.toString(),"utf-8");
 			return serialize(playerBlob);
 		}

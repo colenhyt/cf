@@ -121,7 +121,7 @@ public class DataThread extends Thread {
 	        			p.hset(DataManager.getInstance().DATAKEY_PLAYER, String.valueOf(item.getPlayerid()), JSON.toJSONString(item));
 	        			p.hset(DataManager.getInstance().DATAKEY_PLAYER_ID, item.getPlayername(),String.valueOf(item.getPlayerid()));
 	        		}
-		    		log.warn("batch add players :"+newPlayersVect.size());
+//		    		log.warn("batch add players :"+newPlayersVect.size());
 		    		newPlayersVect.clear(); 	        		
 	        	}
 	        	
@@ -130,7 +130,7 @@ public class DataThread extends Thread {
 	        			Player item = updatePlayersVect.get(i);
 	        			p.hset(DataManager.getInstance().DATAKEY_PLAYER, String.valueOf(item.getPlayerid()), JSON.toJSONString(item));
 	        		}
-		    		log.warn("batch update players :"+updatePlayersVect.size());
+//		    		log.warn("batch update players :"+updatePlayersVect.size());
 		    		updatePlayersVect.clear(); 	        		
 	        	}
 	        	
@@ -140,7 +140,7 @@ public class DataThread extends Thread {
 	        			String json = updateSavingMap.get(playerid);
 	        			p.hset(DataManager.getInstance().DATAKEY_SAVING, String.valueOf(playerid), json);
 	        		}
-		    		log.warn("batch set saving :"+updateSavingMap.size());
+//		    		log.warn("batch set saving :"+updateSavingMap.size());
 		    		updateSavingMap.clear();    	    			
 	    		}
 	    		
@@ -151,7 +151,7 @@ public class DataThread extends Thread {
 	        			String json = updateInsureMap.get(playerid);
 	        			p.hset(DataManager.getInstance().DATAKEY_INSURE, String.valueOf(playerid), json);
 	        		}
-		    		log.warn("batch set insure :"+updateInsureMap.size());
+//		    		log.warn("batch set insure :"+updateInsureMap.size());
 		    		updateInsureMap.clear();    	    			
 	    		}
 	        	
@@ -161,14 +161,14 @@ public class DataThread extends Thread {
 	        			String json = updateStockMap.get(playerid);
 	        			p.hset(DataManager.getInstance().DATAKEY_STOCK, String.valueOf(playerid), json);
 	        		}
-		    		log.warn("batch set stock :"+updateStockMap.size());
+//		    		log.warn("batch set stock :"+updateStockMap.size());
 		    		updateStockMap.clear();    	    			
 	    		}	    	
 	    		
 	    		if (newToplistVect.size()>0){
 		    		ToplistService service2= new ToplistService();
 		    		service2.addToplists(newToplistVect);
-		    		log.warn("batch add toplist :"+newToplistVect.size());
+//		    		log.warn("batch add toplist :"+newToplistVect.size());
 		    		newToplistVect.clear();    	    			
 	    		}
 	        	
@@ -178,7 +178,7 @@ public class DataThread extends Thread {
 	        			p.hset(DataManager.getInstance().DATAKEY_TOPLIST, String.valueOf(toplist.getPlayerid()), JSON.toJSONString(toplist));
 	    				
 	    			}
-		    		log.warn("batch update toplist :"+updateToplistVect.size());
+//		    		log.warn("batch update toplist :"+updateToplistVect.size());
 		    		updateToplistVect.clear();    	    			
 	    		}	    		
         		p.sync();

@@ -375,6 +375,7 @@ Login.prototype.loginCallback = function(obj){
 	if (objdata.code!=null&&objdata.code>0){
 	 this.msg('登陆失败: '+ERR_MSG[objdata.code]);
 	 g_logindata = null;
+	 g_username = null;
 	 return;
 	}
 		

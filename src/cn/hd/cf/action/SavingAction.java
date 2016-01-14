@@ -142,7 +142,7 @@ public class SavingAction extends BaseAction {
         c2.setTime(saving.getUpdatetime());
         float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
        float periodMinutes = saving.getPeriod()*60*24;//天:分钟
-       System.out.println("剩余时间: "+diffdd+",周期时间:"+periodMinutes);
+//       System.out.println("剩余时间: "+diffdd+",周期时间:"+periodMinutes);
        if ((diffdd-periodMinutes)>0.001)		//定期到期
 		{
 			return true;
