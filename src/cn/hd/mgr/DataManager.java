@@ -143,16 +143,12 @@ public class DataManager extends MgrBase {
 	public synchronized PlayerWithBLOBs findPlayer(String playerName) {
 		Integer playerid = playerIdMaps.get(playerName);
 		if (playerid == null) {
-//			Jedis jedis = jedisClient.getJedis();
-//			if (!jedis.hexists(super.DATAKEY_PLAYER_ID, playerName)){
-//				return null;
-//			}
-//			String idstr = jedis.hget(super.DATAKEY_PLAYER_ID, playerName);
-//			jedisClient.returnResource(jedis);
-//			if (idstr!=null){
-//				playerid = Integer.valueOf(idstr);
-//				playerIdMaps.put(idstr, playerid);
-//			}else
+			Jedis jedis = jedisClient.getJedis();
+			String idstr = jedis.hget(super.DATAKEY_PLAYER_ID, playerName);
+			jedisClient.returnResource(jedis);
+			if (idstr!=null){
+				playerid = Integer.valueOf(idstr);
+			}else
 				return null;
 		}
 		return findPlayer(playerid);
@@ -161,19 +157,16 @@ public class DataManager extends MgrBase {
 	public synchronized PlayerWithBLOBs findPlayer(int playerid) {
 		PlayerWithBLOBs player = playerMaps.get(playerid);
 		if (player==null){
-//			Jedis jedis = jedisClient.getJedis();
-//			if (!jedis.hexists(super.DATAKEY_PLAYER, String.valueOf(playerid))){
-//				return null;
-//			}			
-//			String itemstr = jedis.hget(super.DATAKEY_PLAYER, String.valueOf(playerid));
-//			jedisClient.returnResource(jedis);			
-//			if (itemstr!=null){
-//				player = (PlayerWithBLOBs)JSON.parseObject(itemstr,PlayerWithBLOBs.class);
-//				playerMaps.put(playerid, player);
-//				if (!playerIdMaps.containsKey(player.getPlayername())){
-//					playerIdMaps.put(player.getPlayername(), playerid);
-//				}
-//			}
+			Jedis jedis = jedisClient.getJedis();
+			String itemstr = jedis.hget(super.DATAKEY_PLAYER, String.valueOf(playerid));
+			jedisClient.returnResource(jedis);			
+			if (itemstr!=null){
+				player = (PlayerWithBLOBs)JSON.parseObject(itemstr,PlayerWithBLOBs.class);
+				playerMaps.put(playerid, player);
+				if (!playerIdMaps.containsKey(player.getPlayername())){
+					playerIdMaps.put(player.getPlayername(), playerid);
+				}
+			}
 		}
 		return player;
 	}
@@ -238,17 +231,6 @@ public class DataManager extends MgrBase {
 	}
 
 	public void init() {
-		
-//		String path = Thread.currentThread().getContextClassLoader()
-//				.getResource("/").getPath();
-//		String cfgstr = FileUtil.readFile(path + "config.properties");
-//		if (cfgstr == null || cfgstr.trim().length() <= 0) {
-//			return;
-//		}
-//		JSONObject ppObj = JSONObject.fromObject(cfgstr);
-//		cfg = (Config) JSONObject.toBean(ppObj, Config.class);
-//		System.out.println(cfgstr);
-
 		loginAction = new LoginAction();
 
 		InitdataService initdataService = new InitdataService();
@@ -269,7 +251,7 @@ public class DataManager extends MgrBase {
 	public static void main(String[] args) {
 		DataManager stmgr = DataManager.getInstance();
 		stmgr.init();
-		stmgr.findPlayer(33);
+		stmgr.findPlayer(1335);
 		stmgr.findPlayer("ppnane");
 		PlayerWithBLOBs pp = new PlayerWithBLOBs();
 		pp.setPlayerid(33);
