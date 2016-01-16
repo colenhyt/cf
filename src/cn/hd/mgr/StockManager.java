@@ -10,26 +10,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.Vector;
 
 import net.sf.json.JSONArray;
 
 import org.apache.log4j.Logger;
 
 import redis.clients.jedis.Jedis;
-
-import com.alibaba.fastjson.JSON;
-
 import cn.hd.base.Base;
 import cn.hd.base.BaseService;
 import cn.hd.cf.action.RetMsg;
-import cn.hd.cf.model.Insure;
-import cn.hd.cf.model.Stock;
+import cn.hd.cf.model.Player;
 import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Stockdata;
 import cn.hd.cf.service.StockService;
 import cn.hd.cf.tools.StockdataService;
+
+import com.alibaba.fastjson.JSON;
 
 public class StockManager extends MgrBase{
 	protected Logger  log = Logger.getLogger(getClass()); 

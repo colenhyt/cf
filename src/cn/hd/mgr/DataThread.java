@@ -68,7 +68,7 @@ public class DataThread extends Thread {
 		newPlayersVect.add(record);
 	}
 	
-	public synchronized void updatePlayer(PlayerWithBLOBs record){
+	public synchronized void updatePlayer(Player record){
 		updatePlayersVect.add(record);
 	}
 	

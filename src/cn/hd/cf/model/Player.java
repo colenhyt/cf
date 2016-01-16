@@ -5,7 +5,17 @@ import java.util.Date;
 public class Player {
 	private String createTimeStr;
 	private String updateTimeStr;
-    public String getCreateTimeStr() {
+	private Date questdonetime;
+	
+    public Date getQuestDoneTime() {
+		return questdonetime;
+	}
+
+	public void setQuestDoneTime(Date questDoneTime) {
+		this.questdonetime = questDoneTime;
+	}
+
+	public String getCreateTimeStr() {
 		return createTimeStr;
 	}
 

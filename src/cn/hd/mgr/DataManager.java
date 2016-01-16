@@ -2,6 +2,7 @@ package cn.hd.mgr;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import redis.clients.jedis.Jedis;
 import cn.hd.cf.action.LoginAction;
 import cn.hd.cf.model.Init;
 import cn.hd.cf.model.Insure;
+import cn.hd.cf.model.Player;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
@@ -172,7 +174,7 @@ public class DataManager extends MgrBase {
 	}
 
 	public synchronized boolean updatePlayer(PlayerWithBLOBs player) {
-		PlayerWithBLOBs pp = findPlayer(player.getPlayerid());
+		Player pp = findPlayer(player.getPlayerid());
 		if (pp != null) {
 			pp.setExp(player.getExp());
 			dataThread.updatePlayer(pp);
@@ -181,6 +183,26 @@ public class DataManager extends MgrBase {
 		return false;
 	}
 
+	public synchronized void update(int playerid,int type){
+		Player p = findPlayer(playerid);
+		if (p==null) return;
+		
+		switch (type){
+		case 0:
+			p.setLastlogin(new Date());
+			addSignin(playerid);
+			break;
+		case 1:
+			p.setQuestDoneTime(new Date());
+			addDoneQuest(playerid);
+			break;
+		case 2:
+			p.setOpenstock((byte)1);
+		}
+		log.warn("update:"+playerid+",t:"+type);
+		dataThread.updatePlayer(p);
+	}
+	
 	public synchronized void addSignin(int playerid) {
 		dataThread.addSignin(playerid);
 	}

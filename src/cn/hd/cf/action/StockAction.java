@@ -66,7 +66,7 @@ public class StockAction extends SavingAction {
 		System.out.println("found stocks page quote:"+mquotes.size());
 		return null;
 	}	
-	
+
 	public synchronized String add(){
 		if (stock.getQty()==0){
 			return null;

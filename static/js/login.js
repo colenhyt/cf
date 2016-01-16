@@ -374,17 +374,11 @@ Login.prototype.loginCallback = function(obj){
 	var objdata = cfeval(obj);
 	if (objdata.code!=null&&objdata.code>0){
 	 this.msg('登陆失败: '+ERR_MSG[objdata.code]);
-	 g_logindata = null;
 	 g_username = null;
 	 return;
 	}
 		
-	g_logindata.playerid = parseInt(objdata.playerid);
-	g_logindata.openid = objdata.openid;
-	g_logindata.exp = parseInt(objdata.exp);
-	g_logindata.quotetime = objdata.quotetime;
-	
-    var player = g_logindata;
+    var player = objdata;
 	
 	//进入场景:先remove login页面元素
 	$('#inputnickdiv').remove();
@@ -407,8 +401,13 @@ Login.prototype.loginCallback = function(obj){
     
     g_playerlog.addlog();
     
- 	var dlog = g_playerlog.findTodayLog();	   
-    if (dlog[0]==true)
+    var hadDoneQuest = false;
+    if (player.questDoneTime!=null){
+      var donetime = new Date(player.questDoneTime);
+      hadDoneQuest = IsSameDay(new Date(),donetime);
+    }
+    
+    if (!hadDoneQuest)
 	{
 	        var accept = g_quest.onAcceptDaily();
 	        if (accept)
@@ -417,13 +416,18 @@ Login.prototype.loginCallback = function(obj){
 	        }
     }
     
-    
     this.syncLoadData(player.playerid);
     
     //player props
    // g_player.flushPageview();
     	   
-	if (dlog[1]==true)
+    var hadTodaySignin = false;
+    if (player.lastlogin!=null){
+      var logintime = new Date(player.lastlogin);
+      hadTodaySignin = IsSameDay(new Date(),logintime);
+    }
+       
+	if (!hadTodaySignin)
 	{
 		g_signin.show();
 	}else {
@@ -450,8 +454,7 @@ Login.prototype.login = function(){
 	setting += ",iPad:"+browser.versions.iPad;
 	setting += ",width:"+window.screen.width;
 	setting += ",screekey:"+g_screenkey+"}";
-    g_logindata = {playername:g_username,sex:g_login.sex,openid:g_openid};
-   	var dataParam = "jsonstr={openid:'"+g_logindata.openid+"',playername:'"+g_logindata.playername+"',sex:"+g_logindata.sex;
+   	var dataParam = "jsonstr={openid:'"+g_openid+"',playername:'"+g_username+"',sex:"+g_login.sex;
    	dataParam += setting;
    	dataParam += "}";
     var serverPlayer;

@@ -223,6 +223,13 @@ logerr = function(text){
 	g_msg.open(text);
 }
 
+IsSameDay = function(date1,date2){  
+    var mymonth=date1.getMonth();
+    var myday= date1.getDate();
+    var myyear= date1.getYear();
+    return (myyear==date2.getYear()&&mymonth==date2.getMonth()&&myday==date2.getDate());  
+}
+
 ForDight = function(Dight,point){  
 	var pp = 2;
 	if (point)

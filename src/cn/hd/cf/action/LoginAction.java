@@ -11,15 +11,13 @@ import cn.hd.base.Base;
 import cn.hd.cf.model.Init;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Message;
+import cn.hd.cf.model.Player;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
-import cn.hd.cf.model.Toplist;
-import cn.hd.cf.service.ToplistService;
 import cn.hd.mgr.DataManager;
 import cn.hd.mgr.SavingManager;
 import cn.hd.mgr.StockManager;
-import cn.hd.mgr.ToplistManager;
 import cn.hd.util.HttpXmlClient;
 
 import com.alibaba.fastjson.JSON;
@@ -178,11 +176,11 @@ public class LoginAction extends SavingAction {
 		this.player = player;
 	}
 
-	private synchronized String serialize(PlayerWithBLOBs player){
+	private synchronized String serialize(Player player){
 		float margin = StockManager.getInstance().getMarginSec();
-	  String data = "{playerid:"+player.getPlayerid()+",exp:"+player.getExp()+",quotetime:"+margin;
-	  data += ",openid:"+player.getOpenid();
-	  data += "}";
+		player.setQuotetime(margin);
+		String data = JSON.toJSONString(player);
+	  log.warn("login:"+data);
 	  return data;
 	}
 	

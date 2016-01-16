@@ -62,8 +62,8 @@ Playerlog.prototype.updateQuest = function(){
 
 Playerlog.prototype.updateSignin = function(feeling){
 	try  {
-   		var dataParam = "playerid="+g_player.data.playerid;
-		$.ajax({type:"post",url:"/cf/player_signin.do",data:dataParam,success:function(dataobj){
+   		var dataParam = "playerid="+g_player.data.playerid+"&type=0";
+		$.ajax({type:"post",url:"/cf/player_update.jsp",data:dataParam,success:function(dataobj){
 		}});
 	}   catch  (e)   {
 	    document.write(e.name);
@@ -218,12 +218,11 @@ Player.prototype.loginback = function(data){
   var playerdata = store.get(key);
   if (playerdata==null){
     playerdata = data;
-    playerdata.openstock = 0;
     store.set(key,playerdata);
   }
   
-  playerdata.lastlogin = Date.parse(new Date());
   playerdata.quotetime = data.quotetime;
+  playerdata.openstock = data.openstock;
   playerdata.playerid = data.playerid;
   playerdata.exp = data.exp;
     

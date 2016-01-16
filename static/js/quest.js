@@ -189,8 +189,8 @@ Quest.prototype.doneQuest = function(quest){
     if (doneCount>=items.length){
      //alert('任务已全部完成:'+doneCount);
 		try  {
-	   		var dataParam = "playerid="+g_player.data.playerid;
-			$.ajax({type:"post",url:"/cf/player_donetask.do",data:dataParam,success:function(dataobj){
+	   		var dataParam = "playerid="+g_player.data.playerid+"&type=1";
+			$.ajax({type:"post",url:"/cf/player_update.jsp",data:dataParam,success:function(dataobj){
 			}});
 		}   catch  (e)   {
 		    document.write(e.name);
