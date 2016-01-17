@@ -19,6 +19,7 @@ import cn.hd.cf.model.Init;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Player;
 import cn.hd.cf.model.PlayerWithBLOBs;
+import cn.hd.cf.model.Quest;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.tools.InitdataService;
@@ -122,6 +123,43 @@ public class DataManager extends MgrBase {
 		return JSON.toJSONString(data);
 	}
 
+	private synchronized boolean isSameDay(Date date){
+		Date now = new Date();
+		if (date==null||now.getYear()!=date.getYear()||now.getMonth()!=date.getMonth()||now.getDay()!=date.getDay()){
+			return false;
+		}		
+		return true;
+	}
+	
+	public synchronized String get_quest(int playerid){
+		Player p = findPlayer(playerid);
+		if (p==null) return "";
+		//随机任务两个:
+		int questcount = 0;
+		Date lastlogin = p.getLastlogin();
+		boolean istoday = isSameDay(p.getLastlogin());
+		String queststr = p.getQuestStr();
+		int qid = -1;
+		if (queststr==null){
+			if (!istoday){
+				questcount = 2;
+			}
+		}else {
+			List<Quest> ql = JSON.parseArray(queststr, Quest.class);
+			//只有一个任务, 隔天，再分配一个:
+			if (ql.size()==1){
+				qid = ql.get(0).getId();
+				if (istoday==false){
+					questcount = 1;
+				}
+			}
+			questcount -= ql.size();
+		}		for (int i=0;i<questcount;i++){
+			
+		}
+		return "";
+	}
+	
 	public synchronized int get_top(int playerid) {
 		float fMm = loginAction.calculatePlayerMoney(playerid);
 
@@ -194,8 +232,14 @@ public class DataManager extends MgrBase {
 			addSignin(playerid);
 			break;
 		case 1:
+			p.setQuestdonecount(p.getQuestdonecount()+1);
+			if (p.getQuestdonecount()==2){
+				addDoneQuest(playerid);
+			}
 			p.setQuestDoneTime(new Date());
-			addDoneQuest(playerid);
+			if (p.getQuestdonecount()==3){
+				p.setQuestdonecount(1);
+			}
 			break;
 		case 2:
 			p.setOpenstock((byte)1);

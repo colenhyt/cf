@@ -9,11 +9,6 @@
 		</action>
 	</package>
 	
-	<package name="player" extends="struts-default" namespace="/">
-		<action name="player_*" method="{1}" class="cn.hd.cf.action.PlayerAction">
-		</action>
-	</package>
-		    
 	<package name="toplist" extends="struts-default" namespace="/">
 		<action name="toplist_*" method="{1}" class="cn.hd.cf.action.ToplistAction">
 		</action>

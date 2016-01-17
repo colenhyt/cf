@@ -117,7 +117,16 @@ if (g_player.data!=null)
  return g_player.data.playername+"_"+g_quest.name;
 }
 
-Quest.prototype.onAcceptDaily = function(){
+Quest.prototype.reset = function(questdonecount){
+    var datakey = g_quest.questkey();
+	var pquest = store.get(datakey); 
+	if (pquest.length>=1&&questdonecount>0){
+	 pquest.splice(0,questdonecount);
+	store.set(datakey,pquest);
+	}
+}
+
+Quest.prototype.onAcceptDaily = function(questdonecount){
     var datakey = g_quest.questkey();
 	var pquest = store.get(datakey);
 	if (pquest==null){
@@ -130,7 +139,7 @@ Quest.prototype.onAcceptDaily = function(){
 	}
 	var tdata = store.get(this.name);
 	var qids = [];
-	var cc = this.dailyCount-pquest.length;
+	var cc = this.dailyCount-questdonecount;
 	if (cc>tdata.length)
 		cc = tdata.length;
 	var existId = 0;
@@ -178,15 +187,7 @@ Quest.prototype.doneQuest = function(quest){
     }
     store.set(datakey,items);
     
-    //当天任务是否已全部完成:
-    var doneCount = 0;
-    for (var i=0;i<items.length;i++){
-    	var item = items[i];
-    	if (item.status==QUEST_STATUS.DONE){
-    	 doneCount++;
-    	}
-    }    
-    if (doneCount>=items.length){
+    //当天任务是否已全部完成:  
      //alert('任务已全部完成:'+doneCount);
 		try  {
 	   		var dataParam = "playerid="+g_player.data.playerid+"&type=1";
@@ -195,7 +196,6 @@ Quest.prototype.doneQuest = function(quest){
 		}   catch  (e)   {
 		    document.write(e.name);
 		}      
-    }
 }
 
 Quest.prototype.getQuetPrize = function(id){
@@ -222,6 +222,15 @@ Quest.prototype.getQuetPrize = function(id){
 	store.set(g_quest.questkey(),quests);
 	
 	this.buildPage(0);
+
+//	try  {
+//   		var dataParam = "playerid="+g_player.data.playerid+"&type=3&questid="+id;
+//		$.ajax({type:"post",url:"/cf/player_update.jsp",data:dataParam,success:function(dataobj){
+//		}});
+//	}   catch  (e)   {
+//	    document.write(e.name);
+//	}   	
+	
 }
 
 Quest.prototype.onBuyItem = function(tname,item,qty){

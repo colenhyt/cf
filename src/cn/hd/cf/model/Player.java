@@ -6,8 +6,26 @@ public class Player {
 	private String createTimeStr;
 	private String updateTimeStr;
 	private Date questdonetime;
+	private int questdonecount = 0;
+	public int getQuestdonecount() {
+		return questdonecount;
+	}
+
+	public void setQuestdonecount(int questdonecount) {
+		this.questdonecount = questdonecount;
+	}
+
+	private String questStr = null;
 	
-    public Date getQuestDoneTime() {
+    public String getQuestStr() {
+		return questStr;
+	}
+
+	public void setQuestStr(String questStr) {
+		this.questStr = questStr;
+	}
+
+	public Date getQuestDoneTime() {
 		return questdonetime;
 	}
 

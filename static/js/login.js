@@ -401,19 +401,23 @@ Login.prototype.loginCallback = function(obj){
     
     g_playerlog.addlog();
     
-    var hadDoneQuest = false;
+    var istoday = false;
     if (player.questDoneTime!=null){
       var donetime = new Date(player.questDoneTime);
-      hadDoneQuest = IsSameDay(new Date(),donetime);
+      istoday = IsSameDay(new Date(),donetime);
     }
     
-    if (!hadDoneQuest)
+     g_quest.reset(player.questdonecount);
+    if (!istoday)
 	{
-	        var accept = g_quest.onAcceptDaily();
-	        if (accept)
-	        {
-	        	g_playerlog.updateQuest();
-	        }
+		var donecount = player.questdonecount;
+		if (donecount==2)
+			donecount = 0;
+        var accept = g_quest.onAcceptDaily(donecount);
+        if (accept)
+        {
+        	g_playerlog.updateQuest();
+        }
     }
     
     this.syncLoadData(player.playerid);
