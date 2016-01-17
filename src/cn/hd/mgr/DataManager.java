@@ -125,6 +125,7 @@ public class DataManager extends MgrBase {
 	public synchronized int get_top(int playerid) {
 		float fMm = loginAction.calculatePlayerMoney(playerid);
 
+		ToplistManager.getInstance().load();
 		int top = ToplistManager.getInstance().findCountByGreaterMoney(
 				playerid, 0, fMm);
 		// 800ms/1k

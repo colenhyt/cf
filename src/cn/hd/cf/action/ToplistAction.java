@@ -11,10 +11,10 @@ public class ToplistAction extends BaseAction {
 	private Toplist toplist;
 
 	public String list(){
+		ToplistManager.getInstance().load();
 		List<Toplist> weeklist = ToplistManager.getInstance().findByType(0);
 		List<Toplist> monthlist = ToplistManager.getInstance().findByType(1);
 		
-		System.out.println("get toplist playerid:"+toplist.getPlayerid());
 		Toplist weektop = ToplistManager.getInstance().findByPlayerId(toplist.getPlayerid());
 		Toplist monthtop = null;
 		if (weektop!=null){

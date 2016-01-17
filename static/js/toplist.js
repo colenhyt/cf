@@ -6,27 +6,15 @@ Toplist = function(){
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
    this.pageheader = this.tagname+"header";
-     this.tagtab1 = this.name+"tab1";
-    this.tagtab2 = this.name+"tab2";
     this.zandata = this.name+"zan";    
+    this.weekdata = [];
+    this.monthdata = [];
     this.syncDuration = 5;
 }
 
 Toplist.prototype = new Datamgr();
 
 Toplist.prototype.init = function(){
-store.remove(this.tagtab1);
-store.remove(this.tagtab2);
-	var tdata = store.get(this.tagtab1);
-	if (tdata==null)
-	{
-		store.set(this.tagtab1,[]);
-	} 
-	tdata = store.get(this.tagtab2);
-	if (tdata==null)
-	{
-		store.set(this.tagtab2,[]);
-	} 
 	var pzan = store.get(this.zandata);
 	if (pzan==null){
 		store.set(this.zandata,{});
@@ -84,12 +72,12 @@ Toplist.prototype.showToplist = function(type,page)
 	var tdata;
         var   header ="";
 	if (type==0) {
-	    tdata = store.get(this.tagtab1);
+	    tdata = this.weekdata;
             header += "<button class='cf_title_bg moff' onclick='g_toplist.showToplist(1,0)'></button>"
             header += "<button class='cf_title_bg won'></button>"
 	}
 	else if (type==1){
-		tdata = store.get(this.tagtab2);
+		tdata = this.monthdata;
            header += "<button class='cf_title_bg woff' onclick='g_toplist.showToplist(0,0)'></button>"
             header += "<button class='cf_title_bg mon'></button>"
         }        	
@@ -236,23 +224,19 @@ Toplist.prototype.zan = function(page,playerId)
 	    document.write(e.name);
 	}   
 	
-    var tdata1 = store.get(this.tagtab1);
-    for (var i=0;i<tdata1.length;i++){
-        if (tdata1[i].playerid==playerId) {
-            tdata1[i].zan = zanCount;
+    for (var i=0;i<g_toplist.weekdata.length;i++){
+        if (g_toplist.weekdata[i].playerid==playerId) {
+            g_toplist.weekdata[i].zan = zanCount;
              break;
         }
     }
-    store.set(this.tagtab1,tdata1);
 	
-    var tdata2 = store.get(this.tagtab2);
-    for (var i=0;i<tdata2.length;i++){
-        if (tdata2[i].playerid==playerId) {
-            tdata2[i].zan = zanCount;
+    for (var i=0;i<g_toplist.monthdata.length;i++){
+        if (g_toplist.monthdata[i].playerid==playerId) {
+            g_toplist.monthdata[i].zan = zanCount;
              break;
         }
     }
-    store.set(this.tagtab2,tdata2);
         
 	zanTag.innerHTML = zanCount;
 	
@@ -262,15 +246,6 @@ Toplist.prototype.zan = function(page,playerId)
 	 
 }
 
-Toplist.prototype.updateData = function(data){
-	if (data.length>0){
-		store.set(this.tagtab1,data[0]);
-		store.set(this.tagtab2,data[1]);
-	}
-	this.showToplist(0,0);
-	
-}
-
 Toplist.prototype.syncData2 = function(){
 	g_msg.showload("g_toplist.syncData2");
 	
@@ -278,7 +253,11 @@ Toplist.prototype.syncData2 = function(){
 		var data= "playerid="+g_player.data.playerid;
 		$.ajax({type:"post",url:"/cf/toplist_get.jsp",data:data,success:function(data){
 		 var obj = cfeval (data);
-		 g_toplist.updateData(obj);
+		 if (obj.length>0){
+		 g_toplist.weekdata = obj[0];
+		 g_toplist.monthdata = obj[1];
+		 }
+		 g_toplist.showToplist(0,0);
          g_msg.destroyload();
 		}});
 	}   catch  (e)   {

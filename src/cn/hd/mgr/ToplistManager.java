@@ -37,11 +37,9 @@ public class ToplistManager extends MgrBase{
     	
     	toplistMap = Collections.synchronizedMap(new HashMap<Integer,Toplist>());
    	
-    	load();
-    	
     }
     
-    private synchronized void load(){
+    public synchronized void load(){
     	toplistMap.clear();
     	
     	Jedis jedis = jedisClient.getJedis();   	
@@ -93,7 +91,6 @@ public class ToplistManager extends MgrBase{
 			}
 		}
 		
-		load();
 		int cc = 0;
 		Date fristDate = getFirstDate(type,new Date());
 		Collection<Toplist> toplists = toplistMap.values();
@@ -206,7 +203,6 @@ public class ToplistManager extends MgrBase{
 		
 		Date firstDate = getFirstDate(type,new Date());
 		
-		load();
 		List<Toplist> list = new ArrayList<Toplist>();
 		Collection<Toplist> toplists = toplistMap.values();
 		for (Toplist top:toplists){
