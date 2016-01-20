@@ -23,7 +23,7 @@ import cn.hd.util.HttpXmlClient;
 import com.alibaba.fastjson.JSON;
 
 public class LoginAction extends SavingAction {
-	private PlayerWithBLOBs player;
+	private Player player;
 	
 	public String connect(){
 		Message msg = new Message();
@@ -41,7 +41,7 @@ public class LoginAction extends SavingAction {
 		return 0;
 	}
 	
-	public synchronized String getPlayerJsonData(PlayerWithBLOBs playerBlob)
+	public synchronized String getPlayerJsonData(Player playerBlob)
 	{
 		Map<Integer,Insure> insures = findUpdatedInsures(playerBlob.getPlayerid());
 		playerBlob.setInsure(JSON.toJSONString(insures));		
@@ -121,14 +121,14 @@ public class LoginAction extends SavingAction {
 
 	public synchronized String login()
 	{
-		String loginstr = "";
-		if (player.getOpenid()!=null&&player.getOpenid().length()>0)
-			loginstr += "openid:'"+player.getOpenid()+"'";
-		if (player.getPlayername()!=null&&player.getPlayername().length()>0)
-			loginstr += ",pname:"+player.getPlayername();
-		loginstr += " enter game";
-		log.info(loginstr);
-		PlayerWithBLOBs playerBlob = DataManager.getInstance().findPlayer(player.getPlayername());
+//		String loginstr = "";
+//		if (player.getOpenid()!=null&&player.getOpenid().length()>0)
+//			loginstr += "openid:'"+player.getOpenid()+"'";
+//		if (player.getPlayername()!=null&&player.getPlayername().length()>0)
+//			loginstr += ",pname:"+player.getPlayername();
+//		loginstr += " enter game";
+//		//log.info(loginstr);
+		Player playerBlob = DataManager.getInstance().findPlayer(player.getPlayername());
 		if (playerBlob==null)
 		{
 			return register();
@@ -139,7 +139,7 @@ public class LoginAction extends SavingAction {
 			return obj.toString();
 		}
 		
-		log.warn("openid:'"+player.getOpenid()+"',pid:"+playerBlob.getPlayerid()+" login success,name:"+player.getPlayername());
+		//log.warn("openid:'"+player.getOpenid()+"',pid:"+playerBlob.getPlayerid()+" login success,name:"+player.getPlayername());
 		
 		return serialize(playerBlob);
 	}
@@ -169,18 +169,18 @@ public class LoginAction extends SavingAction {
 		return null;
 	}
 	
-	public PlayerWithBLOBs getPlayer() {
+	public Player getPlayer() {
 		return player;
 	}
-	public void setPlayer(PlayerWithBLOBs player) {
+	public void setPlayer(Player player) {
 		this.player = player;
 	}
 
 	private synchronized String serialize(Player player){
-		float margin = StockManager.getInstance().getMarginSec();
-		player.setQuotetime(margin);
+//		float margin = StockManager.getInstance().getMarginSec();
+//		player.setQuotetime(margin);
 		String data = JSON.toJSONString(player);
-	  log.warn("login:"+data);
+	//  log.warn("login:"+data);
 	  return data;
 	}
 	

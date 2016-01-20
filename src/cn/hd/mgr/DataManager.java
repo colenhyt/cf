@@ -38,7 +38,7 @@ public class DataManager extends MgrBase {
 	}
 
 	public Map<String, Integer> playerIdMaps;
-	public Map<Integer, PlayerWithBLOBs> playerMaps;
+	public Map<Integer, Player> playerMaps;
 	private int nextPlayerId;
 
 	private static DataManager uniqueInstance = null;
@@ -72,13 +72,9 @@ public class DataManager extends MgrBase {
 	}
 
 	public synchronized String login(String jsonStr,HttpServletRequest request) {
-		String loginStr = jsonStr+",ip:"+loginAction.getIpAddress(request);
-		log.warn("login: "+loginStr);
-		JSONObject jsonobj = JSONObject.fromObject(jsonStr);
-		PlayerWithBLOBs pp = new PlayerWithBLOBs();
-		pp.setPlayername(jsonobj.getString("playername"));
-		pp.setOpenid(jsonobj.getString("openid"));
-		pp.setSex(Byte.valueOf(jsonobj.getString("sex")));
+//		String loginStr = jsonStr+",ip:"+loginAction.getIpAddress(request);
+//		log.warn("login: "+loginStr);
+		Player pp = JSON.parseObject(jsonStr, Player.class);
 		loginAction.setPlayer(pp);
 		return loginAction.login();
 	}
@@ -105,7 +101,7 @@ public class DataManager extends MgrBase {
 
 
 	public String get_info(int playerid){
-		PlayerWithBLOBs player = this.findPlayer(playerid);
+		Player player = this.findPlayer(playerid);
 		if (player==null)
 			return null;
 		
@@ -171,7 +167,7 @@ public class DataManager extends MgrBase {
 	}
 
 	public synchronized boolean addPlayer(PlayerWithBLOBs player) {
-		PlayerWithBLOBs pp = findPlayer(player.getPlayerid());
+		Player pp = findPlayer(player.getPlayerid());
 		if (pp!=null)
 			return false;
 
@@ -181,7 +177,7 @@ public class DataManager extends MgrBase {
 		return true;
 	}
 
-	public synchronized PlayerWithBLOBs findPlayer(String playerName) {
+	public synchronized Player findPlayer(String playerName) {
 		Integer playerid = playerIdMaps.get(playerName);
 		if (playerid == null) {
 			Jedis jedis = jedisClient.getJedis();
@@ -195,8 +191,8 @@ public class DataManager extends MgrBase {
 		return findPlayer(playerid);
 	}
 
-	public synchronized PlayerWithBLOBs findPlayer(int playerid) {
-		PlayerWithBLOBs player = playerMaps.get(playerid);
+	public synchronized Player findPlayer(int playerid) {
+		Player player = playerMaps.get(playerid);
 		if (player==null){
 			Jedis jedis = jedisClient.getJedis();
 			String itemstr = jedis.hget(super.DATAKEY_PLAYER, String.valueOf(playerid));
@@ -257,7 +253,7 @@ public class DataManager extends MgrBase {
 	}
 
 	public synchronized boolean updateZan(int playerid, int zan) {
-		PlayerWithBLOBs pp = findPlayer(playerid);
+		Player pp = findPlayer(playerid);
 		if (pp != null) {
 			pp.setZan(zan);
 			dataThread.updatePlayer(pp);
@@ -311,7 +307,7 @@ public class DataManager extends MgrBase {
 		playerIdMaps = Collections
 				.synchronizedMap(new HashMap<String, Integer>());
 		playerMaps = Collections
-				.synchronizedMap(new HashMap<Integer, PlayerWithBLOBs>());
+				.synchronizedMap(new HashMap<Integer, Player>());
 		this.load();
 	}
 

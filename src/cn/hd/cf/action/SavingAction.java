@@ -9,21 +9,13 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 
-import net.sf.json.JSONObject;
 import cn.hd.base.Base;
 import cn.hd.base.BaseAction;
 import cn.hd.cf.model.Insure;
-import cn.hd.cf.model.PlayerWithBLOBs;
+import cn.hd.cf.model.Player;
 import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
-import cn.hd.cf.service.InsureService;
-import cn.hd.cf.service.PlayerService;
-import cn.hd.cf.service.SavingService;
-import cn.hd.cf.service.StockService;
-import cn.hd.cf.service.ToplistService;
-import cn.hd.cf.tools.InsuredataService;
-import cn.hd.cf.tools.SavingdataService;
 import cn.hd.mgr.DataManager;
 import cn.hd.mgr.InsureManager;
 import cn.hd.mgr.SavingManager;
@@ -85,7 +77,7 @@ public class SavingAction extends BaseAction {
 	}
 	
 	public synchronized boolean playerTopUpdate(int playerid){
-		PlayerWithBLOBs player = DataManager.getInstance().findPlayer(playerid);
+		Player player = DataManager.getInstance().findPlayer(playerid);
 		if (player!=null){
 			float money = calculatePlayerMoney(playerid);
 			 ToplistManager.getInstance().updateToplist(playerid,player.getPlayername(),money);			
