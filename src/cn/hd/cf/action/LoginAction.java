@@ -153,7 +153,7 @@ public class LoginAction extends SavingAction {
 	}
 	
 	public String update()
-	{
+	{	
 		String pp = getHttpRequest().getParameter("playerdata");
 		JSONObject ppObj = JSONObject.fromObject(pp);
 		PlayerWithBLOBs playerBlob = (PlayerWithBLOBs)JSONObject.toBean(ppObj,PlayerWithBLOBs.class);

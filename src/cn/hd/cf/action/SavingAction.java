@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
+
 import net.sf.json.JSONObject;
 import cn.hd.base.Base;
 import cn.hd.base.BaseAction;
@@ -171,7 +173,7 @@ public class SavingAction extends BaseAction {
 	{
 		//活期不存在存款取款:
 		if (saving.getItemid()==1){
-			return null;
+			return msgStr(RetMsg.MSG_NoSavingData);
 		}
 		
 		Saving newsaving = new Saving();
@@ -183,8 +185,7 @@ public class SavingAction extends BaseAction {
 			float inAmount = 0 - saving.getAmount();
 			Saving saving2 = SavingManager.getInstance().getSaving(saving.getPlayerid(), saving.getItemid());
 			if (saving2==null){
-				super.writeMsg(RetMsg.MSG_NoSavingData);
-				return null;
+				return msgStr(RetMsg.MSG_NoSavingData);
 			}
 			//已到期的存款:
 			boolean isout = isSavingTimeout(saving2);
@@ -225,12 +226,11 @@ public class SavingAction extends BaseAction {
 		if (ret!=RetMsg.MSG_OK){
 			log.warn("pid:"+saving.getPlayerid()+",error,saving: "+saving.getPlayerid());
 			pushLive(saving.getPlayerid(), saving.getAmount() );
-			super.writeMsg(ret);
+			return msgStr(ret);
 		}else {
-			JSONObject obj = JSONObject.fromObject(newsaving);
-			super.writeMsg2(RetMsg.MSG_OK,obj.toString());
+			String str = JSON.toJSONString(newsaving);
+			return msgStr2(RetMsg.MSG_OK,str);
 		}
-		return null;
 	}
 
 	public synchronized Map<Integer,Insure> findUpdatedInsures(int playerId)

@@ -424,9 +424,9 @@ Stock.prototype.requestBuy = function(id,qty,ps) {
  if (!g_stock.buyItem) return false; 
   g_msg.showload("g_stock.requestBuy",true);
  
-	var dataParam = obj2ParamStr(g_stock.name,g_stock.buyItem);
+	var dataParam = "type=3&data="+JSON.stringify(g_stock.buyItem);
 	try    {
-		$.ajax({type:"post",url:"/cf/stock_add.do",data:dataParam,success:function(data){
+		$.ajax({type:"post",url:"/cf/data_update.jsp",data:dataParam,success:function(data){
 		 g_stock.buyCallback(cfeval(data));
          g_msg.destroyload();
 		}});

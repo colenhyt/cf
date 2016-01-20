@@ -15,4 +15,5 @@ public interface RetMsg {
 	public static int MSG_InsureNotExist = 11;
 	public static int MSG_InsureIsExist = 12;
 	public static int MSG_StockNotExist = 13;
+	public static int MSG_StockQtyIsZero= 14;
 }

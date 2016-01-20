@@ -43,8 +43,7 @@ public class InsureAction extends SavingAction {
 		}else {
 			log.warn("pid:"+insure.getPlayerid()+" error,saving not found for insure:"+ret);
 		}
-		writeMsg(ret);
-		return null;
+		return msgStr(ret);
 	}
 	
 	public String get()

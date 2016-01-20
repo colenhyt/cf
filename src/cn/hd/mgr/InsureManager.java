@@ -2,29 +2,24 @@ package cn.hd.mgr;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
 import redis.clients.jedis.Jedis;
-
-import com.alibaba.fastjson.JSON;
-
-import cn.hd.base.BaseService;
+import cn.hd.cf.action.InsureAction;
 import cn.hd.cf.action.RetMsg;
 import cn.hd.cf.model.Insure;
-import cn.hd.cf.model.Insuredata;
-import cn.hd.cf.model.Saving;
-import cn.hd.cf.service.InsureService;
 import cn.hd.cf.tools.InsuredataService;
+
+import com.alibaba.fastjson.JSON;
 
 
 public class InsureManager extends MgrBase{
 	private Map<Integer,Insure>	insureCfgMap;
 	private Map<Integer,List<Insure>>	insuresMap;
+	private InsureAction action;
 	
     public synchronized Insure getInsureCfg(int itemId) {
 		return insureCfgMap.get(itemId);
@@ -40,6 +35,8 @@ public class InsureManager extends MgrBase{
      } 
     
     public void init(){
+    	action = new InsureAction();
+    	
     	insureCfgMap = new HashMap<Integer,Insure>();
     	InsuredataService insuredataService = new InsuredataService();
     	List<Insure> data = insuredataService.findInsures();
@@ -131,6 +128,11 @@ public class InsureManager extends MgrBase{
 		list.add(record);
 		dataThread.updateInsure(playerId, JSON.toJSONString(list));
 		return RetMsg.MSG_OK;
+	}
+
+	public synchronized String add(Insure item){
+		action.setInsure(item);
+		return action.add();
 	}
 
 	public static void main(String[] args) {

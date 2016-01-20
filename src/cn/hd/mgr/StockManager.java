@@ -19,7 +19,7 @@ import redis.clients.jedis.Jedis;
 import cn.hd.base.Base;
 import cn.hd.base.BaseService;
 import cn.hd.cf.action.RetMsg;
-import cn.hd.cf.model.Player;
+import cn.hd.cf.action.StockAction;
 import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Stockdata;
@@ -40,6 +40,7 @@ public class StockManager extends MgrBase{
     private static StockManager uniqueInstance = null;  
 	private Map<Integer,String>	stockMap;
 	private Map<Integer,List<Stock>>	stocksMap;
+	private StockAction action;
 	
     public static StockManager getInstance() {  
         if (uniqueInstance == null) {  
@@ -49,6 +50,7 @@ public class StockManager extends MgrBase{
      } 
     
     public void init(){
+    	action = new StockAction();
 		lastQuoteTime = System.currentTimeMillis();
 		lastUpdateDate = null;
 		StockdataService stockdataService = new StockdataService();
@@ -292,6 +294,11 @@ public class StockManager extends MgrBase{
 			stockMap.put(playerId, jsonstr);
 		}
 		return jsonstr;
+	}
+
+	public synchronized String add(Stock item){
+		action.setStock(item);
+		return action.add();
 	}
 
 	public static void main(String[] args) {

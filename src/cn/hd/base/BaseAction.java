@@ -17,6 +17,8 @@ import net.sf.json.JSONObject;
 
 import org.apache.struts2.ServletActionContext;
 
+import com.alibaba.fastjson.JSON;
+
 import cn.hd.cf.model.Message;
 
 
@@ -93,6 +95,12 @@ public class BaseAction extends BaseService{
 		}
 	}
 	
+	public String msgStr(int code){
+		Message msg = new Message();
+		msg.setCode(code);
+		return JSON.toJSONString(msg);
+	}
+	
 	public void writeMsg(int code){
 		Message msg = new Message();
 		msg.setCode(code);
@@ -100,6 +108,13 @@ public class BaseAction extends BaseService{
 		write(obj.toString(),"utf-8");
 	}
 	
+	public String msgStr2(int code,String desc){
+		Message msg = new Message();
+		msg.setCode(code);
+		msg.setDesc(desc);
+		return JSON.toJSONString(msg);		
+	}	
+
 	public void writeMsg2(int code,String desc){
 		Message msg = new Message();
 		msg.setCode(code);

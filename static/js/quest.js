@@ -120,7 +120,7 @@ if (g_player.data!=null)
 Quest.prototype.reset = function(questdonecount){
     var datakey = g_quest.questkey();
 	var pquest = store.get(datakey); 
-	if (pquest.length>=1&&questdonecount>0){
+	if (pquest!=null&&pquest.length>=1&&questdonecount>0){
 	 pquest.splice(0,questdonecount);
 	store.set(datakey,pquest);
 	}

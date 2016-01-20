@@ -10,6 +10,7 @@ import java.util.Set;
 
 import redis.clients.jedis.Jedis;
 import cn.hd.cf.action.RetMsg;
+import cn.hd.cf.action.SavingAction;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.tools.SavingdataService;
 
@@ -19,6 +20,7 @@ import com.alibaba.fastjson.JSON;
 public class SavingManager extends MgrBase{
 	private Map<Integer,Saving>	savingCfgMap;	
 	private Map<Integer,List<Saving>>	savingsMap;
+	private SavingAction savingAction;
 	Saving savingCfg;
 	
     public Saving getSavingCfg(int itemId) {
@@ -34,7 +36,14 @@ public class SavingManager extends MgrBase{
         return uniqueInstance;  
      } 
     
+    public synchronized String add(Saving saving){
+    	savingAction.setSaving(saving);
+    	return savingAction.add();
+    }
+    
     public void init(){
+    	savingAction = new SavingAction();
+    	
     	savingCfgMap = new HashMap<Integer,Saving>();
     	SavingdataService savingdataService = new SavingdataService();
     	List<Saving> data = savingdataService.findSavings();

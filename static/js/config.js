@@ -127,6 +127,7 @@ var MSG_SavingIsExist = 10;
 var MSG_InsureNotExist = 11;
 var MSG_InsureIsExist = 12;
 var MSG_StockNotExist = 13;
+var MSG_StockQtyIsZero = 14;
 
 var ERR_MSG ={};
 ERR_MSG[MSG_SQLExecuteError] = "sql出错";
@@ -142,6 +143,7 @@ ERR_MSG[MSG_SavingIsExist] = "已有该存款，不能重复存入";
 ERR_MSG[MSG_InsureNotExist] = "你没有该保险，不能删除";
 ERR_MSG[MSG_InsureIsExist] = "已有该保险，不能重复购买";
 ERR_MSG[MSG_StockNotExist] = "找不到该股票，无法购买";
+ERR_MSG[MSG_StockQtyIsZero] = "请选择股票手数";
 
 function loadStyle(url){
     var link = document.createElement('link');
@@ -279,7 +281,7 @@ function initScreen(){
 	//--6s:414, 正常, screekey = 640;
 //alert(width);
 //alert(SCREENKEY);
-//SCREENKEY = 640
+//SCREENKEY = 640;
 	g_screenkey = SCREENKEY;
 	SIZEPER = SCREENKEY/640;
 	var cssFile = "static/css/cf"+SCREENKEY+".css";

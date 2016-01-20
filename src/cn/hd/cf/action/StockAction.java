@@ -69,12 +69,11 @@ public class StockAction extends SavingAction {
 
 	public synchronized String add(){
 		if (stock.getQty()==0){
-			return null;
+			return msgStr(RetMsg.MSG_StockQtyIsZero);
 		}
 		int ret = RetMsg.MSG_StockIsClosed;
 		if (stockMgr.isStockOpen()==false){
-			writeMsg(ret);
-			return null;
+			return msgStr(ret);
 		}
 		float inAmount = 0 - stock.getAmount();
 		//先扣钱:
@@ -97,7 +96,6 @@ public class StockAction extends SavingAction {
 		}else {
 			log.warn("pid:"+stock.getPlayerid()+",error,player saving not found for stock:"+ret);
 		}
-		writeMsg(ret);
-		return null;
+		return msgStr(ret);
 	}	
 }
