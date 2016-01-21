@@ -453,14 +453,12 @@ Login.prototype.login = function(){
 //     	alert("本地数据缺失，登录失败");
 //     	return;
 //     }
-	var setting = ",setting:{android:"+browser.versions.android+",iphone:"+browser.versions.iPhone;
+	var setting = "setting={android:"+browser.versions.android+",iphone:"+browser.versions.iPhone;
 	setting += ",iPhone5:"+browser.versions.iPhone5;
 	setting += ",iPad:"+browser.versions.iPad;
 	setting += ",width:"+window.screen.width;
 	setting += ",screekey:"+g_screenkey+"}";
-   	var dataParam = "jsonstr={openid:'"+g_openid+"',playername:'"+g_username+"',sex:"+g_login.sex;
-   	dataParam += setting;
-   	dataParam += "}";
+   	var dataParam = "openid="+g_openid+"&playername='"+g_username+"'&sex="+g_login.sex+"&"+setting;
     var serverPlayer;
     var now = new Date();
     

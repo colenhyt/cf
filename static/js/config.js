@@ -181,12 +181,21 @@ var PageSizes = {
 	,QuestMoney:["120px","390px"]
 	},
 	
-	"540":{SceneWidth:640,SceneHeight:1008,PieWidth:290,PieFontSize:23,PieFontSize2:15,
-	PieHeight:300,PageWidth:"482px",PageHeight:"227px",PageTop:70,
-	DetailPageTop:90,MsgTop:108,
-	StockView:[450,280,380,200,19]
-	,EventMoney:["70px","350px"]
-	,SigninMoney:["50px","30px","150px"]
+	"560":{SceneWidth:640,SceneHeight:1008,PieWidth:300,PieFontSize:25,PieFontSize2:17,
+	PieHeight:326,PageWidth:"499px",PageHeight:"277px",PageTop:70,
+	DetailPageTop:90,MsgTop:110,
+	StockView:[468,284,384,187,20]
+	,EventMoney:["70px","360px"]
+	,SigninMoney:["53px","30px","167px"]
+	,QuestMoney:["120px","390px"]
+	},
+	
+	"520":{SceneWidth:640,SceneHeight:1008,PieWidth:280,PieFontSize:24,PieFontSize2:17,
+	PieHeight:303,PageWidth:"465px",PageHeight:"277px",PageTop:65,
+	DetailPageTop:85,MsgTop:105,
+	StockView:[438,267,363,178,19]
+	,EventMoney:["70px","340px"]
+	,SigninMoney:["52px","35px","148px"]
 	,QuestMoney:["120px","390px"]
 	},
 	
@@ -195,7 +204,25 @@ var PageSizes = {
 	DetailPageTop:80,MsgTop:100,
 	StockView:[410,250,340,170,18]
 	,EventMoney:["70px","320px"]
-	,SigninMoney:["50px","40px","130px"]
+	,SigninMoney:["50px","36px","130px"]
+	,QuestMoney:["120px","390px"]
+	},
+	
+	"440":{SceneWidth:640,SceneHeight:1008,PieWidth:240,PieFontSize:23,PieFontSize2:14,
+	PieHeight:260,PageWidth:"392px",PageHeight:"247px",PageTop:53,
+	DetailPageTop:70,MsgTop:84,
+	StockView:[375,247,305,163,17]
+	,EventMoney:["70px","286px"]
+	,SigninMoney:["50px","38px","123px"]
+	,QuestMoney:["120px","390px"]
+	},
+	
+	"400":{SceneWidth:640,SceneHeight:1008,PieWidth:220,PieFontSize:22,PieFontSize2:13,
+	PieHeight:240,PageWidth:"362px",PageHeight:"212px",PageTop:46,
+	DetailPageTop:60,MsgTop:67,
+	StockView:[335,243,265,157,16]
+	,EventMoney:["70px","253px"]
+	,SigninMoney:["50px","39px","117px"]
 	,QuestMoney:["120px","390px"]
 	},
 	
@@ -261,15 +288,21 @@ function initScreen(){
 		}else
 			SCREENKEY =640;	 
 	}else {
-	  if (width>=640)
+	  if (width>=620)
 		SCREENKEY = 640;
-	  else if (width<640&&width>=600)
+	  else if (width<620&&width>=580)
 		SCREENKEY = 600;
-	  else if (width<600&&width>=540)
-		SCREENKEY = 540;
-	  else if (width<540&&width>=480)
+	  else if (width<580&&width>=540)
+		SCREENKEY = 560;
+	  else if (width<540&&width>=500)
+		SCREENKEY = 520;
+	  else if (width<500&&width>=460)
 		SCREENKEY = 480;
-	  else if (width<480&&width>=360)
+	  else if (width<460&&width>=420)
+		SCREENKEY = 440;
+	  else if (width<420&&width>=380)
+		SCREENKEY = 400;
+	  else if (width<380&&width>=340)
 		SCREENKEY = 360;
 	  else
 	    SCREENKEY = 320;	
