@@ -20,6 +20,8 @@ import cn.hd.base.Base;
 import cn.hd.base.BaseService;
 import cn.hd.cf.action.RetMsg;
 import cn.hd.cf.action.StockAction;
+import cn.hd.cf.model.Insure;
+import cn.hd.cf.model.Player;
 import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Stockdata;
@@ -296,7 +298,17 @@ public class StockManager extends MgrBase{
 		return jsonstr;
 	}
 
-	public synchronized String add(Stock item){
+	public synchronized String add(int playerid,int itemid,int qty,float price,float amount){
+		Player p = DataManager.getInstance().findPlayer(playerid);
+		if (p==null){
+			return action.msgStr(RetMsg.MSG_PlayerNotExist);
+		}    	
+		Stock item = new Stock();
+		item.setPlayerid(playerid);
+		item.setItemid(itemid);
+		item.setQty(qty);
+		item.setAmount(amount);
+		item.setPrice(price);
 		action.setStock(item);
 		return action.add();
 	}

@@ -80,7 +80,7 @@ Msg.prototype.showload = function(callback,type)
    	this.netmsgWait = NetReqWait;
     var index = callback.indexOf("findQuotes");
    	if (index>0){
-   	 	this.netmsgWait = 8000;
+   	 	this.netmsgWait = 10000;
    	}
 	
 	tag = document.createElement("DIV");

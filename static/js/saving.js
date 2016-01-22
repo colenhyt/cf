@@ -171,7 +171,9 @@ Saving.prototype.requestBuy = function(id,qty,amount){
 	 
  g_msg.showload("g_saving.requestBuy",true);
 	 
-	var dataParam = "type=1&data="+JSON.stringify(g_saving.buyItem);
+	var dataParam = "type=1&playerid="+g_saving.buyItem.playerid+"&itemid="+g_saving.buyItem.itemid;
+	dataParam += "&qty="+g_saving.buyItem.qty+"&price="+g_saving.buyItem.price+"&amount="+g_saving.buyItem.amount;
+
 	try    {
 		$.ajax({type:"post",url:"/cf/data_update.jsp",data:dataParam,success:function(data){
 		 g_saving.buyCallback(cfeval(data));

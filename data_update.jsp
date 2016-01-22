@@ -3,23 +3,28 @@
 <%@ page import="cn.hd.cf.model.*"%>
 <%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <%
-String json = request.getParameter("data");
 String tid = request.getParameter("type");
+String playerstr = request.getParameter("playerid");
+String itemstr = request.getParameter("itemid");
+String qtystr = request.getParameter("qty");
+String pricestr = request.getParameter("price");
+String amountstr = request.getParameter("amount");
+int playerid = Integer.valueOf(playerstr);
+int itemid = Integer.valueOf(itemstr);
+int qty = Integer.valueOf(qtystr);
+float price = Float.valueOf(pricestr);
+float amount = Float.valueOf(amountstr);
 int type = Integer.valueOf(tid);
-System.out.println(json);
 String retStr = "";
 switch (type){
 	case 1:
-	Saving s =	JSON.parseObject(json, Saving.class);
-	retStr = SavingManager.getInstance().add(s);
+	retStr = SavingManager.getInstance().add(playerid,itemid,qty,price,amount);
 	break;	
 	case 2:
-	Insure s2 =	JSON.parseObject(json, Insure.class);
-	retStr = InsureManager.getInstance().add(s2);
+	retStr = InsureManager.getInstance().add(playerid,itemid,qty,price,amount);
 	break;	
 	case 3:
-	Stock s3 =	JSON.parseObject(json, Stock.class);
-	retStr = StockManager.getInstance().add(s3);
+	retStr = StockManager.getInstance().add(playerid,itemid,qty,price,amount);
 	break;		
 }
 	System.out.println(retStr);

@@ -24,7 +24,7 @@ var MsgDuration = 100;	//消息刷帧频率(ms)
 
 var StockDuration = 1000;	//股票刷帧频率(ms)
 
-var NetReqWait = 10000;	//网络请求等待时间(ms)
+var NetReqWait = 20000;	//网络请求等待时间(ms)
 
 var QUOTETIME = 300;		//行情跳动时间(秒)
 
@@ -118,7 +118,7 @@ var MSG_SQLExecuteError = 1;
 var MSG_MoneyNotEnough = 2;
 var MSG_NoThisStock = 3;
 var MSG_NoSavingData = 4;
-var MSG_PlayerTelIsExist = 5;
+var MSG_PlayerNotExist = 5;
 var MSG_WrongPlayerNameOrPwd = 6;
 var MSG_StockIsClosed = 7;
 var MSG_PlayerNameIsExist = 8;
@@ -134,7 +134,7 @@ ERR_MSG[MSG_SQLExecuteError] = "sql出错";
 ERR_MSG[MSG_MoneyNotEnough] = "您的钱不够";
 ERR_MSG[MSG_NoThisStock] = "这个股票不存在";
 ERR_MSG[MSG_NoSavingData] = "没有该存款";
-ERR_MSG[MSG_PlayerTelIsExist] = "重复电话号码";
+ERR_MSG[MSG_PlayerNotExist] = "玩家不存在";
 ERR_MSG[MSG_WrongPlayerNameOrPwd] = "用户名或密码不正确";
 ERR_MSG[MSG_StockIsClosed] = "股市已关闭,不能买卖";
 ERR_MSG[MSG_PlayerNameIsExist] = "该昵称已存在";
@@ -272,9 +272,9 @@ var SIZEPER = 1;
 function initScreen(){
 //alert(window.screen.width)
 	var versions = browser.versions
+	g_versions = versions;
  	 var width = window.screen.width;
 	if (versions.iPhone||versions.iPad){
-		if (width<=320){
 			metas = window.parent.document.getElementsByTagName("meta");
 			for(i=0;i<metas.length;i++)
 		     {
@@ -284,10 +284,13 @@ function initScreen(){
 		       break;  
 		      }
 			}
-			SCREENKEY =320;	 
-		}else
-			SCREENKEY =640;	 
-	}else {
+		if (width<480&&width>=360)
+		 SCREENKEY = 400;
+		else if (width>=480)
+		 SCREENKEY = 640;
+		else
+		 SCREENKEY = 320;
+	}else{
 	  if (width>=620)
 		SCREENKEY = 640;
 	  else if (width<620&&width>=580)

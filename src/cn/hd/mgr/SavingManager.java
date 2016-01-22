@@ -11,6 +11,8 @@ import java.util.Set;
 import redis.clients.jedis.Jedis;
 import cn.hd.cf.action.RetMsg;
 import cn.hd.cf.action.SavingAction;
+import cn.hd.cf.model.Insure;
+import cn.hd.cf.model.Player;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.tools.SavingdataService;
 
@@ -36,8 +38,18 @@ public class SavingManager extends MgrBase{
         return uniqueInstance;  
      } 
     
-    public synchronized String add(Saving saving){
-    	savingAction.setSaving(saving);
+    public synchronized String add(int playerid,int itemid,int qty,float price,float amount){
+		Player p = DataManager.getInstance().findPlayer(playerid);
+		if (p==null){
+			return savingAction.msgStr(RetMsg.MSG_PlayerNotExist);
+		}    	
+		Saving item = new Saving();
+		item.setPlayerid(playerid);
+		item.setItemid(itemid);
+		item.setQty(qty);
+		item.setAmount(amount);
+		item.setPrice(price);
+    	savingAction.setSaving(item);
     	return savingAction.add();
     }
     

@@ -424,7 +424,9 @@ Stock.prototype.requestBuy = function(id,qty,ps) {
  if (!g_stock.buyItem) return false; 
   g_msg.showload("g_stock.requestBuy",true);
  
-	var dataParam = "type=3&data="+JSON.stringify(g_stock.buyItem);
+	var dataParam = "type=3&playerid="+g_stock.buyItem.playerid+"&itemid="+g_stock.buyItem.itemid;
+	dataParam += "&qty="+g_stock.buyItem.qty+"&price="+g_stock.buyItem.price+"&amount="+g_stock.buyItem.amount;
+
 	try    {
 		$.ajax({type:"post",url:"/cf/data_update.jsp",data:dataParam,success:function(data){
 		 g_stock.buyCallback(cfeval(data));

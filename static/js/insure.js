@@ -315,7 +315,9 @@ Insure.prototype.requestBuy = function(id,qty,amount) {
  if (!g_insure.buyItem) return false; 
  
  g_msg.showload("g_insure.requestBuy",true);
-	var dataParam = "type=2&data="+JSON.stringify(g_insure.buyItem);
+	var dataParam = "type=2&playerid="+g_insure.buyItem.playerid+"&itemid="+g_insure.buyItem.itemid;
+	dataParam += "&qty="+g_insure.buyItem.qty+"&price="+g_insure.buyItem.price+"&amount="+g_insure.buyItem.amount;
+	
 	try    {
 		$.ajax({type:"post",url:"/cf/data_update.jsp",data:dataParam,success:function(data){
 		 g_insure.buyCallback(cfeval(data));
