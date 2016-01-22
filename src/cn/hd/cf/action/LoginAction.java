@@ -185,7 +185,7 @@ public class LoginAction extends SavingAction {
 	}
 	
 	public synchronized String register(){
-//			System.out.println("玩家注册:"+player.getPlayername());
+			//System.out.println("玩家注册:"+player.getPlayername());
 			PlayerWithBLOBs playerBlob = new PlayerWithBLOBs();
 			
 			//注册奖励:

@@ -51,8 +51,8 @@ public class RedisClient {
         config.setMaxIdle(500000); 
         config.setMaxWaitMillis(1000*3000l); 
         config.setTestOnBorrow(false); 
-        
-        jedisPool = new JedisPool(config,serverIp,serverPort);
+
+        jedisPool = new JedisPool(config,serverIp,serverPort,10000);
     }
     
     /** 
