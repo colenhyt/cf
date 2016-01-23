@@ -103,6 +103,7 @@ public class InsureManager extends MgrBase{
 			}
 		}
 		if (found){
+			DataThread dataThread = dataThreads.get(playerId%dataThreads.size());
 			dataThread.updateInsure(playerId, JSON.toJSONString(list));
 			return RetMsg.MSG_OK;
 		}
@@ -127,6 +128,7 @@ public class InsureManager extends MgrBase{
 			return RetMsg.MSG_InsureIsExist;
 		}
 		list.add(record);
+		DataThread dataThread = dataThreads.get(playerId%dataThreads.size());
 		dataThread.updateInsure(playerId, JSON.toJSONString(list));
 		return RetMsg.MSG_OK;
 	}

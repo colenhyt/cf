@@ -29,6 +29,9 @@ import com.alibaba.fastjson.JSON;
 public class DataManager extends MgrBase {
 	protected Logger log = Logger.getLogger(getClass());
 	public List<String> pps = new ArrayList<String>();
+	private final int idStep = 100;
+	private DBDataSaver saver;
+	private int currMaxPlayerId = -1;
 
 	private LoginAction loginAction;
 	private Init init;
@@ -52,21 +55,28 @@ public class DataManager extends MgrBase {
 
 	public DataManager() {
 		nextPlayerId = 0;
-		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		saver = new DBDataSaver();
+		saver.start();
 	}
 
 	public synchronized int assignNextId() {
+		if (currMaxPlayerId==-1||nextPlayerId+1>currMaxPlayerId){
+			Jedis jedis = jedisClient.getJedis();
+			if (jedis==null){
+				log.error("could not get redis,redis may not be run");
+				return -1;
+			}		
+			String guidplayer = jedis.get(super.DATAKEY_GUID_PLAYER);
+			if (guidplayer!=null){
+				currMaxPlayerId = Integer.valueOf(guidplayer)+idStep;
+			}else
+				currMaxPlayerId = idStep;
+			jedis.set(super.DATAKEY_GUID_PLAYER,String.valueOf(currMaxPlayerId));
+			nextPlayerId = currMaxPlayerId - idStep;
+			log.warn("reset guid id "+currMaxPlayerId);
+			jedisClient.returnResource(jedis);
+		}
+		
 		nextPlayerId++;
 		return nextPlayerId;
 	}
@@ -170,13 +180,17 @@ public class DataManager extends MgrBase {
 	}
 
 	public synchronized boolean addPlayer(PlayerWithBLOBs player) {
-		Player pp = findPlayer(player.getPlayerid());
+		int playerid = player.getPlayerid();
+		Player pp = findPlayer(playerid);
 		if (pp!=null)
 			return false;
 
-		playerMaps.put(player.getPlayerid(), player);
-		playerIdMaps.put(player.getPlayername(), player.getPlayerid());
+		playerMaps.put(playerid, player);
+		playerIdMaps.put(player.getPlayername(), playerid);
+		
+		DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
 		dataThread.push(player);
+		saver.add(player);
 		return true;
 	}
 
@@ -202,6 +216,7 @@ public class DataManager extends MgrBase {
 			jedisClient.returnResource(jedis);			
 			if (itemstr!=null){
 				player = (PlayerWithBLOBs)JSON.parseObject(itemstr,PlayerWithBLOBs.class);
+				log.warn("find player :"+player.getPlayerid());
 				playerMaps.put(playerid, player);
 				if (!playerIdMaps.containsKey(player.getPlayername())){
 					playerIdMaps.put(player.getPlayername(), playerid);
@@ -215,6 +230,7 @@ public class DataManager extends MgrBase {
 		Player pp = findPlayer(player.getPlayerid());
 		if (pp != null) {
 			pp.setExp(player.getExp());
+			DataThread dataThread = dataThreads.get(player.getPlayerid()%dataThreads.size());
 			dataThread.updatePlayer(pp);
 			return true;
 		}
@@ -244,14 +260,17 @@ public class DataManager extends MgrBase {
 			p.setOpenstock((byte)1);
 		}
 		log.warn("update:"+playerid+",t:"+type);
+		DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
 		dataThread.updatePlayer(p);
 	}
 	
 	public synchronized void addSignin(int playerid) {
+		DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
 		dataThread.addSignin(playerid);
 	}
 
 	public synchronized void addDoneQuest(int playerid) {
+		DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
 		dataThread.addDoneQuest(playerid);
 	}
 
@@ -259,6 +278,7 @@ public class DataManager extends MgrBase {
 		Player pp = findPlayer(playerid);
 		if (pp != null) {
 			pp.setZan(zan);
+			DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
 			dataThread.updatePlayer(pp);
 			return true;
 		}
@@ -283,13 +303,17 @@ public class DataManager extends MgrBase {
 			log.error("could not get redis,redis may not be run");
 			return;
 		}
+		String guidplayer = jedis.get(super.DATAKEY_GUID_PLAYER);
+		if (guidplayer!=null){
+			log.info("start playerid "+guidplayer);
+		}else
+			log.info("start playerid "+currMaxPlayerId);
+			
 		List<String> items = jedis.hvals(super.DATAKEY_PLAYER);
-		for (int i=0;i<items.size();i++){
-			PlayerWithBLOBs player = (PlayerWithBLOBs)JSON.parseObject(items.get(i),PlayerWithBLOBs.class);
+		for (String item:items){
+			PlayerWithBLOBs player = (PlayerWithBLOBs)JSON.parseObject(item,PlayerWithBLOBs.class);
 			playerMaps.put(player.getPlayerid(), player);
 			playerIdMaps.put(player.getPlayername(), player.getPlayerid());
-			if (player.getPlayerid() > nextPlayerId)
-				nextPlayerId = player.getPlayerid();
 		}
 		jedisClient.returnResource(jedis);
 		log.warn("load all players :" + items.size());
@@ -311,6 +335,7 @@ public class DataManager extends MgrBase {
 				.synchronizedMap(new HashMap<String, Integer>());
 		playerMaps = Collections
 				.synchronizedMap(new HashMap<Integer, Player>());
+		
 		this.load();
 	}
 

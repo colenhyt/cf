@@ -99,6 +99,7 @@ public class SavingManager extends MgrBase{
     	if (s!=null){
     		s.setAmount(record.getAmount());
     		s.setUpdatetime(new Date());
+    		DataThread dataThread = dataThreads.get(record.getPlayerid()%dataThreads.size());
     		dataThread.updateSaving(record.getPlayerid(), JSON.toJSONString(list));
 //    		updateSavingVect.add(s);
     		return true;
@@ -124,6 +125,7 @@ public class SavingManager extends MgrBase{
     	}
     	
     	list.add(record);
+		DataThread dataThread = dataThreads.get(playerId%dataThreads.size());
     	dataThread.updateSaving(playerId, JSON.toJSONString(list));
     	return true;
     }
@@ -174,6 +176,7 @@ public class SavingManager extends MgrBase{
 			}
 		}
 		if (found){
+			DataThread dataThread = dataThreads.get(playerId%dataThreads.size());
 			dataThread.updateSaving(playerId, JSON.toJSONString(list));
 			return RetMsg.MSG_OK;
 		}
@@ -198,6 +201,7 @@ public class SavingManager extends MgrBase{
 			return RetMsg.MSG_SavingIsExist;
 		}
 		list.add(record);
+		DataThread dataThread = dataThreads.get(playerId%dataThreads.size());
 		dataThread.updateSaving(playerId, JSON.toJSONString(list));
 		return RetMsg.MSG_OK;
 	}

@@ -246,6 +246,7 @@ public class StockManager extends MgrBase{
 			stocksMap.put(playerId, list);
 		}
 		list.add(record);
+		DataThread dataThread = dataThreads.get(playerId%dataThreads.size());
 		dataThread.updateStock(playerId, JSON.toJSONString(list));
 		return RetMsg.MSG_OK;
 	}
@@ -280,8 +281,10 @@ public class StockManager extends MgrBase{
 				break;
 			}
 		}		
-		if (updated)
+		if (updated){
+			DataThread dataThread = dataThreads.get(playerId%dataThreads.size());
 			dataThread.updateStock(playerId, JSON.toJSONString(list));
+		}
 		return RetMsg.MSG_OK;
 	}
 

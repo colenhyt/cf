@@ -2,6 +2,7 @@ package cn.hd.mgr;
 
 
 import java.net.URL;
+import java.util.Vector;
 
 import net.sf.json.JSONObject;
 
@@ -16,6 +17,7 @@ import com.alibaba.fastjson.JSON;
 public class MgrBase {
 	public final static String DATAKEY_PLAYER = "player";
 	public final static String DATAKEY_PLAYER_ID = "playerid";
+	public final static String DATAKEY_GUID_PLAYER = "guidplayer";
 	public final static String DATAKEY_SAVING = "saving";
 	public final static String DATAKEY_INSURE = "insure";
 	public final static String DATAKEY_STOCK = "stock";
@@ -25,7 +27,7 @@ public class MgrBase {
 	protected final int UPDATE_PERIOD = 20*30;		//20*60: 一小时
 	protected final int BATCH_COUNT = 200;
 	protected final int UPDATE_PERIOD_BATCH = 40;	//2分钟
-	protected DataThread dataThread;
+	protected Vector<DataThread>	dataThreads;
 	protected RedisClient		jedisClient;
 	public Config cfg;
 	public JSONObject cfgObj;
@@ -41,13 +43,22 @@ public class MgrBase {
 		if (cfgstr == null || cfgstr.trim().length() <= 0) {
 			return;
 		}
-//		cfgObj = JSONObject.fromObject(cfgstr);
+		cfgObj = JSONObject.fromObject(cfgstr);
 //		openidurl = cfgObj.getString("openidurl");
 //		openidparam = cfgObj.getString("openidparam");
 	cfg = (Config) JSON.parseObject(cfgstr, Config.class);
 		jedisClient = new RedisClient(cfg.getRedisCfg());
-		dataThread = new DataThread(cfg.getRedisCfg());
-		 dataThread.start();
+		 
+		 dataThreads = new Vector<DataThread>();
+		 String threadCountStr = cfgObj.getString("threadCount");
+		 int threadCount = 3;
+		 if (threadCountStr!=null)
+			 threadCount = Integer.valueOf(threadCountStr);
+		 for (int i=0;i<threadCount;i++){
+				DataThread dataThread = new DataThread(cfg.getRedisCfg());
+				dataThreads.add(dataThread);
+				dataThread.start();
+		 }
 		
 	}
 }

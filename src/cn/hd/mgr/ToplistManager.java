@@ -108,6 +108,7 @@ public class ToplistManager extends MgrBase{
 		Toplist top = findByPlayerId(toplist.getPlayerid());
 		if (top!=null){
 			top.setZan(toplist.getZan());
+			DataThread dataThread = dataThreads.get(toplist.getPlayerid()%dataThreads.size());
 			dataThread.updateToplist(top);
 		}
 		
@@ -126,6 +127,7 @@ public class ToplistManager extends MgrBase{
 			newtop.setMoney(BigDecimal.valueOf(imoney));
 			newtop.setZan(0);
 			toplistMap.put(newtop.getPlayerid(), newtop);
+			DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
 			dataThread.updateToplist(newtop);		
 		}
 		return true;		
@@ -230,6 +232,7 @@ public class ToplistManager extends MgrBase{
 			if (Math.abs(imoney-topMoney)>1){
 				toplist.setMoney(BigDecimal.valueOf(imoney));
 				toplist.setUpdatetime(new Date());
+				DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
 				dataThread.updateToplist(toplist);
 //				//System.out.println("更新排行榜财富: "+toplist.getPlayername()+":"+topMoney+","+toplist.getMoney());
 			}
