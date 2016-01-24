@@ -8,14 +8,18 @@ import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 
+import redis.clients.jedis.Jedis;
 import cn.hd.base.Config;
 import cn.hd.util.FileUtil;
 import cn.hd.util.RedisClient;
+import cn.hd.util.RedisConfig;
 
 import com.alibaba.fastjson.JSON;
 
 public class MgrBase {
 	public final static String DATAKEY_PLAYER = "player";
+	public final static String DATAKEY_SIGNIN = "signin";
+	public final static String DATAKEY_QUEST = "quest";
 	public final static String DATAKEY_PLAYER_ID = "playerid";
 	public final static String DATAKEY_GUID_PLAYER = "guidplayer";
 	public final static String DATAKEY_SAVING = "saving";
@@ -30,6 +34,7 @@ public class MgrBase {
 	protected Vector<DataThread>	dataThreads;
 	protected RedisClient		jedisClient;
 	public Config cfg;
+	private DataThread logThread;
 	public JSONObject cfgObj;
 	public String openidurl;
 	public String openidparam;
@@ -44,6 +49,8 @@ public class MgrBase {
 			return;
 		}
 		cfgObj = JSONObject.fromObject(cfgstr);
+		String cfgstr2 = cfgObj.getString("redisCfg2");
+		RedisConfig redisCfg2 = JSON.parseObject(cfgstr2, RedisConfig.class);
 //		openidurl = cfgObj.getString("openidurl");
 //		openidparam = cfgObj.getString("openidparam");
 	cfg = (Config) JSON.parseObject(cfgstr, Config.class);

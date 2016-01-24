@@ -1,5 +1,6 @@
 package cn.hd.mgr;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -12,6 +13,7 @@ import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import cn.hd.cf.model.Player;
 import cn.hd.cf.model.PlayerWithBLOBs;
+import cn.hd.cf.model.Signin;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.PlayerService;
@@ -36,7 +38,7 @@ public class DataThread extends Thread {
 	private Vector<Toplist>			newToplistVect;
 	private Vector<Toplist>			updateToplistVect;		
 	private Vector<Toplist>			updateToplistZanVect;		
-	private Vector<Integer>			signinVect;
+	private Vector<String>			signinVect;
 	private Vector<Integer>			doneQuestVect;
 	protected Logger  log = Logger.getLogger(getClass()); 
 	
@@ -60,7 +62,7 @@ public class DataThread extends Thread {
 		updateToplistVect = new Vector<Toplist>();
 		updateToplistZanVect = new Vector<Toplist>();
 		
-		signinVect = new Vector<Integer>();
+		signinVect = new Vector<String>();
 		doneQuestVect = new Vector<Integer>();
 	}
 	
@@ -93,7 +95,10 @@ public class DataThread extends Thread {
 	}	
 	
 	public synchronized void addSignin(int playerid){
-		signinVect.add(playerid);
+		Signin record = new Signin();
+		record.setPlayerid(playerid);
+		record.setCrdate(new Date());		
+		signinVect.add(JSON.toJSONString(record));
 	}
 	
 	public synchronized void addDoneQuest(int playerid){
@@ -181,12 +186,11 @@ public class DataThread extends Thread {
 //		    		log.warn("batch update toplist :"+updateToplistVect.size());
 		    		updateToplistVect.clear();    	    			
 	    		}	    		
-        		p.sync();
-        		jedisClient.returnResource(jedis);
         		
 	    		if (signinVect.size()>0){
-	    			PlayerService service2= new PlayerService();
-		    		service2.addSignins(signinVect);
+	    			for (String item:signinVect){
+	    				p.lpush(MgrBase.DATAKEY_SIGNIN, item);
+	    			}	    			
 		    		log.warn("batch add signins:"+signinVect.size());
 		    		signinVect.clear();    	    			
 	    		}	    		
@@ -198,6 +202,8 @@ public class DataThread extends Thread {
 		    		log.warn("batch add donequest:"+doneQuestVect.size());
 		    		doneQuestVect.clear();    	    			
 	    		}
+        		p.sync();
+        		jedisClient.returnResource(jedis);
 	    		
 				}
 				

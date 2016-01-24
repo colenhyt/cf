@@ -9,8 +9,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.sf.json.JSONObject;
-
 import org.apache.log4j.Logger;
 
 import redis.clients.jedis.Jedis;
@@ -21,8 +19,11 @@ import cn.hd.cf.model.Player;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Quest;
 import cn.hd.cf.model.Saving;
+import cn.hd.cf.model.Signin;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.tools.InitdataService;
+import cn.hd.util.QuestLog;
+import cn.hd.util.SigninLog;
 
 import com.alibaba.fastjson.JSON;
 
@@ -83,7 +84,7 @@ public class DataManager extends MgrBase {
 
 	public synchronized String login(String openId,String playerName,int sex,String settingStr,HttpServletRequest request) {
 //		String loginStr = settingStr+",ip:"+loginAction.getIpAddress(request);
-		log.warn("login: playerName"+playerName);
+		//log.warn("login: playerName"+playerName);
 		Player pp = new Player();
 		pp.setPlayername(playerName);
 		pp.setOpenid(openId);
@@ -245,12 +246,12 @@ public class DataManager extends MgrBase {
 		switch (type){
 		case 0:
 			p.setLastlogin(new Date());
-			addSignin(playerid);
+			this.addSignin(playerid);
 			break;
 		case 1:
 			p.setQuestdonecount(p.getQuestdonecount()+1);
 			if (p.getQuestdonecount()==2){
-				addDoneQuest(playerid);
+				this.addDoneQuest(playerid);
 			}
 			p.setQuestDoneTime(new Date());
 			if (p.getQuestdonecount()==3){
@@ -266,13 +267,17 @@ public class DataManager extends MgrBase {
 	}
 	
 	public synchronized void addSignin(int playerid) {
-		DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
-		dataThread.addSignin(playerid);
+		Signin record = new Signin();
+		record.setPlayerid(playerid);
+		record.setCrdate(new Date());		
+		SigninLog.getRootLogger().info(JSON.toJSONString(record));
 	}
 
 	public synchronized void addDoneQuest(int playerid) {
-		DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
-		dataThread.addDoneQuest(playerid);
+		Quest record = new Quest();
+		record.setPlayerid(playerid);
+		record.setCrdate(new Date());		
+		QuestLog.getRootLogger().info(JSON.toJSONString(record));
 	}
 
 	public synchronized boolean updateZan(int playerid, int zan) {
@@ -310,14 +315,14 @@ public class DataManager extends MgrBase {
 		}else
 			log.info("start playerid "+currMaxPlayerId);
 			
-		List<String> items = jedis.hvals(super.DATAKEY_PLAYER);
-		for (String item:items){
-			PlayerWithBLOBs player = (PlayerWithBLOBs)JSON.parseObject(item,PlayerWithBLOBs.class);
-			playerMaps.put(player.getPlayerid(), player);
-			playerIdMaps.put(player.getPlayername(), player.getPlayerid());
-		}
-		jedisClient.returnResource(jedis);
-		log.warn("load all players :" + items.size());
+//		List<String> items = jedis.hvals(super.DATAKEY_PLAYER);
+//		for (String item:items){
+//			PlayerWithBLOBs player = (PlayerWithBLOBs)JSON.parseObject(item,PlayerWithBLOBs.class);
+//			playerMaps.put(player.getPlayerid(), player);
+//			playerIdMaps.put(player.getPlayername(), player.getPlayerid());
+//		}
+//		jedisClient.returnResource(jedis);
+//		log.warn("load all players :" + items.size());
 
 	}
 

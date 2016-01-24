@@ -133,10 +133,7 @@ public class LoginAction extends SavingAction {
 		{
 			return register();
 		}else if (playerBlob.getOpenid()==null||!playerBlob.getOpenid().equals(player.getOpenid())){		//昵称已被注册
-			Message msg = new Message();
-			msg.setCode(RetMsg.MSG_PlayerNameIsExist);
-			JSONObject obj = JSONObject.fromObject(msg);			
-			return obj.toString();
+			return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
 		}
 		
 		//log.warn("openid:'"+player.getOpenid()+"',pid:"+playerBlob.getPlayerid()+" login success,name:"+player.getPlayername());

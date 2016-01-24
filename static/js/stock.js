@@ -179,7 +179,7 @@ Stock.prototype.confirmOpen = function(){
 	
 	try    {
 	    var dataParam = "playerid="+g_player.data.playerid+"&type=2";
-		$.ajax({type:"get",url:"/cf/player_update.jsp",data:dataParam,success:function(data){
+		$.ajax({type:"post",url:"/cf/player_update.jsp",data:dataParam,success:function(data){
 		}});
 	}   catch  (e)   {
 	    logerr(e.name  +   " :  "   +  dataobj.responseText);

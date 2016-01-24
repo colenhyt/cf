@@ -284,25 +284,25 @@ Login.prototype.syncLoadData = function(playerid){
     	g_login.loadCount = 0;
 	
 		var dataParam = "playerid="+playerid+"&type=1";
-		$.ajax({type:"get",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
+		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
 		 g_login.syncLoadDataCallback_saving(data);
 		}});
     	g_login.loadCount++;
 		
 		dataParam = "playerid="+playerid+"&type=2";
-		$.ajax({type:"get",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
+		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
 		 g_login.syncLoadDataCallback_insure(data);
 		}});
     	g_login.loadCount++;
 		
 		dataParam = "playerid="+playerid+"&type=3";
-		$.ajax({type:"get",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
+		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
 		 g_login.syncLoadDataCallback_stock(data);
 		}});
     	g_login.loadCount++;
 		
 		dataParam = "playerid="+playerid+"&type=4";
-		$.ajax({type:"get",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
+		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
 		 g_login.syncLoadDataCallback_top(data);
 		}});
     	g_login.loadCount++;
@@ -463,7 +463,7 @@ Login.prototype.login = function(){
     var now = new Date();
     
 	try    {
-		$.ajax({type:"get",url:"/cf/login_login.jsp",data:dataParam,success:function(data){
+		$.ajax({type:"post",url:"/cf/login_login.jsp",data:dataParam,success:function(data){
 		 g_login.loginCallback(data);
 		 g_msg.destroyload();
 		}});
