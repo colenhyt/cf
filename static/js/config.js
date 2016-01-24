@@ -190,6 +190,15 @@ var PageSizes = {
 	,QuestMoney:["120px","390px"]
 	},
 	
+	"540":{SceneWidth:640,SceneHeight:1008,PieWidth:290,PieFontSize:23,PieFontSize2:15,
+	PieHeight:300,PageWidth:"482px",PageHeight:"227px",PageTop:70,
+	DetailPageTop:90,MsgTop:108,
+	StockView:[450,280,380,200,19]
+	,EventMoney:["70px","350px"]
+	,SigninMoney:["50px","30px","150px"]
+	,QuestMoney:["120px","390px"]
+	},
+	
 	"520":{SceneWidth:640,SceneHeight:1008,PieWidth:280,PieFontSize:24,PieFontSize2:17,
 	PieHeight:303,PageWidth:"465px",PageHeight:"277px",PageTop:65,
 	DetailPageTop:85,MsgTop:105,
@@ -275,6 +284,7 @@ function initScreen(){
 	g_versions = versions;
  	 var width = window.screen.width;
 	if (versions.iPhone||versions.iPad){
+		if (width<=320||width==375||width==414){
 			metas = window.parent.document.getElementsByTagName("meta");
 			for(i=0;i<metas.length;i++)
 		     {
@@ -284,31 +294,30 @@ function initScreen(){
 		       break;  
 		      }
 			}
-		if (width<480&&width>=360)
-		 SCREENKEY = 400;
-		else if (width>=480)
-		 SCREENKEY = 640;
-		else
-		 SCREENKEY = 320;
+			if (width<480&&width>=360)
+			 SCREENKEY = 400;
+			else
+			 SCREENKEY = 320;
+		 }else
+			 SCREENKEY = 640;
+		 
 	}else{
-	  if (width>=620)
+	  if (width>=640)
 		SCREENKEY = 640;
-	  else if (width<620&&width>=580)
+	  else if (width<640&&width>=600)
 		SCREENKEY = 600;
-	  else if (width<580&&width>=540)
-		SCREENKEY = 560;
-	  else if (width<540&&width>=500)
-		SCREENKEY = 520;
-	  else if (width<500&&width>=460)
+	  else if (width<600&&width>=540)
+		SCREENKEY = 540;
+	  else if (width<540&&width>=480)
 		SCREENKEY = 480;
-	  else if (width<460&&width>=420)
+	  else if (width<480&&width>=420)
 		SCREENKEY = 440;
 	  else if (width<420&&width>=380)
 		SCREENKEY = 400;
 	  else if (width<380&&width>=340)
 		SCREENKEY = 360;
 	  else
-	    SCREENKEY = 320;	
+	    SCREENKEY = 320;
 	}
 	 //  SCREENKEY = 320;	  
 //

@@ -11,5 +11,4 @@ int sex = Integer.valueOf(strsex);
 
 String playerBlob = DataManager.getInstance().login(stropenid,playername,sex,settingStr,request);
 response.getWriter().print(playerBlob);
-//response.getWriter().print("helloworld");
 %>

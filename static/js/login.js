@@ -458,7 +458,7 @@ Login.prototype.login = function(){
 	setting += ",iPad:"+browser.versions.iPad;
 	setting += ",width:"+window.screen.width;
 	setting += ",screekey:"+g_screenkey+"}";
-   	var dataParam = "openid="+g_openid+"&playername='"+g_username+"'&sex="+g_login.sex+"&"+setting;
+   	var dataParam = "openid="+g_openid+"&playername="+g_username+"&sex="+g_login.sex+"&"+setting;
     var serverPlayer;
     var now = new Date();
     
