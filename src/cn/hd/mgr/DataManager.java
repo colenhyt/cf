@@ -83,7 +83,7 @@ public class DataManager extends MgrBase {
 
 	public synchronized String login(String openId,String playerName,int sex,String settingStr,HttpServletRequest request) {
 //		String loginStr = settingStr+",ip:"+loginAction.getIpAddress(request);
-//		log.warn("login: "+loginStr);
+		log.warn("login: playerName"+playerName);
 		Player pp = new Player();
 		pp.setPlayername(playerName);
 		pp.setOpenid(openId);
@@ -190,7 +190,8 @@ public class DataManager extends MgrBase {
 		
 		DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
 		dataThread.push(player);
-		saver.add(player);
+		//saver.add(player);
+		//log.warn(System.currentTimeMillis());
 		return true;
 	}
 

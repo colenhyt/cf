@@ -207,10 +207,11 @@ public class DataThread extends Thread {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}catch (Exception e) {
-				if (e instanceof JedisConnectionException) {
-					JedisConnectionException new_name = (JedisConnectionException) e;
-				}else
-					e.printStackTrace();
+				log.error(e.getMessage());
+//				if (e instanceof JedisConnectionException) {
+//					JedisConnectionException new_name = (JedisConnectionException) e;
+//				}else
+//					e.printStackTrace();
 			}
 		}
 

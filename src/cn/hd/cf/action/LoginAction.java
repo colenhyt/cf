@@ -206,8 +206,7 @@ public class LoginAction extends SavingAction {
 			playerBlob.setPlayerid(DataManager.getInstance().assignNextId());
 			boolean ret = DataManager.getInstance().addPlayer(playerBlob);
 			if (ret==false){
-				super.writeMsg(RetMsg.MSG_PlayerNameIsExist);
-				return null;
+				return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
 			}
 			//活期存款:
 			if (init!=null&&init.getMoney()>0){
