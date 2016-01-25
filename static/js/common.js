@@ -130,12 +130,12 @@ Datamgr.prototype = {
 	},
 
     onclick:function(clickX,clickY){
-    	var tag = document.getElementById("tag"+this.name);
-    	if (tag&&this.name!=g_playerinfo.name){
-    		var name = "g_"+this.name;
-    		var className = "cf"+this.name+"_clickon"
-    		tag.innerHTML = "<img src='static/img/icon_"+this.name+"_on.png' onclick='"+name+".onclick()' class='"+className+"'>"
-    	}
+//    	var tag = document.getElementById("tag"+this.name);
+//    	if (tag&&this.name!=g_playerinfo.name){
+//    		var name = "g_"+this.name;
+//    		var className = "cf"+this.name+"_clickon"
+//    		tag.innerHTML = "<img src='static/img/icon_"+this.name+"_on.png' onclick='"+name+".onclick()' class='"+className+"'>"
+//    	}
 	     this.show();
     },    
 	
