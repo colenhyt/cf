@@ -196,11 +196,11 @@ td{font-size:17px;font-weight:bold;}
 
 .cfbank_clickon{height:192px;width:125px;}
 
-.cfbank_div{height:192px;left:43px;position:absolute;top:280px;width:125px;z-index:10;}
+.cfbank_div{height:192px;left:33px;position:absolute;top:260px;width:125px;z-index:10;}
 
-.cfstock_div{height:243px;left:240px;position:absolute;top:129px;width:133px;z-index:10;}
+.cfstock_div{height:243px;left:220px;position:absolute;top:109px;width:133px;z-index:10;}
 
-.cfinsure_div{height:198px;left:213px;position:absolute;top:388px;width:146px;z-index:10;}
+.cfinsure_div{height:198px;left:193px;position:absolute;top:363px;width:146px;z-index:10;}
 
 .cfstock_clickon{height:243px;width:133px;}
 
