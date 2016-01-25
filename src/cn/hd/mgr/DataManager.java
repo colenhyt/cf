@@ -82,13 +82,14 @@ public class DataManager extends MgrBase {
 		return nextPlayerId;
 	}
 
-	public synchronized String login(String openId,String playerName,int sex,String settingStr,HttpServletRequest request) {
+	public synchronized String login(String openId,String playerName,int sex,int playerid,HttpServletRequest request) {
 //		String loginStr = settingStr+",ip:"+loginAction.getIpAddress(request);
 		//log.warn("login: playerName"+playerName);
 		Player pp = new Player();
 		pp.setPlayername(playerName);
 		pp.setOpenid(openId);
 		pp.setSex((byte)sex);
+		pp.setPlayerid(playerid);
 		loginAction.setPlayer(pp);
 		return loginAction.login();
 	}

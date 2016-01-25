@@ -23,10 +23,13 @@ Login.prototype.init = function(){
 		tdata = store.get(this.name);
 	} 
 	
+	g_playerid = -1;
 	for (var i=0;i<tdata.length;i++){
 	  var data = tdata[i];
 	  if (data.openid==g_openid){
 	   g_username = data.playername;
+	   g_playerid = data.playerid;
+	   alert(g_playerid);
  		this.sex = data.sex;
  		break;
 	  }
@@ -458,7 +461,7 @@ Login.prototype.login = function(){
 	setting += ",iPad:"+browser.versions.iPad;
 	setting += ",width:"+window.screen.width;
 	setting += ",screekey:"+g_screenkey+"}";
-   	var dataParam = "openid="+g_openid+"&playername="+g_username+"&sex="+g_login.sex+"&"+setting;
+   	var dataParam = "openid="+g_openid+"&playername="+g_username+"&sex="+g_login.sex+"&playerid="+g_playerid;
     var serverPlayer;
     var now = new Date();
     

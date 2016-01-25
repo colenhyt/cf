@@ -6,9 +6,11 @@ String stropenid = request.getParameter("openid");
 String playername = request.getParameter("playername");
 String strsex = request.getParameter("sex");
 String settingStr = request.getParameter("setting");
+String strplayerid = request.getParameter("playerid");
 
 int sex = Integer.valueOf(strsex);
+int playerid = Integer.valueOf(strplayerid);
 
-String playerBlob = DataManager.getInstance().login(stropenid,playername,sex,settingStr,request);
+String playerBlob = DataManager.getInstance().login(stropenid,playername,sex,playerid,request);
 response.getWriter().print(playerBlob);
 %>

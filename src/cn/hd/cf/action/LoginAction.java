@@ -128,6 +128,11 @@ public class LoginAction extends SavingAction {
 //			loginstr += ",pname:"+player.getPlayername();
 //		loginstr += " enter game";
 //		//log.info(loginstr);
+		if (player.getPlayerid()>0){
+			Player playerBlob = DataManager.getInstance().findPlayer(player.getPlayerid());
+			if (playerBlob!=null)
+				return serialize(playerBlob); 
+		}
 		Player playerBlob = DataManager.getInstance().findPlayer(player.getPlayername());
 		if (playerBlob==null)
 		{
