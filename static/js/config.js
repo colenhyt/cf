@@ -70,9 +70,6 @@ var game_imgs = [
 	{name:"playerinfo",src:"static/img/icon_head.png",x:0,y:0,hasDiv:true},
 	{name:"toplist",src:"static/img/icon_toplist.png",x:555,y:120,hasDiv:true,zindex:100},
 	{name:"help",src:"static/img/icon_help.png",x:170,y:280,hasDiv:true},
-	{name:"stock",src:"static/img/icon_stock.png",x:385,y:207,hasDiv:true,zindex:100,},
-	{name:"bank",src:"static/img/icon_bank.png",x:70,y:448,hasDiv:true,zindex:100,},
-	{name:"insure",src:"static/img/icon_insure.png",x:342,y:622,hasDiv:true,zindex:100,},
 	{name:"saving",src:"static/img/icon_saving.png",x:150,y:15,hasDiv:true},
 	{name:"weektop",src:"static/img/icon_weektop.png",x:365,y:15,hasDiv:true},
 	{name:"level",src:"static/img/icon_level.png",x:-5,y:103,hasDiv:true},
@@ -226,7 +223,7 @@ var PageSizes = {
 	,QuestMoney:["120px","390px"]
 	},
 	
-	"400":{SceneWidth:640,SceneHeight:1008,PieWidth:220,PieFontSize:22,PieFontSize2:13,
+	"400":{SceneWidth:640,SceneHeight:1030,PieWidth:220,PieFontSize:22,PieFontSize2:13,
 	PieHeight:240,PageWidth:"362px",PageHeight:"212px",PageTop:46,
 	DetailPageTop:60,MsgTop:67,
 	StockView:[335,243,265,157,16]
@@ -271,6 +268,7 @@ var SIZEPER = 1;
                 android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
                 iPhone: u.indexOf('iPhone') > -1 , //是否为iPhone或者QQHD浏览器
                 iPhone5: u.indexOf('iPhone OS 6_1') > -1 , //os版本
+                iPhone6: u.indexOf('iPhone OS 9_1') > -1 , //os6版本
                 iPad: u.indexOf('iPad') > -1, //是否iPad
                 webApp: u.indexOf('Safari') == -1 //是否web应该程序，没有头部与底部
             };
@@ -282,6 +280,7 @@ function initScreen(){
 //alert(window.screen.width)
 	var versions = browser.versions
 	g_versions = versions;
+	g_versions.width = window.screen.width;
  	 var width = window.screen.width;
 	if (versions.iPhone||versions.iPad){
 		if (width<=320||width==375||width==414){
@@ -326,7 +325,7 @@ function initScreen(){
 	//--6s:414, 正常, screekey = 640;
 //alert(width);
 //alert(SCREENKEY);
-//SCREENKEY = 640;
+//SCREENKEY = 600;
 	g_screenkey = SCREENKEY;
 	SIZEPER = SCREENKEY/640;
 	var cssFile = "static/css/cf"+SCREENKEY+".css";
