@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.Vector;
 
 import net.sf.json.JSONArray;
 
@@ -27,6 +28,7 @@ import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Stockdata;
 import cn.hd.cf.service.StockService;
 import cn.hd.cf.tools.StockdataService;
+import cn.hd.util.RedisClient;
 
 import com.alibaba.fastjson.JSON;
 
@@ -55,13 +57,19 @@ public class StockManager extends MgrBase{
     	action = new StockAction();
 		lastQuoteTime = System.currentTimeMillis();
 		lastUpdateDate = null;
-		StockdataService stockdataService = new StockdataService();
-		stockData = stockdataService.findActive();
-		quoteMap = Collections.synchronizedMap(new HashMap<Integer,LinkedList<Quote>>());
 		stockMap = Collections.synchronizedMap(new HashMap<Integer,String>());
 		stocksMap = Collections.synchronizedMap(new HashMap<Integer,List<Stock>>());
+		
+		jedisClient = new RedisClient(redisCfg1);
+		dataThreads = new Vector<DataThread>();
+		 for (int i=0;i<redisCfg1.getThreadCount();i++){
+			 DataThread dataThread = new DataThread(redisCfg1);
+			dataThreads.add(dataThread);
+			dataThread.start();
+		 }	 
+		 
+    	Jedis jedis = jedisClient.getJedis();   
     	
-    	Jedis jedis = jedisClient.getJedis();   	
     	Set<String> playerids = jedis.hkeys(super.DATAKEY_STOCK);
     	for (String strpid:playerids){
     		String jsonitems = jedis.hget(super.DATAKEY_STOCK, strpid);
@@ -72,6 +80,9 @@ public class StockManager extends MgrBase{
     	jedisClient.returnResource(jedis);
     	log.warn("load stocks :" + playerids.size());    
     	
+		StockdataService stockdataService = new StockdataService();
+		stockData = stockdataService.findActive();
+		quoteMap = Collections.synchronizedMap(new HashMap<Integer,LinkedList<Quote>>());
 	   	for (int i=0;i<stockData.size();i++){
     		Stockdata  stock = stockData.get(i);
     		int fre = stock.getFreq();
@@ -90,7 +101,9 @@ public class StockManager extends MgrBase{
 	    		}
 	    		quoteMap.put(stock.getId(), qquotes);
 	    		
-	    }		
+	    }	
+    	log.warn("stock init :");
+
 				
      }
   

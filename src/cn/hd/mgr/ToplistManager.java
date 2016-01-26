@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import net.sf.json.JSONArray;
 import redis.clients.jedis.Jedis;
@@ -36,13 +37,31 @@ public class ToplistManager extends MgrBase{
     	topAction = new ToplistAction();
     	
     	toplistMap = Collections.synchronizedMap(new HashMap<Integer,Toplist>());
+    	
+		
+		jedisClient = new RedisClient(redisCfg2);
+		
+		dataThreads = new Vector<DataThread>();
+		 for (int i=0;i<redisCfg2.getThreadCount();i++){
+			 DataThread dataThread = new DataThread(redisCfg2);
+			dataThreads.add(dataThread);
+			dataThread.start();
+		 }	    	
    	
+    	Jedis jedis = jedisClient.getJedis();   	
+		if (jedis==null){
+			log.error("could not get toplist redis,redis2 may not be run");
+			return;
+		}
+		jedisClient.returnResource(jedis);
+    	log.warn("toplist init");
     }
     
     public synchronized void load(){
     	toplistMap.clear();
     	
     	Jedis jedis = jedisClient.getJedis();   	
+		
     	List<String> itemstrs = jedis.hvals(super.DATAKEY_TOPLIST);
     	jedisClient.returnResource(jedis);
     	for (String str:itemstrs){

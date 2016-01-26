@@ -34,7 +34,10 @@ public class MgrBase {
 	protected Vector<DataThread>	dataThreads;
 	protected RedisClient		jedisClient;
 	public Config cfg;
-	private DataThread logThread;
+	public RedisConfig redisCfg;
+	public RedisConfig redisCfg1;
+	public RedisConfig redisCfg2;
+	public int threadCount;
 	public JSONObject cfgObj;
 	public String openidurl;
 	public String openidparam;
@@ -49,23 +52,29 @@ public class MgrBase {
 			return;
 		}
 		cfgObj = JSONObject.fromObject(cfgstr);
+		
+		
+		String cfgstr0 = cfgObj.getString("redisCfg");
+		redisCfg = JSON.parseObject(cfgstr0, RedisConfig.class);
+		
+		String cfgstr1 = cfgObj.getString("redisCfg1");
+		redisCfg1 = JSON.parseObject(cfgstr1, RedisConfig.class);
+		
 		String cfgstr2 = cfgObj.getString("redisCfg2");
-		RedisConfig redisCfg2 = JSON.parseObject(cfgstr2, RedisConfig.class);
-//		openidurl = cfgObj.getString("openidurl");
-//		openidparam = cfgObj.getString("openidparam");
-	cfg = (Config) JSON.parseObject(cfgstr, Config.class);
-		jedisClient = new RedisClient(cfg.getRedisCfg());
+		redisCfg2 = JSON.parseObject(cfgstr2, RedisConfig.class);
+
+		cfg = (Config) JSON.parseObject(cfgstr, Config.class);
 		 
-		 dataThreads = new Vector<DataThread>();
-		 String threadCountStr = cfgObj.getString("threadCount");
-		 int threadCount = 3;
-		 if (threadCountStr!=null)
-			 threadCount = Integer.valueOf(threadCountStr);
-		 for (int i=0;i<threadCount;i++){
-				DataThread dataThread = new DataThread(cfg.getRedisCfg());
-				dataThreads.add(dataThread);
-				dataThread.start();
-		 }
+//		 String threadCountStr = cfgObj.getString("threadCount");
+//		 threadCount = 3;
+//		 if (threadCountStr!=null)
+//			 threadCount = Integer.valueOf(threadCountStr);
+//		 dataThreads = new Vector<DataThread>();
+//		 for (int i=0;i<threadCount;i++){
+//				DataThread dataThread = new DataThread(cfg.getRedisCfg());
+//				dataThreads.add(dataThread);
+//				dataThread.start();
+//		 }
 		
 	}
 }

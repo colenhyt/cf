@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import redis.clients.jedis.Jedis;
 import cn.hd.cf.action.InsureAction;
@@ -13,6 +14,7 @@ import cn.hd.cf.action.RetMsg;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Player;
 import cn.hd.cf.tools.InsuredataService;
+import cn.hd.util.RedisClient;
 
 import com.alibaba.fastjson.JSON;
 
@@ -37,7 +39,15 @@ public class InsureManager extends MgrBase{
     
     public void init(){
     	action = new InsureAction();
-    	
+		
+		jedisClient = new RedisClient(redisCfg1);		
+		dataThreads = new Vector<DataThread>();
+		 for (int i=0;i<redisCfg1.getThreadCount();i++){
+			 DataThread dataThread = new DataThread(redisCfg1);
+			dataThreads.add(dataThread);
+			dataThread.start();
+		 }	 
+		 
     	insureCfgMap = new HashMap<Integer,Insure>();
     	InsuredataService insuredataService = new InsuredataService();
     	List<Insure> data = insuredataService.findInsures();
@@ -49,7 +59,8 @@ public class InsureManager extends MgrBase{
 
     	insuresMap = Collections.synchronizedMap(new HashMap<Integer,List<Insure>>());
     	
-    	Jedis jedis = jedisClient.getJedis();   	
+    	Jedis jedis = jedisClient.getJedis();   
+    	
     	Set<String> playerids = jedis.hkeys(super.DATAKEY_INSURE);
     	for (String strpid:playerids){
     		String jsonitems = jedis.hget(super.DATAKEY_INSURE, strpid);
@@ -57,7 +68,8 @@ public class InsureManager extends MgrBase{
     		insuresMap.put(Integer.valueOf(strpid), list);
     	}
     	jedisClient.returnResource(jedis);
-    	log.warn("load insures :" + playerids.size());    	
+    	log.warn("load insures :" + playerids.size());   
+//    	log.warn("insure init :");
     }
     
     public synchronized Insure getInsure(int playerId,int itemid){

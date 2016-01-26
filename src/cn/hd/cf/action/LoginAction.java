@@ -224,7 +224,7 @@ public class LoginAction extends SavingAction {
 				saving.setPlayerid(playerBlob.getPlayerid());
 				saving.setAmount(Float.valueOf(init.getMoney().intValue()));
 				saving.setCreatetime(time);
-				SavingManager.getInstance().addSaving(saving.getPlayerid(), saving);
+				SavingManager.getInstance().addFirstSaving(saving.getPlayerid(), saving);
 //				super.playerTopUpdate(playerBlob.getPlayerid());
 //				ToplistManager.getInstance().addToplist(playerBlob.getPlayerid(),playerBlob.getPlayername(),saving.getAmount());	
 			}

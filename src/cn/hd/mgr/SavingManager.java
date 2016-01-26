@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import redis.clients.jedis.Jedis;
 import cn.hd.cf.action.RetMsg;
@@ -15,6 +16,7 @@ import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Player;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.tools.SavingdataService;
+import cn.hd.util.RedisClient;
 
 import com.alibaba.fastjson.JSON;
 
@@ -56,6 +58,16 @@ public class SavingManager extends MgrBase{
     public void init(){
     	savingAction = new SavingAction();
     	
+		
+		jedisClient = new RedisClient(redisCfg1);
+		
+		dataThreads = new Vector<DataThread>();
+		 for (int i=0;i<redisCfg1.getThreadCount();i++){
+			 DataThread dataThread = new DataThread(redisCfg1);
+			dataThreads.add(dataThread);
+			dataThread.start();
+		 }	    	
+    	
     	savingCfgMap = new HashMap<Integer,Saving>();
     	SavingdataService savingdataService = new SavingdataService();
     	List<Saving> data = savingdataService.findSavings();
@@ -67,7 +79,12 @@ public class SavingManager extends MgrBase{
 
     	savingsMap = Collections.synchronizedMap(new HashMap<Integer,List<Saving>>());
     	
-    	Jedis jedis = jedisClient.getJedis();   	
+    	Jedis jedis = jedisClient.getJedis();   
+		if (jedis==null){
+			log.error("could not get redis,redis1 may not be run");
+			return;
+		}
+		
     	Set<String> playerids = jedis.hkeys(super.DATAKEY_SAVING);
     	for (String strpid:playerids){
     		String jsonitems = jedis.hget(super.DATAKEY_SAVING, strpid);
@@ -76,7 +93,7 @@ public class SavingManager extends MgrBase{
     		savingsMap.put(Integer.valueOf(strpid), list);
     	}
     	jedisClient.returnResource(jedis);
-    	log.warn("load savings :" + playerids.size());
+    	log.warn("saving init:"+playerids.size());
     }
     
     public synchronized boolean updateLiveSaving(Saving record){
@@ -153,7 +170,8 @@ public class SavingManager extends MgrBase{
 //				return list;
 //			}
 //			String liststr = jedis.hget(super.DATAKEY_SAVING, String.valueOf(playerId));
-//			jedisClient.returnResource(jedis);    		
+//			jedisClient.returnResource(jedis);    	
+//			log.warn("get saving "+liststr);
 //			if (liststr!=null){
 //				list = JSON.parseArray(liststr, Saving.class);
 //				savingsMap.put(playerId, list);
@@ -181,6 +199,15 @@ public class SavingManager extends MgrBase{
 			return RetMsg.MSG_OK;
 		}
 		return RetMsg.MSG_SavingNotExist;
+	}
+
+	public synchronized int addFirstSaving(int playerId,Saving record){
+		List<Saving> list  = new ArrayList<Saving>();
+		savingsMap.put(playerId, list);
+		list.add(record);
+		DataThread dataThread = dataThreads.get(playerId%dataThreads.size());
+		dataThread.updateSaving(playerId, JSON.toJSONString(list));
+		return RetMsg.MSG_OK;
 	}
 
 	public synchronized int addSaving(int playerId,Saving record){
