@@ -134,11 +134,12 @@ Map.prototype.enter = function(sexImg){
         var img = new Image();
         img.src = mapImgs[i].src;
         img.onload=function(){
-            map.draw();
+           // map.draw();
             map.imgLoaded++;
             g_loading.add(5);
             if (map.imgLoaded>=mapImgs.length){
              g_loading.set(RES_FINISH);
+             map.draw();
             }
         };	       
         mapImgs[i].img = img;
@@ -162,7 +163,7 @@ Map.prototype.addImg = function(img)
    this.m_imgs.sort(this.sortImg);
     img0.src = img.src;
     img0.onload=function(){
-         map.draw();
+         //map.draw();
          g_login.loadImgCallback();
     };    
     img.img = img0;
@@ -210,12 +211,6 @@ Map.prototype.sortImg = function(img1,img2){
 }
 
 Map.prototype.draw = function(){
-	g_game.currImgCount++;
-	if (g_game.currImgCount<g_game.imgCount){
-	 return;
-	}
-	g_game.currImgCount = 0;
-	
 	var pos = this.m_pos;
 	var scale = this.m_imgScale;
 	var canvas = this.m_canvas;

@@ -48,6 +48,7 @@ Login.prototype.loadImgCallback = function()
 	g_loading.add(5);
 	if (this.imgLoaded>=login_imgs.length){
 	 g_loading.set(RES_FINISH);
+	 g_game.m_scene.m_map.draw();
 	}
 }
 
