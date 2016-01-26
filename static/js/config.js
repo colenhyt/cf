@@ -143,12 +143,20 @@ ERR_MSG[MSG_StockNotExist] = "找不到该股票，无法购买";
 ERR_MSG[MSG_StockQtyIsZero] = "请选择股票手数";
 
 function loadStyle(url){
+    var head = document.getElementsByTagName("head")[0];
+    var linkzui = document.createElement('link');
+    linkzui.rel = "stylesheet";
+    linkzui.type = "text/css";
+    linkzui.href = "dist/css/zui.css";
+    head.appendChild(linkzui);
+
     var link = document.createElement('link');
     link.rel = "stylesheet";
     link.type = "text/css";
     link.href = url;
-    var head = document.getElementsByTagName("head")[0];
     head.appendChild(link);
+    
+    g_loading.set(RES_CSS);
 }
 
 var Page_Top = 80;

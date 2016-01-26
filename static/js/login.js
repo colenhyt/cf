@@ -5,6 +5,7 @@ Login = function(){
     this.syncDuration = 5;
     this.data = {};
     this.loginPlayerid = -1;
+    this.imgLoaded = 0;
     this.isLogin = false;
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
@@ -29,7 +30,6 @@ Login.prototype.init = function(){
 	  if (data.openid==g_openid){
 	   g_username = data.playername;
 	   g_playerid = data.playerid;
-	   alert(g_playerid);
  		this.sex = data.sex;
  		break;
 	  }
@@ -40,6 +40,15 @@ Login.prototype.init = function(){
 	   this.login();
 	}else
       this.draw();
+}
+
+Login.prototype.loadImgCallback = function()
+{
+	this.imgLoaded++;
+	g_loading.add(5);
+	if (this.imgLoaded>=login_imgs.length){
+	 g_loading.set(RES_FINISH);
+	}
 }
 
 Login.prototype.draw = function()
@@ -79,7 +88,6 @@ Login.prototype.draw = function()
 		    div.innerHTML = title+input;
 		    div.className = "cflogin_input_div";
 		    this.div = div;
-		    	 
 	   	 }
    	}   	
 }
@@ -130,7 +138,7 @@ Login.prototype.drawChoseBorder = function(sex)
 		img.y = img22.y;
 		g_game.m_scene.m_map.draw();
 	}else {
-		g_game.addImg(img22);
+		g_game.addImg2(img22);
 	}
 }
 
@@ -456,12 +464,12 @@ Login.prototype.login = function(){
 //     	alert("本地数据缺失，登录失败");
 //     	return;
 //     }
-	var setting = "setting={android:"+browser.versions.android+",iphone:"+browser.versions.iPhone;
+	var setting = "{android:"+browser.versions.android+",iphone:"+browser.versions.iPhone;
 	setting += ",iPhone5:"+browser.versions.iPhone5;
 	setting += ",iPad:"+browser.versions.iPad;
 	setting += ",width:"+window.screen.width;
 	setting += ",screekey:"+g_screenkey+"}";
-   	var dataParam = "openid="+g_openid+"&playername="+g_username+"&sex="+g_login.sex+"&playerid="+g_playerid;
+   	var dataParam = "openid="+g_openid+"&playername="+g_username+"&sex="+g_login.sex+"&playerid="+g_playerid+"&setting="+setting;
     var serverPlayer;
     var now = new Date();
     

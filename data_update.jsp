@@ -27,6 +27,5 @@ switch (type){
 	retStr = StockManager.getInstance().add(playerid,itemid,qty,price,amount);
 	break;		
 }
-	System.out.println(retStr);
 response.getWriter().print(retStr);
 %>

@@ -179,8 +179,8 @@ public class LoginAction extends SavingAction {
 	}
 
 	private synchronized String serialize(Player player){
-//		float margin = StockManager.getInstance().getMarginSec();
-//		player.setQuotetime(margin);
+		float margin = StockManager.getInstance().getMarginSec();
+		player.setQuotetime(margin);
 		String data = JSON.toJSONString(player);
 	//  log.warn("login:"+data);
 	  return data;

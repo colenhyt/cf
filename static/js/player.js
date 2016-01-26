@@ -225,6 +225,7 @@ Player.prototype.loginback = function(data){
   playerdata.openstock = data.openstock;
   playerdata.playerid = data.playerid;
   playerdata.exp = data.exp;
+  playerdata.lastlogin = data.lastlogin;
     
   	g_player.data = playerdata;
 	g_player.saving = {};

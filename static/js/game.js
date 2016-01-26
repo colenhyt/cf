@@ -125,6 +125,7 @@ Map.prototype.enter = function(sexImg){
     this.m_imgs = game_imgs;
     this.m_imgs.push(sexImg);
     var map = this;
+    this.imgLoaded = 0;
 	this.m_imgs.sort(this.sortImg);
 	var mapImgs = game_imgs;
 
@@ -134,6 +135,11 @@ Map.prototype.enter = function(sexImg){
         img.src = mapImgs[i].src;
         img.onload=function(){
             map.draw();
+            map.imgLoaded++;
+            g_loading.add(5);
+            if (map.imgLoaded>=mapImgs.length){
+             g_loading.set(RES_FINISH);
+            }
         };	       
         mapImgs[i].img = img;
         if (mapImgs[i].hasDiv==true){
@@ -149,6 +155,20 @@ Map.prototype.enter = function(sexImg){
 }
 
 Map.prototype.addImg = function(img)
+{
+    var map = this;
+    var img0 = new Image();
+    this.m_imgs.push(img);
+   this.m_imgs.sort(this.sortImg);
+    img0.src = img.src;
+    img0.onload=function(){
+         map.draw();
+         g_login.loadImgCallback();
+    };    
+    img.img = img0;
+}
+
+Map.prototype.addImg2 = function(img)
 {
     var map = this;
     var img0 = new Image();
@@ -308,6 +328,8 @@ Game.prototype.init = function(canvas){
 	this.register(g_help);
 	this.register(g_login);
 	
+	g_loading.set(RES_INIT);
+	
 	g_login.init();
 	
 }
@@ -348,6 +370,11 @@ carAni3();
 
 Game.prototype.register = function(obj){
     this.sys[obj.name] = obj;
+}
+
+Game.prototype.addImg2 = function(img,imgCount,drawCallback){
+	this.imgCount = imgCount;
+    this.m_scene.m_map.addImg2(img);
 }
 
 Game.prototype.addImg = function(img,imgCount,drawCallback){
