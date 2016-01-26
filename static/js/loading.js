@@ -2,8 +2,9 @@
 	var loadingTag;
 
 var RES_START = 0;
-var RES_DISTJS = 5;
-var RES_CSS	= 10;
+var RES_DISTJS = 2;
+var RES_CSS	= 6;
+var RES_CSS2 = 10;
 var RES_DATAJS = 15;
 var RES_JS1 = 20;
 var RES_JS2 = 25;

@@ -24,7 +24,7 @@ var MsgDuration = 100;	//消息刷帧频率(ms)
 
 var StockDuration = 1000;	//股票刷帧频率(ms)
 
-var NetReqWait = 20000;	//网络请求等待时间(ms)
+var NetReqWait = 12000;	//网络请求等待时间(ms)
 
 var QUOTETIME = 300;		//行情跳动时间(秒)
 
@@ -150,13 +150,15 @@ function loadStyle(url){
     linkzui.href = "dist/css/zui.css";
     head.appendChild(linkzui);
 
+    g_loading.set(RES_CSS);
     var link = document.createElement('link');
     link.rel = "stylesheet";
     link.type = "text/css";
     link.href = url;
     head.appendChild(link);
     
-    g_loading.set(RES_CSS);
+    g_loading.set(RES_CSS2);
+    
 }
 
 var Page_Top = 80;
