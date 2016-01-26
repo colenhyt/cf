@@ -17,7 +17,11 @@ Loading = function(){
 	this.currPer = 0;
 	var div = document.createElement("div");
 	div.id = "loading";
-	div.style="position:absolute; left: 100px;top: 0px;height:10px;width:10px; color:rgb(0, 0, 0)";
+	var left = window.screen.width/2;
+	var top = window.screen.height/2;
+	div.style.position="absolute";
+	div.style.left= left+"px";
+	div.style.top=top+"px";
 	document.body.appendChild(div);
 	loadingTag = document.getElementById("loading");
 }
