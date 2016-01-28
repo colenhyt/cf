@@ -11,6 +11,6 @@ String strplayerid = request.getParameter("playerid");
 int sex = Integer.valueOf(strsex);
 int playerid = Integer.valueOf(strplayerid);
 
-String playerBlob = DataManager.getInstance().login(stropenid,playername,sex,playerid,request);
+String playerBlob = DataManager.getInstance().login(stropenid,playername,sex,playerid,settingStr,request);
 response.getWriter().print(playerBlob);
 %>
