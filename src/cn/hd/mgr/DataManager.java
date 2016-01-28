@@ -85,9 +85,9 @@ public class DataManager extends MgrBase {
 		return nextPlayerId;
 	}
 
-	public synchronized String login(String openId,String playerName,int sex,int playerid,HttpServletRequest request) {
-//		String loginStr = settingStr+",ip:"+loginAction.getIpAddress(request);
-		//log.warn("login: playerName"+playerName);
+	public synchronized String login(String openId,String playerName,int sex,int playerid,String settingStr,HttpServletRequest request) {
+		String loginStr = settingStr+",ip:"+loginAction.getIpAddress(request);
+		log.warn("login: loginStr: "+loginStr);
 		Player pp = new Player();
 		pp.setPlayername(playerName);
 		pp.setOpenid(openId);
@@ -181,7 +181,7 @@ public class DataManager extends MgrBase {
 		int top = ToplistManager.getInstance().findCountByGreaterMoney(
 				playerid, 0, fMm);
 		// 800ms/1k
-		return top + 1;
+		return top+1;
 	}
 
 	public synchronized boolean addPlayer(PlayerWithBLOBs player) {
@@ -201,38 +201,54 @@ public class DataManager extends MgrBase {
 	}
 
 	public synchronized Player findPlayer(String playerName) {
+		long s = System.currentTimeMillis();
 		Integer playerid = playerIdMaps.get(playerName);
-		if (playerid == null) {
-//			Jedis jedis = jedisClient.getJedis();
-//			log.warn("get code: "+playerName.hashCode());
-//			int index = playerName.hashCode()%redisClients.size();
-//			log.warn("get redis: "+index);
-//			Jedis jedis = redisClients.get(index).getJedis();
-//			String idstr = jedis.hget(super.DATAKEY_PLAYER_ID, playerName);
-//			jedisClient.returnResource(jedis);
-//			if (idstr!=null){
-//				playerid = Integer.valueOf(idstr);
-//			}else
-				return null;
+		if (playerid != null) {
+			return findPlayer(playerid);
 		}
-		return findPlayer(playerid);
+		
+		Player player = null;
+		int index = Math.abs(playerName.hashCode())%redisClients.size();
+		RedisClient jedisClient = redisClients.get(index);
+		Jedis jedis = jedisClient.getJedis();
+		String idstr = jedis.hget(super.DATAKEY_PLAYER_ID, playerName);
+		if (idstr!=null){
+			playerid = Integer.valueOf(idstr);
+			String itemstr = jedis.hget(super.DATAKEY_PLAYER, String.valueOf(playerid));
+			player = (Player)JSON.parseObject(itemstr,Player.class);
+//				log.warn("find player :"+player.getPlayerid());
+			playerMaps.put(playerid, player);
+			if (!playerIdMaps.containsKey(player.getPlayername())){
+				playerIdMaps.put(player.getPlayername(), playerid);
+			}				
+		}
+		jedisClient.returnResource(jedis);
+		long cost = System.currentTimeMillis()-s;
+		if (cost>10)
+			log.warn("register find cost :"+cost+",name:"+playerName);
+		return player;
 	}
 
 	public synchronized Player findPlayer(int playerid) {
 		Player player = playerMaps.get(playerid);
+		long s = System.currentTimeMillis();
+
 		if (player==null){
-//			Jedis jedis = jedisClient.getJedis();
-//			String itemstr = jedis.hget(super.DATAKEY_PLAYER, String.valueOf(playerid));
-//			jedisClient.returnResource(jedis);			
-//			if (itemstr!=null){
-//				player = (PlayerWithBLOBs)JSON.parseObject(itemstr,PlayerWithBLOBs.class);
+			int index = playerid%redisClients.size();
+			RedisClient jedisClient = redisClients.get(index);
+			Jedis jedis = jedisClient.getJedis();
+			String itemstr = jedis.hget(super.DATAKEY_PLAYER, String.valueOf(playerid));
+			jedisClient.returnResource(jedis);			
+			if (itemstr!=null){
+				player = (Player)JSON.parseObject(itemstr,Player.class);
 //				log.warn("find player :"+player.getPlayerid());
-//				playerMaps.put(playerid, player);
-//				if (!playerIdMaps.containsKey(player.getPlayername())){
-//					playerIdMaps.put(player.getPlayername(), playerid);
-//				}
-//			}
+				playerMaps.put(playerid, player);
+				if (!playerIdMaps.containsKey(player.getPlayername())){
+					playerIdMaps.put(player.getPlayername(), playerid);
+				}
+			}
 		}
+		log.warn("findid cost :"+(System.currentTimeMillis()-s));
 		return player;
 	}
 
@@ -374,11 +390,14 @@ public class DataManager extends MgrBase {
 	public static void main(String[] args) {
 		DataManager stmgr = DataManager.getInstance();
 		stmgr.init();
-		stmgr.findPlayer(1335);
-		stmgr.findPlayer("ppnane");
-		PlayerWithBLOBs pp = new PlayerWithBLOBs();
-		pp.setPlayerid(33);
-		stmgr.addPlayer(pp);
+		long s = System.currentTimeMillis();
+		for (int i=0;i<1000;i++)
+			stmgr.findPlayer(1335);
+		System.out.println("cost t:"+(System.currentTimeMillis()-s));
+//		stmgr.findPlayer("ppnane");
+//		PlayerWithBLOBs pp = new PlayerWithBLOBs();
+//		pp.setPlayerid(33);
+//		stmgr.addPlayer(pp);
 //		SavingManager.getInstance().init();
 //		InsureManager.getInstance().init();
 //		StockManager.getInstance().init();

@@ -88,8 +88,9 @@ public class SavingManager extends MgrBase{
     	Set<String> playerids = jedis.hkeys(super.DATAKEY_SAVING);
     	for (String strpid:playerids){
     		String jsonitems = jedis.hget(super.DATAKEY_SAVING, strpid);
-//    		log.warn("get saving:"+jsonitems);
+//    		log.warn("get saving:"+strpid+",data:"+jsonitems);
     		List<Saving> list = JSON.parseArray(jsonitems, Saving.class);
+    		
     		savingsMap.put(Integer.valueOf(strpid), list);
     	}
     	jedisClient.returnResource(jedis);
@@ -162,20 +163,30 @@ public class SavingManager extends MgrBase{
     	return saving;
 	}
     
+    public synchronized List<Integer> getSavingIds(int playerId){
+    	List<Integer> itemids = new ArrayList<Integer>();
+    	List<Saving> list = getSavingList(playerId);
+    	if (list!=null){
+    		for (Saving item:list){
+    			itemids.add(item.getItemid());
+    		}
+    	}
+    	return itemids;
+    }
     public synchronized List<Saving> getSavingList(int playerId){
     	List<Saving> list = savingsMap.get(playerId);
     	if (list==null){
-//			Jedis jedis = jedisClient.getJedis();
-//			if (!jedis.hexists(super.DATAKEY_SAVING, String.valueOf(playerId))){
-//				return list;
-//			}
-//			String liststr = jedis.hget(super.DATAKEY_SAVING, String.valueOf(playerId));
-//			jedisClient.returnResource(jedis);    	
-//			log.warn("get saving "+liststr);
-//			if (liststr!=null){
-//				list = JSON.parseArray(liststr, Saving.class);
-//				savingsMap.put(playerId, list);
-//			}
+			Jedis jedis = jedisClient.getJedis();
+			if (!jedis.hexists(super.DATAKEY_SAVING, String.valueOf(playerId))){
+				return list;
+			}
+			String liststr = jedis.hget(super.DATAKEY_SAVING, String.valueOf(playerId));
+			jedisClient.returnResource(jedis);    	
+			log.warn("get saving "+liststr);
+			if (liststr!=null){
+				list = JSON.parseArray(liststr, Saving.class);
+				savingsMap.put(playerId, list);
+			}
     	}	
     	return list;
 	}

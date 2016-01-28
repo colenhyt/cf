@@ -68,9 +68,9 @@ public class LoginAction extends SavingAction {
 	//
 	public synchronized Map<Integer,Saving> findUpdatedSavings(int playerId)
 	{
-		List<Saving> savings = SavingManager.getInstance().getSavingList(playerId);
+		List<Integer> savingids = SavingManager.getInstance().getSavingIds(playerId);
 		Map<Integer,Saving>	 mdata = new HashMap<Integer,Saving>();
-		if (savings==null)
+		if (savingids==null||savingids.size()<=0)
 			return mdata;
 		
 		Date currDate = new Date();
@@ -79,8 +79,8 @@ public class LoginAction extends SavingAction {
 	    Calendar c2 = Calendar.getInstance(); 
 		Saving liveSaving = null;
 		boolean liveUpdate = false;
-		for (int i=0;i<savings.size();i++){
-			Saving saving = savings.get(i);
+		for (Integer itemid:savingids){
+			Saving saving = SavingManager.getInstance().getSaving(playerId, itemid);
 			float inter = 0;
 	        c2.setTime(saving.getUpdatetime());
 	        float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
@@ -109,13 +109,14 @@ public class LoginAction extends SavingAction {
 			usaving.setCreatetime(saving.getCreatetime());
 			usaving.setQty(saving.getQty());
 			usaving.setProfit(inter);
+//			log.warn("add usersaving:"+JSON.toJSONString(usaving));
 			mdata.put(saving.getItemid(), usaving);
 		}
 		if (liveUpdate==true){
 			SavingManager.getInstance().updateLiveSaving(liveSaving);
 			super.playerTopUpdate(playerId);			
 		}
-		
+//		log.warn("mdata return :"+JSON.toJSONString(mdata));
 		return mdata;
 	}
 
@@ -133,7 +134,11 @@ public class LoginAction extends SavingAction {
 			if (playerBlob!=null)
 				return serialize(playerBlob); 
 		}
+		long s = System.currentTimeMillis();
 		Player playerBlob = DataManager.getInstance().findPlayer(player.getPlayername());
+		long cost = System.currentTimeMillis()-s;
+		if (cost>10)		
+			log.warn("action cost :"+cost+" openid:"+player.getOpenid());
 		if (playerBlob==null)
 		{
 			return register();
@@ -144,6 +149,7 @@ public class LoginAction extends SavingAction {
 		//log.warn("openid:'"+player.getOpenid()+"',pid:"+playerBlob.getPlayerid()+" login success,name:"+player.getPlayername());
 		
 		return serialize(playerBlob);
+//		return null;
 	}
 	
 	public String get(PlayerWithBLOBs playerBlob)
