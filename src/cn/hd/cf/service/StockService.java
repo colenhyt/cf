@@ -35,9 +35,7 @@ public class StockService extends BaseService {
 	
 	public List<Stock> findByPlayerId(int playerId)
 	{
-		String jsonstr = StockManager.getInstance().getStocks(playerId);
-    	List<Stock> list = BaseService.jsonToBeanList(jsonstr, Stock.class);
-		return list;
+		return null;
 	}
 	
 	public List<Stock> getDBStocks(int playerId)

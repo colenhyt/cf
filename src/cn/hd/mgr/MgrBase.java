@@ -26,6 +26,11 @@ public class MgrBase {
 	public final static String DATAKEY_INSURE = "insure";
 	public final static String DATAKEY_STOCK = "stock";
 	public final static String DATAKEY_TOPLIST = "toplist";
+	public final static String DATAKEY_DATA_INIT = "initdata";
+	public final static String DATAKEY_DATA_SAVING = "savingdata";
+	public final static String DATAKEY_DATA_INSURE = "insuredata";
+	public final static String DATAKEY_DATA_STOCK = "stockdata";
+	public final static String DATAKEY_DATA_QUEST = "questdata";
 	protected Logger  log = Logger.getLogger(getClass()); 
 	protected int tick = 0;
 	protected final int UPDATE_PERIOD = 20*30;		//20*60: 一小时
@@ -33,10 +38,12 @@ public class MgrBase {
 	protected final int UPDATE_PERIOD_BATCH = 40;	//2分钟
 	protected Vector<DataThread>	dataThreads;
 	protected RedisClient		jedisClient;
+	protected RedisClient		jedisClient3;
 	public Config cfg;
 	public RedisConfig redisCfg;
 	public RedisConfig redisCfg1;
 	public RedisConfig redisCfg2;
+	public RedisConfig redisCfg3;
 	public int threadCount;
 	public JSONObject cfgObj;
 	public String openidurl;
@@ -62,7 +69,12 @@ public class MgrBase {
 		
 		String cfgstr2 = cfgObj.getString("redisCfg2");
 		redisCfg2 = JSON.parseObject(cfgstr2, RedisConfig.class);
+		
+		String cfgstr3 = cfgObj.getString("redisCfg3");
+		redisCfg3 = JSON.parseObject(cfgstr3, RedisConfig.class);
 
+		jedisClient3 = new RedisClient(redisCfg3);
+		
 		cfg = (Config) JSON.parseObject(cfgstr, Config.class);
 		 
 //		 String threadCountStr = cfgObj.getString("threadCount");

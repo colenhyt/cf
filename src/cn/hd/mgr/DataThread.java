@@ -35,7 +35,6 @@ public class DataThread extends Thread {
 	private Vector<Stock>			newStockVect;
 	private Vector<Stock>			updateStockVect;
 	private Vector<Stock>			deleteStockVect;
-	private Vector<Toplist>			newToplistVect;
 	private Vector<Toplist>			updateToplistVect;		
 	private Vector<Toplist>			updateToplistZanVect;		
 	private Vector<String>			signinVect;
@@ -58,7 +57,6 @@ public class DataThread extends Thread {
 		deleteStockVect = new Vector<Stock>();		
 		updateStockVect = new Vector<Stock>();	
 		
-		newToplistVect = new Vector<Toplist>();
 		updateToplistVect = new Vector<Toplist>();
 		updateToplistZanVect = new Vector<Toplist>();
 		
@@ -170,13 +168,6 @@ public class DataThread extends Thread {
 		    		updateStockMap.clear();    	    			
 	    		}	    	
 	    		
-	    		if (newToplistVect.size()>0){
-		    		ToplistService service2= new ToplistService();
-		    		service2.addToplists(newToplistVect);
-//		    		log.warn("batch add toplist :"+newToplistVect.size());
-		    		newToplistVect.clear();    	    			
-	    		}
-	        	
 	    		if (updateToplistVect.size()>0){
 	    			for (int i=0;i<updateToplistVect.size();i++){
 		    			Toplist toplist = updateToplistVect.get(i);

@@ -19,10 +19,11 @@ import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Player;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Quest;
+import cn.hd.cf.model.Questdata;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Signin;
 import cn.hd.cf.model.Stock;
-import cn.hd.cf.tools.InitdataService;
+import cn.hd.cf.tools.QuestdataService;
 import cn.hd.util.QuestLog;
 import cn.hd.util.RedisClient;
 import cn.hd.util.SigninLog;
@@ -46,6 +47,7 @@ public class DataManager extends MgrBase {
 
 	public Map<String, Integer> playerIdMaps;
 	public Map<Integer, Player> playerMaps;
+	public Map<Integer,Quest> questDataMap;
 	private int nextPlayerId;
 
 	private static DataManager uniqueInstance = null;
@@ -59,13 +61,11 @@ public class DataManager extends MgrBase {
 
 	public DataManager() {
 		nextPlayerId = 0;
-		saver = new DBDataSaver();
-		saver.start();
 	}
 
 	public synchronized int assignNextId() {
 		if (currMaxPlayerId==-1||nextPlayerId+1>currMaxPlayerId){
-			Jedis jedis = jedisClient.getJedis();
+			Jedis jedis = redisClients.get(0).getJedis();
 			if (jedis==null){
 				log.error("could not get redis,redis may not be run");
 				return -1;
@@ -78,7 +78,7 @@ public class DataManager extends MgrBase {
 			jedis.set(super.DATAKEY_GUID_PLAYER,String.valueOf(currMaxPlayerId));
 			nextPlayerId = currMaxPlayerId - idStep;
 			log.warn("reset guid id "+currMaxPlayerId);
-			jedisClient.returnResource(jedis);
+			redisClients.get(0).returnResource(jedis);
 		}
 		
 		nextPlayerId++;
@@ -86,6 +86,7 @@ public class DataManager extends MgrBase {
 	}
 
 	public synchronized String login(String openId,String playerName,int sex,int playerid,String settingStr,HttpServletRequest request) {
+//		return null;
 		String loginStr = settingStr+",ip:"+loginAction.getIpAddress(request);
 		log.warn("login: loginStr: "+loginStr);
 		Player pp = new Player();
@@ -248,11 +249,16 @@ public class DataManager extends MgrBase {
 				}
 			}
 		}
-		log.warn("findid cost :"+(System.currentTimeMillis()-s));
+		//log.warn("findid cost :"+(System.currentTimeMillis()-s));
 		return player;
 	}
 
-	public synchronized boolean updatePlayer(PlayerWithBLOBs player) {
+	public synchronized void updatePlayerQuest(Player player) {
+		DataThread dataThread = dataThreads.get(player.getPlayerid()%dataThreads.size());
+		dataThread.updatePlayer(player);
+	}
+	
+	public synchronized boolean updatePlayer(Player player) {
 		Player pp = findPlayer(player.getPlayerid());
 		if (pp != null) {
 			pp.setExp(player.getExp());
@@ -263,7 +269,7 @@ public class DataManager extends MgrBase {
 		return false;
 	}
 
-	public synchronized void update(int playerid,int type){
+	public synchronized void update(int playerid,int type,String itemstr){
 		Player p = findPlayer(playerid);
 		if (p==null) return;
 		
@@ -273,13 +279,15 @@ public class DataManager extends MgrBase {
 			this.addSignin(playerid);
 			break;
 		case 1:
-			p.setQuestdonecount(p.getQuestdonecount()+1);
-			if (p.getQuestdonecount()==2){
+			String queststr = p.getQuestStr();
+			if (queststr==null||itemstr==null||itemstr.length()<=0) return;
+			
+			queststr = queststr.replace(itemstr, "").replace(",","");
+			p.setQuestStr(queststr);
+			if (queststr.length()<=0||queststr.split(",").length<=0){
+				p.setQuestDoneTime(new Date());
 				this.addDoneQuest(playerid);
-			}
-			p.setQuestDoneTime(new Date());
-			if (p.getQuestdonecount()==3){
-				p.setQuestdonecount(1);
+				log.warn("done quest");
 			}
 			break;
 		case 2:
@@ -316,7 +324,7 @@ public class DataManager extends MgrBase {
 	}
 
 	public synchronized List<String> getplayers() {
-		Jedis jedis = jedisClient.getJedis();
+		Jedis jedis = redisClients.get(0).getJedis();
 		return jedis.hvals(super.DATAKEY_PLAYER);
 	}
 
@@ -324,14 +332,22 @@ public class DataManager extends MgrBase {
 	public void init() {
 		loginAction = new LoginAction();
 
-		InitdataService initdataService = new InitdataService();
-		try {
-			init = initdataService.findInit();
-		}catch (Exception e){
-			log.warn("could not connect mysql");
+		Jedis j3 = jedisClient3.getJedis();
+		
+		String strinit = j3.get(MgrBase.DATAKEY_DATA_INIT);
+		init = JSON.parseObject(strinit, Init.class);
+
+		log.warn("find init:"+strinit);
+		
+		questDataMap = Collections
+				.synchronizedMap(new HashMap<Integer, Quest>());
+		List<String> queststrs = j3.hvals(MgrBase.DATAKEY_DATA_QUEST);
+		for (String qstr:queststrs){
+			Quest q = JSON.parseObject(qstr,Quest.class);
+			questDataMap.put(q.getId(), q);
 		}
-
-
+		log.warn("init questdata "+questDataMap.size());
+		
 		playerIdMaps = Collections
 				.synchronizedMap(new HashMap<String, Integer>());
 		playerMaps = Collections
@@ -342,8 +358,6 @@ public class DataManager extends MgrBase {
 			RedisClient client = new RedisClient(redisCfg);
 			redisClients.add(client);
 		}
-		
-		jedisClient = new RedisClient(redisCfg);
 		
 		dataThreads = new Vector<DataThread>();
 		 for (int i=0;i<redisCfg.getThreadCount();i++){
@@ -365,7 +379,7 @@ public class DataManager extends MgrBase {
 //			PlayerWithBLOBs player = players.get(i);
 		
 		
-		Jedis jedis = jedisClient.getJedis();
+		Jedis jedis = redisClients.get(0).getJedis();
 		if (jedis==null){
 			log.error("could not get player redis,redis0 may not be run");
 			return;
@@ -383,7 +397,7 @@ public class DataManager extends MgrBase {
 			playerMaps.put(player.getPlayerid(), player);
 			playerIdMaps.put(player.getPlayername(), player.getPlayerid());
 		}
-		jedisClient.returnResource(jedis);
+		redisClients.get(0).returnResource(jedis);
 		log.warn("load all players :" + items.size());
 
 	}

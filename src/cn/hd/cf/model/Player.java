@@ -6,6 +6,15 @@ public class Player {
 	private String createTimeStr;
 	private String updateTimeStr;
 	private Date questdonetime;
+	private Date questassigntime;
+	public Date getQuestassigntime() {
+		return questassigntime;
+	}
+
+	public void setQuestassigntime(Date questassigntime) {
+		this.questassigntime = questassigntime;
+	}
+
 	private int questdonecount = 0;
 	public int getQuestdonecount() {
 		return questdonecount;

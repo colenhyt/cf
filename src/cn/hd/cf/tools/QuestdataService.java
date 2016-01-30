@@ -1,12 +1,15 @@
 package cn.hd.cf.tools;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import cn.hd.base.BaseService;
 import cn.hd.cf.dao.QuestdataMapper;
-import cn.hd.cf.model.QuestdataExample;
+import cn.hd.cf.model.Quest;
 import cn.hd.cf.model.Questdata;
+import cn.hd.cf.model.QuestdataExample;
 import cn.hd.cf.model.QuestdataExample.Criteria;
+import cn.hd.cf.model.Saving;
 
 public class QuestdataService extends BaseService {
 	private QuestdataMapper	questdataMapper;
@@ -33,6 +36,18 @@ public class QuestdataService extends BaseService {
 		if (datas.size()>0)
 			return datas.get(0);
 		return null;
+	}
+	
+	public List<Quest> findQuests(){
+		try {
+			Questdata data = findActive();
+			String str = new String(data.getData(),"utf-8");
+			return jsonToBeanList(str, Quest.class);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}			
+		return null;		
 	}
 	
 	public boolean add(Questdata record)

@@ -69,13 +69,16 @@ public class SavingManager extends MgrBase{
 		 }	    	
     	
     	savingCfgMap = new HashMap<Integer,Saving>();
-    	SavingdataService savingdataService = new SavingdataService();
-    	List<Saving> data = savingdataService.findSavings();
-    	for (int i=0;i<data.size();i++){
-    		Saving saving = data.get(i);
+		Jedis j3 = jedisClient3.getJedis();
+		String dataStr = j3.get(MgrBase.DATAKEY_DATA_SAVING);
+		List<Saving> data2 = JSON.parseArray(dataStr, Saving.class);
+		
+    	for (int i=0;i<data2.size();i++){
+    		Saving saving = data2.get(i);
     		if (!savingCfgMap.containsKey(saving.getId()))
     			savingCfgMap.put(saving.getId(), saving);
     	}
+    	log.warn("init savingdata:"+savingCfgMap.size());
 
     	savingsMap = Collections.synchronizedMap(new HashMap<Integer,List<Saving>>());
     	

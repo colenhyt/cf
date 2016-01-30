@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import net.sf.json.JSONObject;
 import cn.hd.base.Base;
@@ -120,6 +121,22 @@ public class LoginAction extends SavingAction {
 		return mdata;
 	}
 
+	public synchronized String loginPlayer(Player playerBlob)
+	{
+		if (playerBlob!=null){
+			if (!playerBlob.getOpenid().equals(player.getOpenid()))
+				return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
+			
+			log.warn("openid:'"+player.getOpenid()+"',pid:"+playerBlob.getPlayerid()+" login success,name:"+player.getPlayername());
+			boolean newAssign = assignDailyQuest(playerBlob);
+			if (newAssign){
+				log.warn("login assign quest:"+playerBlob.getQuestStr());
+				DataManager.getInstance().updatePlayerQuest(playerBlob);
+			}
+			return serialize(playerBlob); 
+		}else
+			return super.msgStr(RetMsg.MSG_WrongPlayerNameOrPwd);	
+	}
 	public synchronized String login()
 	{
 //		String loginstr = "";
@@ -131,8 +148,7 @@ public class LoginAction extends SavingAction {
 //		//log.info(loginstr);
 		if (player.getPlayerid()>0){
 			Player playerBlob = DataManager.getInstance().findPlayer(player.getPlayerid());
-			if (playerBlob!=null)
-				return serialize(playerBlob); 
+			return loginPlayer(playerBlob);
 		}
 		long s = System.currentTimeMillis();
 		Player playerBlob = DataManager.getInstance().findPlayer(player.getPlayername());
@@ -142,14 +158,9 @@ public class LoginAction extends SavingAction {
 		if (playerBlob==null)
 		{
 			return register();
-		}else if (playerBlob.getOpenid()==null||!playerBlob.getOpenid().equals(player.getOpenid())){		//昵称已被注册
-			return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
+		}else{		//名字登陆
+			return loginPlayer(playerBlob);
 		}
-		
-		//log.warn("openid:'"+player.getOpenid()+"',pid:"+playerBlob.getPlayerid()+" login success,name:"+player.getPlayername());
-		
-		return serialize(playerBlob);
-//		return null;
 	}
 	
 	public String get(PlayerWithBLOBs playerBlob)
@@ -192,6 +203,63 @@ public class LoginAction extends SavingAction {
 	  return data;
 	}
 	
+	public static void main(String[] args){
+		LoginAction l = new LoginAction();
+		Player p = new Player();
+		p.setQuestStr("2");
+//		p.setQuestDoneTime(new Date());
+		l.assignDailyQuest(p);
+		System.out.println(p.getQuestStr());
+	}
+	public boolean assignDailyQuest(Player p){
+		Date qdoneTime = p.getQuestDoneTime();
+		Date now = new Date();
+		if (qdoneTime!=null){
+			if (qdoneTime.getDay()==now.getDay()&&qdoneTime.getMonth()==now.getMonth()&&qdoneTime.getYear()==now.getYear())
+				return false;
+		}
+		Date assignTime = p.getQuestassigntime();
+		if (assignTime!=null){
+			if (assignTime.getDay()==now.getDay()&&assignTime.getMonth()==now.getMonth()&&assignTime.getYear()==now.getYear())
+				return false;
+		}		
+		
+		int assignC = 2;
+		int notDoneId = -1;
+		String queststr = p.getQuestStr();
+		if (queststr!=null&&queststr.length()>0){
+			String[] qs = queststr.split(",");
+			assignC = 2 - qs.length;
+			if (qs.length>0)
+				notDoneId = Integer.valueOf(qs[0]);
+		}
+		if (assignC<=0){
+			return false;
+		}
+		
+		Vector<Integer> qids = new Vector<Integer>();
+		for (int i=1;i<=5;i++){
+			if (i==notDoneId) continue;
+			qids.add(i);
+		}
+		
+		int indx1 = (int)(Math.random()*qids.size());
+		int qid1 = qids.get(indx1);
+		if (assignC==1){
+			queststr += ","+qid1;
+		}else
+			queststr = String.valueOf(qid1);
+		qids.remove(indx1);
+		if (assignC>1){
+			int indx2 = (int)(Math.random()*qids.size());
+			int qid2 = qids.get(indx2);
+			queststr += ","+qid2;
+		}
+		p.setQuestStr(queststr);
+		p.setQuestassigntime(new Date());
+		return true;
+	}
+	
 	public synchronized String register(){
 			//System.out.println("玩家注册:"+player.getPlayername());
 			PlayerWithBLOBs playerBlob = new PlayerWithBLOBs();
@@ -212,6 +280,8 @@ public class LoginAction extends SavingAction {
 			playerBlob.setPwd("0");
 			playerBlob.setZan(0);
 			playerBlob.setPlayerid(DataManager.getInstance().assignNextId());
+			assignDailyQuest(playerBlob);
+			log.warn("register assign quest:"+playerBlob.getQuestStr());
 			boolean ret = DataManager.getInstance().addPlayer(playerBlob);
 			if (ret==false){
 				return super.msgStr(RetMsg.MSG_PlayerNameIsExist);

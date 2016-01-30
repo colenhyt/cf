@@ -18,15 +18,12 @@ import org.apache.log4j.Logger;
 
 import redis.clients.jedis.Jedis;
 import cn.hd.base.Base;
-import cn.hd.base.BaseService;
 import cn.hd.cf.action.RetMsg;
 import cn.hd.cf.action.StockAction;
-import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Player;
 import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Stockdata;
-import cn.hd.cf.service.StockService;
 import cn.hd.cf.tools.StockdataService;
 import cn.hd.util.RedisClient;
 
@@ -69,6 +66,7 @@ public class StockManager extends MgrBase{
 		 }	 
 		 
     	Jedis jedis = jedisClient.getJedis();   
+
     	
     	Set<String> playerids = jedis.hkeys(super.DATAKEY_STOCK);
     	for (String strpid:playerids){
@@ -80,11 +78,23 @@ public class StockManager extends MgrBase{
     	jedisClient.returnResource(jedis);
     	log.warn("load stocks :" + playerids.size());    
     	
-		StockdataService stockdataService = new StockdataService();
-		stockData = stockdataService.findActive();
+		stockData = new ArrayList<Stockdata>();
+	    	
+		Jedis j3 = jedisClient3.getJedis();
+		
+//		 StockdataService stockdataService = new StockdataService();			
+//		 stockData = stockdataService.findActive();
+//		for (Stockdata item:stockData){
+//			j3.hset(MgrBase.DATAKEY_DATA_STOCK, String.valueOf(item.getId()), JSON.toJSONString(item));
+//		}
+		
+		List<String> stockitems = j3.hvals(MgrBase.DATAKEY_DATA_STOCK);
+		jedisClient3.returnResource(j3);
+		
 		quoteMap = Collections.synchronizedMap(new HashMap<Integer,LinkedList<Quote>>());
-	   	for (int i=0;i<stockData.size();i++){
-    		Stockdata  stock = stockData.get(i);
+	   	for (String str:stockitems){
+    		Stockdata  stock = JSON.parseObject(str,Stockdata.class);
+    		stockData.add(stock);
     		int fre = stock.getFreq();
     		STOCK_QUOTE_PERIOD = fre*60*1000/EventManager.TICK_PERIOD;
 	    		String json = new String(stock.getQuotes());
@@ -102,7 +112,7 @@ public class StockManager extends MgrBase{
 	    		quoteMap.put(stock.getId(), qquotes);
 	    		
 	    }	
-    	log.warn("stock init :");
+    	log.warn("stock init :"+quoteMap.size());
 
 				
      }
@@ -243,9 +253,11 @@ public class StockManager extends MgrBase{
 	 			if (lquote==null||lquote.size()==0) continue;
 	 			stock.setCreatetime(new Date());
 	 			stock.setJsonquotes("");
-	 			StockdataService stockdataService = new StockdataService();
-//	 			stock.setQuotes(stockdataService.beanQueueToJson(lquote, Quote.class).getBytes());
-//	    		stockdataService.updateByKey(stock);
+	 			stock.setQuotes(JSON.toJSONString(lquote).getBytes());
+	 			//todo: 行情更新会导致CPU占满
+//	 			Jedis jedis = jedisClient3.getJedis();   
+//	 			jedis.hset(MgrBase.DATAKEY_DATA_STOCK, String.valueOf(stock.getId()), JSON.toJSONString(stock));
+//	 			jedisClient3.returnResource(jedis);
 			}
 		}		
 		//数据库保存:
@@ -299,19 +311,6 @@ public class StockManager extends MgrBase{
 			dataThread.updateStock(playerId, JSON.toJSONString(list));
 		}
 		return RetMsg.MSG_OK;
-	}
-
-	public synchronized String getStocks(int playerId){
-		String jsonstr = null;
-		if (stockMap.containsKey(playerId))
-		jsonstr = stockMap.get(playerId);
-		else {
-			StockService service = new StockService();
-			List<Stock> list = service.getDBStocks(playerId);
-			jsonstr = BaseService.beanListToJson(list, Stock.class);
-			stockMap.put(playerId, jsonstr);
-		}
-		return jsonstr;
 	}
 
 	public synchronized String add(int playerid,int itemid,int qty,float price,float amount){
