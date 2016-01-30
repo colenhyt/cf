@@ -254,6 +254,17 @@ Player.prototype.setOpenstock = function(){
   
 }
 
+Player.prototype.prizeUpdate = function(amount,type) {    
+ 		try  {
+			var updateStr = "playerid="+this.data.playerid+"&amount="+amount+"&type="+type;
+			$.ajax({type:"post",url:"/cf/player_update.jsp",data:updateStr,success:function(dataobj){
+			var obj = cfeval(dataobj);
+		    }});
+		}   catch  (e)   {
+	   	 logerr(e.name);
+		}     	
+}
+
 Player.prototype.prize = function(prizes) {
 	var prop = {};
  	var cashUpdate = false;

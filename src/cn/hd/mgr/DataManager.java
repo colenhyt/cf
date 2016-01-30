@@ -269,7 +269,7 @@ public class DataManager extends MgrBase {
 		return false;
 	}
 
-	public synchronized void update(int playerid,int type,String itemstr){
+	public synchronized void update(int playerid,int type,String itemstr,String amountStr){
 		Player p = findPlayer(playerid);
 		if (p==null) return;
 		
@@ -281,17 +281,29 @@ public class DataManager extends MgrBase {
 		case 1:
 			String queststr = p.getQuestStr();
 			if (queststr==null||itemstr==null||itemstr.length()<=0) return;
+			if (queststr.indexOf(itemstr)<0) return;
+			
+			SavingManager.getInstance().updateLiveSaving(playerid,(float)5000);
 			
 			queststr = queststr.replace(itemstr, "").replace(",","");
+			log.warn("pid "+playerid+" done quest "+itemstr);
 			p.setQuestStr(queststr);
 			if (queststr.length()<=0||queststr.split(",").length<=0){
 				p.setQuestDoneTime(new Date());
 				this.addDoneQuest(playerid);
-				log.warn("done quest");
+				log.warn("pid "+playerid+" done daily quest");
 			}
 			break;
 		case 2:
 			p.setOpenstock((byte)1);
+			break;
+		case 3:
+			//todo: 这里加上正数的每日次数限制:
+			float amount = Float.valueOf(amountStr);
+			SavingManager.getInstance().updateLiveSaving(playerid,amount);
+			log.warn("pid "+playerid+" event amount update:"+amount);
+			break;
+			
 		}
 		log.warn("update:"+playerid+",t:"+type);
 		DataThread dataThread = dataThreads.get(playerid%dataThreads.size());

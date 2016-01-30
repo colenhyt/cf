@@ -30,7 +30,7 @@ public class DBDataSaver  extends Thread {
 	
 	private synchronized void savePlayers(){
 		PlayerService service  = new PlayerService();
-		if (players.size()>=5){
+		if (players.size()>=500){
 			service.addPlayers(players);
 			log.warn("save pp "+players.size());
 			players.clear();
