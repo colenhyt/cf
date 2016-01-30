@@ -170,6 +170,15 @@ var Screen_Nav_Height = 88;
 var Scene_Height = 1236 - Screen_Status_Height - Screen_Nav_Height;
 
 var PageSizes = {
+	"800":{SceneWidth:800,SceneHeight:1030,PieWidth:350,PieFontSize:30,PieFontSize2:19,
+	PieHeight:400,PageWidth:"580px",PageHeight:"237px",PageTop:80,
+	DetailPageTop:100,MsgTop:120,
+	StockView:[550,310,450,210,22]
+	,EventMoney:["70px","410px"]
+	,SigninMoney:["60px","20px","210px"]
+	,QuestMoney:["120px","390px"]
+	},
+
 	"640":{SceneWidth:640,SceneHeight:1008,PieWidth:350,PieFontSize:30,PieFontSize2:19,
 	PieHeight:400,PageWidth:"580px",PageHeight:"237px",PageTop:80,
 	DetailPageTop:100,MsgTop:120,
@@ -311,7 +320,9 @@ function initScreen(){
 			 SCREENKEY = 640;
 		 
 	}else{
-	  if (width>=640)
+	  if (width>=800)
+		SCREENKEY = 640;
+	  else if (width<800&&width>=640)
 		SCREENKEY = 640;
 	  else if (width<640&&width>=600)
 		SCREENKEY = 600;
@@ -335,7 +346,7 @@ function initScreen(){
 	//--6s:414, 正常, screekey = 640;
 //alert(width);
 //alert(SCREENKEY);
-//SCREENKEY = 600;
+SCREENKEY = 640;
 	g_screenkey = SCREENKEY;
 	SIZEPER = SCREENKEY/640;
 	var cssFile = "static/css/cf"+SCREENKEY+".css";

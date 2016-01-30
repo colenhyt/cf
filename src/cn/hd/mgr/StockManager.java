@@ -68,15 +68,15 @@ public class StockManager extends MgrBase{
     	Jedis jedis = jedisClient.getJedis();   
 
     	
-    	Set<String> playerids = jedis.hkeys(super.DATAKEY_STOCK);
-    	for (String strpid:playerids){
-    		String jsonitems = jedis.hget(super.DATAKEY_STOCK, strpid);
-    		List<Stock> list = JSON.parseArray(jsonitems, Stock.class);
-    		stocksMap.put(Integer.valueOf(strpid), list);
-    	}
-    	
+//    	Set<String> playerids = jedis.hkeys(super.DATAKEY_STOCK);
+//    	for (String strpid:playerids){
+//    		String jsonitems = jedis.hget(super.DATAKEY_STOCK, strpid);
+//    		List<Stock> list = JSON.parseArray(jsonitems, Stock.class);
+//    		stocksMap.put(Integer.valueOf(strpid), list);
+//    	}
+//    	
     	jedisClient.returnResource(jedis);
-    	log.warn("load stocks :" + playerids.size());    
+//    	log.warn("load stocks :" + playerids.size());    
     	
 		stockData = new ArrayList<Stockdata>();
 	    	
@@ -144,7 +144,7 @@ public class StockManager extends MgrBase{
 		return smap;
 	}
     public synchronized List<Stock> getStockList(int playerId){
-    	List<Stock> list = stocksMap.get(playerId);
+    	List<Stock> list = null;
     	if (list==null){
 			Jedis jedis = jedisClient.getJedis();
 			String liststr = jedis.hget(super.DATAKEY_STOCK, String.valueOf(playerId));

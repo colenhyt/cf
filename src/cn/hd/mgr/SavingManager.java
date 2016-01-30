@@ -88,16 +88,16 @@ public class SavingManager extends MgrBase{
 			return;
 		}
 		
-    	Set<String> playerids = jedis.hkeys(super.DATAKEY_SAVING);
-    	for (String strpid:playerids){
-    		String jsonitems = jedis.hget(super.DATAKEY_SAVING, strpid);
-//    		log.warn("get saving:"+strpid+",data:"+jsonitems);
-    		List<Saving> list = JSON.parseArray(jsonitems, Saving.class);
-    		
-    		savingsMap.put(Integer.valueOf(strpid), list);
-    	}
+//    	Set<String> playerids = jedis.hkeys(super.DATAKEY_SAVING);
+//    	for (String strpid:playerids){
+//    		String jsonitems = jedis.hget(super.DATAKEY_SAVING, strpid);
+////    		log.warn("get saving:"+strpid+",data:"+jsonitems);
+//    		List<Saving> list = JSON.parseArray(jsonitems, Saving.class);
+//    		
+//    		savingsMap.put(Integer.valueOf(strpid), list);
+//    	}
     	jedisClient.returnResource(jedis);
-    	log.warn("saving init:"+playerids.size());
+//    	log.warn("saving init:"+playerids.size());
     }
     
     public synchronized boolean updateLiveSaving(Saving record){
@@ -177,7 +177,7 @@ public class SavingManager extends MgrBase{
     	return itemids;
     }
     public synchronized List<Saving> getSavingList(int playerId){
-    	List<Saving> list = savingsMap.get(playerId);
+    	List<Saving> list = null;
     	if (list==null){
 			Jedis jedis = jedisClient.getJedis();
 			if (!jedis.hexists(super.DATAKEY_SAVING, String.valueOf(playerId))){

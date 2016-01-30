@@ -59,20 +59,20 @@ public class InsureManager extends MgrBase{
     		if (!insureCfgMap.containsKey(insure.getId()))
     			insureCfgMap.put(insure.getId(), insure);
     	}
-    	log.warn("init insure:"+insureCfgMap.size());
+    	log.warn("init insuredata:"+insureCfgMap.size());
     	
     	insuresMap = Collections.synchronizedMap(new HashMap<Integer,List<Insure>>());
     	
-    	Jedis jedis = jedisClient.getJedis();   
-    	
-    	Set<String> playerids = jedis.hkeys(super.DATAKEY_INSURE);
-    	for (String strpid:playerids){
-    		String jsonitems = jedis.hget(super.DATAKEY_INSURE, strpid);
-    		List<Insure> list = JSON.parseArray(jsonitems, Insure.class);
-    		insuresMap.put(Integer.valueOf(strpid), list);
-    	}
-    	jedisClient.returnResource(jedis);
-    	log.warn("load insures :" + playerids.size());   
+//    	Jedis jedis = jedisClient.getJedis();   
+//    	
+//    	Set<String> playerids = jedis.hkeys(super.DATAKEY_INSURE);
+//    	for (String strpid:playerids){
+//    		String jsonitems = jedis.hget(super.DATAKEY_INSURE, strpid);
+//    		List<Insure> list = JSON.parseArray(jsonitems, Insure.class);
+//    		insuresMap.put(Integer.valueOf(strpid), list);
+//    	}
+//    	jedisClient.returnResource(jedis);
+//    	log.warn("load insures :" + playerids.size());   
 //    	log.warn("insure init :");
     }
     
@@ -92,7 +92,7 @@ public class InsureManager extends MgrBase{
 	}
     
     public synchronized List<Insure> getInsureList(int playerId){
-    	List<Insure> list = insuresMap.get(playerId);
+    	List<Insure> list = null;
     	if (list==null){
 			Jedis jedis = jedisClient.getJedis();
 			String liststr = jedis.hget(super.DATAKEY_INSURE, String.valueOf(playerId));

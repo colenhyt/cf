@@ -231,7 +231,7 @@ public class DataManager extends MgrBase {
 	}
 
 	public synchronized Player findPlayer(int playerid) {
-		Player player = playerMaps.get(playerid);
+		Player player = null;
 		long s = System.currentTimeMillis();
 
 		if (player==null){
@@ -391,14 +391,14 @@ public class DataManager extends MgrBase {
 		}else
 			log.info("start playerid "+currMaxPlayerId);
 			
-		List<String> items = jedis.hvals(super.DATAKEY_PLAYER);
-		for (String item:items){
-			PlayerWithBLOBs player = (PlayerWithBLOBs)JSON.parseObject(item,PlayerWithBLOBs.class);
-			playerMaps.put(player.getPlayerid(), player);
-			playerIdMaps.put(player.getPlayername(), player.getPlayerid());
-		}
-		redisClients.get(0).returnResource(jedis);
-		log.warn("load all players :" + items.size());
+//		List<String> items = jedis.hvals(super.DATAKEY_PLAYER);
+//		for (String item:items){
+//			PlayerWithBLOBs player = (PlayerWithBLOBs)JSON.parseObject(item,PlayerWithBLOBs.class);
+//			playerMaps.put(player.getPlayerid(), player);
+//			playerIdMaps.put(player.getPlayername(), player.getPlayerid());
+//		}
+//		redisClients.get(0).returnResource(jedis);
+//		log.warn("load all players :" + items.size());
 
 	}
 	public static void main(String[] args) {
