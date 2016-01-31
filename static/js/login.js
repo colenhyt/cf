@@ -72,7 +72,21 @@ Login.prototype.draw = function()
    		this.loginPlayerid = tdata.playerid;
    	}
 	for (var i=0;i<imgs.length;i++){
-		var img = imgs[i];	    		
+		var img = imgs[i];	    
+		if (g_screenkey>640)
+		{
+			if (img.name=="map")
+			{
+				img.src = "static/img/login_bg"+g_screenkey+".png";
+			}else
+			{
+				img.x += 30;
+				if (img.name=="btstart")
+				{
+					img.y += 30;
+				}
+			}
+		}
    	 	g_game.addImg(img,imgs.length,"g_login.drawCallback");
 	   	 if (img.name=="inputnick"){
 		    var div = document.createElement("div");

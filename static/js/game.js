@@ -57,11 +57,16 @@ Map.prototype.init = function(width,height){
         {
             var image = mapImgs[i];
             if (image.name!="map")
-            {            
-            	var imgx = parseInt(image.x*SIZEPER)
-            	var imgy = parseInt(image.y*SIZEPER)
-            	var imgwidth = parseInt(image.img.width*SIZEPER)
-            	var imgheight = parseInt(image.img.height*SIZEPER)
+            {       
+				var per = SIZEPER;
+				if (g_screenkey>640)
+				{
+					per = 1;
+				}
+            	var imgx = parseInt(image.x*per)
+            	var imgy = parseInt(image.y*per)
+            	var imgwidth = parseInt(image.img.width*per)
+            	var imgheight = parseInt(image.img.height*per)
             if (imgx<=clickX&&clickX<=imgwidth+(imgx-pos.x)&&
                 imgy<=clickY&&clickY<=imgheight+(imgy-pos.y))
             {
@@ -71,53 +76,6 @@ Map.prototype.init = function(width,height){
            }
 
         }
-	};
-
-	canvas.onmousewheel = function(e){
-		alert('onmousewheel');
-	};
-
-	canvas.onmousedown = function(event){
-        canvas.style.cursor="move";
-		var old_pos = windowToCanvas(event.clientX,event.clientY);
-
-		canvas.onmousemove=function(event){
-			var curr_pos = windowToCanvas(event.clientX,event.clientY);
-			var x=curr_pos.x-old_pos.x;
-			var newx = pos.x+x;
-			var y=curr_pos.y-old_pos.y;
-			var newy = pos.y+y;
-			var newpos = resetPos(newx,newy);
-			if (newpos.x!=pos.x||newpos.y!=pos.y)
-			{
-				pos.x = newpos.x;
-				pos.y = newpos.y;
-				old_pos = curr_pos;
-				map.draw();
-			}
-		};
-
-	   canvas.onmouseup = function(){
-			canvas.onmousemove = null;
-			canvas.onmouseup = null;
-			canvas.style.cursor = "default";
-		};
-	};
-
-	canvas.onmousewheel = canvas.onwheel = function(event){
-		var old_pos = windowToCanvas(event.clientX,event.clientY);
-		event.wheelDelta=event.wheelDelta?event.wheelDelta:(event.deltaY*(-40));
-		if(event.wheelDelta>0){
-			map.m_imgScale*=2;
-			pos.x=pos.x*2-old_pos.x;
-			pos.y=pos.y*2-old_pos.y;
-		}else{
-			map.m_imgScale/=2;
-			//log(map.m_mapImg.width);
-			pos.x=pos.x*0.5+old_pos.x*0.5;
-			pos.y=pos.y*0.5+old_pos.y*0.5;
-		}
-		map.draw();
 	};
 }
 
@@ -133,6 +91,24 @@ Map.prototype.enter = function(sexImg){
     {
         var img = new Image();
         img.src = mapImgs[i].src;
+		if (g_screenkey>640)
+		{
+			if (mapImgs[i].name=="map")
+			{
+				img.src = "static/img/map"+g_screenkey+".png";
+			}else if (mapImgs[i].name=="quest"||mapImgs[i].name=="toplist")
+			{
+				if (g_screenkey==720)
+				{
+					mapImgs[i].x += 70;
+				}else
+					mapImgs[i].x += 150;
+			}else if (mapImgs[i].name=="help")
+			{
+				mapImgs[i].x *= SIZEPER;
+				mapImgs[i].y *= SIZEPER;
+			}
+		}
         img.onload=function(){
            // map.draw();
             map.imgLoaded++;

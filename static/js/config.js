@@ -170,7 +170,15 @@ var Screen_Nav_Height = 88;
 var Scene_Height = 1236 - Screen_Status_Height - Screen_Nav_Height;
 
 var PageSizes = {
-	"800":{SceneWidth:800,SceneHeight:1030,PieWidth:350,PieFontSize:30,PieFontSize2:19,
+	"800":{SceneWidth:800,SceneHeight:1430,PieWidth:350,PieFontSize:30,PieFontSize2:19,
+	PieHeight:400,PageWidth:"580px",PageHeight:"237px",PageTop:80,
+	DetailPageTop:100,MsgTop:120,
+	StockView:[550,310,450,210,22]
+	,EventMoney:["70px","410px"]
+	,SigninMoney:["60px","20px","210px"]
+	,QuestMoney:["120px","390px"]
+	},
+	"720":{SceneWidth:720,SceneHeight:1130,PieWidth:350,PieFontSize:30,PieFontSize2:19,
 	PieHeight:400,PageWidth:"580px",PageHeight:"237px",PageTop:80,
 	DetailPageTop:100,MsgTop:120,
 	StockView:[550,310,450,210,22]
@@ -320,9 +328,13 @@ function initScreen(){
 			 SCREENKEY = 640;
 		 
 	}else{
-	  if (width>=800)
+	  if (width>=1000)
 		SCREENKEY = 640;
-	  else if (width<800&&width>=640)
+	  else if (width<1000&&width>=800)
+		SCREENKEY = 800;
+	  else if (width<800&&width>=720)
+		SCREENKEY = 720;
+	  else if (width<720&&width>=640)
 		SCREENKEY = 640;
 	  else if (width<640&&width>=600)
 		SCREENKEY = 600;
@@ -346,7 +358,7 @@ function initScreen(){
 	//--6s:414, 正常, screekey = 640;
 //alert(width);
 //alert(SCREENKEY);
-SCREENKEY = 640;
+SCREENKEY = 800;
 	g_screenkey = SCREENKEY;
 	SIZEPER = SCREENKEY/640;
 	var cssFile = "static/css/cf"+SCREENKEY+".css";
