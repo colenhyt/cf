@@ -157,19 +157,6 @@ Player.prototype.clone = function(data) {
 	data.sex = pl.sex;
 }
 
-Player.prototype.syncPlayerData = function(){
-	var data = {};
-	this.clone(data);
-	var updateStr = "playerdata="+JSON.stringify(data);
-	try  {
-		$.ajax({type:"post",url:"/cf/login_update.do",data:updateStr,success:function(dataobj){
-			var obj = cfeval(dataobj);
-		}});
-	}   catch  (e)   {
-	    document.write(e.name);
-	}   
-}
-
 //破产处理
 Player.prototype.broke = function() {
   var amount = 0 - this.saving[1].amount;

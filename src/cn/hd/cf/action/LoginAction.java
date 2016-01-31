@@ -172,23 +172,6 @@ public class LoginAction extends SavingAction {
 		return pdata;
 	}
 	
-	public String update()
-	{	
-		String pp = getHttpRequest().getParameter("playerdata");
-		JSONObject ppObj = JSONObject.fromObject(pp);
-		PlayerWithBLOBs playerBlob = (PlayerWithBLOBs)JSONObject.toBean(ppObj,PlayerWithBLOBs.class);
-		if (playerBlob==null)
-		{
-			log.debug("no player found:playerid:"+player.getPlayerid());
-			return null;
-		}
-		boolean ret = DataManager.getInstance().updatePlayer(playerBlob);
-		
-		log.debug("update player("+ppObj.toString()+"):ret: "+ret);
-		writeMsg(RetMsg.MSG_OK);
-		return null;
-	}
-	
 	public Player getPlayer() {
 		return player;
 	}
@@ -315,7 +298,7 @@ public class LoginAction extends SavingAction {
 //				ToplistManager.getInstance().addToplist(playerBlob.getPlayerid(),playerBlob.getPlayername(),saving.getAmount());	
 			}
 //			JSONObject obj = JSONObject.fromObject(playerBlob);	
-			log.warn("openid:'"+playerBlob.getOpenid()+"', pid:"+playerBlob.getPlayerid()+",register success:,name:"+player.getPlayername());
+			log.warn("pid:"+playerBlob.getPlayerid()+",openid:'"+playerBlob.getOpenid()+"' register success:,name:"+player.getPlayername());
 //			write(obj.toString(),"utf-8");
 			
 			return serialize(playerBlob,1,JSON.toJSONString(savings),top);

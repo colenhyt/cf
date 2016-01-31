@@ -265,29 +265,6 @@ public class DataManager extends MgrBase {
 		dataThread.updatePlayer(player);
 	}
 	
-	public synchronized boolean addPlayerExp(int playerid,int addedExp) {
-		Player pp = findPlayer(playerid);
-		if (pp != null) {
-			pp.setExp(pp.getExp()+addedExp);
-			DataThread dataThread = dataThreads.get(pp.getPlayerid()%dataThreads.size());
-			dataThread.updatePlayer(pp);
-			log.warn("pid "+playerid+" update exp:"+pp.getExp());
-			return true;
-		}
-		return false;
-	}
-	
-	public synchronized boolean updatePlayer(Player player) {
-		Player pp = findPlayer(player.getPlayerid());
-		if (pp != null) {
-			pp.setExp(player.getExp());
-			DataThread dataThread = dataThreads.get(player.getPlayerid()%dataThreads.size());
-			dataThread.updatePlayer(pp);
-			return true;
-		}
-		return false;
-	}
-
 	public synchronized void update(int playerid,int type,String itemstr,String amountStr){
 		Player p = findPlayer(playerid);
 		if (p==null) return;
@@ -308,7 +285,7 @@ public class DataManager extends MgrBase {
 			int money = signinMoneys.get(days-1);
 			int exp = signinExps.get(days-1);
 			SavingManager.getInstance().updateLiveSaving(playerid,money);
-			addPlayerExp(playerid,exp);
+			p.setExp(p.getExp()+exp);
 			p.setLastlogin(new Date());
 			log.warn("pid:"+playerid+" signin,days: "+days);
 			this.addSignin(playerid);

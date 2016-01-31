@@ -74,7 +74,7 @@ Insure.prototype.buildPage = function(page)
 		return
 	playAudioHandler('open1');	
 		
-	this.reloadInsures();
+	//this.reloadInsures();
 	
 	var tdata = store.get(this.name);
 	var sids = this.findIds();
