@@ -358,7 +358,7 @@ function initScreen(){
 	//--6s:414, 正常, screekey = 640;
 //alert(width);
 //alert(SCREENKEY);
-SCREENKEY = 800;
+//SCREENKEY = 720;
 	g_screenkey = SCREENKEY;
 	SIZEPER = SCREENKEY/640;
 	var cssFile = "static/css/cf"+SCREENKEY+".css";

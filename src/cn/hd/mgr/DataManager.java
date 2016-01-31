@@ -177,6 +177,7 @@ public class DataManager extends MgrBase {
 	public synchronized int get_registerTop(float fMm) {
 		ToplistManager.getInstance().load();
 		int top = ToplistManager.getInstance().findTopCount(null, 0, fMm);
+		
 		// 800ms/1k
 		return top+1;
 	}

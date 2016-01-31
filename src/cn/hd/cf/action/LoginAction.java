@@ -20,6 +20,7 @@ import cn.hd.cf.model.Stock;
 import cn.hd.mgr.DataManager;
 import cn.hd.mgr.SavingManager;
 import cn.hd.mgr.StockManager;
+import cn.hd.mgr.ToplistManager;
 import cn.hd.util.HttpXmlClient;
 
 import com.alibaba.fastjson.JSON;
@@ -294,6 +295,7 @@ public class LoginAction extends SavingAction {
 				SavingManager.getInstance().addFirstSaving(saving.getPlayerid(), saving);
 				savings.put(saving.getItemid(), saving);
 				top = DataManager.getInstance().get_registerTop(saving.getAmount());
+				ToplistManager.getInstance().updateToplist(saving.getPlayerid(),player.getPlayername(),saving.getAmount());						
 //				super.playerTopUpdate(playerBlob.getPlayerid());
 //				ToplistManager.getInstance().addToplist(playerBlob.getPlayerid(),playerBlob.getPlayername(),saving.getAmount());	
 			}

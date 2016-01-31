@@ -101,10 +101,7 @@ public class SavingManager extends MgrBase{
     }
     
     public synchronized void updateLiveSaving(int playerid,float addedAmount){
-		Saving currLive = getSaving(playerid, 1);
-		currLive.setAmount(currLive.getAmount()+addedAmount);
-		currLive.setUpdatetime(new Date());	
-		updateSavingAmount(currLive);
+		savingAction.pushLive(playerid, addedAmount);
 		log.warn("pid:"+playerid+" added live saving:"+addedAmount);
     }
     
