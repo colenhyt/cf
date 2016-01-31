@@ -29,7 +29,7 @@ Quest.prototype.buildPage = function(page)
 {
 	var quest = [];
 	
-	var pdata = store.get(g_player.name);
+	var pdata = g_player.data;
 	if (pdata.questStr!=null&&pdata.questStr.length>0){
 		var qids = pdata.questStr.split(",");
 		for (var i=0;i<qids.length;i++)
@@ -189,16 +189,18 @@ Quest.prototype.doneQuest = function(quest){
 	g_msg.tip("成功得到任务奖励:"+itemStr2(pz,","));	 
 	  
 	var qids = pdata.questStr.split(",");
-	var newqids = [];
-	for (var i=0;i<qids.length;i++){
-		if (qids[i]!=quest.id){
-		 pdata.questStr = qids[i];
-		 break;
+	if (qids.length==1){
+	 pdata.questStr = "";
+	}else {
+		for (var i=0;i<qids.length;i++){
+			if (qids[i]!=quest.id){
+			 pdata.questStr = qids[i];
+			 break;
+			}
 		}
 	}
 	g_player.data = pdata;
-    
-    
+      
 }
 
 Quest.prototype.getQuetPrize = function(id){

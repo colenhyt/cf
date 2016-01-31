@@ -181,7 +181,7 @@ public class SavingAction extends BaseAction {
 			}
 			//已到期的存款:
 			boolean isout = isSavingTimeout(saving2);
-			System.out.println("is out:"+isout);
+			log.warn("pid:"+saving.getPlayerid()+" saving is out:"+isout);
 			float inter  = 0;
 			if ((saving.getStatus()!=null&&saving.getStatus()==1)||isout)		
 			{
@@ -193,7 +193,7 @@ public class SavingAction extends BaseAction {
 				BigDecimal b = new BigDecimal(inter);  
 				int iInter = (int)b.setScale(0,BigDecimal.ROUND_HALF_UP).floatValue();
 				inAmount += iInter;	
-				System.out.println("得到利息:"+iInter);
+				log.warn("pid:"+saving.getPlayerid()+" get charge:"+iInter);
 				newsaving.setProfit((float)iInter);				
 			}
 			pushLive(saving.getPlayerid(), inAmount);		//放回活期;

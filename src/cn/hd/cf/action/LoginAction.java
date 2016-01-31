@@ -128,10 +128,10 @@ public class LoginAction extends SavingAction {
 			if (!playerBlob.getOpenid().equals(player.getOpenid()))
 				return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
 			
-			log.warn("openid:'"+player.getOpenid()+"',pid:"+playerBlob.getPlayerid()+" login success,name:"+player.getPlayername());
+			log.warn("pid:"+playerBlob.getPlayerid()+",openid:"+player.getOpenid()+" login success,name:"+player.getPlayername());
 			boolean newAssign = assignDailyQuest(playerBlob);
 			if (newAssign){
-				log.warn("login assign quest:"+playerBlob.getQuestStr());
+				log.warn("pid:"+playerBlob.getPlayerid()+" login assign quest:"+playerBlob.getQuestStr());
 				DataManager.getInstance().updatePlayerQuest(playerBlob);
 			}
 			return serialize(playerBlob,0,null,0); 
@@ -287,7 +287,7 @@ public class LoginAction extends SavingAction {
 			playerBlob.setZan(0);
 			playerBlob.setPlayerid(DataManager.getInstance().assignNextId());
 			assignDailyQuest(playerBlob);
-			log.warn("register assign quest:"+playerBlob.getQuestStr());
+			log.warn("pid:"+playerBlob.getPlayerid()+" register assign quest:"+playerBlob.getQuestStr());
 			boolean ret = DataManager.getInstance().addPlayer(playerBlob);
 			if (ret==false){
 				return super.msgStr(RetMsg.MSG_PlayerNameIsExist);

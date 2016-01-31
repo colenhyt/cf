@@ -124,7 +124,7 @@ public class DataThread extends Thread {
 	        			p.hset(MgrBase.DATAKEY_PLAYER, String.valueOf(item.getPlayerid()), JSON.toJSONString(item));
 	        			p.hset(MgrBase.DATAKEY_PLAYER_ID, item.getPlayername(),String.valueOf(item.getPlayerid()));
 	        		}
-		    		log.warn("batch add players :"+newPlayersVect.size());
+		    		//log.warn("batch add players :"+newPlayersVect.size());
 		    		newPlayersVect.clear(); 	        		
 	        	}
 	        	
@@ -133,7 +133,7 @@ public class DataThread extends Thread {
 	        			Player item = updatePlayersVect.get(i);
 	        			p.hset(MgrBase.DATAKEY_PLAYER, String.valueOf(item.getPlayerid()), JSON.toJSONString(item));
 	        		}
-		    		log.warn("batch update players :"+updatePlayersVect.size());
+		    		//log.warn("batch update players :"+updatePlayersVect.size());
 		    		updatePlayersVect.clear(); 	        		
 	        	}
 	        	
