@@ -199,7 +199,7 @@ public class DataThread extends Thread {
 				}
 				
 //	        		System.out.println("size :"+DataManager.getInstance().playerMaps.size());
-				super.sleep(1000);
+				super.sleep(500);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
