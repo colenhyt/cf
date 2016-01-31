@@ -94,15 +94,15 @@ text-align:center;
 .cflogin_input_div {
 position:absolute;
 font-size:1.2em;
-left:170px;
-top:135px;
+left:155px;
+top:125px;
 }
 
 .cflogin_tip {
 position:absolute;
 color:blue;
 left:140px;
-top:700px;
+top:685px;
 color:black;
 }
 
@@ -657,11 +657,11 @@ width:200px;
 height:308px;
 }
 
-.cfbank_div{height:346px;left:118px;position:absolute;top:594px;width:225px;z-index:10;}
+.cfbank_div{height:346px;left:98px;position:absolute;top:534px;width:225px;z-index:10;}
 
-.cfstock_div{height:438px;left:473px;position:absolute;top:352px;width:240px;z-index:10;}
+.cfstock_div{height:438px;left:433px;position:absolute;top:272px;width:240px;z-index:10;}
 
-.cfinsure_div{height:356px;left:454px;position:absolute;top:815px;width:263px;z-index:10;}
+.cfinsure_div{height:356px;left:404px;position:absolute;top:715px;width:263px;z-index:10;}
 
 
 .cfstock_clickon {
