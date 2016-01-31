@@ -106,6 +106,7 @@ Signin.prototype.show = function(){
  	context += "</table>     "
     
     this.currPrize = prize.currPz;
+    this.signinDays = signindays;
     
     tagfeel.innerHTML = context;
     
@@ -137,10 +138,14 @@ Signin.prototype.clickFeeling = function(feelingId){
   div.animate({fontSize:'1em'},200,function(){
    var div=$("#cfsignin_prize");
     div.remove();
+	if (g_signin.signinDays>0){
 	   g_player.prize(g_signin.currPrize);
+	   g_player.commitData(0,g_signin.signinDays,0);
+	   g_playerlog.updateSignin(feelingId);
+	}
 	   g_signin.currPrize = null;
+	   g_signin.signinDays = 0;
 	   $('#'+g_signin.tagname).modal('hide'); 
-	    g_playerlog.updateSignin(feelingId);
 	    
 	   g_game.onEnter(); 
     	

@@ -105,7 +105,7 @@ public class SavingManager extends MgrBase{
 		currLive.setAmount(currLive.getAmount()+addedAmount);
 		currLive.setUpdatetime(new Date());	
 		updateSavingAmount(currLive);
-		log.warn("pid "+playerid+" added live saving:"+addedAmount);
+		log.warn("pid:"+playerid+" added live saving:"+addedAmount);
     }
     
     public synchronized boolean updateLiveSaving(Saving record){
@@ -193,7 +193,7 @@ public class SavingManager extends MgrBase{
 			}
 			String liststr = jedis.hget(super.DATAKEY_SAVING, String.valueOf(playerId));
 			jedisClient.returnResource(jedis);    	
-			log.warn("get saving "+liststr);
+//			log.warn("pid:"+playerId+" get saving "+liststr);
 			if (liststr!=null){
 				list = JSON.parseArray(liststr, Saving.class);
 				savingsMap.put(playerId, list);

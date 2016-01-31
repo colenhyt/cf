@@ -177,14 +177,7 @@ Stock.prototype.confirmOpen = function(){
 	g_msg.tip("证券账户已开通");
 	this.show();
 	
-	try    {
-	    var dataParam = "playerid="+g_player.data.playerid+"&type=2";
-		$.ajax({type:"post",url:"/cf/player_update.jsp",data:dataParam,success:function(data){
-		}});
-	}   catch  (e)   {
-	    logerr(e.name  +   " :  "   +  dataobj.responseText);
-	   return false;
-	}		
+	g_player.commitData(2,0,0);		
 }
 
 Stock.prototype.buildPage = function(page)

@@ -297,25 +297,25 @@ Login.prototype.syncLoadData = function(playerid){
 	
 		var dataParam = "playerid="+playerid+"&type=1";
 		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
-		 g_login.syncLoadDataCallback_saving(data);
+		 g_login.syncLoadDataCallback_saving(cfeval(data));
 		}});
     	g_login.loadCount++;
 		
 		dataParam = "playerid="+playerid+"&type=2";
 		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
-		 g_login.syncLoadDataCallback_insure(data);
+		 g_login.syncLoadDataCallback_insure(cfeval(data));
 		}});
     	g_login.loadCount++;
 		
 		dataParam = "playerid="+playerid+"&type=3";
 		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
-		 g_login.syncLoadDataCallback_stock(data);
+		 g_login.syncLoadDataCallback_stock(cfeval(data));
 		}});
     	g_login.loadCount++;
 		
 		dataParam = "playerid="+playerid+"&type=4";
 		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
-		 g_login.syncLoadDataCallback_top(data);
+		 g_login.syncLoadDataCallback_top(cfeval(data));
 		}});
     	g_login.loadCount++;
 				
@@ -327,7 +327,7 @@ Login.prototype.syncLoadData = function(playerid){
 
 Login.prototype.syncLoadDataCallback_saving = function(data){
     var msg = [];
-	var sdata = cfeval(data);
+	var sdata = data;
 	for (itemid in sdata){
 		var item = store.get(g_saving.name)[itemid];
 		if (!item) continue;
@@ -346,7 +346,7 @@ Login.prototype.syncLoadDataCallback_saving = function(data){
 
 Login.prototype.syncLoadDataCallback_insure = function(data){
 	var msg = [];
-	var idata = cfeval(data);
+	var idata = data;
 	for (itemid in idata){
 		var item = store.get(g_insure.name)[itemid];
 		if (!item) continue;
@@ -362,8 +362,7 @@ Login.prototype.syncLoadDataCallback_insure = function(data){
 }
 
 Login.prototype.syncLoadDataCallback_stock = function(data){
-	var sdata = cfeval(data);
-    g_player.stock = sdata;
+    g_player.stock = data;
 	
 	g_player.setStockIds();
 	
@@ -390,7 +389,8 @@ Login.prototype.loginCallback = function(obj){
 	 return;
 	}
 		
-    var player = objdata;
+    var player = objdata.player;
+    var flag = objdata.flag;
 	
 	//进入场景:先remove login页面元素
 	$('#inputnickdiv').remove();
@@ -412,27 +412,15 @@ Login.prototype.loginCallback = function(obj){
     g_player.loginback(player);
     
     g_playerlog.addlog();
-    
-//    var istoday = false;
-//    if (player.questDoneTime!=null){
-//      var donetime = new Date(player.questDoneTime);
-//      istoday = IsSameDay(new Date(),donetime);
-//    }
-//    
-//     g_quest.reset(player.questdonecount);
-//    if (!istoday)
-//	{
-//		var donecount = player.questdonecount;
-//		if (donecount==2)
-//			donecount = 0;
-//        var accept = g_quest.onAcceptDaily(donecount);
-//        if (accept)
-//        {
-//        	g_playerlog.updateQuest();
-//        }
-//    }
-    
-    this.syncLoadData(player.playerid);
+       
+    //register
+    if (flag==1){
+    	g_login.loadCount += 2;
+    	g_login.syncLoadDataCallback_saving(objdata.saving);
+	   	g_login.syncLoadDataCallback_top(objdata.top);
+    }else{
+    	this.syncLoadData(player.playerid);
+    }
     
     //player props
    // g_player.flushPageview();

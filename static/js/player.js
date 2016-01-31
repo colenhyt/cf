@@ -61,14 +61,6 @@ Playerlog.prototype.updateQuest = function(){
 }
 
 Playerlog.prototype.updateSignin = function(feeling){
-	try  {
-   		var dataParam = "playerid="+g_player.data.playerid+"&type=0";
-		$.ajax({type:"post",url:"/cf/player_update.jsp",data:dataParam,success:function(dataobj){
-		}});
-	}   catch  (e)   {
-	    document.write(e.name);
-	} 
-	
 	var key = g_playerlog.findlogkey();
 	var currDate = new Date();
 	var tdata = store.get(this.name);
@@ -154,7 +146,6 @@ Player.prototype.updateData = function(prop) {
      if (newLevel>oldLevel)
      	g_uplevel.open();
  	this.flushPageview();
-	this.syncPlayerData();
     store.set(this.name,this.data);
 }
 
@@ -225,6 +216,7 @@ Player.prototype.loginback = function(data){
   playerdata.openstock = data.openstock;
   playerdata.playerid = data.playerid;
   playerdata.exp = data.exp;
+  playerdata.questStr = data.questStr;
   playerdata.lastlogin = data.lastlogin;
     
   	g_player.data = playerdata;
@@ -254,9 +246,9 @@ Player.prototype.setOpenstock = function(){
   
 }
 
-Player.prototype.prizeUpdate = function(amount,type) {    
+Player.prototype.commitData = function(type,itemid,amount) {    
  		try  {
-			var updateStr = "playerid="+this.data.playerid+"&amount="+amount+"&type="+type;
+			var updateStr = "playerid="+this.data.playerid+"&amount="+amount+"&type="+type+"&itemid="+itemid;
 			$.ajax({type:"post",url:"/cf/player_update.jsp",data:updateStr,success:function(dataobj){
 			var obj = cfeval(dataobj);
 		    }});
@@ -284,20 +276,20 @@ Player.prototype.prize = function(prizes) {
      }
      if (this.saving[1].amount<0)	//
      {
-      this.broke();
+      //this.broke();
      }
      
-     if (cashUpdate==true){
- 		try  {
-			var obj = {itemid:1,amount:this.saving[1].amount,playerid:this.data.playerid};
-			var updateStr = obj2ParamStr("saving",obj);
-			$.ajax({type:"post",url:"/cf/saving_updatelive.do",data:updateStr,success:function(dataobj){
-			var obj = cfeval(dataobj);
-		    }});
-		}   catch  (e)   {
-	   	 logerr(e.name);
-		}     	
-     }
+ //    if (cashUpdate==true){
+// 		try  {
+//			var obj = {itemid:1,amount:this.saving[1].amount,playerid:this.data.playerid};
+//			var updateStr = obj2ParamStr("saving",obj);
+//			$.ajax({type:"post",url:"/cf/saving_updatelive.do",data:updateStr,success:function(dataobj){
+//			var obj = cfeval(dataobj);
+//		    }});
+//		}   catch  (e)   {
+//	   	 logerr(e.name);
+//		}     	
+//     }
      this.updateData(prop);
 }
 

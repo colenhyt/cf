@@ -121,19 +121,19 @@ public class DataThread extends Thread {
 //		    		service.addPlayers(newPlayersVect);
 	        		for (int i=0;i<newPlayersVect.size();i++){
 	        			Player item = newPlayersVect.get(i);
-	        			p.hset(DataManager.getInstance().DATAKEY_PLAYER, String.valueOf(item.getPlayerid()), JSON.toJSONString(item));
-	        			p.hset(DataManager.getInstance().DATAKEY_PLAYER_ID, item.getPlayername(),String.valueOf(item.getPlayerid()));
+	        			p.hset(MgrBase.DATAKEY_PLAYER, String.valueOf(item.getPlayerid()), JSON.toJSONString(item));
+	        			p.hset(MgrBase.DATAKEY_PLAYER_ID, item.getPlayername(),String.valueOf(item.getPlayerid()));
 	        		}
-//		    		log.warn("batch add players :"+newPlayersVect.size());
+		    		log.warn("batch add players :"+newPlayersVect.size());
 		    		newPlayersVect.clear(); 	        		
 	        	}
 	        	
 	        	if (updatePlayersVect.size()>0){
 	        		for (int i=0;i<updatePlayersVect.size();i++){
 	        			Player item = updatePlayersVect.get(i);
-	        			p.hset(DataManager.getInstance().DATAKEY_PLAYER, String.valueOf(item.getPlayerid()), JSON.toJSONString(item));
+	        			p.hset(MgrBase.DATAKEY_PLAYER, String.valueOf(item.getPlayerid()), JSON.toJSONString(item));
 	        		}
-//		    		log.warn("batch update players :"+updatePlayersVect.size());
+		    		log.warn("batch update players :"+updatePlayersVect.size());
 		    		updatePlayersVect.clear(); 	        		
 	        	}
 	        	
@@ -141,7 +141,7 @@ public class DataThread extends Thread {
 	        		Set<Integer> ps = updateSavingMap.keySet();
 	        		for (int playerid:ps){
 	        			String json = updateSavingMap.get(playerid);
-	        			p.hset(DataManager.getInstance().DATAKEY_SAVING, String.valueOf(playerid), json);
+	        			p.hset(MgrBase.DATAKEY_SAVING, String.valueOf(playerid), json);
 	        		}
 //		    		log.warn("batch set saving :"+updateSavingMap.size());
 		    		updateSavingMap.clear();    	    			
@@ -152,7 +152,7 @@ public class DataThread extends Thread {
 	        		Set<Integer> ps = updateInsureMap.keySet();
 	        		for (int playerid:ps){
 	        			String json = updateInsureMap.get(playerid);
-	        			p.hset(DataManager.getInstance().DATAKEY_INSURE, String.valueOf(playerid), json);
+	        			p.hset(MgrBase.DATAKEY_INSURE, String.valueOf(playerid), json);
 	        		}
 //		    		log.warn("batch set insure :"+updateInsureMap.size());
 		    		updateInsureMap.clear();    	    			
@@ -162,7 +162,7 @@ public class DataThread extends Thread {
 	        		Set<Integer> ps = updateStockMap.keySet();
 	        		for (int playerid:ps){
 	        			String json = updateStockMap.get(playerid);
-	        			p.hset(DataManager.getInstance().DATAKEY_STOCK, String.valueOf(playerid), json);
+	        			p.hset(MgrBase.DATAKEY_STOCK, String.valueOf(playerid), json);
 	        		}
 //		    		log.warn("batch set stock :"+updateStockMap.size());
 		    		updateStockMap.clear();    	    			
@@ -171,7 +171,7 @@ public class DataThread extends Thread {
 	    		if (updateToplistVect.size()>0){
 	    			for (int i=0;i<updateToplistVect.size();i++){
 		    			Toplist toplist = updateToplistVect.get(i);
-	        			p.hset(DataManager.getInstance().DATAKEY_TOPLIST, String.valueOf(toplist.getPlayerid()), JSON.toJSONString(toplist));
+	        			p.hset(MgrBase.DATAKEY_TOPLIST, String.valueOf(toplist.getPlayerid()), JSON.toJSONString(toplist));
 	    				
 	    			}
 //		    		log.warn("batch update toplist :"+updateToplistVect.size());
@@ -199,7 +199,7 @@ public class DataThread extends Thread {
 				}
 				
 //	        		System.out.println("size :"+DataManager.getInstance().playerMaps.size());
-				super.sleep(3000);
+				super.sleep(1000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

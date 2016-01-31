@@ -86,8 +86,7 @@ public class ToplistManager extends MgrBase{
 		return item;
 	}
 	
-	public synchronized int findCountByGreaterMoney(int playerid,int type,float fPMoney){
-		Toplist top = findByPlayerId(playerid);
+	public synchronized int findTopCount(Toplist top,int type,float fPMoney){
 		int intMoney = Float.valueOf(fPMoney).intValue();
 		BigDecimal fMoney = BigDecimal.valueOf(intMoney);
 		if (top!=null){
@@ -265,6 +264,11 @@ public class ToplistManager extends MgrBase{
 		topAction.setToplist(toplist);	
 			return topAction.list();
 		}
+
+	public synchronized int findCountByGreaterMoney(int playerid,int type,float fPMoney){
+		Toplist top = findByPlayerId(playerid);
+		return findTopCount(top,type,fPMoney);
+	}
 
 	public static void main(String[] args){
 		ToplistManager.getInstance().init();

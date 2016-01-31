@@ -19,11 +19,9 @@ import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Player;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Quest;
-import cn.hd.cf.model.Questdata;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Signin;
 import cn.hd.cf.model.Stock;
-import cn.hd.cf.tools.QuestdataService;
 import cn.hd.util.QuestLog;
 import cn.hd.util.RedisClient;
 import cn.hd.util.SigninLog;
@@ -34,9 +32,10 @@ public class DataManager extends MgrBase {
 	protected Logger log = Logger.getLogger(getClass());
 	public List<String> pps = new ArrayList<String>();
 	private final int idStep = 100;
-	private DBDataSaver saver;
 	private int currMaxPlayerId = -1;
 	private Vector<RedisClient> redisClients;
+	private Vector<Integer> signinMoneys;
+	private Vector<Integer> signinExps;
 
 	private LoginAction loginAction;
 	private Init init;
@@ -175,9 +174,16 @@ public class DataManager extends MgrBase {
 		return "";
 	}
 	
+	public synchronized int get_registerTop(float fMm) {
+		ToplistManager.getInstance().load();
+		int top = ToplistManager.getInstance().findTopCount(null, 0, fMm);
+		// 800ms/1k
+		return top+1;
+	}
+	
 	public synchronized int get_top(int playerid) {
 		float fMm = loginAction.calculatePlayerMoney(playerid);
-
+		
 		ToplistManager.getInstance().load();
 		int top = ToplistManager.getInstance().findCountByGreaterMoney(
 				playerid, 0, fMm);
@@ -234,7 +240,8 @@ public class DataManager extends MgrBase {
 		Player player = null;
 		long s = System.currentTimeMillis();
 
-		if (player==null){
+//		if (player==null)
+		{
 			int index = playerid%redisClients.size();
 			RedisClient jedisClient = redisClients.get(index);
 			Jedis jedis = jedisClient.getJedis();
@@ -250,12 +257,24 @@ public class DataManager extends MgrBase {
 			}
 		}
 		//log.warn("findid cost :"+(System.currentTimeMillis()-s));
-		return player;
+		return playerMaps.get(playerid);
 	}
 
 	public synchronized void updatePlayerQuest(Player player) {
 		DataThread dataThread = dataThreads.get(player.getPlayerid()%dataThreads.size());
 		dataThread.updatePlayer(player);
+	}
+	
+	public synchronized boolean addPlayerExp(int playerid,int addedExp) {
+		Player pp = findPlayer(playerid);
+		if (pp != null) {
+			pp.setExp(pp.getExp()+addedExp);
+			DataThread dataThread = dataThreads.get(pp.getPlayerid()%dataThreads.size());
+			dataThread.updatePlayer(pp);
+			log.warn("pid "+playerid+" update exp:"+pp.getExp());
+			return true;
+		}
+		return false;
 	}
 	
 	public synchronized boolean updatePlayer(Player player) {
@@ -275,7 +294,23 @@ public class DataManager extends MgrBase {
 		
 		switch (type){
 		case 0:
+			Date now = new Date();
+			Date last = p.getLastlogin();
+			if (last!=null&&last.getYear()==now.getYear()&&last.getMonth()==now.getMonth()&&last.getDay()==now.getDay()){
+				return;
+			}
+			if (itemstr==null||itemstr.length()<=0)
+				return;
+			
+			Integer days = Integer.valueOf(itemstr);
+			if (days>signinMoneys.size())
+				days = signinMoneys.size();
+			int money = signinMoneys.get(days-1);
+			int exp = signinExps.get(days-1);
+			SavingManager.getInstance().updateLiveSaving(playerid,money);
+			addPlayerExp(playerid,exp);
 			p.setLastlogin(new Date());
+			log.warn("pid:"+playerid+" signin,days: "+days);
 			this.addSignin(playerid);
 			break;
 		case 1:
@@ -286,12 +321,12 @@ public class DataManager extends MgrBase {
 			SavingManager.getInstance().updateLiveSaving(playerid,(float)5000);
 			
 			queststr = queststr.replace(itemstr, "").replace(",","");
-			log.warn("pid "+playerid+" done quest "+itemstr);
+			log.warn("pid:"+playerid+" done quest "+itemstr);
 			p.setQuestStr(queststr);
 			if (queststr.length()<=0||queststr.split(",").length<=0){
 				p.setQuestDoneTime(new Date());
 				this.addDoneQuest(playerid);
-				log.warn("pid "+playerid+" done daily quest");
+				log.warn("pid:"+playerid+" done daily quest");
 			}
 			break;
 		case 2:
@@ -301,11 +336,10 @@ public class DataManager extends MgrBase {
 			//todo: 这里加上正数的每日次数限制:
 			float amount = Float.valueOf(amountStr);
 			SavingManager.getInstance().updateLiveSaving(playerid,amount);
-			log.warn("pid "+playerid+" event amount update:"+amount);
+			log.warn("pid:"+playerid+" event amount update:"+amount);
 			break;
 			
 		}
-		log.warn("update:"+playerid+",t:"+type);
 		DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
 		dataThread.updatePlayer(p);
 	}
@@ -344,6 +378,24 @@ public class DataManager extends MgrBase {
 	public void init() {
 		loginAction = new LoginAction();
 
+		signinMoneys = new Vector<Integer>();
+		signinMoneys.add(10000);
+		signinMoneys.add(15000);
+		signinMoneys.add(20000);
+		signinMoneys.add(25000);
+		signinMoneys.add(30000);
+		signinMoneys.add(35000);
+		signinMoneys.add(40000);
+		
+		signinExps = new Vector<Integer>();
+		signinExps.add(5);
+		signinExps.add(10);
+		signinExps.add(15);
+		signinExps.add(20);
+		signinExps.add(25);
+		signinExps.add(30);
+		signinExps.add(35);
+		
 		Jedis j3 = jedisClient3.getJedis();
 		
 		String strinit = j3.get(MgrBase.DATAKEY_DATA_INIT);

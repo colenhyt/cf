@@ -112,8 +112,8 @@ Event.prototype.eventOkCallback = function(itemid){
     div.remove();
  	if (item){
 	   var pp = cfeval(item.prize);
-	   g_player.prizeUpdate(pp[0].v,3);
 	   g_player.prize(pp);
+	   g_player.commitData(3,0,pp[0].v);
 	}
 	g_msg.hide();
    });
