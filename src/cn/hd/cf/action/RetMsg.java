@@ -16,4 +16,6 @@ public interface RetMsg {
 	public static int MSG_InsureIsExist = 12;
 	public static int MSG_StockNotExist = 13;
 	public static int MSG_StockQtyIsZero= 14;
+	public static int MSG_IllegalAccess= 15;
+	public static int MSG_WrongOpenID= 16;
 }

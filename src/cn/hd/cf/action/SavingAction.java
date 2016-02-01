@@ -156,7 +156,6 @@ public class SavingAction extends BaseAction {
         float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
 		float periodMinutes = 60*24;//天:分钟
 		float diff = (diffdd/periodMinutes);
-		System.out.println("aa "+savingCfg.getRate()+";"+diff+";"+saving.getAmount());
 		float inter = diff * saving.getAmount()*savingCfg.getRate()/100;	
 		return inter;
 	}

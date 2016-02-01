@@ -181,8 +181,8 @@ public class LoginAction extends SavingAction {
 	}
 
 	private synchronized String serialize(Player player,int isregister,String savingStr,int top){
-		float margin = StockManager.getInstance().getMarginSec();
-		player.setQuotetime(margin);
+//		float margin = StockManager.getInstance().getMarginSec();
+//		player.setQuotetime(margin);
 		String pp = JSON.toJSONString(player);
 		String data = "{player:"+pp+",flag:"+isregister;
 		if (isregister==1){
@@ -203,6 +203,7 @@ public class LoginAction extends SavingAction {
 	}
 	public boolean assignDailyQuest(Player p){
 		Date qdoneTime = p.getQuestDoneTime();
+		
 		Date now = new Date();
 		if (qdoneTime!=null){
 			if (qdoneTime.getDay()==now.getDay()&&qdoneTime.getMonth()==now.getMonth()&&qdoneTime.getYear()==now.getYear())
@@ -294,8 +295,8 @@ public class LoginAction extends SavingAction {
 				saving.setCreatetime(time);
 				SavingManager.getInstance().addFirstSaving(saving.getPlayerid(), saving);
 				savings.put(saving.getItemid(), saving);
-				top = DataManager.getInstance().get_registerTop(saving.getAmount());
-				ToplistManager.getInstance().updateToplist(saving.getPlayerid(),player.getPlayername(),saving.getAmount());						
+				//top = DataManager.getInstance().get_registerTop(saving.getAmount());
+				//ToplistManager.getInstance().updateToplist(saving.getPlayerid(),player.getPlayername(),saving.getAmount());						
 //				super.playerTopUpdate(playerBlob.getPlayerid());
 //				ToplistManager.getInstance().addToplist(playerBlob.getPlayerid(),playerBlob.getPlayername(),saving.getAmount());	
 			}

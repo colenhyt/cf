@@ -467,12 +467,7 @@ Login.prototype.login = function(){
 //     	alert("本地数据缺失，登录失败");
 //     	return;
 //     }
-	var setting = "{android:"+browser.versions.android+",iphone:"+browser.versions.iPhone;
-	setting += ",iPhone5:"+browser.versions.iPhone5;
-	setting += ",iPad:"+browser.versions.iPad;
-	setting += ",width:"+window.screen.width;
-	setting += ",screekey:"+g_screenkey+"}";
-   	var dataParam = "openid="+g_openid+"&playername="+g_username+"&sex="+g_login.sex+"&playerid="+g_playerid+"&setting="+setting;
+  	var dataParam = "openid="+g_openid+"&playername="+g_username+"&sex="+g_login.sex+"&playerid="+g_playerid+"&setting="+g_setting;
     var serverPlayer;
     var now = new Date();
     

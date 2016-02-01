@@ -125,6 +125,8 @@ var MSG_InsureNotExist = 11;
 var MSG_InsureIsExist = 12;
 var MSG_StockNotExist = 13;
 var MSG_StockQtyIsZero = 14;
+var MSG_IllegalAccess = 15;
+var MSG_WrongOpenID = 16;
 
 var ERR_MSG ={};
 ERR_MSG[MSG_SQLExecuteError] = "sql出错";
@@ -141,6 +143,8 @@ ERR_MSG[MSG_InsureNotExist] = "你没有该保险，不能删除";
 ERR_MSG[MSG_InsureIsExist] = "已有该保险，不能重复购买";
 ERR_MSG[MSG_StockNotExist] = "找不到该股票，无法购买";
 ERR_MSG[MSG_StockQtyIsZero] = "请选择股票手数";
+ERR_MSG[MSG_IllegalAccess] = "非法客户端进入";
+ERR_MSG[MSG_WrongOpenID] = "错误OPENID";
 
 function loadStyle(url){
     var head = document.getElementsByTagName("head")[0];
@@ -359,6 +363,8 @@ function initScreen(){
 //alert(width);
 //alert(SCREENKEY);
 //SCREENKEY = 720;
+	g_setting = "{android:"+browser.versions.android+",iphone:"+browser.versions.iPhone+"}";
+ 
 	g_screenkey = SCREENKEY;
 	SIZEPER = SCREENKEY/640;
 	var cssFile = "static/css/cf"+SCREENKEY+".css";

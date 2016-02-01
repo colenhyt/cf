@@ -218,6 +218,14 @@ public class ToplistManager extends MgrBase{
 		return tops;
 	}
 	
+	public long getTopCount(){
+    	Jedis jedis = jedisClient.getJedis();   	
+		
+    	long count = jedis.hlen(MgrBase.DATAKEY_TOPLIST);
+    	jedisClient.returnResource(jedis);		
+		return count;
+	}
+	
 	public synchronized List<Toplist> findByType(int type){
 		List<Toplist> tops = new ArrayList<Toplist>();
 		

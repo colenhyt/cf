@@ -241,10 +241,11 @@ Quest.prototype.getQuetPrize = function(id){
 Quest.prototype.onBuyItem = function(tname,item,qty){
 	var type;
 	if (tname=="insure"){
-		if (parseInt(item.type)==0)
+		if (parseInt(item.type)==0){
 		 type = QUEST_TYPE.BUY_INSURE;
-		else (parseInt(item.type)==1)
+		}else if (parseInt(item.type)==1){
 		 type = QUEST_TYPE.BUY_FINAN;
+		 }
 	}else if (tname=="stock"){
 		if (qty>0)
 			type = QUEST_TYPE.BUY_STOCK;
@@ -262,7 +263,7 @@ Quest.prototype.onBuyItem = function(tname,item,qty){
     for (var i=0;i<qids.length;i++){
     	var quest = this.findItem(qids[i]);
     	if (quest==null) continue;
-	    if (quest.type==type||quest.type==-1){
+	    if (quest.type==type){
 			this.doneQuest(quest);
 			break;
 	    }

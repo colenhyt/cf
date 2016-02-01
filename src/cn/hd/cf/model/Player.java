@@ -7,6 +7,15 @@ public class Player {
 	private String updateTimeStr;
 	private Date questdonetime;
 	private Date questassigntime;
+	private int eventCount = 0;
+	public int getEventCount() {
+		return eventCount;
+	}
+
+	public void setEventCount(int eventCount) {
+		this.eventCount = eventCount;
+	}
+
 	public Date getQuestassigntime() {
 		return questassigntime;
 	}

@@ -182,7 +182,7 @@ public class SavingManager extends MgrBase{
     	return itemids;
     }
     public synchronized List<Saving> getSavingList(int playerId){
-    	List<Saving> list = null;
+    	List<Saving> list = savingsMap.get(playerId);
     	if (list==null){
 			Jedis jedis = jedisClient.getJedis();
 			if (!jedis.hexists(super.DATAKEY_SAVING, String.valueOf(playerId))){
@@ -190,7 +190,7 @@ public class SavingManager extends MgrBase{
 			}
 			String liststr = jedis.hget(super.DATAKEY_SAVING, String.valueOf(playerId));
 			jedisClient.returnResource(jedis);    	
-//			log.warn("pid:"+playerId+" get saving "+liststr);
+			log.warn("pid:"+playerId+" get saving "+liststr);
 			if (liststr!=null){
 				list = JSON.parseArray(liststr, Saving.class);
 				savingsMap.put(playerId, list);

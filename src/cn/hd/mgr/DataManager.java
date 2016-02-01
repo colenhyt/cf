@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import redis.clients.jedis.Jedis;
 import cn.hd.cf.action.LoginAction;
+import cn.hd.cf.action.RetMsg;
 import cn.hd.cf.model.Init;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Player;
@@ -83,11 +85,40 @@ public class DataManager extends MgrBase {
 		nextPlayerId++;
 		return nextPlayerId;
 	}
+	public synchronized String getXXX(int type,String playerName,String pwd) {
+		if (!pwd.equals("hdcfXIAO38"))
+			return "illegal access";
+		
+		if (type==1){
+			return "playercount :"+String.valueOf(findPlayerCount());
+		}else if (type==2){
+			return "toplist count:"+String.valueOf(ToplistManager.getInstance().getTopCount());
+		}else if (type==3){
+			return "toplist count:"+String.valueOf(ToplistManager.getInstance().getTopCount());
+		}
+		Player p = findPlayer(playerName);
+		if (p==null)
+			return "no player";
+		
+		String xxx = "pid:"+p.getPlayerid()+",openid:"+p.getOpenid()+" <br>";
+		xxx += "player :"+JSON.toJSONString(p)+" <br>";
+		xxx += "saving :"+getData(p.getPlayerid(),1)+" <br>";
+		xxx += "insure :"+getData(p.getPlayerid(),2)+" <br>";
+		xxx += "stock :"+getData(p.getPlayerid(),3)+" <br>";
+		xxx += "top :"+getData(p.getPlayerid(),4)+" <br>";
+		return xxx;
+	}
 
 	public synchronized String login(String openId,String playerName,int sex,int playerid,String settingStr,HttpServletRequest request) {
 //		return null;
+//		if (settingStr.indexOf("android:true")<0||settingStr.indexOf("iphone:true")<0)
+//			return loginAction.msgStr(RetMsg.MSG_IllegalAccess);
+			
+//		if (!Pattern.matches("[0-9]+", openId))
+//			return loginAction.msgStr(RetMsg.MSG_WrongOpenID);
+			
 		String loginStr = settingStr+",ip:"+loginAction.getIpAddress(request);
-		log.warn("login: loginStr: "+loginStr);
+		log.warn("loginStr: "+loginStr);
 		Player pp = new Player();
 		pp.setPlayername(playerName);
 		pp.setOpenid(openId);
@@ -238,10 +269,10 @@ public class DataManager extends MgrBase {
 	}
 
 	public synchronized Player findPlayer(int playerid) {
-		Player player = null;
+		Player player = playerMaps.get(playerid);
 		long s = System.currentTimeMillis();
 
-//		if (player==null)
+		if (player==null)
 		{
 			int index = playerid%redisClients.size();
 			RedisClient jedisClient = redisClients.get(index);
@@ -258,7 +289,7 @@ public class DataManager extends MgrBase {
 			}
 		}
 		//log.warn("findid cost :"+(System.currentTimeMillis()-s));
-		return playerMaps.get(playerid);
+		return player;
 	}
 
 	public synchronized void updatePlayerQuest(Player player) {
@@ -270,10 +301,11 @@ public class DataManager extends MgrBase {
 		Player p = findPlayer(playerid);
 		if (p==null) return;
 		
+		Date now = new Date();
+		Date last = p.getLastlogin();
+		
 		switch (type){
 		case 0:
-			Date now = new Date();
-			Date last = p.getLastlogin();
 			if (last!=null&&last.getYear()==now.getYear()&&last.getMonth()==now.getMonth()&&last.getDay()==now.getDay()){
 				return;
 			}
@@ -313,6 +345,24 @@ public class DataManager extends MgrBase {
 		case 3:
 			//todo: 这里加上正数的每日次数限制:
 			float amount = Float.valueOf(amountStr);
+			//非法:
+			if (amount>0){
+				if (amount>10000)
+				{
+					log.warn("pid:"+playerid+" error,flush event,amount:"+amount);
+					return;
+				}
+				//不同一天登陆不允许正向事件:
+				if (last==null||last.getYear()!=now.getYear()||last.getMonth()!=now.getMonth()||last.getDay()!=now.getDay()){
+					return;
+				}
+				if (p.getEventCount()>20){
+					log.warn("pid:"+playerid+" error,flush event");
+					return;
+				}
+				
+				p.setEventCount(p.getEventCount()+1);
+			}
 			SavingManager.getInstance().updateLiveSaving(playerid,amount);
 			log.warn("pid:"+playerid+" event amount update:"+amount);
 			break;
@@ -443,6 +493,18 @@ public class DataManager extends MgrBase {
 //		log.warn("load all players :" + items.size());
 
 	}
+	
+	private long findPlayerCount(){
+		Jedis jedis = redisClients.get(0).getJedis();
+		if (jedis==null){
+			log.error("could not get player redis,redis0 may not be run");
+			return 0 ;
+		}		
+		long count = jedis.hlen(MgrBase.DATAKEY_PLAYER);
+		redisClients.get(0).returnResource(jedis);	
+		return count;
+	}
+	
 	public static void main(String[] args) {
 		DataManager stmgr = DataManager.getInstance();
 		stmgr.init();
