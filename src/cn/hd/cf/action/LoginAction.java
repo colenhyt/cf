@@ -135,7 +135,7 @@ public class LoginAction extends SavingAction {
 				log.warn("pid:"+playerBlob.getPlayerid()+" login assign quest:"+playerBlob.getQuestStr());
 				DataManager.getInstance().updatePlayerQuest(playerBlob);
 			}
-			return serialize(playerBlob,0,null,0); 
+			return serialize(playerBlob,0,null); 
 		}else
 			return super.msgStr(RetMsg.MSG_WrongPlayerNameOrPwd);	
 	}
@@ -180,13 +180,13 @@ public class LoginAction extends SavingAction {
 		this.player = player;
 	}
 
-	private synchronized String serialize(Player player,int isregister,String savingStr,int top){
-//		float margin = StockManager.getInstance().getMarginSec();
-//		player.setQuotetime(margin);
+	private synchronized String serialize(Player player,int isregister,String savingStr){
+		float margin = StockManager.getInstance().getMarginSec();
+		player.setQuotetime(margin);
 		String pp = JSON.toJSONString(player);
 		String data = "{player:"+pp+",flag:"+isregister;
 		if (isregister==1){
-			data += ",saving:"+savingStr+",top:"+top;
+			data += ",saving:"+savingStr;
 		}
 		data += "}";
 	//  log.warn("login:"+data);
@@ -278,7 +278,6 @@ public class LoginAction extends SavingAction {
 				return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
 			}
 			Map<Integer, Saving> savings = (new HashMap<Integer,Saving>());
-			int top = -1;
 			//活期存款:
 			if (init!=null&&init.getMoney()>0){
 				Saving savingCfg = SavingManager.getInstance().getSavingCfg(1);
@@ -296,14 +295,12 @@ public class LoginAction extends SavingAction {
 				SavingManager.getInstance().addFirstSaving(saving.getPlayerid(), saving);
 				savings.put(saving.getItemid(), saving);
 				//top = DataManager.getInstance().get_registerTop(saving.getAmount());
-				//ToplistManager.getInstance().updateToplist(saving.getPlayerid(),player.getPlayername(),saving.getAmount());						
-//				super.playerTopUpdate(playerBlob.getPlayerid());
-//				ToplistManager.getInstance().addToplist(playerBlob.getPlayerid(),playerBlob.getPlayername(),saving.getAmount());	
+				ToplistManager.getInstance().addRegisterToplist(playerBlob.getPlayerid(),playerBlob.getPlayername(),saving.getAmount());	
 			}
 //			JSONObject obj = JSONObject.fromObject(playerBlob);	
 			log.warn("pid:"+playerBlob.getPlayerid()+",openid:'"+playerBlob.getOpenid()+"' register success:,name:"+player.getPlayername());
 //			write(obj.toString(),"utf-8");
 			
-			return serialize(playerBlob,1,JSON.toJSONString(savings),top);
+			return serialize(playerBlob,1,JSON.toJSONString(savings));
 		}
 }

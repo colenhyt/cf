@@ -31,7 +31,15 @@ public class DataThread extends Thread {
 	
 	private Map<Integer,String>		updateInsureMap;
 	private Map<Integer,String>		updateStockMap;
-	
+	private int updateDuration = 500;
+	public int getUpdateDuration() {
+		return updateDuration;
+	}
+
+	public void setUpdateDuration(int updateDuration) {
+		this.updateDuration = updateDuration;
+	}
+
 	private Vector<Stock>			newStockVect;
 	private Vector<Stock>			updateStockVect;
 	private Vector<Stock>			deleteStockVect;
@@ -199,7 +207,7 @@ public class DataThread extends Thread {
 				}
 				
 //	        		System.out.println("size :"+DataManager.getInstance().playerMaps.size());
-				super.sleep(500);
+				super.sleep(updateDuration);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

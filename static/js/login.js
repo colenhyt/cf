@@ -327,16 +327,20 @@ Login.prototype.syncLoadData = function(playerid){
 		}});
     	g_login.loadCount++;
 		
-		dataParam = "playerid="+playerid+"&type=4";
-		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
-		 g_login.syncLoadDataCallback_top(cfeval(data));
-		}});
-    	g_login.loadCount++;
+		g_login.syncLoadData_top(playerid);
 				
 	}   catch  (e)   {
 	    logerr(e.name  +   " :  "   +  dataParam);
 	   return false;
 	}
+}
+
+Login.prototype.syncLoadData_top = function(playerid){
+		var dataParam = "playerid="+playerid+"&type=4";
+		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
+		 g_login.syncLoadDataCallback_top(cfeval(data));
+		}});
+    	g_login.loadCount++;
 }
 
 Login.prototype.syncLoadDataCallback_saving = function(data){
@@ -429,9 +433,9 @@ Login.prototype.loginCallback = function(obj){
        
     //register
     if (flag==1){
-    	g_login.loadCount += 2;
-    	g_login.syncLoadDataCallback_saving(objdata.saving);
-	   	g_login.syncLoadDataCallback_top(objdata.top);
+    	g_login.loadCount += 1;
+ 	   	g_login.syncLoadData_top(player.playerid);
+	   	g_login.syncLoadDataCallback_saving(objdata.saving);
     }else{
     	this.syncLoadData(player.playerid);
     }

@@ -44,6 +44,7 @@ public class ToplistManager extends MgrBase{
 		dataThreads = new Vector<DataThread>();
 		 for (int i=0;i<redisCfg2.getThreadCount();i++){
 			 DataThread dataThread = new DataThread(redisCfg2);
+			 dataThread.setUpdateDuration(100);
 			dataThreads.add(dataThread);
 			dataThread.start();
 		 }	    	
@@ -133,10 +134,9 @@ public class ToplistManager extends MgrBase{
 		return 0;
 	}
 	
-	public synchronized boolean addToplist(int playerid,String playerName,double money){
-		Toplist newtop = findByPlayerId(playerid);
-		if (newtop==null) {
-			newtop = new Toplist();
+	
+	public synchronized boolean addRegisterToplist(int playerid,String playerName,double money){
+			Toplist newtop = new Toplist();
 			newtop.setPlayerid(playerid);
 			newtop.setPlayername(playerName);
 			newtop.setCreatetime(new Date());
@@ -147,6 +147,13 @@ public class ToplistManager extends MgrBase{
 			toplistMap.put(newtop.getPlayerid(), newtop);
 			DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
 			dataThread.updateToplist(newtop);		
+		return true;		
+	}
+	
+	public synchronized boolean addToplist(int playerid,String playerName,double money){
+		Toplist newtop = findByPlayerId(playerid);
+		if (newtop==null) {
+			return addRegisterToplist(playerid,playerName,money);	
 		}
 		return true;		
 	}

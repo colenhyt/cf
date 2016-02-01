@@ -318,9 +318,10 @@ public class DataManager extends MgrBase {
 			int money = signinMoneys.get(days-1);
 			int exp = signinExps.get(days-1);
 			SavingManager.getInstance().updateLiveSaving(playerid,money);
+			log.warn("pid:"+playerid+" signin days:"+days+" add prize,money: "+money+", exp:"+exp);
 			p.setExp(p.getExp()+exp);
 			p.setLastlogin(new Date());
-			log.warn("pid:"+playerid+" signin,days: "+days);
+			p.setEventCount(0);
 			this.addSignin(playerid);
 			break;
 		case 1:
@@ -331,7 +332,7 @@ public class DataManager extends MgrBase {
 			SavingManager.getInstance().updateLiveSaving(playerid,(float)5000);
 			
 			queststr = queststr.replace(itemstr, "").replace(",","");
-			log.warn("pid:"+playerid+" done quest "+itemstr);
+			log.warn("pid:"+playerid+" done quest "+itemstr+" prize:5000");
 			p.setQuestStr(queststr);
 			if (queststr.length()<=0||queststr.split(",").length<=0){
 				p.setQuestDoneTime(new Date());
@@ -356,15 +357,15 @@ public class DataManager extends MgrBase {
 				if (last==null||last.getYear()!=now.getYear()||last.getMonth()!=now.getMonth()||last.getDay()!=now.getDay()){
 					return;
 				}
-				if (p.getEventCount()>20){
-					log.warn("pid:"+playerid+" error,flush event");
+				if (p.getEventCount()>50){
+					log.warn("pid:"+playerid+" error,flush event count");
 					return;
 				}
 				
 				p.setEventCount(p.getEventCount()+1);
 			}
 			SavingManager.getInstance().updateLiveSaving(playerid,amount);
-			log.warn("pid:"+playerid+" event amount update:"+amount);
+			log.warn("pid:"+playerid+" event fire, amount:"+amount);
 			break;
 			
 		}
