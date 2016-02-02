@@ -184,8 +184,6 @@ Quest.prototype.doneQuest = function(quest){
 	//g_quest.getQuetPrize(item.id);
    	var pz = cfeval(quest.prize);
    	
-   	g_player.prize(pz);		
-    g_player.commitData(1,quest.id,0);
 	g_msg.tip("成功得到任务奖励:"+itemStr2(pz,","));	 
 	  
 	var qids = pdata.questStr.split(",");

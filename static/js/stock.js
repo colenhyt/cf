@@ -80,7 +80,7 @@ Stock.prototype.loadPageLastQuote = function()
 	var jids = "stockids="+JSON.stringify(stockids);
 	try  {
 		$.ajax({type:"post",url:"/cf/stock_pagelastquotes.do",data:jids,success:function(data){
-			g_msg.destroyload();
+	 		g_canRemoveWait = true;
 			var lastquotes = cfeval(data);
 			g_stock.lastquotes = lastquotes;
 			//当前页股票属性变化:
@@ -423,7 +423,7 @@ Stock.prototype.requestBuy = function(id,qty,ps) {
 	try    {
 		$.ajax({type:"post",url:"/cf/data_update.jsp",data:dataParam,success:function(data){
 		 g_stock.buyCallback(cfeval(data));
-         g_msg.destroyload();
+	 	 g_canRemoveWait = true;
 		}});
 	}   catch  (e)   {
 	    logerr(e.name  +   " :  "   +  dataobj.responseText);
@@ -469,9 +469,9 @@ Stock.prototype.buyCallback = function(ret){
   playAudioHandler('money');	
 	
 		
-	var cash = g_player.saving[1].amount;	   
-	cash -= amount;
-	g_player.updateData({"cash":cash});
+	var stockback = cfeval(ret.desc);
+			
+	g_player.updateData({"cash":stockback.liveamount});
 	g_quest.onBuyItem(this.name,item,qty);
 				   
 	//tip:
@@ -481,6 +481,8 @@ Stock.prototype.buyCallback = function(ret){
 		g_msg.tip("抛售<span style='color:red'>"+item.name+"</span>成功,金额:"+(0-buyitem.amount));
 	
 	$('#'+this.tagdetailname).modal("hide");  
+	
+	 g_player.flushPageview();
 	
 	//this.showDetail(id,true);
 	//刷新list 页面:
@@ -504,7 +506,7 @@ Stock.prototype.findQuotes = function()
 			store.set(g_stock.quotename,qdatas);
 			g_stockdetail.drawQuote(stockid,g_stock.currStockPs,squotes,g_stock.graphName);
 			g_stock.currShowStockId = null;
-			g_msg.destroyload();
+	 		g_canRemoveWait = true;
 		}});
 
 	}   catch  (e)   {

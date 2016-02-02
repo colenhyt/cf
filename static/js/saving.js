@@ -177,7 +177,7 @@ Saving.prototype.requestBuy = function(id,qty,amount){
 	try    {
 		$.ajax({type:"post",url:"/cf/data_update.jsp",data:dataParam,success:function(data){
 		 g_saving.buyCallback(cfeval(data));
-         g_msg.destroyload();
+	 	 g_canRemoveWait = true;
 		}});
 	}   catch  (e)   {
 	    logerr(e.name  +   " :  "   +  dataobj.responseText);
@@ -206,11 +206,13 @@ Saving.prototype.buyCallback = function(ret){
    }else
 	pitems[id] = null;
 			   
+	var savingback = cfeval(ret.desc);
+	
   playAudioHandler('money');	
-	var cash = g_player.saving[1].amount;	   
-	cash -= amount;
+	var cash = savingback.liveamount;	   
 	g_player.updateData({"cash":cash});
-	g_quest.onBuyItem(this.name,item,1);
+	if (savingback.amount>0)
+		g_quest.onBuyItem(this.name,item,1);
 				   
 	//tip:
 	var desc;
@@ -221,13 +223,12 @@ Saving.prototype.buyCallback = function(ret){
 		
 	g_msg.tip(desc);
 	
-	var savingback = cfeval(ret.desc);
 	if (savingback.profit>=1)
 	{
 	 g_player.saving[1].amount += savingback.profit;
-	 g_player.flushPageview();
  	 g_msg.tip("得到利息:"+savingback.profit);
 	}
+	 g_player.flushPageview();
 	 
 	this.hide(this.tagdetailname);
 	//刷新list 页面:

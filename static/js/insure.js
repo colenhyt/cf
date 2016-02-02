@@ -350,14 +350,17 @@ Insure.prototype.buyCallback = function(ret){
    }else
 	pitems[id] = null;
 		
+	var insureback = cfeval(ret.desc);
+		
   playAudioHandler('money');	
-	var cash = g_player.saving[1].amount;	   
-	cash -= amount;
-	g_player.updateData({"cash":cash});
+  
+	g_player.updateData({"cash":insureback.liveamount});
 	g_quest.onBuyItem(this.name,item,1);
 				   
 	//tip:
 	g_msg.tip("您购买"+buyitem.qty+"份<span style='color:red'>"+item.name+"</span>成功");
+	
+	 g_player.flushPageview();
 	
 	this.hide(this.tagdetailname);
 	//刷新list 页面:

@@ -141,6 +141,8 @@ Signin.prototype.clickFeeling = function(feelingId){
 	if (g_signin.signinDays>0){
 	   g_player.prize(g_signin.currPrize);
 	   g_player.commitData(0,g_signin.signinDays,0);
+	   if (g_player.data.lastlogin==null)
+	   	g_player.data.lastlogin = Date.parse(new Date());
 	   g_playerlog.updateSignin(feelingId);
 	}
 	   g_signin.currPrize = null;

@@ -399,7 +399,13 @@ Login.prototype.callbackDone = function(){
 
 }
 
+Login.prototype.canRemoveWait = function(){
+	return g_loginCallback&&g_msg.loadreq!=null&&g_msg.loadreq.callback!=null&&g_msg.loadreq.callback.indexOf("login")>0;
+}
+
 Login.prototype.loginCallback = function(obj){
+ 	g_loginCallback = true;
+ 		 
 	var objdata = cfeval(obj);
 	if (objdata.code!=null&&objdata.code>0){
 	 this.msg('登陆失败: '+ERR_MSG[objdata.code]);
@@ -456,6 +462,7 @@ Login.prototype.loginCallback = function(obj){
 		g_game.onEnter();
 	}
 	
+ 	
 	//g_event.triggerEvent();
 }
 
@@ -472,13 +479,16 @@ Login.prototype.login = function(){
 //     	return;
 //     }
   	var dataParam = "openid="+g_openid+"&playername="+g_username+"&sex="+g_login.sex+"&playerid="+g_playerid+"&setting="+g_setting;
+  	if (g_pwd!=null&&g_pwd.length>0)
+  		dataParam += "&pwd="+g_pwd;
+  		
     var serverPlayer;
     var now = new Date();
     
 	try    {
 		$.ajax({type:"post",url:"/cf/login_login.jsp",data:dataParam,success:function(data){
 		 g_login.loginCallback(data);
-		 g_msg.destroyload();
+		 //g_msg.destroyload();
 		}});
 	}   catch  (e)   {
 	    logerr(e.name  +   " :  "   +  dataParam);

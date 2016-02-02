@@ -36,7 +36,11 @@ var Panel_ClickColor = "#123123";
 
 var Is_InBrowser = true;
 
-var Share_Prize = 500
+var g_loginCallback = false;
+
+var Share_Prize = 500;
+
+var g_canRemoveWait = false;
 
 var Share_PageText = "又开始了新的一天！是否分享您今日的心情给您的好朋友们?"
 
@@ -143,7 +147,7 @@ ERR_MSG[MSG_InsureNotExist] = "你没有该保险，不能删除";
 ERR_MSG[MSG_InsureIsExist] = "已有该保险，不能重复购买";
 ERR_MSG[MSG_StockNotExist] = "找不到该股票，无法购买";
 ERR_MSG[MSG_StockQtyIsZero] = "请选择股票手数";
-ERR_MSG[MSG_IllegalAccess] = "非法客户端进入";
+ERR_MSG[MSG_IllegalAccess] = "非法客户端登入";
 ERR_MSG[MSG_WrongOpenID] = "错误OPENID";
 
 function loadStyle(url){

@@ -27,6 +27,9 @@ Main.prototype.init = function(){
 		gameErr("获取初始化参数失败，无法进入游戏!");
 		return;
 	}
+	
+	g_pwd = getPar("pwd");
+	
 	g_openid = openid;
 	
     var canvas = document.createElement("canvas");
