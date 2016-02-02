@@ -6,10 +6,12 @@ import java.util.Map;
 import com.alibaba.fastjson.JSON;
 
 import cn.hd.cf.model.Insure;
+import cn.hd.cf.model.Saving;
 import cn.hd.cf.service.InsureService;
 import cn.hd.cf.tools.InsuredataService;
 import cn.hd.mgr.DataManager;
 import cn.hd.mgr.InsureManager;
+import cn.hd.mgr.SavingManager;
 
 public class InsureAction extends SavingAction {
 	private Insure		insure;
@@ -23,27 +25,39 @@ public class InsureAction extends SavingAction {
 
 	public String add()
 	{
-		float inAmount = 0 - insure.getAmount();
-		//先扣钱:
-		int ret = super.pushLive(insure.getPlayerid(), inAmount);
-		if (ret==0){
-			insure.setCreatetime(new Date());
-			insure.setUpdatetime(new Date());
-			Insure incfg = InsureManager.getInstance().getInsureCfg(insure.getItemid());
-			insure.setPeriod(incfg.getPeriod()*insure.getQty());
-			insure.setType(incfg.getType());
-			ret = InsureManager.getInstance().addInsure(insure.getPlayerid(), insure);	
-			if (ret!=RetMsg.MSG_OK){
-				//钱放回去:
-				log.warn("pid:"+insure.getPlayerid()+", warn, insure error"+insure.getPlayerid());
-				super.pushLive(insure.getPlayerid(),  insure.getAmount());
+		Saving liveSaving = SavingManager.getInstance().getSaving(insure.getPlayerid(), 1);
+		if (liveSaving.getAmount()<insure.getAmount())
+			return msgStr(RetMsg.MSG_MoneyNotEnough);
+		
+		float changeAmount = 0 - insure.getAmount();
+		
+		insure.setCreatetime(new Date());
+		insure.setUpdatetime(new Date());
+		Insure incfg = InsureManager.getInstance().getInsureCfg(insure.getItemid());
+		insure.setPeriod(incfg.getPeriod()*insure.getQty());
+		insure.setType(incfg.getType());
+		int ret = InsureManager.getInstance().addInsure(insure.getPlayerid(), insure);	
+		if (ret==RetMsg.MSG_OK){
+			int doType = 2;
+			if (incfg.getType()==1)
+				doType = 3;
+			boolean doneQuest = DataManager.getInstance().doneQuest(insure.getPlayerid(), doType);
+			if (doneQuest){
+				changeAmount += 5000;
+				log.warn("pid:"+insure.getPlayerid()+" insure quest prize 5000,type:"+doType);
 			}
-			super.playerTopUpdate(insure.getPlayerid());
-			log.info("pid:"+insure.getPlayerid()+" add insure itemid="+insure.getItemid()+",ret:"+ret+",amount:"+insure.getAmount());
+			
+			liveSaving.setAmount(liveSaving.getAmount()+changeAmount);
+			playerMoneyUpdate(liveSaving);	
+			insure.setLiveamount(liveSaving.getAmount());
+			String str = JSON.toJSONString(insure);
+			log.info("pid:"+insure.getPlayerid()+" add insure itemid="+insure.getItemid()+",str"+str);
+			return msgStr2(RetMsg.MSG_OK,str);
 		}else {
-			log.warn("pid:"+insure.getPlayerid()+" error,saving not found for insure:"+ret);
+			log.warn("pid:"+insure.getPlayerid()+", warn, insure error"+insure.getPlayerid());
+			return msgStr(ret);
 		}
-		return msgStr(ret);
+
 	}
 	
 	public String get()

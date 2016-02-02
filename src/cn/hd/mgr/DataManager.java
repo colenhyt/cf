@@ -109,16 +109,65 @@ public class DataManager extends MgrBase {
 		return xxx;
 	}
 
-	public synchronized String login(String openId,String playerName,int sex,int playerid,String settingStr,HttpServletRequest request) {
+	public synchronized boolean doneQuest(int playerid,int doType){
+		Player player = findPlayer(playerid);
+		if (player==null)
+			return false;
+		
+		//saving
+		int questid = -1;
+		String queststr = player.getQuestStr();
+		if (doType==1&&queststr.indexOf("5")>=0){
+			questid = 5;
+		}else if (doType==2&&queststr.indexOf("1")>=0){
+			questid = 1;
+		}else if (doType==3&&queststr.indexOf("2")>=0){
+			questid = 2;
+		}else if (doType==4&&queststr.indexOf("3")>=0){
+			questid = 3;
+		}else if (doType==5&&queststr.indexOf("4")>=0){
+			questid = 4;
+		}
+		
+		if (questid>0){
+			//SavingManager.getInstance().updateLiveSaving(playerid,(float)5000);
+			
+			queststr = queststr.replace(String.valueOf(questid), "").replace(",","");
+			player.setQuestStr(queststr);
+			if (queststr.length()<=0||queststr.split(",").length<=0){
+				player.setQuestDoneTime(new Date());
+				this.addDoneQuest(playerid);
+				log.warn("pid:"+playerid+" done daily quest");
+			}	
+			return true;
+		}
+		return false;
+	}
+	
+	public synchronized String login(String openId,String playerName,String sexstr,String playerstr,String settingStr,HttpServletRequest request) {
+		String loginStr = "loginStr: openId:"+openId+",playerName:"+playerName+",";
+		if (playerstr!=null)
+			loginStr += "playerid:"+playerstr;
+		loginStr += ",setting:"+settingStr+",ip:"+loginAction.getIpAddress(request);
+		log.warn(loginStr);
 //		return null;
-//		if (settingStr.indexOf("android:true")<0||settingStr.indexOf("iphone:true")<0)
-//			return loginAction.msgStr(RetMsg.MSG_IllegalAccess);
+		if (settingStr.indexOf("android:true")<0&&settingStr.indexOf("iphone:true")<0){
+			String pwd = request.getParameter("pwd");
+			if (pwd==null||!pwd.endsWith("hdcf"))
+				return loginAction.msgStr(RetMsg.MSG_IllegalAccess);
+		}
 			
-//		if (!Pattern.matches("[0-9]+", openId))
-//			return loginAction.msgStr(RetMsg.MSG_WrongOpenID);
+		if (!Pattern.matches("[0-9]+", openId))
+			return loginAction.msgStr(RetMsg.MSG_WrongOpenID);
 			
-		String loginStr = settingStr+",ip:"+loginAction.getIpAddress(request);
-		log.warn("loginStr: "+loginStr);
+		int sex = 0;
+		if (sexstr!=null)
+			sex = Integer.valueOf(sexstr);
+		
+		int playerid = -1;
+		if (playerstr!=null)
+			playerid = Integer.valueOf(playerstr);
+		
 		Player pp = new Player();
 		pp.setPlayername(playerName);
 		pp.setOpenid(openId);
@@ -325,20 +374,20 @@ public class DataManager extends MgrBase {
 			this.addSignin(playerid);
 			break;
 		case 1:
-			String queststr = p.getQuestStr();
-			if (queststr==null||itemstr==null||itemstr.length()<=0) return;
-			if (queststr.indexOf(itemstr)<0) return;
-			
-			SavingManager.getInstance().updateLiveSaving(playerid,(float)5000);
-			
-			queststr = queststr.replace(itemstr, "").replace(",","");
-			log.warn("pid:"+playerid+" done quest "+itemstr+" prize:5000");
-			p.setQuestStr(queststr);
-			if (queststr.length()<=0||queststr.split(",").length<=0){
-				p.setQuestDoneTime(new Date());
-				this.addDoneQuest(playerid);
-				log.warn("pid:"+playerid+" done daily quest");
-			}
+//			String queststr = p.getQuestStr();
+//			if (queststr==null||itemstr==null||itemstr.length()<=0) return;
+//			if (queststr.indexOf(itemstr)<0) return;
+//			
+//			SavingManager.getInstance().updateLiveSaving(playerid,(float)5000);
+//			
+//			queststr = queststr.replace(itemstr, "").replace(",","");
+//			log.warn("pid:"+playerid+" done quest "+itemstr+" prize:5000");
+//			p.setQuestStr(queststr);
+//			if (queststr.length()<=0||queststr.split(",").length<=0){
+//				p.setQuestDoneTime(new Date());
+//				this.addDoneQuest(playerid);
+//				log.warn("pid:"+playerid+" done daily quest");
+//			}
 			break;
 		case 2:
 			p.setOpenstock((byte)1);

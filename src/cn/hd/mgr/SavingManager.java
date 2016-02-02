@@ -185,10 +185,10 @@ public class SavingManager extends MgrBase{
     	List<Saving> list = savingsMap.get(playerId);
     	if (list==null){
 			Jedis jedis = jedisClient.getJedis();
-			if (!jedis.hexists(super.DATAKEY_SAVING, String.valueOf(playerId))){
+			if (!jedis.hexists(MgrBase.DATAKEY_SAVING, String.valueOf(playerId))){
 				return list;
 			}
-			String liststr = jedis.hget(super.DATAKEY_SAVING, String.valueOf(playerId));
+			String liststr = jedis.hget(MgrBase.DATAKEY_SAVING, String.valueOf(playerId));
 			jedisClient.returnResource(jedis);    	
 			log.warn("pid:"+playerId+" get saving "+liststr);
 			if (liststr!=null){

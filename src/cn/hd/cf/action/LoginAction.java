@@ -148,12 +148,15 @@ public class LoginAction extends SavingAction {
 //			loginstr += ",pname:"+player.getPlayername();
 //		loginstr += " enter game";
 //		//log.info(loginstr);
+		Player playerBlob = null;
 		if (player.getPlayerid()>0){
-			Player playerBlob = DataManager.getInstance().findPlayer(player.getPlayerid());
-			return loginPlayer(playerBlob);
+			playerBlob = DataManager.getInstance().findPlayer(player.getPlayerid());
+			if (playerBlob!=null)
+				return loginPlayer(playerBlob);
 		}
+		
 		long s = System.currentTimeMillis();
-		Player playerBlob = DataManager.getInstance().findPlayer(player.getPlayername());
+		playerBlob = DataManager.getInstance().findPlayer(player.getPlayername());
 		long cost = System.currentTimeMillis()-s;
 		if (cost>10)		
 			log.warn("action cost :"+cost+" openid:"+player.getOpenid());
@@ -189,7 +192,7 @@ public class LoginAction extends SavingAction {
 			data += ",saving:"+savingStr;
 		}
 		data += "}";
-	//  log.warn("login:"+data);
+	  log.warn("pid:"+player.getPlayerid()+" loginback:"+data);
 	  return data;
 	}
 	
@@ -204,6 +207,7 @@ public class LoginAction extends SavingAction {
 	public boolean assignDailyQuest(Player p){
 		Date qdoneTime = p.getQuestDoneTime();
 		
+		p.setQuestStr("3");
 		Date now = new Date();
 		if (qdoneTime!=null){
 			if (qdoneTime.getDay()==now.getDay()&&qdoneTime.getMonth()==now.getMonth()&&qdoneTime.getYear()==now.getYear())

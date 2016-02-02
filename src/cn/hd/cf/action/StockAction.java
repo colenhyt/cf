@@ -11,9 +11,12 @@ import com.alibaba.fastjson.JSON;
 
 import net.sf.json.JSONArray;
 import cn.hd.cf.model.Quote;
+import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Stockdata;
 import cn.hd.cf.service.StockService;
+import cn.hd.mgr.DataManager;
+import cn.hd.mgr.SavingManager;
 import cn.hd.mgr.StockManager;
 
 public class StockAction extends SavingAction {
@@ -71,31 +74,43 @@ public class StockAction extends SavingAction {
 		if (stock.getQty()==0){
 			return msgStr(RetMsg.MSG_StockQtyIsZero);
 		}
-		int ret = RetMsg.MSG_StockIsClosed;
 		if (stockMgr.isStockOpen()==false){
-			return msgStr(ret);
+			return msgStr(RetMsg.MSG_StockIsClosed);
 		}
-		float inAmount = 0 - stock.getAmount();
-		//先扣钱:
-		ret = super.pushLive(stock.getPlayerid(), inAmount);
-		if (ret==0){
+		
+		Saving liveSaving = SavingManager.getInstance().getSaving(stock.getPlayerid(), 1);
+		
+		float changeAmount = 0 - stock.getAmount();
+		
+			int ret = RetMsg.MSG_OK;
+			int doType = 4;
 			if (stock.getQty()>0){
+				if (liveSaving.getAmount()<stock.getAmount())
+					return msgStr(RetMsg.MSG_MoneyNotEnough);
 				stock.setCreatetime(new Date());
 				ret = stockMgr.addStock(stock.getPlayerid(), stock);	
 			}else {
+				doType = 5;
 				int qq = (0 - stock.getQty());
 				ret = stockMgr.deleteStock(stock.getPlayerid(), stock.getItemid(), qq);
 			}
-			if (ret!=RetMsg.MSG_OK){
-				//钱放回去:
+			if (ret==RetMsg.MSG_OK){
+				
+				boolean doneQuest = DataManager.getInstance().doneQuest(stock.getPlayerid(), doType);
+				if (doneQuest){
+					changeAmount += 5000;
+					log.warn("pid:"+stock.getPlayerid()+" stock quest prize 5000,type:"+doType);
+				}
+				
+				liveSaving.setAmount(liveSaving.getAmount()+changeAmount);
+				playerMoneyUpdate(liveSaving);	
+				stock.setLiveamount(liveSaving.getAmount());
+				String str = JSON.toJSONString(stock);
+				log.info("pid:"+stock.getPlayerid()+" buy stock,str:"+str);
+				return msgStr2(RetMsg.MSG_OK,str);
+			}else {
 				log.warn("pid:"+stock.getPlayerid()+", warn,stock error:"+stock.getPlayerid()+",item:"+stock.getItemid()+",qty:"+stock.getQty());
-				super.pushLive(stock.getPlayerid(),  stock.getAmount());
+				return msgStr(ret);
 			}
-			log.info("pid:"+stock.getPlayerid()+" buy stock:,itemid="+stock.getItemid()+",qty="+stock.getQty()+",ret:"+ret);
-			super.playerTopUpdate(stock.getPlayerid());
-		}else {
-			log.warn("pid:"+stock.getPlayerid()+",error,player saving not found for stock:"+ret);
-		}
-		return msgStr(ret);
 	}	
 }

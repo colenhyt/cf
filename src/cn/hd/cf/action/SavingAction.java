@@ -170,10 +170,14 @@ public class SavingAction extends BaseAction {
 		Saving newsaving = new Saving();
 		newsaving.setItemid(saving.getItemid());
 		newsaving.setPlayerid(saving.getPlayerid());
+		newsaving.setAmount(saving.getAmount());
 		int ret = RetMsg.MSG_OK;
+		
+		Saving liveSaving = SavingManager.getInstance().getSaving(saving.getPlayerid(), 1);
+		
+		float changeAmount = 0 - saving.getAmount();
 		//取出存款:
 		if (saving.getAmount()<0){
-			float inAmount = 0 - saving.getAmount();
 			Saving saving2 = SavingManager.getInstance().getSaving(saving.getPlayerid(), saving.getItemid());
 			if (saving2==null){
 				return msgStr(RetMsg.MSG_NoSavingData);
@@ -191,15 +195,14 @@ public class SavingAction extends BaseAction {
 			if (Math.abs(inter-0.9)>0){
 				BigDecimal b = new BigDecimal(inter);  
 				int iInter = (int)b.setScale(0,BigDecimal.ROUND_HALF_UP).floatValue();
-				inAmount += iInter;	
+				changeAmount += iInter;	
 				log.warn("pid:"+saving.getPlayerid()+" get charge:"+iInter);
 				newsaving.setProfit((float)iInter);				
 			}
-			pushLive(saving.getPlayerid(), inAmount);		//放回活期;
 			ret = SavingManager.getInstance().deleteSaving(saving.getPlayerid(),saving);
 		}else {
-			
-			pushLive(saving.getPlayerid(), 0 - saving.getAmount());
+			if (liveSaving.getAmount()<saving.getAmount())
+				return msgStr(RetMsg.MSG_MoneyNotEnough);
 			
 			Saving savingCfg = SavingManager.getInstance().getSavingCfg(saving.getItemid());
 			saving.setName(savingCfg.getName());
@@ -210,17 +213,26 @@ public class SavingAction extends BaseAction {
 			saving.setType(savingCfg.getType());
 			saving.setPeriod(savingCfg.getPeriod());
 			ret = SavingManager.getInstance().addSaving(saving.getPlayerid(), saving);
+			if (ret==RetMsg.MSG_OK){
+				boolean doneQuest = DataManager.getInstance().doneQuest(saving.getPlayerid(), 1);
+				if (doneQuest){
+					changeAmount += 5000;
+					log.warn("pid:"+saving.getPlayerid()+" saving quest prize 5000");
+				}
+			}
 		}
-		log.info("pid:"+saving.getPlayerid()+" add saving itemid="+saving.getItemid()+",ret:"+ret+",amount:"+saving.getAmount());
 		
-		//放回去
-		if (ret!=RetMsg.MSG_OK){
-			log.warn("pid:"+saving.getPlayerid()+",error,saving: "+saving.getPlayerid());
-			pushLive(saving.getPlayerid(), saving.getAmount() );
-			return msgStr(ret);
-		}else {
+		//修改活期金额:
+		if (ret==RetMsg.MSG_OK){
+			liveSaving.setAmount(liveSaving.getAmount()+changeAmount);
+			playerMoneyUpdate(liveSaving);	
+			newsaving.setLiveamount(liveSaving.getAmount());
 			String str = JSON.toJSONString(newsaving);
+			log.info("pid:"+saving.getPlayerid()+" add/remove saving itemid="+saving.getItemid()+",ret:"+ret+",amount:"+saving.getAmount());
 			return msgStr2(RetMsg.MSG_OK,str);
+		}else {
+			log.warn("pid:"+saving.getPlayerid()+",error,saving: "+saving.getPlayerid());
+			return msgStr(ret);
 		}
 	}
 
