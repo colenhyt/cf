@@ -270,11 +270,8 @@ Login.prototype.syncLoadData = function(playerid){
 		}});
     	g_login.loadCount++;
 		
-		dataParam = "playerid="+playerid+"&type=2";
-		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
-		 g_login.syncLoadDataCallback_insure(cfeval(data));
-		}});
-    	g_login.loadCount++;
+
+		g_login.syncLoadData_insure(playerid);
 		
 		dataParam = "playerid="+playerid+"&type=3";
 		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
@@ -288,6 +285,14 @@ Login.prototype.syncLoadData = function(playerid){
 	    logerr(e.name  +   " :  "   +  dataParam);
 	   return false;
 	}
+}
+
+Login.prototype.syncLoadData_insure = function(playerid,flag){
+		var dataParam = "playerid="+playerid+"&type=2";
+		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
+		 g_login.syncLoadDataCallback_insure(cfeval(data),flag);
+		}});
+    	g_login.loadCount++;
 }
 
 Login.prototype.syncLoadData_top = function(playerid){
@@ -317,7 +322,7 @@ Login.prototype.syncLoadDataCallback_saving = function(data){
 	
 }
 
-Login.prototype.syncLoadDataCallback_insure = function(data){
+Login.prototype.syncLoadDataCallback_insure = function(data,flag){
 	var msg = [];
 	var idata = data;
 	for (itemid in idata){
@@ -331,7 +336,13 @@ Login.prototype.syncLoadDataCallback_insure = function(data){
 		 }
 	}
 	g_login.msgtip(msg);
+	g_insure.dataLoaded = true;
 	g_login.callbackDone();
+	if (flag==1)
+	{
+		g_insure.show();
+		g_insure.reloadCount = 0;
+	}
 }
 
 Login.prototype.syncLoadDataCallback_stock = function(data){

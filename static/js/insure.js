@@ -8,6 +8,8 @@ Insure = function(){
     this.pagename = this.tagname+"page";
     this.tagdetailname = this.tagname+"detail";
     this.pagedetailname = this.tagdetailname+"page";
+	this.dataLoaded = false;
+	this.reloadCount = 0;
     this.data = {};
 }
 
@@ -72,6 +74,15 @@ Insure.prototype.buildPage = function(page)
 {
 	if (page<0)
 		return
+
+	if (this.dataLoaded==false&&this.reloadCount<3)
+	{
+		this.hide();
+		g_login.syncLoadData_insure(g_player.data.playerid,1);
+		this.reloadCount++;
+		return;
+	}
+
 	playAudioHandler('open1');	
 		
 	//this.reloadInsures();
