@@ -1,23 +1,19 @@
 package cn.hd.cf.action;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import com.alibaba.fastjson.JSON;
 
 import net.sf.json.JSONArray;
 import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
-import cn.hd.cf.model.Stockdata;
-import cn.hd.cf.service.StockService;
 import cn.hd.mgr.DataManager;
 import cn.hd.mgr.SavingManager;
 import cn.hd.mgr.StockManager;
+
+import com.alibaba.fastjson.JSON;
 
 public class StockAction extends SavingAction {
 	private StockManager stockMgr;
@@ -36,7 +32,6 @@ public class StockAction extends SavingAction {
 	}
 	
 	public String quotes(){
-		System.out.println("request quotes");
 		List<Quote> lquotes = StockManager.getInstance().getBigQuotes(stock.getId());
 		JSONArray jsonObject = JSONArray.fromObject(lquotes);
 		write(jsonObject.toString(),"utf-8");		
@@ -66,7 +61,7 @@ public class StockAction extends SavingAction {
 			}
 		}
 		write(JSON.toJSONString(mquotes),"utf-8");		
-		System.out.println("found stocks page quote:"+mquotes.size());
+		log.warn("request last stocks page quote:"+mquotes.size());
 		return null;
 	}	
 
@@ -103,13 +98,13 @@ public class StockAction extends SavingAction {
 				}
 				
 				liveSaving.setAmount(liveSaving.getAmount()+changeAmount);
-				playerMoneyUpdate(liveSaving);	
 				stock.setLiveamount(liveSaving.getAmount());
 				String str = JSON.toJSONString(stock);
 				log.info("pid:"+stock.getPlayerid()+" buy stock,str:"+str);
+				playerMoneyUpdate(liveSaving);	
 				return msgStr2(RetMsg.MSG_OK,str);
 			}else {
-				log.warn("pid:"+stock.getPlayerid()+", warn,stock error:"+stock.getPlayerid()+",item:"+stock.getItemid()+",qty:"+stock.getQty());
+				log.warn("pid:"+stock.getPlayerid()+" warn,stock error:"+stock.getPlayerid()+",item:"+stock.getItemid()+",qty:"+stock.getQty()+",ret:"+ret);
 				return msgStr(ret);
 			}
 	}	

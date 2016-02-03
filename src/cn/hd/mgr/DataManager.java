@@ -1,5 +1,6 @@
 package cn.hd.mgr;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -29,6 +30,7 @@ import cn.hd.util.RedisClient;
 import cn.hd.util.SigninLog;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 
 public class DataManager extends MgrBase {
 	protected Logger log = Logger.getLogger(getClass());
@@ -85,28 +87,52 @@ public class DataManager extends MgrBase {
 		nextPlayerId++;
 		return nextPlayerId;
 	}
-	public synchronized String getXXX(int type,String playerName,String pwd) {
-		if (!pwd.equals("hdcfXIAO38"))
+	public synchronized String getXXX(String playerName,String pwd) {
+		if (!pwd.equals("hdcf"))
 			return "illegal access";
 		
-		if (type==1){
-			return "playercount :"+String.valueOf(findPlayerCount());
-		}else if (type==2){
-			return "toplist count:"+String.valueOf(ToplistManager.getInstance().getTopCount());
-		}else if (type==3){
-			return "toplist count:"+String.valueOf(ToplistManager.getInstance().getTopCount());
-		}
+		String str = "";
+		str += "当前玩家总数 :"+String.valueOf(findPlayerCount())+" <br>";
+		str += "当前排行榜 人数:"+String.valueOf(ToplistManager.getInstance().getTopCount())+" <br>";
+		if (playerName==null)
+			return str;
+		
 		Player p = findPlayer(playerName);
 		if (p==null)
-			return "no player";
+			return str +="no player";
 		
-		String xxx = "pid:"+p.getPlayerid()+",openid:"+p.getOpenid()+" <br>";
-		xxx += "player :"+JSON.toJSONString(p)+" <br>";
-		xxx += "saving :"+getData(p.getPlayerid(),1)+" <br>";
-		xxx += "insure :"+getData(p.getPlayerid(),2)+" <br>";
-		xxx += "stock :"+getData(p.getPlayerid(),3)+" <br>";
+		SimpleDateFormat formatter = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+		String xxx = "玩家数据: pid:"+p.getPlayerid()+",name:"+p.getPlayername()+",openid:"+p.getOpenid()+" <br>";
+		xxx += ",createtime:"+p.getCreateTimeStr()+"<br>";
+		xxx += "player :"+JSON.toJSONString(p)+" <br><br>";
+		xxx += "saving :<br>";
+		Map<Integer,Saving> savings = JSON.parseObject(getData(p.getPlayerid(),1), new TypeReference<Map<Integer, Saving>>() {});
+		for (Integer itemid:savings.keySet()){
+			Saving item = savings.get(itemid); 
+			String cstr = formatter.format(item.getCreatetime());
+			xxx += "createtime: "+cstr+",data:"+JSON.toJSONString(item)+"<br>";
+		}
+		xxx += "<br><br>";
+		xxx += "insure :<br>";
+		Map<Integer,Insure> insures = JSON.parseObject(getData(p.getPlayerid(),2), new TypeReference<Map<Integer, Insure>>() {});
+		for (Integer itemid:insures.keySet()){
+			Insure item = insures.get(itemid); 
+			String cstr = formatter.format(item.getCreatetime());
+			xxx += "createtime: "+cstr+",data:"+JSON.toJSONString(item)+"<br>";
+		}
+		xxx += "<br><br>";
+		xxx += "insure :<br>";
+		Map<Integer,List<Stock>> stocks = JSON.parseObject(getData(p.getPlayerid(),3), new TypeReference<Map<Integer, List<Stock>>>() {});
+		for (Integer itemid:stocks.keySet()){
+			List<Stock> items = stocks.get(itemid); 
+			for (Stock item:items){
+				String cstr = formatter.format(item.getCreatetime());
+				xxx += "createtime: "+cstr+",data:"+JSON.toJSONString(item)+"<br>";
+			}
+		}
+		xxx += "<br><br>";
 		xxx += "top :"+getData(p.getPlayerid(),4)+" <br>";
-		return xxx;
+		return str + xxx;
 	}
 
 	public synchronized boolean doneQuest(int playerid,int doType){
@@ -145,7 +171,7 @@ public class DataManager extends MgrBase {
 	}
 	
 	public synchronized String login(String openId,String playerName,String sexstr,String playerstr,String settingStr,HttpServletRequest request) {
-		String loginStr = "loginStr: openId:"+openId+",playerName:"+playerName+",";
+		String loginStr = "loginReq: openId:"+openId+",playerName:"+playerName+",";
 		if (playerstr!=null)
 			loginStr += "playerid:"+playerstr;
 		loginStr += ",setting:"+settingStr+",ip:"+loginAction.getIpAddress(request);
@@ -153,13 +179,17 @@ public class DataManager extends MgrBase {
 //		return null;
 		if (settingStr.indexOf("android:true")<0&&settingStr.indexOf("iphone:true")<0){
 			String pwd = request.getParameter("pwd");
-			if (pwd==null||!pwd.endsWith("hdcf"))
+			if (pwd==null||!pwd.endsWith("hdcf")){
+				log.warn("illegal access!!");
 				return loginAction.msgStr(RetMsg.MSG_IllegalAccess);
+			}
 		}
 			
-		if (!Pattern.matches("[0-9]+", openId))
+		if (!Pattern.matches("[0-9]+", openId)){
+			log.warn("illegal openid!!");
 			return loginAction.msgStr(RetMsg.MSG_WrongOpenID);
-			
+		}
+		
 		int sex = 0;
 		if (sexstr!=null)
 			sex = Integer.valueOf(sexstr);
@@ -299,10 +329,10 @@ public class DataManager extends MgrBase {
 		int index = Math.abs(playerName.hashCode())%redisClients.size();
 		RedisClient jedisClient = redisClients.get(index);
 		Jedis jedis = jedisClient.getJedis();
-		String idstr = jedis.hget(super.DATAKEY_PLAYER_ID, playerName);
+		String idstr = jedis.hget(MgrBase.DATAKEY_PLAYER_ID, playerName);
 		if (idstr!=null){
 			playerid = Integer.valueOf(idstr);
-			String itemstr = jedis.hget(super.DATAKEY_PLAYER, String.valueOf(playerid));
+			String itemstr = jedis.hget(MgrBase.DATAKEY_PLAYER, String.valueOf(playerid));
 			player = (Player)JSON.parseObject(itemstr,Player.class);
 //				log.warn("find player :"+player.getPlayerid());
 			playerMaps.put(playerid, player);
@@ -349,7 +379,6 @@ public class DataManager extends MgrBase {
 	public synchronized void update(int playerid,int type,String itemstr,String amountStr){
 		Player p = findPlayer(playerid);
 		if (p==null) return;
-		
 		Date now = new Date();
 		Date last = p.getLastlogin();
 		
@@ -358,36 +387,20 @@ public class DataManager extends MgrBase {
 			if (last!=null&&last.getYear()==now.getYear()&&last.getMonth()==now.getMonth()&&last.getDay()==now.getDay()){
 				return;
 			}
-			if (itemstr==null||itemstr.length()<=0)
+			
+			Integer days = p.getSigninCount();
+			if (days<=1)
 				return;
 			
-			Integer days = Integer.valueOf(itemstr);
-			if (days>signinMoneys.size())
-				days = signinMoneys.size();
-			int money = signinMoneys.get(days-1);
-			int exp = signinExps.get(days-1);
+			int count = (days-1)%signinMoneys.size();
+			int money = signinMoneys.get(count);
+			int exp = signinExps.get(count);
 			SavingManager.getInstance().updateLiveSaving(playerid,money);
 			log.warn("pid:"+playerid+" signin days:"+days+" add prize,money: "+money+", exp:"+exp);
 			p.setExp(p.getExp()+exp);
 			p.setLastlogin(new Date());
 			p.setEventCount(0);
 			this.addSignin(playerid);
-			break;
-		case 1:
-//			String queststr = p.getQuestStr();
-//			if (queststr==null||itemstr==null||itemstr.length()<=0) return;
-//			if (queststr.indexOf(itemstr)<0) return;
-//			
-//			SavingManager.getInstance().updateLiveSaving(playerid,(float)5000);
-//			
-//			queststr = queststr.replace(itemstr, "").replace(",","");
-//			log.warn("pid:"+playerid+" done quest "+itemstr+" prize:5000");
-//			p.setQuestStr(queststr);
-//			if (queststr.length()<=0||queststr.split(",").length<=0){
-//				p.setQuestDoneTime(new Date());
-//				this.addDoneQuest(playerid);
-//				log.warn("pid:"+playerid+" done daily quest");
-//			}
 			break;
 		case 2:
 			p.setOpenstock((byte)1);
@@ -413,8 +426,8 @@ public class DataManager extends MgrBase {
 				
 				p.setEventCount(p.getEventCount()+1);
 			}
-			SavingManager.getInstance().updateLiveSaving(playerid,amount);
 			log.warn("pid:"+playerid+" event fire, amount:"+amount);
+			SavingManager.getInstance().updateLiveSaving(playerid,amount);
 			break;
 			
 		}
@@ -556,12 +569,23 @@ public class DataManager extends MgrBase {
 	}
 	
 	public static void main(String[] args) {
-		DataManager stmgr = DataManager.getInstance();
-		stmgr.init();
-		long s = System.currentTimeMillis();
-		for (int i=0;i<1000;i++)
-			stmgr.findPlayer(1335);
-		System.out.println("cost t:"+(System.currentTimeMillis()-s));
+//		DataManager stmgr = DataManager.getInstance();
+//		stmgr.init();
+//		long s = System.currentTimeMillis();
+//		for (int i=0;i<1000;i++)
+//			stmgr.findPlayer(1335);
+//		System.out.println("cost t:"+(System.currentTimeMillis()-s));
+		
+		 Date date = new Date(99, 3, 21);
+	      Date date2 = new Date(99, 3, 9);
+	      
+	      // make 3 comparisons with them
+	      int comparison = date.compareTo(date2);
+	      int comparison2 = date2.compareTo(date);
+	      int comparison3 = date.compareTo(date);
+
+	      // print the results
+	      
 //		stmgr.findPlayer("ppnane");
 //		PlayerWithBLOBs pp = new PlayerWithBLOBs();
 //		pp.setPlayerid(33);

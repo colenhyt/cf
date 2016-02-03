@@ -48,13 +48,13 @@ public class InsureAction extends SavingAction {
 			}
 			
 			liveSaving.setAmount(liveSaving.getAmount()+changeAmount);
-			playerMoneyUpdate(liveSaving);	
 			insure.setLiveamount(liveSaving.getAmount());
 			String str = JSON.toJSONString(insure);
 			log.info("pid:"+insure.getPlayerid()+" add insure itemid="+insure.getItemid()+",str"+str);
+			playerMoneyUpdate(liveSaving);	
 			return msgStr2(RetMsg.MSG_OK,str);
 		}else {
-			log.warn("pid:"+insure.getPlayerid()+", warn, insure error"+insure.getPlayerid());
+			log.warn("pid:"+insure.getPlayerid()+", warn, insure error: "+ret);
 			return msgStr(ret);
 		}
 

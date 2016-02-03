@@ -1,7 +1,7 @@
 package cn.hd.cf.action;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -123,19 +123,25 @@ public class LoginAction extends SavingAction {
 		return mdata;
 	}
 
-	public synchronized String loginPlayer(Player playerBlob)
+	public synchronized String loginPlayer(Player player)
 	{
-		if (playerBlob!=null){
-			if (!playerBlob.getOpenid().equals(player.getOpenid()))
+		if (player!=null){
+			if (!player.getOpenid().equals(player.getOpenid()))
 				return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
 			
-			log.warn("pid:"+playerBlob.getPlayerid()+",openid:"+player.getOpenid()+" login success,name:"+player.getPlayername());
-			boolean newAssign = assignDailyQuest(playerBlob);
+			log.warn("pid:"+player.getPlayerid()+" login,openid:"+player.getOpenid()+",name:"+player.getPlayername());
+			boolean newAssign = assignDailyQuest(player);
 			if (newAssign){
-				log.warn("pid:"+playerBlob.getPlayerid()+" login assign quest:"+playerBlob.getQuestStr());
-				DataManager.getInstance().updatePlayerQuest(playerBlob);
+				log.warn("pid:"+player.getPlayerid()+" assign quest,login:"+player.getQuestStr());
 			}
-			return serialize(playerBlob,0,null); 
+			boolean newSignin = countSignin(player);
+			if (newSignin){
+				log.warn("pid:"+player.getPlayerid()+" reset signin:"+player.getSigninCount());
+			}
+			if (newSignin||newAssign){
+				DataManager.getInstance().updatePlayerQuest(player);
+			}
+			return serialize(player,0,null); 
 		}else
 			return super.msgStr(RetMsg.MSG_WrongPlayerNameOrPwd);	
 	}
@@ -163,7 +169,9 @@ public class LoginAction extends SavingAction {
 		if (playerBlob==null)
 		{
 			return register();
-		}else{		//名字登陆
+		}else if (playerBlob.getOpenid()!=player.getOpenid()){
+			return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
+		}else {		//名字登陆
 			return loginPlayer(playerBlob);
 		}
 	}
@@ -182,7 +190,43 @@ public class LoginAction extends SavingAction {
 	public void setPlayer(Player player) {
 		this.player = player;
 	}
+	
+	public static int daysOfTwo(Date fDate, Date oDate) {
 
+	       Calendar aCalendar = Calendar.getInstance();
+
+	       aCalendar.setTime(fDate);
+
+	       int day1 = aCalendar.get(Calendar.DAY_OF_YEAR);
+
+	       aCalendar.setTime(oDate);
+
+	       int day2 = aCalendar.get(Calendar.DAY_OF_YEAR);
+
+	       return day2 - day1;
+
+	  }
+	
+	private synchronized boolean countSignin(Player p){
+		Date now = new Date();
+		Date last = p.getLastlogin();
+		if (last!=null&&last.getYear()==now.getYear()&&last.getMonth()==now.getMonth()&&last.getDay()==now.getDay()){
+			return false;
+		}
+
+		if (last!=null){
+			int dayBet = daysOfTwo(last,now);
+			if (dayBet==1&&p.getSigninCount()<=7){
+				p.setSigninCount(p.getSigninCount()+1);
+			}else{
+				p.setSigninCount(1);
+			}
+		}else
+			p.setSigninCount(1);
+		
+		return true;
+	}
+	
 	private synchronized String serialize(Player player,int isregister,String savingStr){
 		float margin = StockManager.getInstance().getMarginSec();
 		player.setQuotetime(margin);
@@ -207,7 +251,7 @@ public class LoginAction extends SavingAction {
 	public boolean assignDailyQuest(Player p){
 		Date qdoneTime = p.getQuestDoneTime();
 		
-		p.setQuestStr("3");
+		p.setQuestStr("4");
 		Date now = new Date();
 		if (qdoneTime!=null){
 			if (qdoneTime.getDay()==now.getDay()&&qdoneTime.getMonth()==now.getMonth()&&qdoneTime.getYear()==now.getYear())
@@ -267,16 +311,15 @@ public class LoginAction extends SavingAction {
 			
 	//		String ipAddr = getHttpRequest().getRemoteAddr();
 			Date time = new Date(); 
-			playerBlob.setAccountid(1);
 			playerBlob.setOpenid(player.getOpenid());
 			playerBlob.setPlayername(player.getPlayername());
 			playerBlob.setSex(player.getSex());
-			playerBlob.setCreatetime(time);
-			playerBlob.setPwd("0");
-			playerBlob.setZan(0);
+			SimpleDateFormat formatter = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
+			String cstr = formatter.format(new Date());
+			playerBlob.setCreateTimeStr(cstr);
 			playerBlob.setPlayerid(DataManager.getInstance().assignNextId());
 			assignDailyQuest(playerBlob);
-			log.warn("pid:"+playerBlob.getPlayerid()+" register assign quest:"+playerBlob.getQuestStr());
+			log.warn("pid:"+playerBlob.getPlayerid()+" assign quest register:"+playerBlob.getQuestStr());
 			boolean ret = DataManager.getInstance().addPlayer(playerBlob);
 			if (ret==false){
 				return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
@@ -302,7 +345,7 @@ public class LoginAction extends SavingAction {
 				ToplistManager.getInstance().addRegisterToplist(playerBlob.getPlayerid(),playerBlob.getPlayername(),saving.getAmount());	
 			}
 //			JSONObject obj = JSONObject.fromObject(playerBlob);	
-			log.warn("pid:"+playerBlob.getPlayerid()+",openid:'"+playerBlob.getOpenid()+"' register success:,name:"+player.getPlayername());
+			log.warn("pid:"+playerBlob.getPlayerid()+" register success,openid:'"+playerBlob.getOpenid()+"',name:"+player.getPlayername());
 //			write(obj.toString(),"utf-8");
 			
 			return serialize(playerBlob,1,JSON.toJSONString(savings));

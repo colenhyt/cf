@@ -70,7 +70,7 @@ public class ToplistManager extends MgrBase{
     		if (!toplistMap.containsKey(item.getPlayerid()))
     			toplistMap.put(item.getPlayerid(), item);
     	}
-    	log.warn("load toplist :" + itemstrs.size());      	
+//    	log.warn("load toplist :" + itemstrs.size());      	
     }
     
 	public synchronized Toplist findByPlayerId(int playerid){		

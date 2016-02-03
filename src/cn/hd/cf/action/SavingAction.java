@@ -225,13 +225,13 @@ public class SavingAction extends BaseAction {
 		//修改活期金额:
 		if (ret==RetMsg.MSG_OK){
 			liveSaving.setAmount(liveSaving.getAmount()+changeAmount);
-			playerMoneyUpdate(liveSaving);	
 			newsaving.setLiveamount(liveSaving.getAmount());
 			String str = JSON.toJSONString(newsaving);
 			log.info("pid:"+saving.getPlayerid()+" add/remove saving itemid="+saving.getItemid()+",ret:"+ret+",amount:"+saving.getAmount());
+			playerMoneyUpdate(liveSaving);	
 			return msgStr2(RetMsg.MSG_OK,str);
 		}else {
-			log.warn("pid:"+saving.getPlayerid()+",error,saving: "+saving.getPlayerid());
+			log.warn("pid:"+saving.getPlayerid()+",error,saving: "+ret);
 			return msgStr(ret);
 		}
 	}

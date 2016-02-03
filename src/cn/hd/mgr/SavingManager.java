@@ -65,6 +65,7 @@ public class SavingManager extends MgrBase{
 		 for (int i=0;i<redisCfg1.getThreadCount();i++){
 			 DataThread dataThread = new DataThread(redisCfg1);
 			dataThreads.add(dataThread);
+			dataThread.setUpdateDuration(200);
 			dataThread.start();
 		 }	    	
     	
@@ -101,8 +102,8 @@ public class SavingManager extends MgrBase{
     }
     
     public synchronized void updateLiveSaving(int playerid,float addedAmount){
-		savingAction.pushLive(playerid, addedAmount);
 		log.warn("pid:"+playerid+" added live saving:"+addedAmount);
+		savingAction.pushLive(playerid, addedAmount);
     }
     
     public synchronized boolean updateLiveSaving(Saving record){
