@@ -25,6 +25,7 @@ public class ToplistManager extends MgrBase{
 	Map<Integer,Toplist>		toplistMap;
 	ToplistAction				topAction;
     private static ToplistManager uniqueInstance = null;  
+    private long lastLoadTime = 0;
 	
     public static ToplistManager getInstance() {  
         if (uniqueInstance == null) {  
@@ -55,29 +56,38 @@ public class ToplistManager extends MgrBase{
 			return;
 		}
 		jedisClient.returnResource(jedis);
-    	log.warn("toplist init");
+    	log.warn("toplist init,toplisttime:"+toplistTime+"s");
     }
     
     public synchronized void load(){
+    	boolean isNeedReloaded = false;
+    	long topTime = toplistTime*1000;
+    	if (lastLoadTime==0||(System.currentTimeMillis()-lastLoadTime>=topTime)){
+    		lastLoadTime = System.currentTimeMillis();
+    		isNeedReloaded = true;
+    	}
+    	
+    	if (!isNeedReloaded) return;
+    	
     	toplistMap.clear();
     	
     	Jedis jedis = jedisClient.getJedis();   	
 		
-    	List<String> itemstrs = jedis.hvals(super.DATAKEY_TOPLIST);
+    	List<String> itemstrs = jedis.hvals(MgrBase.DATAKEY_TOPLIST);
     	jedisClient.returnResource(jedis);
     	for (String str:itemstrs){
     		Toplist item = (Toplist)JSON.parseObject(str, Toplist.class);
     		if (!toplistMap.containsKey(item.getPlayerid()))
     			toplistMap.put(item.getPlayerid(), item);
     	}
-//    	log.warn("load toplist :" + itemstrs.size());      	
+    	log.warn("reload toplist data:" + itemstrs.size());      	
     }
     
 	public synchronized Toplist findByPlayerId(int playerid){		
 		Toplist item = toplistMap.get(playerid);
 		if (item==null){
 			Jedis jedis = jedisClient.getJedis();
-			String itemstr = jedis.hget(super.DATAKEY_TOPLIST, String.valueOf(playerid));
+			String itemstr = jedis.hget(MgrBase.DATAKEY_TOPLIST, String.valueOf(playerid));
 			jedisClient.returnResource(jedis);			
 			if (itemstr!=null){
 				item = (Toplist)JSON.parseObject(itemstr, Toplist.class);

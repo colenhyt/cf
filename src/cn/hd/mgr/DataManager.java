@@ -360,7 +360,7 @@ public class DataManager extends MgrBase {
 			jedisClient.returnResource(jedis);			
 			if (itemstr!=null){
 				player = (Player)JSON.parseObject(itemstr,Player.class);
-//				log.warn("find player :"+player.getPlayerid());
+				log.warn("find player :"+player.getPlayerid());
 				playerMaps.put(playerid, player);
 				if (!playerIdMaps.containsKey(player.getPlayername())){
 					playerIdMaps.put(player.getPlayername(), playerid);
@@ -389,7 +389,7 @@ public class DataManager extends MgrBase {
 			}
 			
 			Integer days = p.getSigninCount();
-			if (days<=1)
+			if (days<1)
 				return;
 			
 			int count = (days-1)%signinMoneys.size();

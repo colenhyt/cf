@@ -157,6 +157,7 @@ public class LoginAction extends SavingAction {
 		Player playerBlob = null;
 		if (player.getPlayerid()>0){
 			playerBlob = DataManager.getInstance().findPlayer(player.getPlayerid());
+			log.warn("find player:"+playerBlob);
 			if (playerBlob!=null)
 				return loginPlayer(playerBlob);
 		}
@@ -251,7 +252,6 @@ public class LoginAction extends SavingAction {
 	public boolean assignDailyQuest(Player p){
 		Date qdoneTime = p.getQuestDoneTime();
 		
-		p.setQuestStr("4");
 		Date now = new Date();
 		if (qdoneTime!=null){
 			if (qdoneTime.getDay()==now.getDay()&&qdoneTime.getMonth()==now.getMonth()&&qdoneTime.getYear()==now.getYear())

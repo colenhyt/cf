@@ -37,6 +37,7 @@ public class MgrBase {
 	protected final int BATCH_COUNT = 200;
 	protected final int UPDATE_PERIOD_BATCH = 40;	//2分钟
 	protected Vector<DataThread>	dataThreads;
+	protected long toplistTime = 600;
 	protected RedisClient		jedisClient;
 	protected RedisClient		jedisClient3;
 	public Config cfg;
@@ -50,16 +51,19 @@ public class MgrBase {
 	public String openidparam;
 
 	public MgrBase(){
-		String path = "./WEB-INF/classes/";
+		String path = "/root/";
 		URL  res = Thread.currentThread().getContextClassLoader().getResource("/");
-		if (res!=null)
-			path = res.getPath();
 		String cfgstr = FileUtil.readFile(path + "config.properties");
 		if (cfgstr == null || cfgstr.trim().length() <= 0) {
+			cfgstr = FileUtil.readFile(res.getPath() + "config.properties");
+			if (cfgstr==null|| cfgstr.trim().length() <= 0){
+			log.warn("game start failed: "+path);
 			return;
+			}
 		}
 		cfgObj = JSONObject.fromObject(cfgstr);
 		
+		log.warn("get cfg file "+path);
 		
 		String cfgstr0 = cfgObj.getString("redisCfg");
 		redisCfg = JSON.parseObject(cfgstr0, RedisConfig.class);
@@ -73,6 +77,9 @@ public class MgrBase {
 		String cfgstr3 = cfgObj.getString("redisCfg3");
 		redisCfg3 = JSON.parseObject(cfgstr3, RedisConfig.class);
 
+		if (cfgObj.containsKey("toplistTime")){
+			toplistTime = Long.valueOf(cfgObj.getString("toplistTime"));
+		}
 		jedisClient3 = new RedisClient(redisCfg3);
 		
 		cfg = (Config) JSON.parseObject(cfgstr, Config.class);

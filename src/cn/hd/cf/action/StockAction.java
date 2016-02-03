@@ -60,8 +60,9 @@ public class StockAction extends SavingAction {
 				mquotes.put(stockid, q.getPrice());
 			}
 		}
-		write(JSON.toJSONString(mquotes),"utf-8");		
-		log.warn("request last stocks page quote:"+mquotes.size());
+		String quotestr = JSON.toJSONString(mquotes);
+		write(quotestr,"utf-8");		
+		log.warn("request some stocks last quote:"+quotestr);
 		return null;
 	}	
 
