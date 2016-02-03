@@ -196,51 +196,6 @@ Login.prototype.onImgClick = function(image)
 	}
 }
 
-Login.prototype.registerCallback = function(data){
-	var obj = cfeval(data);
-	if (obj.code!=null&&obj.code>0){
-	 this.msg('注册失败: '+ERR_MSG[obj.code]);
-	 return;
-	}
-	
-	if (obj.pwd==null){
-	 return;
-	}
-	
-	var player = obj;	
-	player.quest = [];
-	player.createtime = Date.parse(new Date());
-	
-	var logindata = store.get(this.name);
-	var lastPlayer = logindata[logindata.length-1];
-	if (lastPlayer==null||lastPlayer.playerid!=player.playerid)
-	 logindata.push(player);
-	store.set(g_player.name,player);
-	
-	this.loginCallback(data);
-}
-
-Login.prototype.register = function(){
-	g_msg.showload("g_login.register");
-
-	var tag = document.getElementById("inputnick");
-	var ppname = tag.value;
-	var accountid = 11;
-           
-    var dataParam = "playername="+ppname+"&accountid="+accountid+"&sex="+g_login.sex;
-    
-	dataParam = "player.playername="+ppname+"&player.accountid="+accountid+"&player.sex="+g_login.sex;
-	try    {
-		$.ajax({type:"post",url:"/cf/login_register.do",data:dataParam,success:function(data){
-		 g_login.registerCallback(data);
-         g_msg.destroyload();
-		}});
-	}   catch  (e)   {
-	    logerr(e.name  +   " :  "   +  dataParam);
-	   return false;
-	}	
-}
-
 Login.prototype.loadInsureData = function(indata){
 	g_player.insure = {};
 	var msg = [];
@@ -457,7 +412,9 @@ Login.prototype.loginCallback = function(obj){
        
 	if (!hadTodaySignin)
 	{
-		g_signin.show();
+		var showed = g_signin.show(player.signinCount);
+		if (!showed)
+		 g_game.onEnter();
 	}else {
 		g_game.onEnter();
 	}

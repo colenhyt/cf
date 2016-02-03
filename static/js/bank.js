@@ -190,6 +190,8 @@ Bank.prototype.existTimeout = function() {
 	return hasTip;
 }
 Bank.prototype.update = function(){
+	return;
+	
 	this.count++;
 	if (this.count%25==0){
 	  this.hasTip = this.existTimeout();

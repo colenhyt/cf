@@ -45,14 +45,21 @@ Signin.prototype.findPrize = function(days){
     var data = store.get(this.name);
     if (data!=null)
     {
+    	if (days<=0||days>data.length/2)
+    	 days = 1;
+    	 
     	for (var i=0;i<data.length;i++)
     	{
     		var item = data[i];
     		var item2 ={"t":item.type,"v":item.value};
     		if (item.day==days){
     			prize.currPz.push(item2);
-    		}else if (item.day==days+1){
-    			prize.toPz.push(item2);
+    			//last day:
+ 	    		var itemto ={"t":data[0].type,"v":data[0].value};
+    			if (i!=data.length-1){
+    			 itemto ={"t":data[i+1].type,"v":data[i+1].value};
+    			}
+    			prize.toPz.push(itemto);
     		}
     	} 
     }
@@ -60,14 +67,15 @@ Signin.prototype.findPrize = function(days){
     return prize;
  }
 
-Signin.prototype.show = function(){
+Signin.prototype.show = function(signindays){
 	playAudioHandler('open1');	
-	var data = store.get(g_playerlog.name);
-	var signindays = findSigninLog(data);
-	if (signindays<=0) return;
+	if (signindays<=0) return false;
 	
 	var prize = this.findPrize(signindays);
 	
+	if (prize.currPz.length<=0||prize.toPz.length<=0)
+	 return false;
+	 
     var signin = this;    
     var get = document.getElementById("signin_gettoday");
     var todayget = "<br>"
@@ -111,6 +119,7 @@ Signin.prototype.show = function(){
     tagfeel.innerHTML = context;
     
     $('#'+this.tagname).modal({backdrop:'static',position:getSizes().PageTop,show:true});       
+    return true;
 }
 
 Signin.prototype.clickFeeling = function(feelingId){

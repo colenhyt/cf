@@ -119,6 +119,12 @@ Msg.prototype.destroyload = function()
  var div=$("#"+this.loadname);
  if (div)
   div.remove();
+  
+	var tag = document.getElementById(this.pagename);
+	if (tag!=null&&tag.innerHTML.indexOf("网络异常")>0){
+	  this.hide();
+	 }
+    
 }
 
 //title自定义：
@@ -235,8 +241,8 @@ Msg.prototype.update = function()
 		if (dura<this.netmsgWait) return;
 	 
 	 	if (!g_login.canRemoveWait()){
-			this.openNetMsg(this.loadreq.callback);
 			this.destroyload();
+			this.openNetMsg(this.loadreq.callback);
 		}
 	}	
 }
