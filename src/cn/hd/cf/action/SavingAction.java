@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.fastjson.JSON;
-
 import cn.hd.base.Base;
 import cn.hd.base.BaseAction;
 import cn.hd.cf.model.Insure;
@@ -21,6 +19,8 @@ import cn.hd.mgr.InsureManager;
 import cn.hd.mgr.SavingManager;
 import cn.hd.mgr.StockManager;
 import cn.hd.mgr.ToplistManager;
+
+import com.alibaba.fastjson.JSON;
 
 public class SavingAction extends BaseAction {
 	public Saving		saving;

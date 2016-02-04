@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.Vector;
 
 import net.sf.json.JSONArray;
@@ -24,7 +23,6 @@ import cn.hd.cf.model.Player;
 import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Stockdata;
-import cn.hd.cf.tools.StockdataService;
 import cn.hd.util.RedisClient;
 
 import com.alibaba.fastjson.JSON;
@@ -39,6 +37,7 @@ public class StockManager extends MgrBase{
 	private int tick = 0;
 	private List<Stockdata> stockData;
     private static StockManager uniqueInstance = null;  
+	private Vector<RedisClient> redisClients;
 	private Map<Integer,String>	stockMap;
 	private Map<Integer,List<Stock>>	stocksMap;
 	private StockAction action;
@@ -57,15 +56,20 @@ public class StockManager extends MgrBase{
 		stockMap = Collections.synchronizedMap(new HashMap<Integer,String>());
 		stocksMap = Collections.synchronizedMap(new HashMap<Integer,List<Stock>>());
 		
-		jedisClient = new RedisClient(redisCfg1);
+		redisClients = new Vector<RedisClient>();
 		dataThreads = new Vector<DataThread>();
 		 for (int i=0;i<redisCfg1.getThreadCount();i++){
+			 //read:
+			RedisClient client = new RedisClient(redisCfg1);
+			redisClients.add(client);
+			
+			 //write:
 			 DataThread dataThread = new DataThread(redisCfg1);
 			dataThreads.add(dataThread);
 			dataThread.start();
 		 }	 
 		 
-    	Jedis jedis = jedisClient.getJedis();   
+    	Jedis jedis = redisClients.get(0).getJedis();   
 
     	
 //    	Set<String> playerids = jedis.hkeys(super.DATAKEY_STOCK);
@@ -75,7 +79,7 @@ public class StockManager extends MgrBase{
 //    		stocksMap.put(Integer.valueOf(strpid), list);
 //    	}
 //    	
-    	jedisClient.returnResource(jedis);
+    	redisClients.get(0).returnResource(jedis);
 //    	log.warn("load stocks :" + playerids.size());    
     	
 		stockData = new ArrayList<Stockdata>();
@@ -146,8 +150,10 @@ public class StockManager extends MgrBase{
     public synchronized List<Stock> getStockList(int playerId){
     	List<Stock> list = null;
     	if (list==null){
+    		int index = playerId%redisClients.size();
+			RedisClient jedisClient = redisClients.get(index);
 			Jedis jedis = jedisClient.getJedis();
-			String liststr = jedis.hget(super.DATAKEY_STOCK, String.valueOf(playerId));
+			String liststr = jedis.hget(MgrBase.DATAKEY_STOCK, String.valueOf(playerId));
 			jedisClient.returnResource(jedis);    		
 			if (liststr!=null){
 				list = JSON.parseArray(liststr, Stock.class);

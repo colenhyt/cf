@@ -26,6 +26,7 @@ public class ToplistManager extends MgrBase{
 	ToplistAction				topAction;
     private static ToplistManager uniqueInstance = null;  
     private long lastLoadTime = 0;
+    private RedisClient jedisClient;
 	
     public static ToplistManager getInstance() {  
         if (uniqueInstance == null) {  
@@ -38,7 +39,6 @@ public class ToplistManager extends MgrBase{
     	topAction = new ToplistAction();
     	
     	toplistMap = Collections.synchronizedMap(new HashMap<Integer,Toplist>());
-    	
 		
 		jedisClient = new RedisClient(redisCfg2);
 		
@@ -56,7 +56,7 @@ public class ToplistManager extends MgrBase{
 			return;
 		}
 		jedisClient.returnResource(jedis);
-    	log.warn("toplist init,toplisttime:"+toplistTime+"s");
+    	log.warn("toplist init,reloadtime:"+toplistTime+"s");
     }
     
     public synchronized void load(){

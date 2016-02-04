@@ -38,7 +38,6 @@ public class MgrBase {
 	protected final int UPDATE_PERIOD_BATCH = 40;	//2分钟
 	protected Vector<DataThread>	dataThreads;
 	protected long toplistTime = 600;
-	protected RedisClient		jedisClient;
 	protected RedisClient		jedisClient3;
 	public Config cfg;
 	public RedisConfig redisCfg;
@@ -83,17 +82,6 @@ public class MgrBase {
 		jedisClient3 = new RedisClient(redisCfg3);
 		
 		cfg = (Config) JSON.parseObject(cfgstr, Config.class);
-		 
-//		 String threadCountStr = cfgObj.getString("threadCount");
-//		 threadCount = 3;
-//		 if (threadCountStr!=null)
-//			 threadCount = Integer.valueOf(threadCountStr);
-//		 dataThreads = new Vector<DataThread>();
-//		 for (int i=0;i<threadCount;i++){
-//				DataThread dataThread = new DataThread(cfg.getRedisCfg());
-//				dataThreads.add(dataThread);
-//				dataThread.start();
-//		 }
 		
 	}
 }

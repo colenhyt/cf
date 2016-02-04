@@ -83,38 +83,8 @@ public class DataSync extends MgrBase {
 				.synchronizedMap(new HashMap<Integer, PlayerWithBLOBs>());
 	}
 
-	public void players(){
-		Jedis jedis = jedisClient.getJedis();
-		List<String> items = jedis.hvals(super.DATAKEY_PLAYER);
-		PlayerService service = new PlayerService();
-		for (int i=0;i<items.size();i++){
-			PlayerWithBLOBs player = (PlayerWithBLOBs)JSON.parseObject(items.get(i),PlayerWithBLOBs.class);
-    		log.warn("update player:"+items.get(i));
-			service.updateByKey(player);
-		}		
-		service.DBCommit();
-		jedisClient.returnResource(jedis);
-		log.warn("update players :"+items.size());
-	}
-
-	public void saving(){
-		Jedis jedis = jedisClient.getJedis();
-    	Set<String> playerids = jedis.hkeys(super.DATAKEY_SAVING);
-    	SavingService service = new SavingService();
-    	for (String strpid:playerids){
-    		String jsonitems = jedis.hget(super.DATAKEY_SAVING, strpid);
-    		log.warn("get one player savings:"+jsonitems);
-    		List<Saving> list = BaseService.jsonToBeanList(jsonitems, Saving.class);
-    		service.updateSavings(list);
-    	}
-    	jedisClient.returnResource(jedis);
-		log.warn("update saving :"+playerids.size());
-	}	
-	
 	public static void main(String[] args) {
 		DataSync sync = DataSync.getInstance();
-		sync.players();
-		sync.saving();
 		
 		// SavingdataService ss = new SavingdataService();
 		// Savingdata dd = ss.findActive();

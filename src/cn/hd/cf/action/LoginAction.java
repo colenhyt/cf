@@ -25,6 +25,7 @@ import cn.hd.util.HttpXmlClient;
 
 import com.alibaba.fastjson.JSON;
 
+
 public class LoginAction extends SavingAction {
 	private Player player;
 	

@@ -87,17 +87,23 @@ public class DataManager extends MgrBase {
 		nextPlayerId++;
 		return nextPlayerId;
 	}
-	public synchronized String getXXX(String playerName,String pwd) {
+	public synchronized String getXXX(String playerName,String playeridStr,String pwd) {
 		if (!pwd.equals("hdcf"))
 			return "illegal access";
 		
 		String str = "";
 		str += "当前玩家总数 :"+String.valueOf(findPlayerCount())+" <br>";
 		str += "当前排行榜 人数:"+String.valueOf(ToplistManager.getInstance().getTopCount())+" <br>";
-		if (playerName==null)
+		if (playerName==null&&playeridStr==null)
 			return str;
 		
-		Player p = findPlayer(playerName);
+		Player p = null;
+		if (playerName!=null){
+			p = findPlayer(playerName);
+		}
+		if (playeridStr!=null){
+			p = findPlayer(Integer.valueOf(playeridStr));
+		}
 		if (p==null)
 			return str +="no player";
 		

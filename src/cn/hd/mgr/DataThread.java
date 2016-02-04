@@ -112,6 +112,7 @@ public class DataThread extends Thread {
 	}
 		
 	public void run() {
+		Jedis jedis = null;
 		while (1==1){
         	try {
 				synchronized(this)
@@ -119,7 +120,7 @@ public class DataThread extends Thread {
 //					System.out.println(jedisClient.jedis.isConnected());
 //					if (!jedisClient.jedis.isConnected())
 //						jedisClient.jedis.connect();
-					Jedis jedis = jedisClient.getJedis();
+					jedis = jedisClient.getJedis();
 					if (jedis==null){
 						continue;
 					}
@@ -210,8 +211,11 @@ public class DataThread extends Thread {
 				super.sleep(updateDuration);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
+	        	jedisClient.returnResource(jedis);
+					
 				e.printStackTrace();
 			}catch (Exception e) {
+	        	jedisClient.returnResource(jedis);
 				log.error(e.getMessage());
 //				if (e instanceof JedisConnectionException) {
 //					JedisConnectionException new_name = (JedisConnectionException) e;

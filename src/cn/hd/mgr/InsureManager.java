@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 import redis.clients.jedis.Jedis;
@@ -13,7 +12,6 @@ import cn.hd.cf.action.InsureAction;
 import cn.hd.cf.action.RetMsg;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Player;
-import cn.hd.cf.tools.InsuredataService;
 import cn.hd.util.RedisClient;
 
 import com.alibaba.fastjson.JSON;
@@ -23,6 +21,7 @@ public class InsureManager extends MgrBase{
 	private Map<Integer,Insure>	insureCfgMap;
 	private Map<Integer,List<Insure>>	insuresMap;
 	private InsureAction action;
+	private Vector<RedisClient> redisClients;
 	
     public synchronized Insure getInsureCfg(int itemId) {
 		return insureCfgMap.get(itemId);
@@ -40,9 +39,14 @@ public class InsureManager extends MgrBase{
     public void init(){
     	action = new InsureAction();
 		
-		jedisClient = new RedisClient(redisCfg1);		
+		redisClients = new Vector<RedisClient>();
 		dataThreads = new Vector<DataThread>();
 		 for (int i=0;i<redisCfg1.getThreadCount();i++){
+			 //read:
+			RedisClient client = new RedisClient(redisCfg1);
+			redisClients.add(client);
+			
+			 //write:
 			 DataThread dataThread = new DataThread(redisCfg1);
 			dataThreads.add(dataThread);
 			dataThread.start();
@@ -94,8 +98,10 @@ public class InsureManager extends MgrBase{
     public synchronized List<Insure> getInsureList(int playerId){
     	List<Insure> list = null;
     	if (list==null){
+    		int index = playerId%redisClients.size();
+			RedisClient jedisClient = redisClients.get(index);    		
 			Jedis jedis = jedisClient.getJedis();
-			String liststr = jedis.hget(super.DATAKEY_INSURE, String.valueOf(playerId));
+			String liststr = jedis.hget(MgrBase.DATAKEY_INSURE, String.valueOf(playerId));
 			jedisClient.returnResource(jedis);    		
 			if (liststr!=null){
 				list = JSON.parseArray(liststr, Insure.class);

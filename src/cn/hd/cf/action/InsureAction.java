@@ -3,15 +3,13 @@ package cn.hd.cf.action;
 import java.util.Date;
 import java.util.Map;
 
-import com.alibaba.fastjson.JSON;
-
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Saving;
-import cn.hd.cf.service.InsureService;
-import cn.hd.cf.tools.InsuredataService;
 import cn.hd.mgr.DataManager;
 import cn.hd.mgr.InsureManager;
 import cn.hd.mgr.SavingManager;
+
+import com.alibaba.fastjson.JSON;
 
 public class InsureAction extends SavingAction {
 	private Insure		insure;

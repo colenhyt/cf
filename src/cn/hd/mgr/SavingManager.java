@@ -6,16 +6,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 
 import redis.clients.jedis.Jedis;
 import cn.hd.cf.action.RetMsg;
 import cn.hd.cf.action.SavingAction;
-import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Player;
 import cn.hd.cf.model.Saving;
-import cn.hd.cf.tools.SavingdataService;
 import cn.hd.util.RedisClient;
 
 import com.alibaba.fastjson.JSON;
@@ -25,6 +22,7 @@ public class SavingManager extends MgrBase{
 	private Map<Integer,Saving>	savingCfgMap;	
 	private Map<Integer,List<Saving>>	savingsMap;
 	private SavingAction savingAction;
+	private Vector<RedisClient> redisClients;
 	Saving savingCfg;
 	
     public Saving getSavingCfg(int itemId) {
@@ -59,10 +57,15 @@ public class SavingManager extends MgrBase{
     	savingAction = new SavingAction();
     	
 		
-		jedisClient = new RedisClient(redisCfg1);
-		
+		redisClients = new Vector<RedisClient>();
 		dataThreads = new Vector<DataThread>();
-		 for (int i=0;i<redisCfg1.getThreadCount();i++){
+		
+		for (int i=0;i<redisCfg1.getThreadCount();i++){
+			 //read:
+			RedisClient client = new RedisClient(redisCfg1);
+			redisClients.add(client);
+			
+			 //write:
 			 DataThread dataThread = new DataThread(redisCfg1);
 			dataThreads.add(dataThread);
 			dataThread.setUpdateDuration(200);
@@ -83,7 +86,7 @@ public class SavingManager extends MgrBase{
 
     	savingsMap = Collections.synchronizedMap(new HashMap<Integer,List<Saving>>());
     	
-    	Jedis jedis = jedisClient.getJedis();   
+    	Jedis jedis = redisClients.get(0).getJedis();   
 		if (jedis==null){
 			log.error("could not get redis,redis1 may not be run");
 			return;
@@ -97,7 +100,7 @@ public class SavingManager extends MgrBase{
 //    		
 //    		savingsMap.put(Integer.valueOf(strpid), list);
 //    	}
-    	jedisClient.returnResource(jedis);
+		redisClients.get(0).returnResource(jedis);
 //    	log.warn("saving init:"+playerids.size());
     }
     
@@ -185,10 +188,9 @@ public class SavingManager extends MgrBase{
     public synchronized List<Saving> getSavingList(int playerId){
     	List<Saving> list = savingsMap.get(playerId);
     	if (list==null){
+    		int index = playerId%redisClients.size();
+			RedisClient jedisClient = redisClients.get(index);
 			Jedis jedis = jedisClient.getJedis();
-			if (!jedis.hexists(MgrBase.DATAKEY_SAVING, String.valueOf(playerId))){
-				return list;
-			}
 			String liststr = jedis.hget(MgrBase.DATAKEY_SAVING, String.valueOf(playerId));
 			jedisClient.returnResource(jedis);    	
 			log.warn("pid:"+playerId+" get saving "+liststr);
