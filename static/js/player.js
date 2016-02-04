@@ -93,7 +93,9 @@ Player.prototype.init = function(){
 }
 
 Player.prototype.getTotal = function(data) {
-	var saving = data.saving[1].amount;
+	var saving = 0;
+	if (data.saving!=null&&data.saving[1]!=null)
+		saving = data.saving[1].amount;
 		
 	var saving2 = 0;
 	for (key in data.saving){

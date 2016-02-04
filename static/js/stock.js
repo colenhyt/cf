@@ -12,7 +12,9 @@ Stock = function(){
     this.tagdetailname = this.tagname+"detail";
     this.pagedetailname = this.tagdetailname+"page";
     this.graphName = this.name+"graph";
+	this.dataLoaded = false;
     this.data = {};
+	this.reloadCount = 0;
 }
 
 Stock.prototype = new Datamgr();
@@ -184,6 +186,14 @@ Stock.prototype.buildPage = function(page)
 {
 	if (page<0)	return
 	
+	if (this.dataLoaded==false&&this.reloadCount<3)
+	{
+		this.hide();
+		g_login.syncLoadData_stock(g_player.data.playerid,1);
+		this.reloadCount++;
+		return;
+	}
+		
 	playAudioHandler('open1');	
 	var tdata = store.get(this.name);
 	var content = 	"";
@@ -273,15 +283,19 @@ Stock.prototype.showDetail = function(id,isflush){
 	}
 	
    var pitem = g_player.getStockItem(id);
+   pitem.buyps = "";
 	if (pitem.qty>0){
 		profit = ps*pitem.qty - pitem.amount;
 		var psColor = "red";
 		if (profit<0)
 			psColor = "green"   
+		pitem.buyps = "("+pitem.amount/pitem.qty+")";
    	 strPro = "盈亏:<span style='color:"+psColor+"'>"+parseInt(profit)+"</span>";
    }
    
-    var amount = g_player.saving[1].amount;
+    var amount = 0;
+    if (g_player.saving!=null&&g_player.saving[1]!=null)
+    	amount = g_player.saving[1].amount;
     var canBuyQty = parseInt(amount/(ps*100));
     var sizePer = 100;
     if (item.descs.length>18)
@@ -300,7 +314,7 @@ Stock.prototype.showDetail = function(id,isflush){
 	 content += "               <td>买入价</td>"
 	 content += "               <td>"+ps+"</td>"
 	 content += "               <td>持有:</td>"
-	 content += "               <td>"+pitem.qty/100+" 手</td>"
+	 content += "               <td>"+pitem.qty/100+"手"+pitem.buyps+"</td>"
 	content += "              </tr>"
 	 content += "             <tr>"
 	 content += "               <td>买卖:</td>"

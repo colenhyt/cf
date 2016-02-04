@@ -7,6 +7,8 @@ Bank = function(){
 	this.tagname = "my"+this.name
     this.pagename = this.tagname+"page";
    this.pageheader = this.tagname+"header";
+	this.reloadCount = 0;
+   this.dataLoaded = false;
 }
 
 Bank.prototype = new Datamgr();
@@ -65,6 +67,14 @@ Bank.prototype.buildHTML2 = function()
 }
 
 Bank.prototype.buildPage = function(page){
+
+	if (this.dataLoaded==false&&this.reloadCount<3)
+	{
+		g_login.syncLoadData_saving(g_player.data.playerid,1);
+		this.reloadCount++;
+		return;
+	}
+	
 	this.currPage = page;
 	this.showBank(page,true);
 }

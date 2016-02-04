@@ -242,7 +242,8 @@ Msg.prototype.update = function()
 	 
 	 	if (!g_login.canRemoveWait()){
 			this.destroyload();
-			this.openNetMsg(this.loadreq.callback);
+			if (this.loadreq!=null)
+				this.openNetMsg(this.loadreq.callback);
 		}
 	}	
 }

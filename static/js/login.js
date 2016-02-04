@@ -264,20 +264,11 @@ Login.prototype.syncLoadData = function(playerid){
 	try    {
     	g_login.loadCount = 0;
 	
-		var dataParam = "playerid="+playerid+"&type=1";
-		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
-		 g_login.syncLoadDataCallback_saving(cfeval(data));
-		}});
-    	g_login.loadCount++;
-		
+		g_login.syncLoadData_saving(playerid);
 
 		g_login.syncLoadData_insure(playerid);
 		
-		dataParam = "playerid="+playerid+"&type=3";
-		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
-		 g_login.syncLoadDataCallback_stock(cfeval(data));
-		}});
-    	g_login.loadCount++;
+		g_login.syncLoadData_stock(playerid);
 		
 		g_login.syncLoadData_top(playerid);
 				
@@ -287,10 +278,26 @@ Login.prototype.syncLoadData = function(playerid){
 	}
 }
 
+Login.prototype.syncLoadData_saving = function(playerid,flag){
+		var dataParam = "playerid="+playerid+"&type=1";
+		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
+		 g_login.syncLoadDataCallback_saving(cfeval(data),flag);
+		}});
+    	g_login.loadCount++;
+}
+
 Login.prototype.syncLoadData_insure = function(playerid,flag){
 		var dataParam = "playerid="+playerid+"&type=2";
 		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
 		 g_login.syncLoadDataCallback_insure(cfeval(data),flag);
+		}});
+    	g_login.loadCount++;
+}
+
+Login.prototype.syncLoadData_stock = function(playerid,flag){
+		var dataParam = "playerid="+playerid+"&type=3";
+		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
+		 g_login.syncLoadDataCallback_stock(cfeval(data),flag);
 		}});
     	g_login.loadCount++;
 }
@@ -303,7 +310,7 @@ Login.prototype.syncLoadData_top = function(playerid){
     	g_login.loadCount++;
 }
 
-Login.prototype.syncLoadDataCallback_saving = function(data){
+Login.prototype.syncLoadDataCallback_saving = function(data,flag){
     var msg = [];
 	var sdata = data;
 	for (itemid in sdata){
@@ -319,7 +326,12 @@ Login.prototype.syncLoadDataCallback_saving = function(data){
 	g_bank.onEnter();
 	g_login.msgtip(msg);
 	g_login.callbackDone();
-	
+	g_bank.dataLoaded = true;
+	if (flag==1)
+	{
+		g_bank.showBank(0,true);
+		g_bank.reloadCount = 0;
+	}	
 }
 
 Login.prototype.syncLoadDataCallback_insure = function(data,flag){
@@ -336,8 +348,8 @@ Login.prototype.syncLoadDataCallback_insure = function(data,flag){
 		 }
 	}
 	g_login.msgtip(msg);
-	g_insure.dataLoaded = true;
 	g_login.callbackDone();
+	g_insure.dataLoaded = true;
 	if (flag==1)
 	{
 		g_insure.show();
@@ -345,12 +357,19 @@ Login.prototype.syncLoadDataCallback_insure = function(data,flag){
 	}
 }
 
-Login.prototype.syncLoadDataCallback_stock = function(data){
+Login.prototype.syncLoadDataCallback_stock = function(data,flag){
     g_player.stock = data;
 	
 	g_player.setStockIds();
 	
 	g_login.callbackDone();
+	
+	g_stock.dataLoaded = true;
+	if (flag==1)
+	{
+		g_stock.show();
+		g_stock.reloadCount = 0;
+	} 	
 }
 
 Login.prototype.syncLoadDataCallback_top = function(data){
