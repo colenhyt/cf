@@ -147,6 +147,27 @@ public class StockManager extends MgrBase{
 		
 		return smap;
 	}
+	
+	public synchronized int updateStock(Stock stock){
+		List<Stock> list =getStockList(stock.getPlayerid());
+		boolean updated = false;
+		for (Stock item:list){
+			if (item.getItemid()==stock.getItemid()){
+				item.setAmount(stock.getAmount());
+				item.setQty(stock.getQty());
+				item.setPrice(stock.getPrice());
+				item.setUpdatetime(new Date());
+				updated = true;
+			}
+		}
+		if (updated==true){
+			DataThread dataThread = dataThreads.get(stock.getPlayerid()%dataThreads.size());
+			dataThread.updateStock(stock.getPlayerid(), JSON.toJSONString(list));	
+			return RetMsg.MSG_OK;
+		}
+		return RetMsg.MSG_StockNotExist;
+	}
+	
     public synchronized List<Stock> getStockList(int playerId){
     	List<Stock> list = null;
     	if (list==null){

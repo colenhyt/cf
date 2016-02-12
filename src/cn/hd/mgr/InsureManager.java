@@ -111,7 +111,7 @@ public class InsureManager extends MgrBase{
     	return list;
 	}
     
-	public synchronized int deleteInsure(int playerId,Insure record){
+	public synchronized int updateInsure(int playerId,Insure record){
 		List<Insure> list = getInsureList(playerId);
 		if (list==null)
 			return RetMsg.MSG_InsureNotExist;
@@ -119,7 +119,9 @@ public class InsureManager extends MgrBase{
 		boolean found = false;
 		for (int i=0;i<list.size();i++){
 			if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){
-				list.remove(i);
+				Insure incfg = InsureManager.getInstance().getInsureCfg(list.get(i).getItemid());
+				list.get(i).setAmount(record.getQty()*incfg.getPrice());
+				list.get(i).setQty(record.getQty());
 				found = true;
 				break;
 			}
@@ -169,6 +171,27 @@ public class InsureManager extends MgrBase{
 		item.setPrice(price);
 		action.setInsure(item);
 		return action.add();
+	}
+
+	public synchronized int deleteInsure(int playerId,Insure record){
+		List<Insure> list = getInsureList(playerId);
+		if (list==null)
+			return RetMsg.MSG_InsureNotExist;
+		
+		boolean found = false;
+		for (int i=0;i<list.size();i++){
+			if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){
+				list.remove(i);
+				found = true;
+				break;
+			}
+		}
+		if (found){
+			DataThread dataThread = dataThreads.get(playerId%dataThreads.size());
+			dataThread.updateInsure(playerId, JSON.toJSONString(list));
+			return RetMsg.MSG_OK;
+		}
+		return RetMsg.MSG_InsureNotExist;
 	}
 
 	public static void main(String[] args) {

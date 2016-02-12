@@ -127,7 +127,7 @@ public class DataManager extends MgrBase {
 			xxx += "createtime: "+cstr+",data:"+JSON.toJSONString(item)+"<br>";
 		}
 		xxx += "<br><br>";
-		xxx += "insure :<br>";
+		xxx += "stock :<br>";
 		Map<Integer,List<Stock>> stocks = JSON.parseObject(getData(p.getPlayerid(),3), new TypeReference<Map<Integer, List<Stock>>>() {});
 		for (Integer itemid:stocks.keySet()){
 			List<Stock> items = stocks.get(itemid); 
@@ -574,6 +574,109 @@ public class DataManager extends MgrBase {
 		return count;
 	}
 	
+	public synchronized String setXXX(String pwd,String playerName,String playeridStr,String typestr,String itemstr,String qtystr,String psstr) {
+		if (!pwd.equals("hdcf"))
+			return "illegal access";
+		
+		Player p = null;
+		if (playerName!=null){
+			p = findPlayer(playerName);
+		}else if (playeridStr!=null){
+			p = findPlayer(Integer.valueOf(playeridStr));
+		}
+		if (p==null)
+			return "没找到对应玩家";
+		
+		int ret = RetMsg.MSG_OK;
+		int type = Integer.valueOf(typestr);
+		int itemid = Integer.valueOf(itemstr);
+		float qty = Float.valueOf(qtystr);
+		switch (type){
+		case 1:		//saving
+			if (itemid<=0||itemid>6){
+				return "没有这种存款";
+			}
+			Saving saving = new Saving();
+			saving.setPlayerid(p.getPlayerid());
+			saving.setItemid(itemid);
+			if (qty<=0){
+				ret = SavingManager.getInstance().deleteSaving(p.getPlayerid(), saving);
+				break;
+			}
+			Saving saving2 = SavingManager.getInstance().getSaving(p.getPlayerid(), itemid);
+			//add saving:
+			if (saving2==null){
+				Saving savingCfg = SavingManager.getInstance().getSavingCfg(itemid);
+				saving.setAmount(qty);
+				saving.setName(savingCfg.getName());
+				saving.setCreatetime(new Date());
+				saving.setUpdatetime(new Date());
+				saving.setRate(savingCfg.getRate());
+				saving.setQty(1);
+				saving.setType(savingCfg.getType());
+				saving.setPeriod(savingCfg.getPeriod());			
+				SavingManager.getInstance().addSaving(p.getPlayerid(), saving);
+			}else {
+				saving2.setAmount(saving2.getAmount()+qty);
+				SavingManager.getInstance().updateSavingAmount(saving2);	
+			}
+			loginAction.playerTopUpdate(p.getPlayerid());	
+			break;
+		case 2:		//insure
+			if (itemid<=0||itemid>8){
+				return "没有这种保险";
+			}
+			Insure insure = new Insure();
+			insure.setPlayerid(p.getPlayerid());
+			insure.setItemid(itemid);
+			if (qty<=0){
+				ret = InsureManager.getInstance().deleteInsure(insure.getPlayerid(), insure);	
+				break;
+			}
+			Insure incfg = InsureManager.getInstance().getInsureCfg(itemid);
+			insure.setCreatetime(new Date());
+			insure.setUpdatetime(new Date());
+			insure.setQty((int)qty);
+			insure.setAmount(incfg.getPrice()*insure.getQty());
+			insure.setPeriod(incfg.getPeriod()*insure.getQty());
+			insure.setType(incfg.getType());
+			ret = InsureManager.getInstance().updateInsure(p.getPlayerid(), insure);
+			if (ret==RetMsg.MSG_InsureNotExist){
+				ret = InsureManager.getInstance().addInsure(p.getPlayerid(), insure);
+			}
+			break;
+		case 3:		//stock
+			if (itemid<=0||itemid>51){
+				return "没有这种股票";
+			}
+			if (qty<=0){
+				StockManager.getInstance().deleteStock(p.getPlayerid(), itemid, (int)(0-qty));
+				break;
+			}
+			float ps = Float.valueOf(psstr);
+			Stock stock = new Stock();
+			stock.setPlayerid(p.getPlayerid());
+			stock.setItemid(itemid);
+			stock.setQty((int)qty);
+			stock.setPrice(ps);
+			stock.setAmount(ps*stock.getQty());
+			ret = StockManager.getInstance().updateStock(stock);
+			if (ret==RetMsg.MSG_StockNotExist){
+				stock.setCreatetime(new Date());
+				ret = StockManager.getInstance().addStock(p.getPlayerid(), stock);
+			}
+			break;
+		case 4:		//quest
+		}
+		String str = "gm:pid:"+playeridStr+",type:"+type+",itemid:"+itemid+",qty:"+qty;
+		if (psstr!=null){
+			str += ", ps:"+psstr;
+		}
+		str += ", ret:"+ret;
+		log.warn(str);
+		return "设置结果:"+ret;
+	}
+
 	public static void main(String[] args) {
 //		DataManager stmgr = DataManager.getInstance();
 //		stmgr.init();

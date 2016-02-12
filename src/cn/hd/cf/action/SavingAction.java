@@ -68,7 +68,7 @@ public class SavingAction extends BaseAction {
 		}
 	}	
 	
-	protected boolean playerMoneyUpdate(Saving saving){
+	public boolean playerMoneyUpdate(Saving saving){
 		log.info("pid:"+saving.getPlayerid()+" liveupdate value="+saving.getAmount());
 		boolean u = SavingManager.getInstance().updateLiveSaving(saving);	
 		 playerTopUpdate(saving.getPlayerid());
