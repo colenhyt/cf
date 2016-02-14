@@ -95,7 +95,7 @@ Map.prototype.enter = function(sexImg){
 		{
 			if (mapImgs[i].name=="map")
 			{
-				img.src = "static/img/map"+g_screenkey+".png";
+				img.src = "static/img/map"+g_screenkey+".jpg";
 			}else if (mapImgs[i].name=="quest"||mapImgs[i].name=="toplist")
 			{
 				if (g_screenkey==720)

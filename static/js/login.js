@@ -77,7 +77,7 @@ Login.prototype.draw = function()
 		{
 			if (img.name=="map")
 			{
-				img.src = "static/img/login_bg"+g_screenkey+".png";
+				img.src = "static/img/login_bg"+g_screenkey+".jpg";
 			}else
 			{
 				img.x += 30;
