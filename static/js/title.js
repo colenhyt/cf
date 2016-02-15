@@ -47,5 +47,5 @@ Title.prototype.getData = function(lv){
 }
 
 var g_title = new Title();
-g_title.init();
+
 

@@ -307,4 +307,4 @@ Quest.prototype.update = function(){
 Quest.prototype.constructor = Quest;
 
 var g_quest = new Quest();
-g_quest.init(30);
+

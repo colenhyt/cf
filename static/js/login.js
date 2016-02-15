@@ -45,7 +45,7 @@ Login.prototype.init = function(){
 Login.prototype.loadImgCallback = function()
 {
 	this.imgLoaded++;
-	g_loading.add(5);
+	g_loading.add(5,RES_FINISH);
 	if (this.imgLoaded>=login_imgs.length){
 	 g_loading.set(RES_FINISH);
 	 g_game.m_scene.m_map.draw();

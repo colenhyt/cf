@@ -165,4 +165,3 @@ Playerinfo.prototype.showOneInfo = function(playerid){
 }
 
 var g_playerinfo = new Playerinfo();
-g_playerinfo.init();

@@ -144,4 +144,3 @@ Event.prototype.update = function(){
  }
 }
 var g_event = new Event();
-g_event.init();

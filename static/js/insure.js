@@ -427,4 +427,4 @@ Insure.prototype.update = function(){
 }
 
 var g_insure = new Insure();
- g_insure.init();
+

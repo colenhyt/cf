@@ -273,4 +273,3 @@ Saving.prototype.buy = function(id){
 }
 
 var g_saving = new Saving();
- g_saving.init();

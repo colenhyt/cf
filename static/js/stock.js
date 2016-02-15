@@ -611,4 +611,4 @@ Stock.prototype.update = function(){
 }
 
 var g_stock = new Stock();
- g_stock.init();
+

@@ -233,4 +233,4 @@ Bank.prototype.update = function(){
 }
 
 var g_bank = new Bank();
-g_bank.init();
+

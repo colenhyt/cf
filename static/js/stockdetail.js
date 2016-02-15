@@ -230,4 +230,4 @@ Stockdetail.prototype.drawQuote = function(itemid,currPs,quotes,divName){
 	chart.draw();
 }
 var g_stockdetail = new Stockdetail();
-g_stockdetail.init();
+

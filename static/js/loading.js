@@ -1,10 +1,10 @@
 var loadingTag;
 
 var RES_START = 0;
-var RES_DISTJS = 5;
+var RES_DISTJS = 3;
 var RES_DISTJS1 = 8;
 var RES_DISTJS2 = 12;
-var RES_CSS	= 18;
+var RES_CSS	= 20;
 var RES_CSS2 = 23;
 var RES_DATAJS = 27;
 var RES_JS1 = 30;
@@ -16,6 +16,7 @@ var RES_FINISH = 100;
 Loading = function(){
 	this.name = 'loading'
 	this.currPer = 0;
+	this.nextPer = 0;
 	var div = document.createElement('div');
 	div.id = 'loading';
 	var left = window.screen.width/2;
@@ -27,18 +28,36 @@ Loading = function(){
 	loadingTag = document.getElementById('loading');
 }
 
-Loading.prototype.add = function(per){
-	this.set(this.currPer+per);
+Loading.prototype.init = function(){
+	setInterval(function(){
+	   g_loading.update();
+	  },1000
+	);	
 }
 
-Loading.prototype.set = function(per){
+Loading.prototype.update = function(){
+//alert(this.nextPer+","+this.currPer);
+	if (this.nextPer>this.currPer&&this.currPer>=0){
+		this.add(1);
+	}
+}
+
+Loading.prototype.add = function(per,nextPer){
+	this.set(this.currPer+per,nextPer);
+}
+
+Loading.prototype.set = function(per,nextPer){
  if (loadingTag==null) return;
  
  loadingTag.innerHTML = per+'%';
  this.currPer = per;
-if (per==RES_FINISH){
+ if (nextPer!=null)
+ 	this.nextPer = nextPer;
+ 
+if (per>=RES_FINISH){
 	$('#loading').remove();
 }
 }
 
 var g_loading = new Loading();
+g_loading.init();

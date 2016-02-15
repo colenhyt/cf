@@ -435,6 +435,5 @@ store.remove("playerlog");
 }
 
 var g_playerlog = new Playerlog()
-g_playerlog.init();
+
 var g_player = new Player();
-g_player.init();

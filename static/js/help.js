@@ -69,4 +69,4 @@ Help.prototype.nextpage = function(page){
 }
 
 var g_help = new Help();
-g_help.init();
+

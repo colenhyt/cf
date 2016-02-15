@@ -167,4 +167,4 @@ Signin.prototype.clickFeeling = function(feelingId){
 
 
 var g_signin = new Signin();
-g_signin.init();
+

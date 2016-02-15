@@ -249,4 +249,4 @@ Msg.prototype.update = function()
 }
 
 var g_msg = new Msg()
-g_msg.init();
+

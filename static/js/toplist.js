@@ -266,5 +266,5 @@ Toplist.prototype.syncData2 = function(){
 }
 
 var g_toplist = new Toplist();
-g_toplist.init();
+
 

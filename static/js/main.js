@@ -32,16 +32,33 @@ Main.prototype.init = function(){
 	
 	g_openid = openid;
 	
+	g_toplist.init();
+	g_playerinfo.init();
+	g_playerlog.init();
+	g_player.init();
+	g_quest.init();
+	g_signin.init();
+	g_insure.init();
+	g_stockdetail.init();
+	g_stock.init();
+	g_bank.init();
+	g_saving.init();
+	g_help.init();
+	g_title.init();
+	g_msg.init();
+	g_uplevel.init();
+	g_event.init();
+	
     var canvas = document.createElement("canvas");
     canvas.width = getSizes().SceneWidth;
     canvas.height = getSizes().SceneHeight;
     document.body.appendChild(canvas);
-
-var tt =	getStyleValue("zui.css",".modal-dialog","width");
 
 	g_game = new Game();
 	g_game.init(canvas);
 }
 
 var g_main = new Main();
-g_main.init();
+g_main.init();    
+
+

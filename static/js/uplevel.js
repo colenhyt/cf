@@ -83,4 +83,4 @@ Uplevel.prototype.update = function()
 }
 
 var g_uplevel = new Uplevel()
-g_uplevel.init();
+

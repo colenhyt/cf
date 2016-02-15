@@ -150,23 +150,49 @@ ERR_MSG[MSG_StockQtyIsZero] = "请选择股票手数";
 ERR_MSG[MSG_IllegalAccess] = "非法客户端登入";
 ERR_MSG[MSG_WrongOpenID] = "错误OPENID";
 
-function loadStyle(url){
-    var head = document.getElementsByTagName("head")[0];
+var RES_CSS_ZUI = "CSS_ZUI";
+
+function loadStylecallback(){
     var linkzui = document.createElement('link');
     linkzui.rel = "stylesheet";
     linkzui.type = "text/css";
     linkzui.href = "dist/css/zui.css";
-    head.appendChild(linkzui);
+    document.getElementsByTagName("head")[0].appendChild(linkzui);
 
-    g_loading.set(RES_CSS);
+//  	var tdata = store.get(RES_CSS_ZUI);
+//  	//if (tdata==null)
+//  	{
+//		var data = $.ajax({type:"get",url:"/cf/dist/css/zui.css",async:false});
+//		tdata = data.responseText;
+//		store.set(RES_CSS_ZUI,tdata);
+//	}
+//    var css = document.createElement('style');
+//    css.type = "text/css";
+//    css.innerHTML = (tdata);
+//    document.getElementsByTagName("head")[0].appendChild(css);
+//	g_loading.set(RES_CSS);
+	
+	var url = "static/css/cf"+SCREENKEY+".css";
     var link = document.createElement('link');
     link.rel = "stylesheet";
     link.type = "text/css";
     link.href = url;
-    head.appendChild(link);
-    
+    document.getElementsByTagName("head")[0].appendChild(link);
     g_loading.set(RES_CSS2);
     
+}
+
+function loadStyle(){
+//  	var tdata = store.get(RES_CSS_ZUI);
+//  	if (tdata==null){
+//		$.ajax({type:"post",url:"/cf/dist/css/zui.css",success:function(data){
+//			store.set(RES_CSS_ZUI,data);
+//			loadStylecallback();
+//		}});  	
+//  	}else 
+  	{
+  		loadStylecallback();
+  	}
 }
 
 var Page_Top = 80;
@@ -371,8 +397,7 @@ function initScreen(){
  
 	g_screenkey = SCREENKEY;
 	SIZEPER = SCREENKEY/640;
-	var cssFile = "static/css/cf"+SCREENKEY+".css";
-	loadStyle(cssFile);		
+	loadStyle();		
 }
 
 initScreen();
