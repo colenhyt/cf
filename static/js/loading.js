@@ -22,7 +22,9 @@ Loading = function(){
 	var left = window.screen.width/2;
 	var top = window.screen.height/2-100;
 	div.style.position='absolute';
+	div.style.fontSize = "20px";
 	div.style.left= left+'px';
+	div.style.color = "black";
 	div.style.top=top+'px';
 	document.body.appendChild(div);
 	loadingTag = document.getElementById('loading');
