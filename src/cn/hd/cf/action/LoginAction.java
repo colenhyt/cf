@@ -158,7 +158,7 @@ public class LoginAction extends SavingAction {
 		Player playerBlob = null;
 		if (player.getPlayerid()>0){
 			playerBlob = DataManager.getInstance().findPlayer(player.getPlayerid());
-			log.warn("find player:"+playerBlob);
+//			log.warn("find player:"+playerBlob);
 			if (playerBlob!=null)
 				return loginPlayer(playerBlob);
 		}

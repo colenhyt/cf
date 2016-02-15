@@ -8,6 +8,15 @@ public class Player {
 	private Date questdonetime;
 	private Date questassigntime;
 	private int signinCount = 1;
+	private String ipAddress;
+	public String getIpAddress() {
+		return ipAddress;
+	}
+
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
+	}
+
 	public int getSigninCount() {
 		return signinCount;
 	}

@@ -1,5 +1,7 @@
 package cn.hd.mgr;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,14 +12,12 @@ import org.apache.log4j.Logger;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
-import redis.clients.jedis.exceptions.JedisConnectionException;
 import cn.hd.cf.model.Player;
 import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Signin;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.PlayerService;
-import cn.hd.cf.service.ToplistService;
 import cn.hd.util.RedisClient;
 import cn.hd.util.RedisConfig;
 
@@ -72,11 +72,31 @@ public class DataThread extends Thread {
 		doneQuestVect = new Vector<Integer>();
 	}
 	
-	public synchronized void push(PlayerWithBLOBs record){
+	public synchronized void push(Player record){
+		InetAddress addr;
+		try {
+			addr = InetAddress.getLocalHost();
+			String ip=addr.getHostAddress().toString();	
+			record.setIpAddress(ip);
+//			log.warn("ip address "+ip);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
 		newPlayersVect.add(record);
 	}
 	
 	public synchronized void updatePlayer(Player record){
+		InetAddress addr;
+		try {
+			addr = InetAddress.getLocalHost();
+			String ip=addr.getHostAddress().toString();	
+			record.setIpAddress(ip);
+//			log.warn("ip address "+ip);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
 		updatePlayersVect.add(record);
 	}
 	

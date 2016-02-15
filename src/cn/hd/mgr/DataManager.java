@@ -366,7 +366,7 @@ public class DataManager extends MgrBase {
 			jedisClient.returnResource(jedis);			
 			if (itemstr!=null){
 				player = (Player)JSON.parseObject(itemstr,Player.class);
-				log.warn("find player :"+player.getPlayerid());
+//				log.warn("find player :"+player.getPlayerid());
 				playerMaps.put(playerid, player);
 				if (!playerIdMaps.containsKey(player.getPlayername())){
 					playerIdMaps.put(player.getPlayername(), playerid);
@@ -592,6 +592,13 @@ public class DataManager extends MgrBase {
 		int itemid = Integer.valueOf(itemstr);
 		float qty = Float.valueOf(qtystr);
 		switch (type){
+		case 0:		//exp:
+			p.setExp(p.getExp()+(int)qty);
+			if (p.getExp()<=0)
+				p.setExp(0);
+			DataThread dataThread = dataThreads.get(p.getPlayerid()%dataThreads.size());
+			dataThread.push(p);
+			break;
 		case 1:		//saving
 			if (itemid<=0||itemid>6){
 				return "没有这种存款";
@@ -667,6 +674,22 @@ public class DataManager extends MgrBase {
 			}
 			break;
 		case 4:		//quest
+			String q = p.getQuestStr();
+			if (qty<0){
+				if (q.length()>0&&itemid>0&&itemid<=5){
+					q = q.replace(itemstr+",","").replace(","+itemstr,"").replace(itemstr,"");
+				}
+			}else {
+				int qid = (int)(Math.random()*5);
+				if (itemid>0&&itemid<=5){
+					qid = itemid;
+				}
+				if (q.length()>0){
+					q += ","+qid;
+				}else
+					q = String.valueOf(qid);
+			}
+			p.setQuestStr(q);
 		}
 		String str = "gm:pid:"+playeridStr+",type:"+type+",itemid:"+itemid+",qty:"+qty;
 		if (psstr!=null){

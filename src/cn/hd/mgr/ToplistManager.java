@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import net.sf.json.JSONArray;
 import redis.clients.jedis.Jedis;
 import cn.hd.cf.action.ToplistAction;
+import cn.hd.cf.model.Player;
 import cn.hd.cf.model.Toplist;
 import cn.hd.util.RedisClient;
 
@@ -243,24 +243,45 @@ public class ToplistManager extends MgrBase{
 		return count;
 	}
 	
-	public synchronized List<Toplist> findByType(int type){
-		List<Toplist> tops = new ArrayList<Toplist>();
+	public synchronized String getActivityList(int count){
 		
-		Date firstDate = getFirstDate(type,new Date());
+    	Jedis jedis = jedisClient.getJedis();   	
+		
+    	List<String> itemstrs = jedis.hvals(MgrBase.DATAKEY_TOPLIST);
+    	jedisClient.returnResource(jedis);
+		List<Toplist> list = new ArrayList<Toplist>();
+    	for (String str:itemstrs){
+    		Toplist item = (Toplist)JSON.parseObject(str, Toplist.class);
+			Player p = DataManager.getInstance().findPlayer(item.getPlayerid());
+			if (p!=null)
+				item.setOpenid(p.getOpenid());
+			list.add(item);
+    	}
+    	log.warn("get all toplist data:" + itemstrs.size()); 
+		Collections.sort((List<Toplist>)list);
+ 
+		List<Toplist> tops = new ArrayList<Toplist>();
+		for (int i=0;i<list.size();i++){
+			if (i>=count) break;
+			tops.add(list.get(i));
+		}		
+    	
+		return JSON.toJSONString(tops);
+	}
+	public synchronized List<Toplist> getAlltoplist(int count){
+		List<Toplist> tops = new ArrayList<Toplist>();
 		
 		List<Toplist> list = new ArrayList<Toplist>();
 		Collection<Toplist> toplists = toplistMap.values();
 		for (Toplist top:toplists){
-			if (top.getUpdatetime().compareTo(firstDate)>0){
 				list.add(top);
-			}
 		}
 		Collections.sort((List<Toplist>)list);
 		for (int i=0;i<list.size();i++){
-			if (i>=100) break;
+			if (i>=count) break;
 			tops.add(list.get(i));
 		}
-		//System.out.println("取排行榜(type:"+type+"):开始时间:"+firstDate.toString()+",记录数:"+tops.size());
+		log.warn("get all toplist,count:"+tops.size());
 		return tops;
 	}
 
@@ -293,6 +314,27 @@ public class ToplistManager extends MgrBase{
 	public synchronized int findCountByGreaterMoney(int playerid,int type,float fPMoney){
 		Toplist top = findByPlayerId(playerid);
 		return findTopCount(top,type,fPMoney);
+	}
+
+	public synchronized List<Toplist> findByType(int type){
+		List<Toplist> tops = new ArrayList<Toplist>();
+		
+		Date firstDate = getFirstDate(type,new Date());
+		
+		List<Toplist> list = new ArrayList<Toplist>();
+		Collection<Toplist> toplists = toplistMap.values();
+		for (Toplist top:toplists){
+			if (top.getUpdatetime().compareTo(firstDate)>0){
+				list.add(top);
+			}
+		}
+		Collections.sort((List<Toplist>)list);
+		for (int i=0;i<list.size();i++){
+			if (i>=100) break;
+			tops.add(list.get(i));
+		}
+		//System.out.println("取排行榜(type:"+type+"):开始时间:"+firstDate.toString()+",记录数:"+tops.size());
+		return tops;
 	}
 
 	public static void main(String[] args){
