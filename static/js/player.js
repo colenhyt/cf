@@ -205,6 +205,9 @@ Player.prototype.loginback = function(data){
   playerdata.openstock = data.openstock;
   playerdata.playerid = data.playerid;
   playerdata.exp = data.exp;
+  playerdata.playername = data.playername;
+  playerdata.signinCount = data.signinCount;
+  playerdata.sex = data.sex;
   playerdata.questStr = data.questStr;
   playerdata.lastlogin = data.lastlogin;
     

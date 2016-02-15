@@ -79,7 +79,7 @@ Map.prototype.init = function(width,height){
 	};
 }
 
-Map.prototype.enter = function(sexImg){
+Map.prototype.loadGameImgs = function(sexImg){
     this.m_imgs = game_imgs;
     this.m_imgs.push(sexImg);
     var map = this;
@@ -114,7 +114,7 @@ Map.prototype.enter = function(sexImg){
             map.imgLoaded++;
             g_loading.add(5);
             if (map.imgLoaded>=mapImgs.length){
-             g_loading.set(RES_FINISH);
+             g_game.loadGameImgsCallback();
              map.draw();
             }
         };	       
@@ -186,12 +186,18 @@ Map.prototype.sortImg = function(img1,img2){
 	return (img1.zindex-img2.zindex);
 }
 
-Map.prototype.draw = function(){
-	var pos = this.m_pos;
-	var scale = this.m_imgScale;
+Map.prototype.clear = function(){
 	var canvas = this.m_canvas;
     var context = canvas.getContext('2d');
    context.clearRect(0,0,canvas.width,canvas.height);
+}
+
+Map.prototype.draw = function(){
+	var pos = this.m_pos;
+	var scale = this.m_imgScale;
+	this.clear();
+	var canvas = this.m_canvas;
+    var context = canvas.getContext('2d');
    for (var i=0 ;i<this.m_imgs.length ;i++ )
    {
   	  var img = this.m_imgs[i].img;
@@ -305,10 +311,35 @@ Game.prototype.init = function(canvas){
 	
 }
 
-Game.prototype.enter = function(sexImg)
+Game.prototype.loadGameImgsCallback = function()
 {
+    g_loading.set(RES_FINISH);
+	g_player.flushPageview();
+	
+	var player = g_player.data;
+    var hadTodaySignin = false;
+    if (player.lastlogin!=null){
+      var logintime = new Date(player.lastlogin);
+      hadTodaySignin = IsSameDay(new Date(),logintime);
+    }
+       
+	if (!hadTodaySignin)
+	{
+		var showed = g_signin.show(player.signinCount);
+		if (!showed)
+		 g_game.onEnter();
+	}else {
+		g_game.onEnter();
+	}
+}
+
+Game.prototype.loadGameImgs = function()
+{
+    //head img:
+    var head_img = head_imgs[g_player.data.sex];
+    head_img.name = g_player.data.playername;
  this.imgCount = game_imgs.length+1;
- this.m_scene.m_map.enter(sexImg);
+ this.m_scene.m_map.loadGameImgs(head_img);
 }
 
 Game.prototype.onEnter = function(){

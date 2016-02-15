@@ -15,8 +15,21 @@ var RES_FINISH = 100;
 
 Loading = function(){
 	this.name = 'loading'
+	this.reset();
+}
+
+Loading.prototype.init = function(){
+	setInterval(function(){
+	   g_loading.update();
+	  },1500
+	);	
+}
+
+Loading.prototype.reset = function(){
 	this.currPer = 0;
 	this.nextPer = 0;
+	if (loadingTag!=null) return;
+	
 	var div = document.createElement('div');
 	div.id = 'loading';
 	var left = window.screen.width/2;
@@ -30,18 +43,16 @@ Loading = function(){
 	loadingTag = document.getElementById('loading');
 }
 
-Loading.prototype.init = function(){
-	setInterval(function(){
-	   g_loading.update();
-	  },1000
-	);	
-}
-
 Loading.prototype.update = function(){
 //alert(this.nextPer+","+this.currPer);
 	if (this.nextPer>this.currPer&&this.currPer>=0){
 		this.add(1);
 	}
+}
+
+Loading.prototype.clear = function(){
+	$('#loading').remove();
+	loadingTag = null;
 }
 
 Loading.prototype.add = function(per,nextPer){
@@ -57,8 +68,9 @@ Loading.prototype.set = function(per,nextPer){
  	this.nextPer = nextPer;
  
 if (per>=RES_FINISH){
-	$('#loading').remove();
+	this.clear();
 }
+
 }
 
 var g_loading = new Loading();
