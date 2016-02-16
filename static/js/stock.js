@@ -82,7 +82,7 @@ Stock.prototype.loadPageLastQuote = function()
 	var jids = "stockids="+JSON.stringify(stockids);
 	try  {
 		$.ajax({type:"post",url:"/cf/stock_pagelastquotes.do",data:jids,success:function(data){
-	 		g_canRemoveWait = true;
+	 		g_msg.destroyload();
 			var lastquotes = cfeval(data);
 			g_stock.lastquotes = lastquotes;
 			//当前页股票属性变化:
@@ -437,7 +437,7 @@ Stock.prototype.requestBuy = function(id,qty,ps) {
 	try    {
 		$.ajax({type:"post",url:"/cf/data_update.jsp",data:dataParam,success:function(data){
 		 g_stock.buyCallback(cfeval(data));
-	 	 g_canRemoveWait = true;
+	 	 g_msg.destroyload();
 		}});
 	}   catch  (e)   {
 	    logerr(e.name  +   " :  "   +  dataobj.responseText);
@@ -520,7 +520,7 @@ Stock.prototype.findQuotes = function()
 			store.set(g_stock.quotename,qdatas);
 			g_stockdetail.drawQuote(stockid,g_stock.currStockPs,squotes,g_stock.graphName);
 			g_stock.currShowStockId = null;
-	 		g_canRemoveWait = true;
+	 		g_msg.destroyload();
 		}});
 
 	}   catch  (e)   {

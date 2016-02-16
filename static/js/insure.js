@@ -67,7 +67,7 @@ Insure.prototype.reloadInsures = function()
  var updateStr = "insure.playerid="+g_player.data.playerid;
  var dataobj = $.ajax({type:"post",url:"/cf/insure_get.do",data:updateStr,async:false});
  var msg = g_login.loadInsureData(dataobj.responseText);
- g_login.msgtip(msg);
+ g_login.showLoginMsg(msg);
 }
 
 Insure.prototype.buildPage = function(page)

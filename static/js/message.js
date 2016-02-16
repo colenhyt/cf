@@ -224,27 +224,14 @@ Msg.prototype.update = function()
 		}
 	}
 	
-	//net callback
-	if (g_login.canRemoveWait()){
-		this.destroyload();
-	}
-	
-	if (g_canRemoveWait==true){
-		this.destroyload();
-		g_canRemoveWait = false;
-	}
-	
 	if (this.loadreq)
 	{
 		var now = new Date();
 		var dura = now.getTime() - this.loadreq.start;
 		if (dura<this.netmsgWait) return;
 	 
-	 	if (!g_login.canRemoveWait()){
-			this.destroyload();
-			if (this.loadreq!=null)
-				this.openNetMsg(this.loadreq.callback);
-		}
+		this.openNetMsg(this.loadreq.callback);
+		this.destroyload();
 	}	
 }
 

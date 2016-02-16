@@ -46,7 +46,7 @@ Login.prototype.init = function(){
 Login.prototype.loadImgCallback = function()
 {
 	this.imgLoaded++;
-	g_loading.add(5,RES_FINISH);
+	g_loading.add(3,RES_FINISH);
 	if (this.imgLoaded>=login_imgs.length){
 	 g_loading.set(RES_FINISH);
 	 g_game.m_scene.m_map.draw();
@@ -243,7 +243,7 @@ Login.prototype.loadData = function(obj){
 	return msg;
 }
 
-Login.prototype.msgtip = function(loginMsg){
+Login.prototype.showLoginMsg = function(loginMsg){
 	for (var i=0;i<loginMsg.length;i++){
 		var msg = loginMsg[i];
 		if (msg.type==g_saving.name){
@@ -323,7 +323,7 @@ Login.prototype.syncLoadDataCallback_saving = function(data,flag){
 		}
 	} 
 	g_bank.onEnter();
-	g_login.msgtip(msg);
+	g_login.showLoginMsg(msg);
 	g_login.callbackDone();
 	g_bank.dataLoaded = true;
 	if (flag==1)
@@ -346,7 +346,7 @@ Login.prototype.syncLoadDataCallback_insure = function(data,flag){
 			msg.push({type:g_insure.name,t:parseInt(item.type),name:item.name,profit:parseInt(idata[itemid].profit)});
 		 }
 	}
-	g_login.msgtip(msg);
+	g_login.showLoginMsg(msg);
 	g_login.callbackDone();
 	g_insure.dataLoaded = true;
 	if (flag==1)
@@ -379,11 +379,8 @@ Login.prototype.syncLoadDataCallback_top = function(data){
 Login.prototype.callbackDone = function(){
  g_login.loadCount--;
  if (g_login.loadCount<=0){
- 	g_login.dataLoaded = true;
- 	g_game.loadGameImgs();
+	g_player.flushPageview();
  }
-//  g_player.flushPageview();
-
 }
 
 Login.prototype.canRemoveWait = function(){
@@ -391,10 +388,10 @@ Login.prototype.canRemoveWait = function(){
 }
 
 Login.prototype.loginCallback = function(obj){
- 	g_loginCallback = true;
  		 
 	var objdata = cfeval(obj);
 	if (objdata.code!=null&&objdata.code>0){
+	 //g_loginCallback = true;
 	 this.msg('登陆失败: '+ERR_MSG[objdata.code]);
 	 g_username = null;
 	 return;
@@ -402,10 +399,6 @@ Login.prototype.loginCallback = function(obj){
 		
     var player = objdata.player;
     var flag = objdata.flag;
-	
-	//进入场景:先remove login页面元素
-	$('#inputnickdiv').remove();
-	$('#errmsg').remove();
 	
 	var logindata = store.get(this.name);
 	var lastPlayer = logindata[logindata.length-1];
@@ -420,39 +413,16 @@ Login.prototype.loginCallback = function(obj){
     
     g_loading.reset();
     g_loading.set(RES_INIT,RES_FINISH);
-    g_game.m_scene.m_map.clear();
-        
-    g_playerlog.addlog();
-       
-    //register
-    if (flag==1){
-    	g_login.loadCount += 1;
- 	   	g_login.syncLoadData_top(player.playerid);
-	   	g_login.syncLoadDataCallback_saving(objdata.saving);
-    }else{
-    	g_login.syncLoadData(player.playerid);
-    }
-    
- //   var hadTodaySignin = false;
-//    if (player.lastlogin!=null){
-//      var logintime = new Date(player.lastlogin);
-//      hadTodaySignin = IsSameDay(new Date(),logintime);
-//    }
-//       
-//	if (!hadTodaySignin)
-//	{
-//		var showed = g_signin.show(player.signinCount);
-//		if (!showed)
-//		 g_game.onEnter();
-//	}else {
-//		g_game.onEnter();
-//	}
-	
  	
+	//进入场景:先remove login页面元素
+	$('#inputnickdiv').remove();
+	$('#errmsg').remove();
+    g_game.m_scene.m_map.clear();
+    g_game.loadGameImgs();
 }
 
 Login.prototype.login = function(){
-	g_msg.showload("g_login.login");
+	//g_msg.showload("g_login.login");
 	
 	if (g_username==null){
       var tag = document.getElementById("inputnick");

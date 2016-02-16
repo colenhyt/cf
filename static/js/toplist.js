@@ -258,7 +258,7 @@ Toplist.prototype.syncData2 = function(){
 		 g_toplist.monthdata = obj[1];
 		 }
 		 g_toplist.showToplist(0,0);
- 		 g_canRemoveWait = true;
+ 		 g_msg.destroyload();
 		}});
 	}   catch  (e)   {
 	    logerr(e.name);

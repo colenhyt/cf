@@ -155,7 +155,7 @@ Playerinfo.prototype.showOneInfo = function(playerid){
 				g_playerinfo.showPlayerId = null;
 				g_playerinfo.showInfo(serverPlayer);
 			}
- 		 g_canRemoveWait = true;
+ 		 g_msg.destroyload();
 		}});
 	}   catch  (e)   {
 	    logerr(e.name  +   " :  "   +  dataobj.responseText);

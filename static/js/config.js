@@ -157,19 +157,20 @@ function loadStylecallback(){
     linkzui.rel = "stylesheet";
     linkzui.type = "text/css";
     linkzui.href = "dist/css/zui.css";
-   // document.getElementsByTagName("head")[0].appendChild(linkzui);
+    document.getElementsByTagName("head")[0].appendChild(linkzui);
 
-  	var tdata = store.get(RES_CSS_ZUI);
-  	if (tdata==null)
-  	{
-		var data = $.ajax({type:"get",url:"/cf/dist/css/zui.css",async:false});
-		tdata = data.responseText;
-		store.set(RES_CSS_ZUI,tdata);
-	}
-    var css = document.createElement('style');
-    css.type = "text/css";
-    css.innerHTML = (tdata);
-    document.getElementsByTagName("head")[0].appendChild(css);
+//  	var tdata = store.get(RES_CSS_ZUI);
+//  	if (tdata==null)
+//  	{
+//		var data = $.ajax({type:"get",url:"/cf/dist/css/zui.css",async:false});
+//		tdata = data.responseText;
+//		store.set(RES_CSS_ZUI,tdata);
+//	}
+//    var css = document.createElement('style');
+//    css.type = "text/css";
+//    css.innerHTML = (tdata);
+//    document.getElementsByTagName("head")[0].appendChild(css);
+
 	g_loading.set(RES_CSS);
 	
 	var url = "static/css/cf"+SCREENKEY+".css";

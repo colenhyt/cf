@@ -177,7 +177,7 @@ Saving.prototype.requestBuy = function(id,qty,amount){
 	try    {
 		$.ajax({type:"post",url:"/cf/data_update.jsp",data:dataParam,success:function(data){
 		 g_saving.buyCallback(cfeval(data));
-	 	 g_canRemoveWait = true;
+	 	 g_msg.destroyload();
 		}});
 	}   catch  (e)   {
 	    logerr(e.name  +   " :  "   +  dataobj.responseText);

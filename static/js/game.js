@@ -112,10 +112,10 @@ Map.prototype.loadGameImgs = function(sexImg){
         img.onload=function(){
            // map.draw();
             map.imgLoaded++;
-            g_loading.add(5);
+            g_loading.add(3);
             if (map.imgLoaded>=mapImgs.length){
-             g_game.loadGameImgsCallback();
              map.draw();
+             g_game.loadGameImgsCallback();
             }
         };	       
         mapImgs[i].img = img;
@@ -314,9 +314,21 @@ Game.prototype.init = function(canvas){
 Game.prototype.loadGameImgsCallback = function()
 {
     g_loading.set(RES_FINISH);
-	g_player.flushPageview();
+	//g_loginCallback = true;
 	
+    g_playerlog.addlog();
+
 	var player = g_player.data;
+	
+    //register
+    if (player.flag==1){
+ 	   	g_login.syncLoadData_top(player.playerid);
+    	g_login.loadCount += 1;
+	   	g_login.syncLoadDataCallback_saving(objdata.saving);
+    }else{
+    	g_login.syncLoadData(player.playerid);
+    }
+	
     var hadTodaySignin = false;
     if (player.lastlogin!=null){
       var logintime = new Date(player.lastlogin);
@@ -331,6 +343,7 @@ Game.prototype.loadGameImgsCallback = function()
 	}else {
 		g_game.onEnter();
 	}
+        
 }
 
 Game.prototype.loadGameImgs = function()
