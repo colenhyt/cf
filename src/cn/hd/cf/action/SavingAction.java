@@ -232,7 +232,7 @@ public class SavingAction extends BaseAction {
 					break;
 				}
 			}			
-			if (!found){
+			if (found){
 				return msgStr(RetMsg.MSG_SavingIsExist);
 			}
 			Saving savingCfg = SavingManager.getInstance().getSavingCfg(saving.getItemid());
@@ -245,12 +245,10 @@ public class SavingAction extends BaseAction {
 			saving.setPeriod(savingCfg.getPeriod());
 			list.add(saving);
 			ret = RetMsg.MSG_OK;
-			if (ret==RetMsg.MSG_OK){
-				boolean doneQuest = DataManager.getInstance().doneQuest(saving.getPlayerid(), 1);
-				if (doneQuest){
-					changeAmount += 5000;
-					log.warn("pid:"+saving.getPlayerid()+" saving quest prize 5000");
-				}
+			boolean doneQuest = DataManager.getInstance().doneQuest(saving.getPlayerid(), 1);
+			if (doneQuest){
+				changeAmount += 5000;
+				log.warn("pid:"+saving.getPlayerid()+" saving quest prize 5000");
 			}
 		}
 		
