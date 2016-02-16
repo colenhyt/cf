@@ -314,7 +314,7 @@ public class DataManager extends MgrBase {
 //		if (pp!=null)
 //			return false;
 
-		playerMaps.put(playerid, player);
+		//playerMaps.put(playerid, player);
 		playerIdMaps.put(player.getPlayername(), playerid);
 		
 		DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
@@ -331,30 +331,26 @@ public class DataManager extends MgrBase {
 			return findPlayer(playerid);
 		}
 		
-		Player player = null;
 		int index = Math.abs(playerName.hashCode())%redisClients.size();
 		RedisClient jedisClient = redisClients.get(index);
 		Jedis jedis = jedisClient.getJedis();
 		String idstr = jedis.hget(MgrBase.DATAKEY_PLAYER_ID, playerName);
+		jedisClient.returnResource(jedis);
 		if (idstr!=null){
 			playerid = Integer.valueOf(idstr);
-			String itemstr = jedis.hget(MgrBase.DATAKEY_PLAYER, String.valueOf(playerid));
-			player = (Player)JSON.parseObject(itemstr,Player.class);
-//				log.warn("find player :"+player.getPlayerid());
-			playerMaps.put(playerid, player);
-			if (!playerIdMaps.containsKey(player.getPlayername())){
-				playerIdMaps.put(player.getPlayername(), playerid);
-			}				
+				log.warn("find player :"+playerid);
+			//playerMaps.put(playerid, player);
+				playerIdMaps.put(playerName, playerid);
+			return findPlayer(playerid);
 		}
-		jedisClient.returnResource(jedis);
 		long cost = System.currentTimeMillis()-s;
 		if (cost>10)
 			log.warn("register find cost :"+cost+",name:"+playerName);
-		return player;
+		return null;
 	}
 
 	public synchronized Player findPlayer(int playerid) {
-		Player player = playerMaps.get(playerid);
+		Player player = null;
 		long s = System.currentTimeMillis();
 
 		if (player==null)
@@ -366,8 +362,8 @@ public class DataManager extends MgrBase {
 			jedisClient.returnResource(jedis);			
 			if (itemstr!=null){
 				player = (Player)JSON.parseObject(itemstr,Player.class);
-//				log.warn("find player :"+player.getPlayerid());
-				playerMaps.put(playerid, player);
+				log.warn("find player :"+player.getPlayerid());
+				//playerMaps.put(playerid, player);
 				if (!playerIdMaps.containsKey(player.getPlayername())){
 					playerIdMaps.put(player.getPlayername(), playerid);
 				}
