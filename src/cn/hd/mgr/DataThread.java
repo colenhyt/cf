@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 import cn.hd.cf.model.Player;
-import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Signin;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Toplist;
