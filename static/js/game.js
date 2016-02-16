@@ -115,7 +115,7 @@ Map.prototype.loadGameImgs = function(sexImg){
             g_loading.add(3);
             if (map.imgLoaded>=mapImgs.length){
              map.draw();
-             g_game.loadGameImgsCallback();
+             g_login.loadGameImgsBack();
             }
         };	       
         mapImgs[i].img = img;
@@ -311,46 +311,8 @@ Game.prototype.init = function(canvas){
 	
 }
 
-Game.prototype.loadGameImgsCallback = function()
+Game.prototype.loadGameImgs = function(head_img)
 {
-    g_loading.set(RES_FINISH);
-	//g_loginCallback = true;
-	
-    g_playerlog.addlog();
-
-	var player = g_player.data;
-	
-    //register
-    if (player.flag==1){
- 	   	g_login.syncLoadData_top(player.playerid);
-    	g_login.loadCount += 1;
-	   	g_login.syncLoadDataCallback_saving(objdata.saving);
-    }else{
-    	g_login.syncLoadData(player.playerid);
-    }
-	
-    var hadTodaySignin = false;
-    if (player.lastlogin!=null){
-      var logintime = new Date(player.lastlogin);
-      hadTodaySignin = IsSameDay(new Date(),logintime);
-    }
-       
-	if (!hadTodaySignin)
-	{
-		var showed = g_signin.show(player.signinCount);
-		if (!showed)
-		 g_game.onEnter();
-	}else {
-		g_game.onEnter();
-	}
-        
-}
-
-Game.prototype.loadGameImgs = function()
-{
-    //head img:
-    var head_img = head_imgs[g_player.data.sex];
-    head_img.name = g_player.data.playername;
  this.imgCount = game_imgs.length+1;
  this.m_scene.m_map.loadGameImgs(head_img);
 }

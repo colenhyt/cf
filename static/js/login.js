@@ -378,9 +378,9 @@ Login.prototype.syncLoadDataCallback_top = function(data){
 
 Login.prototype.callbackDone = function(){
  g_login.loadCount--;
- if (g_login.loadCount<=0){
-	g_player.flushPageview();
- }
+ if (g_login.loadCount<=0)
+  g_player.flushPageview();
+
 }
 
 Login.prototype.canRemoveWait = function(){
@@ -391,12 +391,33 @@ Login.prototype.loginCallback = function(obj){
  		 
 	var objdata = cfeval(obj);
 	if (objdata.code!=null&&objdata.code>0){
-	 //g_loginCallback = true;
 	 this.msg('登陆失败: '+ERR_MSG[objdata.code]);
 	 g_username = null;
 	 return;
 	}
-		
+	
+	this.loginData = objdata;
+	
+	//进入场景:先remove login页面元素
+	$('#inputnickdiv').remove();
+	$('#errmsg').remove();
+    g_game.m_scene.m_map.clear();
+    g_loading.reset();
+    g_loading.set(RES_INIT,RES_FINISH);
+    
+    var player = objdata.player;
+    var head_img = head_imgs[player.sex];
+    head_img.name = player.playername;
+    g_game.loadGameImgs(head_img);
+}
+
+Login.prototype.loadGameImgsBack = function(){
+	if (this.loginData==null) return;
+	
+    g_loading.set(RES_FINISH);
+	
+	var objdata = this.loginData;
+	
     var player = objdata.player;
     var flag = objdata.flag;
 	
@@ -407,18 +428,37 @@ Login.prototype.loginCallback = function(obj){
 	 store.set(g_login.name,logindata);
 	 }
 	 	
-	store.set(g_player.name,player);
- 	 
+	 store.set(g_player.name,player);
+	 
     g_player.loginback(player);
     
-    g_loading.reset();
-    g_loading.set(RES_INIT,RES_FINISH);
- 	
-	//进入场景:先remove login页面元素
-	$('#inputnickdiv').remove();
-	$('#errmsg').remove();
-    g_game.m_scene.m_map.clear();
-    g_game.loadGameImgs();
+    g_playerlog.addlog();
+       
+    //register
+    if (flag==1){
+    	g_login.loadCount += 1;
+ 	   	g_login.syncLoadData_top(player.playerid);
+	   	g_login.syncLoadDataCallback_saving(objdata.saving);
+    }else{
+    	this.syncLoadData(player.playerid);
+    }
+    
+    var hadTodaySignin = false;
+    if (player.lastlogin!=null){
+      var logintime = new Date(player.lastlogin);
+      hadTodaySignin = IsSameDay(new Date(),logintime);
+    }
+       
+	if (!hadTodaySignin)
+	{
+		var showed = g_signin.show(player.signinCount);
+		if (!showed)
+		 g_game.onEnter();
+	}else {
+		g_game.onEnter();
+	}
+	
+	this.loginData = null;
 }
 
 Login.prototype.login = function(){
@@ -443,7 +483,6 @@ Login.prototype.login = function(){
 	try    {
 		$.ajax({type:"post",url:"/cf/login_login.jsp",data:dataParam,success:function(data){
 		 g_login.loginCallback(data);
-		 //g_msg.destroyload();
 		}});
 	}   catch  (e)   {
 	    logerr(e.name  +   " :  "   +  dataParam);
