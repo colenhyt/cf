@@ -21,7 +21,7 @@ public class InsureAction extends SavingAction {
 		this.insure = insure;
 	}
 
-	public String add()
+	public synchronized String add()
 	{
 		Saving liveSaving = SavingManager.getInstance().getSaving(insure.getPlayerid(), 1);
 		if (liveSaving.getAmount()<insure.getAmount())
@@ -42,6 +42,7 @@ public class InsureAction extends SavingAction {
 			boolean doneQuest = DataManager.getInstance().doneQuest(insure.getPlayerid(), doType);
 			if (doneQuest){
 				changeAmount += 5000;
+				
 				log.warn("pid:"+insure.getPlayerid()+" insure quest prize 5000,type:"+doType);
 			}
 			

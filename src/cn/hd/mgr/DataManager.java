@@ -171,6 +171,7 @@ public class DataManager extends MgrBase {
 				this.addDoneQuest(playerid);
 				log.warn("pid:"+playerid+" done daily quest");
 			}	
+			DataManager.getInstance().updatePlayerQuest(player);
 			return true;
 		}
 		return false;

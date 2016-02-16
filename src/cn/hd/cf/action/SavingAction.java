@@ -160,7 +160,7 @@ public class SavingAction extends BaseAction {
 		return inter;
 	}
 	
-	public String add()
+	public synchronized String add()
 	{
 		//活期不存在存款取款:
 		if (saving.getItemid()==1){
@@ -173,14 +173,34 @@ public class SavingAction extends BaseAction {
 		newsaving.setAmount(saving.getAmount());
 		int ret = RetMsg.MSG_OK;
 		
-		Saving liveSaving = SavingManager.getInstance().getSaving(saving.getPlayerid(), 1);
-		
+	
+		List<Saving> list = SavingManager.getInstance().getSavingList(saving.getPlayerid());
+		Saving liveSaving = null;
+    	for (int i=0;i<list.size();i++){
+    		if (list.get(i).getItemid().intValue()==1){
+    			liveSaving = list.get(i);
+    			break;
+    		}
+    	}		
+    	
+    	if (liveSaving==null){
+    		return msgStr(RetMsg.MSG_NoSavingData);
+    	}
+    	
 		float changeAmount = 0 - saving.getAmount();
 		//取出存款:
 		if (saving.getAmount()<0){
-			Saving saving2 = SavingManager.getInstance().getSaving(saving.getPlayerid(), saving.getItemid());
+			Saving saving2 = null;
+			int itemIndex = -1;
+			for (int i=0;i<list.size();i++){
+				if (list.get(i).getItemid().intValue()==saving.getItemid().intValue()){
+					itemIndex = i;
+					saving2 = list.get(i);
+					break;
+				}
+			}			
 			if (saving2==null){
-				return msgStr(RetMsg.MSG_NoSavingData);
+				return msgStr(RetMsg.MSG_SavingNotExist);
 			}
 			//已到期的存款:
 			boolean isout = isSavingTimeout(saving2);
@@ -199,11 +219,22 @@ public class SavingAction extends BaseAction {
 				log.warn("pid:"+saving.getPlayerid()+" get charge:"+iInter);
 				newsaving.setProfit((float)iInter);				
 			}
-			ret = SavingManager.getInstance().deleteSaving(saving.getPlayerid(),saving);
+			list.remove(itemIndex);
+			ret = RetMsg.MSG_OK;
 		}else {
 			if (liveSaving.getAmount()<saving.getAmount())
 				return msgStr(RetMsg.MSG_MoneyNotEnough);
 			
+			boolean found = false;
+			for (int i=0;i<list.size();i++){
+				if (list.get(i).getItemid().intValue()==saving.getItemid().intValue()){
+					found = true;
+					break;
+				}
+			}			
+			if (!found){
+				return msgStr(RetMsg.MSG_SavingIsExist);
+			}
 			Saving savingCfg = SavingManager.getInstance().getSavingCfg(saving.getItemid());
 			saving.setName(savingCfg.getName());
 			saving.setCreatetime(new Date());
@@ -212,7 +243,8 @@ public class SavingAction extends BaseAction {
 			saving.setQty(1);
 			saving.setType(savingCfg.getType());
 			saving.setPeriod(savingCfg.getPeriod());
-			ret = SavingManager.getInstance().addSaving(saving.getPlayerid(), saving);
+			list.add(saving);
+			ret = RetMsg.MSG_OK;
 			if (ret==RetMsg.MSG_OK){
 				boolean doneQuest = DataManager.getInstance().doneQuest(saving.getPlayerid(), 1);
 				if (doneQuest){
@@ -228,7 +260,8 @@ public class SavingAction extends BaseAction {
 			newsaving.setLiveamount(liveSaving.getAmount());
 			String str = JSON.toJSONString(newsaving);
 			log.info("pid:"+saving.getPlayerid()+" add/remove saving itemid="+saving.getItemid()+",ret:"+ret+",amount:"+saving.getAmount());
-			playerMoneyUpdate(liveSaving);	
+			SavingManager.getInstance().updateSavings(saving.getPlayerid(), list);
+			playerTopUpdate(saving.getPlayerid());
 			return msgStr2(RetMsg.MSG_OK,str);
 		}else {
 			log.warn("pid:"+saving.getPlayerid()+",error,saving: "+ret);

@@ -114,6 +114,13 @@ public class SavingManager extends MgrBase{
     	return updateSavingAmount(record);
     }
     
+    public synchronized boolean updateSavings(int playerid,List<Saving> list){ 
+    		DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
+    		dataThread.updateSaving(playerid, JSON.toJSONString(list));
+    		return true;
+    }
+    
+    
     public synchronized boolean updateSavingAmount(Saving record){
     	List<Saving> list = getSavingList(record.getPlayerid());
     	if (list==null)
