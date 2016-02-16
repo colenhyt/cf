@@ -186,17 +186,17 @@ public class SavingManager extends MgrBase{
     	return itemids;
     }
     public synchronized List<Saving> getSavingList(int playerId){
-    	List<Saving> list = savingsMap.get(playerId);
+    	List<Saving> list = null;
     	if (list==null){
     		int index = playerId%redisClients.size();
 			RedisClient jedisClient = redisClients.get(index);
 			Jedis jedis = jedisClient.getJedis();
 			String liststr = jedis.hget(MgrBase.DATAKEY_SAVING, String.valueOf(playerId));
 			jedisClient.returnResource(jedis);    	
-			log.warn("pid:"+playerId+" get saving "+liststr);
 			if (liststr!=null){
+				log.warn("pid:"+playerId+" get saving "+liststr);
 				list = JSON.parseArray(liststr, Saving.class);
-				savingsMap.put(playerId, list);
+				//savingsMap.put(playerId, list);
 			}
     	}	
     	return list;
@@ -225,7 +225,7 @@ public class SavingManager extends MgrBase{
 
 	public synchronized int addFirstSaving(int playerId,Saving record){
 		List<Saving> list  = new ArrayList<Saving>();
-		savingsMap.put(playerId, list);
+		//savingsMap.put(playerId, list);
 		list.add(record);
 		DataThread dataThread = dataThreads.get(playerId%dataThreads.size());
 		dataThread.updateSaving(playerId, JSON.toJSONString(list));
@@ -237,7 +237,7 @@ public class SavingManager extends MgrBase{
 		boolean found = false;
 		if (list==null){
 			list = new ArrayList<Saving>();
-			savingsMap.put(playerId, list);
+			//savingsMap.put(playerId, list);
 		}else {
 			for (int i=0;i<list.size();i++){
 				if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){

@@ -338,7 +338,7 @@ public class DataManager extends MgrBase {
 		jedisClient.returnResource(jedis);
 		if (idstr!=null){
 			playerid = Integer.valueOf(idstr);
-				log.warn("find player :"+playerid);
+				//log.warn("find player :"+playerid);
 			//playerMaps.put(playerid, player);
 				playerIdMaps.put(playerName, playerid);
 			return findPlayer(playerid);
@@ -362,7 +362,7 @@ public class DataManager extends MgrBase {
 			jedisClient.returnResource(jedis);			
 			if (itemstr!=null){
 				player = (Player)JSON.parseObject(itemstr,Player.class);
-				log.warn("find player :"+player.getPlayerid());
+				//log.warn("find player :"+player.getPlayerid());
 				//playerMaps.put(playerid, player);
 				if (!playerIdMaps.containsKey(player.getPlayername())){
 					playerIdMaps.put(player.getPlayername(), playerid);
