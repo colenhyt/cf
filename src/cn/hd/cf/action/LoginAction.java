@@ -171,7 +171,7 @@ public class LoginAction extends SavingAction {
 		if (playerBlob==null)
 		{
 			return register();
-		}else if (playerBlob.getOpenid()!=player.getOpenid()){
+		}else if (!playerBlob.getOpenid().equalsIgnoreCase(player.getOpenid())){
 			return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
 		}else {		//名字登陆
 			return loginPlayer(playerBlob);
