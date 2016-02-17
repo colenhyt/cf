@@ -61,16 +61,13 @@ Loading.prototype.add = function(per,nextPer){
 
 Loading.prototype.set = function(per,nextPer){
  if (loadingTag==null) return;
+ if (per>=RES_FINISH) return;
  
  loadingTag.innerHTML = per+'%';
  this.currPer = per;
  if (nextPer!=null)
  	this.nextPer = nextPer;
  
-if (per>=RES_FINISH){
-	this.clear();
-}
-
 }
 
 var g_loading = new Loading();

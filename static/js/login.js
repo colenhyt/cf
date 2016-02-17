@@ -48,7 +48,7 @@ Login.prototype.loadImgCallback = function()
 	this.imgLoaded++;
 	g_loading.add(3,RES_FINISH);
 	if (this.imgLoaded>=login_imgs.length){
-	 g_loading.set(RES_FINISH);
+	 g_loading.clear();
 	 g_game.m_scene.m_map.draw();
 	}
 }
@@ -414,7 +414,7 @@ Login.prototype.loginCallback = function(obj){
 Login.prototype.loadGameImgsBack = function(){
 	if (this.loginData==null) return;
 	
-    g_loading.set(RES_FINISH);
+    g_loading.clear();
 	
 	var objdata = this.loginData;
 	
