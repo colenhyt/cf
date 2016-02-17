@@ -178,7 +178,7 @@ public class StockManager extends MgrBase{
 			jedisClient.returnResource(jedis);    		
 			if (liststr!=null){
 				list = JSON.parseArray(liststr, Stock.class);
-				stocksMap.put(playerId, list);
+				//stocksMap.put(playerId, list);
 			}
     	}	
     	return list;		
@@ -295,7 +295,7 @@ public class StockManager extends MgrBase{
 		List<Stock> list = getStockList(playerId);
 		if (list==null){
 			list = new ArrayList<Stock>();
-			stocksMap.put(playerId, list);
+			//stocksMap.put(playerId, list);
 		}
 		list.add(record);
 		DataThread dataThread = dataThreads.get(playerId%dataThreads.size());

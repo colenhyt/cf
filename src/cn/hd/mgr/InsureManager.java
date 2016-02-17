@@ -105,7 +105,7 @@ public class InsureManager extends MgrBase{
 			jedisClient.returnResource(jedis);    		
 			if (liststr!=null){
 				list = JSON.parseArray(liststr, Insure.class);
-				insuresMap.put(playerId, list);
+				//insuresMap.put(playerId, list);
 			}
     	}
     	return list;
@@ -139,7 +139,7 @@ public class InsureManager extends MgrBase{
 		boolean found = false;
 		if (list==null){
 			list = new ArrayList<Insure>();
-			insuresMap.put(playerId, list);
+			//insuresMap.put(playerId, list);
 		}else {
 			for (int i=0;i<list.size();i++){
 				if (list.get(i).getItemid().intValue()==record.getItemid().intValue()){

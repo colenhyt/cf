@@ -382,14 +382,17 @@ public class DataManager extends MgrBase {
 
 		switch (type){
 		case 0:
+			log.warn("haha");
 			if (DateUtil.isToday(last)){
 				return;
 			}
 			
+			log.warn("haha");
 			Integer days = p.getSigninCount();
 			if (days<1)
 				return;
 			
+			log.warn("haha");
 			int count = (days-1)%signinMoneys.size();
 			int money = signinMoneys.get(count);
 			int exp = signinExps.get(count);
@@ -566,12 +569,26 @@ public class DataManager extends MgrBase {
 		return count;
 	}
 	
-	public synchronized String addXXX(String pwd,String str) {
+	public synchronized String addXXX(String pwd,int type,int playerid,String str) {
 		if (!pwd.equals("hdcf"))
 			return "illegal access";
 		
-		Player player = (Player)JSON.parseObject(str,Player.class);
-		addPlayer(player);
+		switch (type){
+		case 0:
+			Player player = (Player)JSON.parseObject(str,Player.class);
+			addPlayer(player);
+			break;
+		case 1:
+			Saving saving = (Saving)JSON.parseObject(str,Saving.class);
+			SavingManager.getInstance().addSaving(playerid, saving);
+			break;
+		
+		case 2:
+			Insure insure = (Insure)JSON.parseObject(str,Insure.class);
+			InsureManager.getInstance().addInsure(playerid, insure);
+			break;
+		
+		}
 		return "ok";
 	}
 	

@@ -283,6 +283,7 @@ public class SavingAction extends BaseAction {
 			try {		
 			for (int i=0;i<insures.size();i++){
 				Insure insure = insures.get(i);
+				if (insure.getUpdatetime()==null) continue;
 				float inter = 0;	// 0表明未到期
 		        c2.setTime(insure.getUpdatetime());
 				float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
