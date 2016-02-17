@@ -2,6 +2,7 @@ package cn.hd.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DateUtil {
@@ -35,5 +36,21 @@ public class DateUtil {
 			return date2.getTime()-date1.getTime();
 		}
 		return 0;
+	}
+	
+	public static boolean isToday(Date date1){
+		if (date1==null)
+			return false;
+		
+		Date now = new Date();
+	    Calendar cCurr = Calendar.getInstance(); 
+	    cCurr.setTime(now);
+	    int nowYear = cCurr.get(Calendar.YEAR);
+	    int nowDay = cCurr.get(Calendar.DAY_OF_YEAR);
+	    cCurr.setTime(date1);		
+	    int dYear = cCurr.get(Calendar.YEAR);
+	    int dDay = cCurr.get(Calendar.DAY_OF_YEAR);
+	    
+	    return (nowYear==dYear&&nowDay==dDay);
 	}
 }

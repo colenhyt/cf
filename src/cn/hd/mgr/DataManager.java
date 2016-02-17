@@ -2,6 +2,7 @@ package cn.hd.mgr;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import cn.hd.cf.model.Quest;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Signin;
 import cn.hd.cf.model.Stock;
+import cn.hd.util.DateUtil;
 import cn.hd.util.QuestLog;
 import cn.hd.util.RedisClient;
 import cn.hd.util.SigninLog;
@@ -254,21 +256,13 @@ public class DataManager extends MgrBase {
 		return JSON.toJSONString(data);
 	}
 
-	private synchronized boolean isSameDay(Date date){
-		Date now = new Date();
-		if (date==null||now.getYear()!=date.getYear()||now.getMonth()!=date.getMonth()||now.getDay()!=date.getDay()){
-			return false;
-		}		
-		return true;
-	}
-	
 	public synchronized String get_quest(int playerid){
 		Player p = findPlayer(playerid);
 		if (p==null) return "";
 		//随机任务两个:
 		int questcount = 0;
 		Date lastlogin = p.getLastlogin();
-		boolean istoday = isSameDay(p.getLastlogin());
+		boolean istoday = DateUtil.isToday(p.getLastlogin());
 		String queststr = p.getQuestStr();
 		int qid = -1;
 		if (queststr==null){
@@ -381,17 +375,22 @@ public class DataManager extends MgrBase {
 	
 	public synchronized void update(int playerid,int type,String itemstr,String amountStr){
 		Player p = findPlayer(playerid);
+		SimpleDateFormat formatter = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		if (p==null) return;
 		Date now = new Date();
 		Date last = p.getLastlogin();
+		String d1 = formatter.format(now);
+		String d2 = formatter.format(last);
 		
 		switch (type){
 		case 0:
-			if (last!=null&&last.getYear()==now.getYear()&&last.getMonth()==now.getMonth()&&last.getDay()==now.getDay()){
+			log.warn("hehe"+playerid+":"+d1+","+d2);
+			if (DateUtil.isToday(last)){
 				return;
 			}
 			
 			Integer days = p.getSigninCount();
+			log.warn("hehe:"+playerid+","+days);
 			if (days<1)
 				return;
 			
@@ -419,7 +418,7 @@ public class DataManager extends MgrBase {
 					return;
 				}
 				//不同一天登陆不允许正向事件:
-				if (last==null||last.getYear()!=now.getYear()||last.getMonth()!=now.getMonth()||last.getDay()!=now.getDay()){
+				if (last==null||DateUtil.isToday(last)){
 					return;
 				}
 				if (p.getEventCount()>50){
@@ -687,6 +686,9 @@ public class DataManager extends MgrBase {
 					q = String.valueOf(qid);
 			}
 			p.setQuestStr(q);
+			DataThread dataThread2 = dataThreads.get(p.getPlayerid()%dataThreads.size());
+			dataThread2.push(p);
+			break;
 		}
 		String str = "gm:pid:"+playeridStr+",type:"+type+",itemid:"+itemid+",qty:"+qty;
 		if (psstr!=null){
@@ -698,6 +700,12 @@ public class DataManager extends MgrBase {
 	}
 
 	public static void main(String[] args) {
+		
+		long s = Long.valueOf(1454491582484L);
+		Date now = new Date();
+		Date last= new Date(s);
+		boolean a = DateUtil.isToday(last);
+		int d = now.getYear();
 //		DataManager stmgr = DataManager.getInstance();
 //		stmgr.init();
 //		long s = System.currentTimeMillis();

@@ -21,6 +21,7 @@ import cn.hd.mgr.DataManager;
 import cn.hd.mgr.SavingManager;
 import cn.hd.mgr.StockManager;
 import cn.hd.mgr.ToplistManager;
+import cn.hd.util.DateUtil;
 import cn.hd.util.HttpXmlClient;
 
 import com.alibaba.fastjson.JSON;
@@ -212,7 +213,7 @@ public class LoginAction extends SavingAction {
 	private synchronized boolean countSignin(Player p){
 		Date now = new Date();
 		Date last = p.getLastlogin();
-		if (last!=null&&last.getYear()==now.getYear()&&last.getMonth()==now.getMonth()&&last.getDay()==now.getDay()){
+		if (DateUtil.isToday(last)){
 			return false;
 		}
 
@@ -255,12 +256,12 @@ public class LoginAction extends SavingAction {
 		
 		Date now = new Date();
 		if (qdoneTime!=null){
-			if (qdoneTime.getDay()==now.getDay()&&qdoneTime.getMonth()==now.getMonth()&&qdoneTime.getYear()==now.getYear())
+			if (DateUtil.isToday(qdoneTime))
 				return false;
 		}
 		Date assignTime = p.getQuestassigntime();
 		if (assignTime!=null){
-			if (assignTime.getDay()==now.getDay()&&assignTime.getMonth()==now.getMonth()&&assignTime.getYear()==now.getYear())
+			if (DateUtil.isToday(assignTime))
 				return false;
 		}		
 		
