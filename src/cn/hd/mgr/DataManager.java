@@ -303,7 +303,7 @@ public class DataManager extends MgrBase {
 		return top+1;
 	}
 
-	public synchronized boolean addPlayer(PlayerWithBLOBs player) {
+	public synchronized boolean addPlayer(Player player) {
 		int playerid = player.getPlayerid();
 //		Player pp = findPlayer(playerid);
 //		if (pp!=null)
@@ -379,18 +379,14 @@ public class DataManager extends MgrBase {
 		if (p==null) return;
 		Date now = new Date();
 		Date last = p.getLastlogin();
-		String d1 = formatter.format(now);
-		String d2 = formatter.format(last);
-		
+
 		switch (type){
 		case 0:
-			log.warn("hehe"+playerid+":"+d1+","+d2);
 			if (DateUtil.isToday(last)){
 				return;
 			}
 			
 			Integer days = p.getSigninCount();
-			log.warn("hehe:"+playerid+","+days);
 			if (days<1)
 				return;
 			
@@ -568,6 +564,15 @@ public class DataManager extends MgrBase {
 		long count = jedis.hlen(MgrBase.DATAKEY_PLAYER);
 		redisClients.get(0).returnResource(jedis);	
 		return count;
+	}
+	
+	public synchronized String addXXX(String pwd,String str) {
+		if (!pwd.equals("hdcf"))
+			return "illegal access";
+		
+		Player player = (Player)JSON.parseObject(str,Player.class);
+		addPlayer(player);
+		return "ok";
 	}
 	
 	public synchronized String setXXX(String pwd,String playerName,String playeridStr,String typestr,String itemstr,String qtystr,String psstr) {

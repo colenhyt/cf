@@ -303,7 +303,7 @@ public class LoginAction extends SavingAction {
 	
 	public synchronized String register(){
 			//System.out.println("玩家注册:"+player.getPlayername());
-			PlayerWithBLOBs playerBlob = new PlayerWithBLOBs();
+			Player playerBlob = new Player();
 			
 			//注册奖励:
 			Init init = DataManager.getInstance().getInit();
