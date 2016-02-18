@@ -218,8 +218,10 @@ Saving.prototype.buyCallback = function(ret){
 	var desc;
 	if (amount>0)
 		desc = "定期存入<span style='color:red'>"+item.name+"</span>成功,金额:"+amount;
-	else 
+	else {
 		desc = "取出<span style='color:red'>"+item.name+"</span>成功,金额:"+(0-amount);
+		g_bank.removeTip();
+	}
 		
 	g_msg.tip(desc);
 	

@@ -289,7 +289,7 @@ Stock.prototype.showDetail = function(id,isflush){
 		var psColor = "red";
 		if (profit<0)
 			psColor = "green"   
-		pitem.buyps = "("+pitem.amount/pitem.qty+")";
+		pitem.buyps = "("+ForDight(pitem.amount/pitem.qty)+")";
    	 strPro = "盈亏:<span style='color:"+psColor+"'>"+parseInt(profit)+"</span>";
    }
    

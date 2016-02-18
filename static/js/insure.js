@@ -62,14 +62,6 @@ Insure.prototype.findIds = function()
 	return ids.concat(otherdata);
 }
 
-Insure.prototype.reloadInsures = function()
-{
- var updateStr = "insure.playerid="+g_player.data.playerid;
- var dataobj = $.ajax({type:"post",url:"/cf/insure_get.do",data:updateStr,async:false});
- var msg = g_login.loadInsureData(dataobj.responseText);
- g_login.showLoginMsg(msg);
-}
-
 Insure.prototype.buildPage = function(page)
 {
 	if (page<0)
@@ -78,15 +70,13 @@ Insure.prototype.buildPage = function(page)
 	if (this.dataLoaded==false&&this.reloadCount<3)
 	{
 		this.hide();
-		g_login.syncLoadData_insure(g_player.data.playerid,1);
+		g_login.syncLoadData_saving(g_player.data.playerid,1);
 		this.reloadCount++;
 		return;
 	}
 
 	playAudioHandler('open1');	
 		
-	//this.reloadInsures();
-	
 	var tdata = store.get(this.name);
 	var sids = this.findIds();
 	var content = 	"";

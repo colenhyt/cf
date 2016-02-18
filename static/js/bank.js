@@ -199,19 +199,23 @@ Bank.prototype.existTimeout = function() {
 	
 	return hasTip;
 }
+
+Bank.prototype.removeTip = function(){
+	var tag=$("#tag2"+this.name);
+	if (tag){
+		tag.remove();
+	}
+}
+
 Bank.prototype.update = function(){
-	return;
 	
 	this.count++;
-	if (this.count%25==0){
+	if (this.count%10==0){
 	  this.hasTip = this.existTimeout();
 	}
 	
 	if (!this.hasTip||!g_game.enter) {
-		var tag=$("#tag2"+this.name);
-		if (tag){
-			tag.remove();
-		}
+		this.removeTip();
 		return;
 	}
 	

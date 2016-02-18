@@ -265,7 +265,7 @@ Login.prototype.syncLoadData = function(playerid){
 	try    {
 		g_login.syncLoadData_saving(playerid);
 
-		g_login.syncLoadData_insure(playerid);
+		//g_login.syncLoadData_insure(playerid);
 		
 		g_login.syncLoadData_stock(playerid);
 		
@@ -280,7 +280,11 @@ Login.prototype.syncLoadData = function(playerid){
 Login.prototype.syncLoadData_saving = function(playerid,flag){
 		var dataParam = "playerid="+playerid+"&type=1";
 		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
-		 g_login.syncLoadDataCallback_saving(cfeval(data),flag);
+		var datas = data.split(";");
+		if (datas.length>0&&datas[0].length>0)
+		 	g_login.syncLoadDataCallback_saving(cfeval(datas[0]),flag);
+		if (datas.length>1&&datas[1].length>0)
+		 	g_login.syncLoadDataCallback_insure(cfeval(datas[1]),flag);
 		}});
     	g_login.loadCount++;
 }
