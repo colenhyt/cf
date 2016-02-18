@@ -424,7 +424,7 @@ public class DataManager extends MgrBase {
 					return;
 				}
 				//不同一天登陆不允许正向事件:
-				if (last==null||DateUtil.isToday(last)){
+				if (last==null||!DateUtil.isToday(last)){
 					return;
 				}
 				if (p.getEventCount()>50){

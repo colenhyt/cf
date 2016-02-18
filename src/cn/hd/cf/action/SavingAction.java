@@ -1,6 +1,7 @@
 package cn.hd.cf.action;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -267,7 +268,7 @@ public class SavingAction extends BaseAction {
 		}
 	}
 
-	public synchronized Map<Integer,Insure> findUpdatedInsures(int playerId)
+	public synchronized Map<Integer,Insure> findUpdatedInsures(int playerId,Saving liveSaving)
 		{
 			List<Insure> insures = InsureManager.getInstance().getInsureList(playerId);
 //			System.out.println("找到保险个数:"+playerId+" from db:"+insures.size()+",session:"+MybatisSessionFactory.getSession().toString());
@@ -280,9 +281,9 @@ public class SavingAction extends BaseAction {
 		    cCurr.setTime(curr);
 		    Calendar c2 = Calendar.getInstance(); 
 			
+		    List<Insure> notTimeoutInsures = new ArrayList<Insure>();
 			try {		
-			for (int i=0;i<insures.size();i++){
-				Insure insure = insures.get(i);
+			for (Insure insure:insures){
 				if (insure.getUpdatetime()==null) continue;
 				float inter = 0;	// 0表明未到期
 		        c2.setTime(insure.getUpdatetime());
@@ -297,14 +298,16 @@ public class SavingAction extends BaseAction {
 					if (insure.getType()!=null&&insure.getType()==1){
 					
 						Insure incfg = InsureManager.getInstance().getInsureCfg(insure.getItemid());
+						float oriAmount = insure.getAmount();
 						inter = incfg.getProfit()*insure.getQty();
-						pushLive(playerId, insure.getAmount()+inter);
+						liveSaving.setAmount(liveSaving.getAmount()+oriAmount+inter);
 					}else {		//保险到期，移除
 						inter = -1;
 					}
+					log.warn("pid:"+playerId+" insure timeout:"+JSON.toJSONString(insure));
 //					System.out.println("insure overdate:"+insure.getItemid());
-					//删除产品
-					InsureManager.getInstance().deleteInsure(insure.getPlayerid(), insure);
+				}else {
+					notTimeoutInsures.add(insure);
 				}
 				
 				Insure uinsure = new Insure();
@@ -313,6 +316,7 @@ public class SavingAction extends BaseAction {
 				uinsure.setQty(insure.getQty());
 				uinsure.setProfit(inter);
 				mdata.put(insure.getItemid(), uinsure);
+				InsureManager.getInstance().updateInsures(playerId, notTimeoutInsures);
 //				System.out.println("put insure :"+insure.getItemid());
 			}
 			}catch (Exception e){
