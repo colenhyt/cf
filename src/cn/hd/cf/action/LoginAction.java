@@ -18,6 +18,7 @@ import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
 import cn.hd.mgr.DataManager;
+import cn.hd.mgr.InsureManager;
 import cn.hd.mgr.SavingManager;
 import cn.hd.mgr.StockManager;
 import cn.hd.mgr.ToplistManager;
@@ -48,10 +49,12 @@ public class LoginAction extends SavingAction {
 	
 	public synchronized String getPlayerJsonData(Player playerBlob)
 	{
-		Map<Integer,Insure> insures = findUpdatedInsures(playerBlob.getPlayerid());
-		playerBlob.setInsure(JSON.toJSONString(insures));		
-		Map<Integer,Saving> savings = findUpdatedSavings(playerBlob.getPlayerid());
-		playerBlob.setSaving(JSON.toJSONString(savings));
+		String insures = DataManager.getInstance().get_insure2(playerBlob.getPlayerid());
+		playerBlob.setInsure(insures);		
+		
+		String savings = DataManager.getInstance().get_saving2(playerBlob.getPlayerid());
+		playerBlob.setSaving(savings);
+		
 		Map<Integer,List<Stock>> stocks = StockManager.getInstance().findMapStocks(playerBlob.getPlayerid());
 		playerBlob.setStock(JSON.toJSONString(stocks));	
 //		Toplist toplist = ToplistManager.getInstance().findByPlayerId(playerBlob.getPlayerid());
@@ -70,6 +73,69 @@ public class LoginAction extends SavingAction {
 		return obj.toString();
 	}
 	
+	//
+	public synchronized String get_savingAndInsure(int playerId)
+	{
+		Map<Integer,Saving>	 mdata = new HashMap<Integer,Saving>();
+		List<Saving> savings = SavingManager.getInstance().getSavingList(playerId);
+		if (savings==null||savings.size()<=0)
+			return JSON.toJSONString(mdata);
+		
+		Date currDate = new Date();
+	    Calendar cCurr = Calendar.getInstance(); 
+	    cCurr.setTime(currDate);
+	    Calendar c2 = Calendar.getInstance(); 
+		Saving liveSaving = null;
+		int liveIndex = 0;
+		boolean hasUpdate = false;
+		for (int i=0;i<savings.size();i++){
+			Saving saving = savings.get(i);
+			float inter = 0;
+	        c2.setTime(saving.getUpdatetime());
+	        float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
+	        float periodMinutes = saving.getPeriod()*60*24;//天:分钟
+			if (saving.getType()==0)		//活期
+			{
+				liveSaving = saving;
+				liveIndex = i;
+				periodMinutes = 60*24;//天:分钟
+				long diff = (long)(diffdd/periodMinutes);
+				inter = diff * saving.getAmount()*saving.getRate()/100;
+				if (inter>1){
+					hasUpdate = true;
+					saving.setAmount(saving.getAmount()+inter);					
+				}else
+					inter = 0;		//不算利息
+			}else if (isSavingTimeout(saving))		//定期到期
+			{
+				hasUpdate = true;
+				saving.setStatus((byte)1);
+				SavingManager.getInstance().updateSaving(playerId, saving);
+				log.debug("pid:"+playerId+" saving timeout,get inter:"+saving.getItemid()+",inter: "+inter);
+			}
+			Saving usaving = new Saving();
+			usaving.setItemid(saving.getItemid());
+			usaving.setAmount(saving.getAmount());
+			usaving.setCreatetime(saving.getCreatetime());
+			usaving.setQty(saving.getQty());
+			usaving.setProfit(inter);
+//			log.warn("add usersaving:"+JSON.toJSONString(usaving));
+			mdata.put(saving.getItemid(), usaving);
+		}
+		float oriLiveValue = liveSaving.getAmount();
+		Map<Integer,Insure> insures = findUpdatedInsures(playerId,liveSaving);
+		if (liveSaving.getAmount()!=oriLiveValue){
+			savings.get(liveIndex).setAmount(liveSaving.getAmount());
+			hasUpdate = true;
+		}
+		if (hasUpdate==true){
+			SavingManager.getInstance().updateSavings(playerId,savings);
+			super.playerTopUpdate(playerId);			
+		}	
+		String data = JSON.toJSONString(mdata)+";"+JSON.toJSONString(insures);
+		log.warn("pid:"+playerId+" get saving and insure:"+data);
+		return data;
+	}
 	//
 	public synchronized Map<Integer,Saving> findUpdatedSavings(int playerId)
 	{

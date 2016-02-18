@@ -219,9 +219,7 @@ public class DataManager extends MgrBase {
 	public synchronized String getData(int playerid, int typeid) {
 		String data = "";
 		if (typeid == 1) {
-			data = get_saving(playerid);
-		} else if (typeid == 2) {
-			data = get_insure(playerid);
+			data = loginAction.get_savingAndInsure(playerid);
 		} else if (typeid == 3) {
 			data = get_stock(playerid);
 		} else if (typeid == 4) {
@@ -251,11 +249,6 @@ public class DataManager extends MgrBase {
 			return null;
 		
 		return loginAction.getPlayerJsonData(player);
-	}
-	
-	public synchronized String get_insure(int playerid) {
-		Map<Integer, Insure> data = loginAction.findUpdatedInsures(playerid);
-		return JSON.toJSONString(data);
 	}
 	
 	public synchronized String get_insure2(int playerid) {

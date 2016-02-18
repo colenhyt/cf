@@ -59,25 +59,12 @@ public class InsureAction extends SavingAction {
 
 	}
 	
-	public String get()
-	{
-		Map<Integer,Insure> insures = findUpdatedInsures(insure.getPlayerid());
-		String strInsure = JSON.toJSONString(insures);
-		write(strInsure,"utf-8");
-		//if (insures.size()<=0)
-		return null;
-	}
-	
 	public static void main(String[] args)
 	{
 		InsureAction aa = new InsureAction();
 		Insure in = new Insure();
 		in.setPlayerid(215);
 		aa.setInsure(in);
-		for (int i=0;i<200;i++){
-			aa.get();
-			
-		}
 		System.out.println("print done");
 	}
 }

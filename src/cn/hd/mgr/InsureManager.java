@@ -173,6 +173,11 @@ public class InsureManager extends MgrBase{
 		return action.add();
 	}
 
+	public synchronized void updateInsures(int playerId,List<Insure> insures){
+		DataThread dataThread = dataThreads.get(playerId%dataThreads.size());
+		dataThread.updateInsure(playerId, JSON.toJSONString(insures));
+	}
+	
 	public synchronized int deleteInsure(int playerId,Insure record){
 		List<Insure> list = getInsureList(playerId);
 		if (list==null)
