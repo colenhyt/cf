@@ -1,6 +1,7 @@
 package cn.hd.cf.action;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Message;
 import cn.hd.cf.model.Player;
 import cn.hd.cf.model.PlayerWithBLOBs;
+import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
 import cn.hd.mgr.DataManager;
@@ -97,12 +99,12 @@ public class LoginAction extends SavingAction {
 			if (saving.getType()==0)		//活期
 			{
 				liveSaving = saving;
-				liveIndex = i;
 				periodMinutes = 60*24;//天:分钟
 				long diff = (long)(diffdd/periodMinutes);
 				inter = diff * saving.getAmount()*saving.getRate()/100;
 				if (inter>1){
 					hasUpdate = true;
+					liveIndex = i;
 					saving.setAmount(saving.getAmount()+inter);					
 				}else
 					inter = 0;		//不算利息
@@ -113,27 +115,67 @@ public class LoginAction extends SavingAction {
 				SavingManager.getInstance().updateSaving(playerId, saving);
 				log.debug("pid:"+playerId+" saving timeout,get inter:"+saving.getItemid()+",inter: "+inter);
 			}
-			Saving usaving = new Saving();
-			usaving.setItemid(saving.getItemid());
-			usaving.setAmount(saving.getAmount());
-			usaving.setCreatetime(saving.getCreatetime());
-			usaving.setQty(saving.getQty());
-			usaving.setProfit(inter);
-//			log.warn("add usersaving:"+JSON.toJSONString(usaving));
-			mdata.put(saving.getItemid(), usaving);
+			saving.setProfit(inter);
 		}
 		float oriLiveValue = liveSaving.getAmount();
-		Map<Integer,Insure> insures = findUpdatedInsures(playerId,liveSaving);
+		Map<Integer,Insure>	insures = new HashMap<Integer,Insure>();	
+		//保险返回数据
+		float insureamount = findUpdatedInsures(playerId,liveSaving,insures);
 		if (liveSaving.getAmount()!=oriLiveValue){
 			savings.get(liveIndex).setAmount(liveSaving.getAmount());
 			hasUpdate = true;
 		}
+		
+		
+		//存款返回数据:
+		float savingamount = 0;		
+		for (Saving item:savings){
+			Saving usaving = new Saving();
+			usaving.setItemid(item.getItemid());
+			usaving.setAmount(item.getAmount());
+			usaving.setCreatetime(item.getCreatetime());
+			usaving.setQty(item.getQty());
+			usaving.setProfit(item.getProfit());
+			savingamount += item.getAmount();
+			mdata.put(usaving.getItemid(), usaving);			
+		}
+		savingamount = Float.valueOf(savingamount).intValue();
+		
+		//股票返回数据:
+		float stockamount = 0;
+		Map<Integer,List<Stock>> stocks = new HashMap<Integer,List<Stock>>();		
+		List<Stock> ss = StockManager.getInstance().getStockList(playerId);
+		if (ss!=null){
+		for (int i=0;i<ss.size();i++){
+			Stock ps = ss.get(i);
+			if (ps==null) continue;
+			List<Stock> list = stocks.get(ps.getItemid());
+			if (list==null){
+				list = new ArrayList<Stock>();
+				stocks.put(ps.getItemid(), list);
+			}
+			List<Quote> qq = StockManager.getInstance().getLastQuotes(ps.getItemid());
+			if (qq.size()>0)
+				stockamount += qq.get(0).getPrice()*ps.getQty();			
+			list.add(ss.get(i));
+		}		
+		}
+		stockamount = Float.valueOf(stockamount).intValue();
+		float amount = savingamount + insureamount + stockamount;
+		int top = ToplistManager.getInstance().findCountByGreaterMoney(
+				playerId, 0, amount);
+		top++;
+		
 		if (hasUpdate==true){
 			SavingManager.getInstance().updateSavings(playerId,savings);
-			super.playerTopUpdate(playerId);			
+			Player player2 = DataManager.getInstance().findPlayer(playerId);	
+			if (player2!=null){
+				log.warn("pid:"+playerId+" update toplist:"+top);
+				ToplistManager.getInstance().updateToplist(playerId,player2.getPlayername(),amount);
+			}
 		}	
-		String data = JSON.toJSONString(mdata)+";"+JSON.toJSONString(insures);
-		log.warn("pid:"+playerId+" get saving and insure:"+data);
+		String data = JSON.toJSONString(mdata)+";"+JSON.toJSONString(insures)+";"+JSON.toJSONString(stocks)+";"+top;
+		log.warn("pid:"+playerId+" get login data:"+data);
 		return data;
 	}
 	//
@@ -209,7 +251,7 @@ public class LoginAction extends SavingAction {
 			if (newSignin||newAssign){
 				DataManager.getInstance().updatePlayerQuest(player);
 			}
-			return serialize(player,0,null); 
+			return serialize(player,0,null,0); 
 		}else
 			return super.msgStr(RetMsg.MSG_WrongPlayerNameOrPwd);	
 	}
@@ -296,7 +338,7 @@ public class LoginAction extends SavingAction {
 		return true;
 	}
 	
-	private synchronized String serialize(Player player,int isregister,String savingStr){
+	private synchronized String serialize(Player player,int isregister,String savingStr,int top){
 		float margin = StockManager.getInstance().getMarginSec();
 		player.setQuotetime(margin);
 		String pp = JSON.toJSONString(player);
@@ -304,12 +346,13 @@ public class LoginAction extends SavingAction {
 		if (isregister==1){
 			data += ",saving:"+savingStr;
 		}
-		data += "}";
+		data += ",top:"+top+"}";
 	  log.warn("pid:"+player.getPlayerid()+" loginback:"+data);
 	  return data;
 	}
 	
 	public static void main(String[] args){
+		Date a = new Date(1454488250538L);
 		LoginAction l = new LoginAction();
 		Player p = new Player();
 		p.setQuestStr("2");
@@ -393,6 +436,7 @@ public class LoginAction extends SavingAction {
 				return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
 			}
 			Map<Integer, Saving> savings = (new HashMap<Integer,Saving>());
+			int top = 0;
 			//活期存款:
 			if (init!=null&&init.getMoney()>0){
 				Saving savingCfg = SavingManager.getInstance().getSavingCfg(1);
@@ -411,11 +455,14 @@ public class LoginAction extends SavingAction {
 				savings.put(saving.getItemid(), saving);
 				//top = DataManager.getInstance().get_registerTop(saving.getAmount());
 				ToplistManager.getInstance().addRegisterToplist(playerBlob.getPlayerid(),playerBlob.getPlayername(),saving.getAmount());	
+				top = ToplistManager.getInstance().findCountByGreaterMoney(
+						playerBlob.getPlayerid(), 0, saving.getAmount());
+				top++;
 			}
 //			JSONObject obj = JSONObject.fromObject(playerBlob);	
-			log.warn("pid:"+playerBlob.getPlayerid()+" register success,openid:'"+playerBlob.getOpenid()+"',name:"+player.getPlayername());
+			log.warn("pid:"+playerBlob.getPlayerid()+" register success,openid:'"+playerBlob.getOpenid()+"',name:"+player.getPlayername()+",top:"+top);
 //			write(obj.toString(),"utf-8");
 			
-			return serialize(playerBlob,1,JSON.toJSONString(savings));
+			return serialize(playerBlob,1,JSON.toJSONString(savings),top);
 		}
 }

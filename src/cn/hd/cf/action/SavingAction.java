@@ -268,14 +268,14 @@ public class SavingAction extends BaseAction {
 		}
 	}
 
-	public synchronized Map<Integer,Insure> findUpdatedInsures(int playerId,Saving liveSaving)
+	public synchronized float findUpdatedInsures(int playerId,Saving liveSaving,Map<Integer,Insure> mdata)
 		{
 			List<Insure> insures = InsureManager.getInstance().getInsureList(playerId);
 //			System.out.println("找到保险个数:"+playerId+" from db:"+insures.size()+",session:"+MybatisSessionFactory.getSession().toString());
-			Map<Integer,Insure>	mdata = new HashMap<Integer,Insure>();
 			if (insures==null)
-				return mdata;
+				return 0;
 			
+			float insureamount = 0;
 			Date curr = new Date();
 		    Calendar cCurr = Calendar.getInstance(); 
 		    cCurr.setTime(curr);
@@ -307,6 +307,7 @@ public class SavingAction extends BaseAction {
 					log.warn("pid:"+playerId+" insure timeout:"+JSON.toJSONString(insure));
 //					System.out.println("insure overdate:"+insure.getItemid());
 				}else {
+					insureamount += insure.getAmount();
 					notTimeoutInsures.add(insure);
 				}
 				
@@ -317,14 +318,13 @@ public class SavingAction extends BaseAction {
 				uinsure.setProfit(inter);
 				mdata.put(insure.getItemid(), uinsure);
 				InsureManager.getInstance().updateInsures(playerId, notTimeoutInsures);
-//				System.out.println("put insure :"+insure.getItemid());
 			}
 			}catch (Exception e){
 				e.printStackTrace();
-				return mdata;
 			}	
+			insureamount = Float.valueOf(insureamount).intValue();
 //			System.out.println("return insure :"+mdata.size());
-			return mdata;
+			return insureamount;
 		}
 
 }
