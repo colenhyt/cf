@@ -261,16 +261,22 @@ Login.prototype.showLoginMsg = function(loginMsg){
 	}
 }
 
-Login.prototype.syncLoadData = function(playerid){
+Login.prototype.syncLoadData = function(playerid,flag){
 	try    {
-		g_login.syncLoadData_saving(playerid);
-
-		//g_login.syncLoadData_insure(playerid);
-		
-		g_login.syncLoadData_stock(playerid);
-		
-		g_login.syncLoadData_top(playerid);
-				
+		var dataParam = "playerid="+playerid+"&type=1";
+		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
+		var datas = data.split(";");
+		alert(data);
+		if (datas.length>0&&datas[0].length>0)
+		 	g_login.syncLoadDataCallback_saving(cfeval(datas[0]),flag);
+		if (datas.length>1&&datas[1].length>0)
+		 	g_login.syncLoadDataCallback_insure(cfeval(datas[1]),flag);
+		if (datas.length>2&&datas[2].length>0)
+		 	g_login.syncLoadDataCallback_stock(cfeval(datas[2]),flag);
+		if (datas.length>3&&datas[3].length>0)
+		 	g_login.syncLoadDataCallback_top(cfeval(datas[3]),flag);
+		}});
+    	g_login.loadCount+4;				
 	}   catch  (e)   {
 	    logerr(e.name  +   " :  "   +  dataParam);
 	   return false;
@@ -285,6 +291,10 @@ Login.prototype.syncLoadData_saving = function(playerid,flag){
 		 	g_login.syncLoadDataCallback_saving(cfeval(datas[0]),flag);
 		if (datas.length>1&&datas[1].length>0)
 		 	g_login.syncLoadDataCallback_insure(cfeval(datas[1]),flag);
+		if (datas.length>2&&datas[2].length>0)
+		 	g_login.syncLoadDataCallback_stock(cfeval(datas[2]),flag);
+		if (datas.length>3&&datas[3].length>0)
+		 	g_login.syncLoadDataCallback_top(cfeval(datas[3]),flag);
 		}});
     	g_login.loadCount++;
 }
@@ -440,8 +450,8 @@ Login.prototype.loadGameImgsBack = function(){
        
     //register
     if (flag==1){
-    	g_login.loadCount += 1;
- 	   	g_login.syncLoadData_top(player.playerid);
+    	g_login.loadCount += 2;
+ 	   	g_login.syncLoadDataCallback_top(objdata.top);
 	   	g_login.syncLoadDataCallback_saving(objdata.saving);
     }else{
     	this.syncLoadData(player.playerid);
