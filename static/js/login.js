@@ -449,8 +449,8 @@ Login.prototype.loadGameImgsBack = function(){
        
     //register
     if (flag==1){
-    	g_login.loadCount += 2;
- 	   	g_login.syncLoadDataCallback_top(objdata.top);
+    	g_login.loadCount += 1;
+ 	   	g_login.syncLoadData_top(player.playerid);
 	   	g_login.syncLoadDataCallback_saving(objdata.saving);
     }else{
     	this.syncLoadData(player.playerid);
