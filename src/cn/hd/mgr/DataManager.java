@@ -113,23 +113,23 @@ public class DataManager extends MgrBase {
 		String xxx = "玩家数据: pid:"+p.getPlayerid()+",name:"+p.getPlayername()+",openid:"+p.getOpenid()+" <br>";
 		xxx += ",createtime:"+p.getCreateTimeStr()+"<br>";
 		xxx += "player :"+JSON.toJSONString(p)+" <br><br>";
-		xxx += "saving :<br>";
-		Map<Integer,Saving> savings = JSON.parseObject(getData(p.getPlayerid(),1), new TypeReference<Map<Integer, Saving>>() {});
+		xxx += "存款 :<br>";
+		Map<Integer,Saving> savings = JSON.parseObject(get_saving2(p.getPlayerid()), new TypeReference<Map<Integer, Saving>>() {});
 		for (Integer itemid:savings.keySet()){
 			Saving item = savings.get(itemid); 
 			String cstr = formatter.format(item.getCreatetime());
 			xxx += "createtime: "+cstr+",data:"+JSON.toJSONString(item)+"<br>";
 		}
 		xxx += "<br><br>";
-		xxx += "insure :<br>";
-		Map<Integer,Insure> insures = JSON.parseObject(getData(p.getPlayerid(),2), new TypeReference<Map<Integer, Insure>>() {});
+		xxx += "保险 :<br>";
+		Map<Integer,Insure> insures = JSON.parseObject(get_insure2(p.getPlayerid()), new TypeReference<Map<Integer, Insure>>() {});
 		for (Integer itemid:insures.keySet()){
 			Insure item = insures.get(itemid); 
 			String cstr = formatter.format(item.getCreatetime());
 			xxx += "createtime: "+cstr+",data:"+JSON.toJSONString(item)+"<br>";
 		}
 		xxx += "<br><br>";
-		xxx += "stock :<br>";
+		xxx += "股票 :<br>";
 		Map<Integer,List<Stock>> stocks = JSON.parseObject(getData(p.getPlayerid(),3), new TypeReference<Map<Integer, List<Stock>>>() {});
 		for (Integer itemid:stocks.keySet()){
 			List<Stock> items = stocks.get(itemid); 
@@ -236,6 +236,14 @@ public class DataManager extends MgrBase {
 		return JSON.toJSONString(data);
 	}
 
+	public synchronized String get_saving2(int playerid) {
+		List<Saving> savings = SavingManager.getInstance().getSavingList(playerid);
+		Map<Integer,Saving>	 mdata = new HashMap<Integer,Saving>();
+		for (Saving item:savings){
+			mdata.put(item.getItemid(), item);
+		}
+		return JSON.toJSONString(mdata);
+	}
 
 	public String get_info(int playerid){
 		Player player = this.findPlayer(playerid);
@@ -249,7 +257,16 @@ public class DataManager extends MgrBase {
 		Map<Integer, Insure> data = loginAction.findUpdatedInsures(playerid);
 		return JSON.toJSONString(data);
 	}
-
+	
+	public synchronized String get_insure2(int playerid) {
+		List<Insure> insures = InsureManager.getInstance().getInsureList(playerid);
+		Map<Integer,Insure>	mdata = new HashMap<Integer,Insure>();
+		for (Insure item:insures){
+			mdata.put(item.getItemid(), item);
+		}
+		return JSON.toJSONString(mdata);
+	}
+	
 	public synchronized String get_stock(int playerid) {
 		Map<Integer, List<Stock>> data = StockManager.getInstance()
 				.findMapStocks(playerid);
@@ -375,14 +392,11 @@ public class DataManager extends MgrBase {
 	
 	public synchronized void update(int playerid,int type,String itemstr,String amountStr){
 		Player p = findPlayer(playerid);
-		SimpleDateFormat formatter = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		if (p==null) return;
-		Date now = new Date();
 		Date last = p.getLastlogin();
 
 		switch (type){
 		case 0:
-			log.warn("haha");
 			if (DateUtil.isToday(last)){
 				return;
 			}
