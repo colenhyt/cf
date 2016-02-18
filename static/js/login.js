@@ -266,7 +266,6 @@ Login.prototype.syncLoadData = function(playerid,flag){
 		var dataParam = "playerid="+playerid+"&type=1";
 		$.ajax({type:"post",url:"/cf/login_load.jsp",data:dataParam,success:function(data){
 		var datas = data.split(";");
-		alert(data);
 		if (datas.length>0&&datas[0].length>0)
 		 	g_login.syncLoadDataCallback_saving(cfeval(datas[0]),flag);
 		if (datas.length>1&&datas[1].length>0)
