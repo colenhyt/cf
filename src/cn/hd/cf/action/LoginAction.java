@@ -251,7 +251,7 @@ public class LoginAction extends SavingAction {
 			if (newSignin||newAssign){
 				DataManager.getInstance().updatePlayerQuest(player);
 			}
-			return serialize(player,0,null,0); 
+			return serialize(player,0,null); 
 		}else
 			return super.msgStr(RetMsg.MSG_WrongPlayerNameOrPwd);	
 	}
@@ -338,7 +338,7 @@ public class LoginAction extends SavingAction {
 		return true;
 	}
 	
-	private synchronized String serialize(Player player,int isregister,String savingStr,int top){
+	private synchronized String serialize(Player player,int isregister,String savingStr){
 		float margin = StockManager.getInstance().getMarginSec();
 		player.setQuotetime(margin);
 		String pp = JSON.toJSONString(player);
@@ -346,7 +346,7 @@ public class LoginAction extends SavingAction {
 		if (isregister==1){
 			data += ",saving:"+savingStr;
 		}
-		data += ",top:"+top+"}";
+		data += "}";
 	  log.warn("pid:"+player.getPlayerid()+" loginback:"+data);
 	  return data;
 	}
@@ -436,7 +436,6 @@ public class LoginAction extends SavingAction {
 				return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
 			}
 			Map<Integer, Saving> savings = (new HashMap<Integer,Saving>());
-			int top = 0;
 			//活期存款:
 			if (init!=null&&init.getMoney()>0){
 				Saving savingCfg = SavingManager.getInstance().getSavingCfg(1);
@@ -455,14 +454,11 @@ public class LoginAction extends SavingAction {
 				savings.put(saving.getItemid(), saving);
 				//top = DataManager.getInstance().get_registerTop(saving.getAmount());
 				ToplistManager.getInstance().addRegisterToplist(playerBlob.getPlayerid(),playerBlob.getPlayername(),saving.getAmount());	
-				top = ToplistManager.getInstance().findCountByGreaterMoney(
-						playerBlob.getPlayerid(), 0, saving.getAmount());
-				top++;
 			}
 //			JSONObject obj = JSONObject.fromObject(playerBlob);	
-			log.warn("pid:"+playerBlob.getPlayerid()+" register success,openid:'"+playerBlob.getOpenid()+"',name:"+player.getPlayername()+",top:"+top);
+			log.warn("pid:"+playerBlob.getPlayerid()+" register success,openid:'"+playerBlob.getOpenid()+"',name:"+player.getPlayername());
 //			write(obj.toString(),"utf-8");
 			
-			return serialize(playerBlob,1,JSON.toJSONString(savings),top);
+			return serialize(playerBlob,1,JSON.toJSONString(savings));
 		}
 }

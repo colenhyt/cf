@@ -236,6 +236,7 @@ public class DataManager extends MgrBase {
 
 	public synchronized String get_saving2(int playerid) {
 		List<Saving> savings = SavingManager.getInstance().getSavingList(playerid);
+		if (savings==null) return "{}";
 		Map<Integer,Saving>	 mdata = new HashMap<Integer,Saving>();
 		for (Saving item:savings){
 			mdata.put(item.getItemid(), item);
@@ -253,6 +254,7 @@ public class DataManager extends MgrBase {
 	
 	public synchronized String get_insure2(int playerid) {
 		List<Insure> insures = InsureManager.getInstance().getInsureList(playerid);
+		if (insures==null) return "{}";
 		Map<Integer,Insure>	mdata = new HashMap<Integer,Insure>();
 		for (Insure item:insures){
 			mdata.put(item.getItemid(), item);
@@ -304,7 +306,7 @@ public class DataManager extends MgrBase {
 	}
 	
 	public synchronized int get_top(int playerid) {
-		float fMm = loginAction.calculatePlayerMoney(playerid);
+		float fMm = ToplistManager.getInstance().calculatePlayerMoney(playerid);
 		
 		ToplistManager.getInstance().load();
 		int top = ToplistManager.getInstance().findCountByGreaterMoney(

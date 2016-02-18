@@ -12,6 +12,8 @@ public class ToplistAction extends BaseAction {
 
 	public String list(){
 		ToplistManager.getInstance().load();
+		float money = ToplistManager.getInstance().calculatePlayerMoney(toplist.getPlayerid());
+		ToplistManager.getInstance().updateToplist(toplist.getPlayerid(),null,money);
 		List<Toplist> weeklist = ToplistManager.getInstance().findByType(0);
 		List<Toplist> monthlist = ToplistManager.getInstance().findByType(1);
 		

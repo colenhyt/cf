@@ -15,7 +15,11 @@ import java.util.Vector;
 
 import redis.clients.jedis.Jedis;
 import cn.hd.cf.action.ToplistAction;
+import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Player;
+import cn.hd.cf.model.Quote;
+import cn.hd.cf.model.Saving;
+import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Toplist;
 import cn.hd.util.RedisClient;
 
@@ -57,6 +61,8 @@ public class ToplistManager extends MgrBase{
 		}
 		jedisClient.returnResource(jedis);
     	log.warn("toplist init,reloadtime:"+toplistTime+"s");
+    	
+    	load();
     }
     
     public synchronized void load(){
@@ -298,6 +304,7 @@ public class ToplistManager extends MgrBase{
 				toplist.setUpdatetime(new Date());
 				DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
 				dataThread.updateToplist(toplist);
+				toplistMap.put(playerid, toplist);
 //				//System.out.println("更新排行榜财富: "+toplist.getPlayername()+":"+topMoney+","+toplist.getMoney());
 			}
 		}
@@ -311,6 +318,40 @@ public class ToplistManager extends MgrBase{
 			return topAction.list();
 		}
 
+	
+	public float calculatePlayerMoney(int playerId){
+		List<Saving> savings = SavingManager.getInstance().getSavingList(playerId);
+		float savingamount = 0;
+		if (savings!=null){
+			for (int i=0;i<savings.size();i++){
+				savingamount += savings.get(i).getAmount();
+			}			
+		}
+		savingamount = Float.valueOf(savingamount).intValue();
+		float insureamount = 0;
+		List<Insure> insures = InsureManager.getInstance().getInsureList(playerId);
+		if (insures!=null){
+		for (int i=0;i<insures.size();i++){
+			insureamount += insures.get(i).getAmount();
+		}
+		}
+		insureamount = Float.valueOf(insureamount).intValue();
+		List<Stock> stocks = StockManager.getInstance().getStockList(playerId);
+		float stockamount = 0;
+		if (stocks!=null){
+			for (int i=0;i<stocks.size();i++){
+				Stock ps = stocks.get(i);
+				if (ps==null) continue;
+				List<Quote> qq = StockManager.getInstance().getLastQuotes(ps.getItemid());
+				if (qq.size()>0)
+					stockamount += qq.get(0).getPrice()*ps.getQty();
+			}   			
+		}
+		stockamount = Float.valueOf(stockamount).intValue();
+		float amount = savingamount + insureamount + stockamount;
+		return amount;
+	}
+	
 	public synchronized int findCountByGreaterMoney(int playerid,int type,float fPMoney){
 		Toplist top = findByPlayerId(playerid);
 		return findTopCount(top,type,fPMoney);

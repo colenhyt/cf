@@ -80,7 +80,7 @@ public class SavingAction extends BaseAction {
 	public synchronized boolean playerTopUpdate(int playerid){
 		Player player = DataManager.getInstance().findPlayer(playerid);
 		if (player!=null){
-			float money = calculatePlayerMoney(playerid);
+			float money = ToplistManager.getInstance().calculatePlayerMoney(playerid);
 			 ToplistManager.getInstance().updateToplist(playerid,player.getPlayername(),money);			
 				//System.out.println("排行榜金钱更新:"+playerid+";money="+money);
 			return true;
@@ -88,39 +88,7 @@ public class SavingAction extends BaseAction {
 		
 		return false;
 	}
-	
-	public float calculatePlayerMoney(int playerId){
-		List<Saving> savings = SavingManager.getInstance().getSavingList(playerId);
-		float savingamount = 0;
-		if (savings!=null){
-			for (int i=0;i<savings.size();i++){
-				savingamount += savings.get(i).getAmount();
-			}			
-		}
-		savingamount = Float.valueOf(savingamount).intValue();
-		float insureamount = 0;
-		List<Insure> insures = InsureManager.getInstance().getInsureList(playerId);
-		if (insures!=null){
-		for (int i=0;i<insures.size();i++){
-			insureamount += insures.get(i).getAmount();
-		}
-		}
-		insureamount = Float.valueOf(insureamount).intValue();
-		List<Stock> stocks = StockManager.getInstance().getStockList(playerId);
-		float stockamount = 0;
-		if (stocks!=null){
-			for (int i=0;i<stocks.size();i++){
-				Stock ps = stocks.get(i);
-				if (ps==null) continue;
-				List<Quote> qq = StockManager.getInstance().getLastQuotes(ps.getItemid());
-				if (qq.size()>0)
-					stockamount += qq.get(0).getPrice()*ps.getQty();
-			}   			
-		}
-		stockamount = Float.valueOf(stockamount).intValue();
-		float amount = savingamount + insureamount + stockamount;
-		return amount;
-	}
+
 
 	//存款是否到期:
 	public boolean isSavingTimeout(Saving saving)
