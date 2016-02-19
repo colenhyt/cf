@@ -227,7 +227,6 @@ Saving.prototype.buyCallback = function(ret){
 	
 	if (savingback.profit>=1)
 	{
-	 g_player.saving[1].amount += savingback.profit;
  	 g_msg.tip("得到利息:"+savingback.profit);
 	}
 	 g_player.flushPageview();
