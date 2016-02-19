@@ -145,9 +145,11 @@ public class SavingAction extends BaseAction {
 	
 		List<Saving> list = SavingManager.getInstance().getSavingList(saving.getPlayerid());
 		Saving liveSaving = null;
+		int liveIndex = 0;
     	for (int i=0;i<list.size();i++){
     		if (list.get(i).getItemid().intValue()==1){
     			liveSaving = list.get(i);
+    			liveIndex = i;
     			break;
     		}
     	}		
@@ -185,7 +187,7 @@ public class SavingAction extends BaseAction {
 				BigDecimal b = new BigDecimal(inter);  
 				int iInter = (int)b.setScale(0,BigDecimal.ROUND_HALF_UP).floatValue();
 				changeAmount += iInter;	
-				log.warn("pid:"+saving.getPlayerid()+" get charge:"+iInter);
+				log.warn("pid:"+saving.getPlayerid()+" get inter:"+iInter);
 				newsaving.setProfit((float)iInter);				
 			}
 			list.remove(itemIndex);
@@ -206,8 +208,9 @@ public class SavingAction extends BaseAction {
 			}
 			Saving savingCfg = SavingManager.getInstance().getSavingCfg(saving.getItemid());
 			saving.setName(savingCfg.getName());
-			saving.setCreatetime(new Date());
-			saving.setUpdatetime(new Date());
+			Date d = new Date();
+			saving.setCreatetime(d);
+			saving.setUpdatetime(d);
 			saving.setRate(savingCfg.getRate());
 			saving.setQty(1);
 			saving.setType(savingCfg.getType());
@@ -225,8 +228,9 @@ public class SavingAction extends BaseAction {
 		if (ret==RetMsg.MSG_OK){
 			liveSaving.setAmount(liveSaving.getAmount()+changeAmount);
 			newsaving.setLiveamount(liveSaving.getAmount());
+			list.get(liveIndex).setAmount(liveSaving.getAmount());
 			String str = JSON.toJSONString(newsaving);
-			log.info("pid:"+saving.getPlayerid()+" add/remove saving itemid="+saving.getItemid()+",ret:"+ret+",amount:"+saving.getAmount());
+			log.info("pid:"+saving.getPlayerid()+" add/remove saving itemid="+saving.getItemid()+",ret:"+ret+",amount:"+saving.getAmount()+", retdata:"+str);
 			SavingManager.getInstance().updateSavings(saving.getPlayerid(), list);
 			playerTopUpdate(saving.getPlayerid());
 			return msgStr2(RetMsg.MSG_OK,str);

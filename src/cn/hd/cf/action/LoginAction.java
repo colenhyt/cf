@@ -112,7 +112,6 @@ public class LoginAction extends SavingAction {
 			{
 				hasUpdate = true;
 				saving.setStatus((byte)1);
-				SavingManager.getInstance().updateSaving(playerId, saving);
 				log.debug("pid:"+playerId+" saving timeout,get inter:"+saving.getItemid()+",inter: "+inter);
 			}
 			saving.setProfit(inter);
