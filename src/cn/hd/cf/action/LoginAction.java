@@ -173,6 +173,16 @@ public class LoginAction extends SavingAction {
 				ToplistManager.getInstance().updateToplist(playerId,player2.getPlayername(),amount);
 			}
 		}	
+		if (top==0){
+			Player player2 = DataManager.getInstance().findPlayer(playerId);	
+			if (player2!=null){
+				log.warn("pid:"+playerId+" update toplist:"+top);
+				ToplistManager.getInstance().updateToplist(playerId,player2.getPlayername(),amount);
+				top = ToplistManager.getInstance().findCountByGreaterMoney(
+						playerId, 0, amount);
+				top++;
+			}
+		}
 		String data = JSON.toJSONString(mdata)+";"+JSON.toJSONString(insures)+";"+JSON.toJSONString(stocks)+";"+top;
 		log.warn("pid:"+playerId+" get login data:"+data);
 		return data;

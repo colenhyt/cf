@@ -711,7 +711,7 @@ public class DataManager extends MgrBase {
 				if (itemid>0&&itemid<=5){
 					qid = itemid;
 				}
-				if (q.length()>0){
+				if (q!=null&&q.length()>0){
 					q += ","+qid;
 				}else
 					q = String.valueOf(qid);
@@ -734,7 +734,7 @@ public class DataManager extends MgrBase {
 		
 		long s = Long.valueOf(1454491582484L);
 		Date now = new Date();
-		Date last= new Date(s);
+		Date last= new Date(1455594730831L);
 		boolean a = DateUtil.isToday(last);
 		int d = now.getYear();
 //		DataManager stmgr = DataManager.getInstance();
