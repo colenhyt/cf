@@ -7,5 +7,6 @@ String itemid = request.getParameter("itemid");
 String amountstr = request.getParameter("amount");
 int playerid = Integer.valueOf(pid);
 int type = Integer.valueOf(tid);
-DataManager.getInstance().update(playerid,type,itemid,amountstr);
+String retstr = DataManager.getInstance().update(playerid,type,itemid,amountstr);
+response.getWriter().print(retstr);
 %>
