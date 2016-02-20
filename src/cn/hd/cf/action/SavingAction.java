@@ -17,6 +17,7 @@ import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
 import cn.hd.mgr.DataManager;
 import cn.hd.mgr.InsureManager;
+import cn.hd.mgr.LogMgr;
 import cn.hd.mgr.SavingManager;
 import cn.hd.mgr.StockManager;
 import cn.hd.mgr.ToplistManager;
@@ -34,25 +35,8 @@ public class SavingAction extends BaseAction {
 		this.saving = saving;
 	}
 
-	public int pushLive(int playerId,float amount)
-	{
-		Saving saving2 = SavingManager.getInstance().getSaving(playerId, 1);
-		if (saving2!=null){
-			float newAmount = saving2.getAmount()+amount;
-			if (newAmount<0)
-				return RetMsg.MSG_MoneyNotEnough;
-			
-			saving2.setAmount(saving2.getAmount()+amount);
-			playerMoneyUpdate(saving2);		
-			return RetMsg.MSG_OK;
-		}else {
-			log.warn("pid:"+playerId+",error,could not found livsaving for playerid:");
-			return RetMsg.MSG_NoSavingData;
-		}
-	}	
-	
 	public boolean playerMoneyUpdate(Saving saving){
-		log.info("pid:"+saving.getPlayerid()+" liveupdate value="+saving.getAmount());
+		LogMgr.getInstance().log("pid:"+saving.getPlayerid()+" liveupdate value="+saving.getAmount());
 		boolean u = SavingManager.getInstance().updateLiveSaving(saving);	
 		 playerTopUpdate(saving.getPlayerid());
 		//更新排行榜金钱:
@@ -159,7 +143,7 @@ public class SavingAction extends BaseAction {
 			}
 			//已到期的存款:
 			boolean isout = isSavingTimeout(saving2);
-			log.warn("pid:"+saving.getPlayerid()+" saving is out:"+isout);
+			LogMgr.getInstance().log("pid:"+saving.getPlayerid()+" saving is out:"+isout);
 			float inter  = 0;
 			if ((saving.getStatus()!=null&&saving.getStatus()==1)||isout)		
 			{
@@ -171,7 +155,7 @@ public class SavingAction extends BaseAction {
 				BigDecimal b = new BigDecimal(inter);  
 				int iInter = (int)b.setScale(0,BigDecimal.ROUND_HALF_UP).floatValue();
 				changeAmount += iInter;	
-				log.warn("pid:"+saving.getPlayerid()+" get inter:"+iInter);
+				LogMgr.getInstance().log("pid:"+saving.getPlayerid()+" get inter:"+iInter);
 				newsaving.setProfit((float)iInter);				
 			}
 			list.remove(itemIndex);
@@ -204,7 +188,7 @@ public class SavingAction extends BaseAction {
 			boolean doneQuest = DataManager.getInstance().doneQuest(saving.getPlayerid(), 1);
 			if (doneQuest){
 				changeAmount += 5000;
-				log.warn("pid:"+saving.getPlayerid()+" saving quest prize 5000");
+				LogMgr.getInstance().log("pid:"+saving.getPlayerid()+" saving quest prize 5000");
 			}
 		}
 		
@@ -214,12 +198,12 @@ public class SavingAction extends BaseAction {
 			newsaving.setLiveamount(liveSaving.getAmount());
 			list.get(liveIndex).setAmount(liveSaving.getAmount());
 			String str = JSON.toJSONString(newsaving);
-			log.info("pid:"+saving.getPlayerid()+" add/remove saving itemid="+saving.getItemid()+",ret:"+ret+",amount:"+saving.getAmount()+", retdata:"+str);
+			LogMgr.getInstance().log("pid:"+saving.getPlayerid()+" add/remove saving itemid="+saving.getItemid()+",ret:"+ret+",amount:"+saving.getAmount()+", retdata:"+str);
 			SavingManager.getInstance().updateSavings(saving.getPlayerid(), list);
 			playerTopUpdate(saving.getPlayerid());
 			return msgStr2(RetMsg.MSG_OK,str);
 		}else {
-			log.warn("pid:"+saving.getPlayerid()+",error,saving: "+ret);
+			LogMgr.getInstance().log("pid:"+saving.getPlayerid()+",error,saving: "+ret);
 			return msgStr(ret);
 		}
 	}
@@ -260,7 +244,7 @@ public class SavingAction extends BaseAction {
 					}else {		//保险到期，移除
 						inter = -1;
 					}
-					log.warn("pid:"+playerId+" insure timeout:"+JSON.toJSONString(insure));
+					LogMgr.getInstance().log("pid:"+playerId+" insure timeout:"+JSON.toJSONString(insure));
 //					System.out.println("insure overdate:"+insure.getItemid());
 				}else {
 					insureamount += insure.getAmount();

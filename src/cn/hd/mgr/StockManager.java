@@ -80,7 +80,7 @@ public class StockManager extends MgrBase{
 //    	}
 //    	
     	redisClients.get(0).returnResource(jedis);
-//    	log.warn("load stocks :" + playerids.size());    
+//    	LogMgr.getInstance().log("load stocks :" + playerids.size());    
     	
 		stockData = new ArrayList<Stockdata>();
 	    	
@@ -116,7 +116,7 @@ public class StockManager extends MgrBase{
 	    		quoteMap.put(stock.getId(), qquotes);
 	    		
 	    }	
-    	log.warn("stock init :"+quoteMap.size());
+    	LogMgr.getInstance().log("stock init :"+quoteMap.size());
 
 				
      }
@@ -321,11 +321,11 @@ public class StockManager extends MgrBase{
 				needRemoveQty -= ss.getQty();
 				list.remove(i);
 				i--;
-				log.warn("delete stock:"+ss.getQty());
+				LogMgr.getInstance().log("delete stock:"+ss.getQty());
 			}else {
 				ss.setQty(ss.getQty()-needRemoveQty);
 				ss.setAmount(ss.getQty()*ss.getPrice());
-				log.warn("update stock:"+ss.getQty());
+				LogMgr.getInstance().log("update stock:"+ss.getQty());
 				needRemoveQty = 0;
 //				dataThread.updateStock(ss);
 			}

@@ -21,7 +21,6 @@ import cn.hd.cf.action.RetMsg;
 import cn.hd.cf.model.Init;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Player;
-import cn.hd.cf.model.PlayerWithBLOBs;
 import cn.hd.cf.model.Quest;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Signin;
@@ -82,7 +81,7 @@ public class DataManager extends MgrBase {
 				currMaxPlayerId = idStep;
 			jedis.set(super.DATAKEY_GUID_PLAYER,String.valueOf(currMaxPlayerId));
 			nextPlayerId = currMaxPlayerId - idStep;
-			log.warn("reset guid id "+currMaxPlayerId);
+			LogMgr.getInstance().log("reset guid id "+currMaxPlayerId);
 			redisClients.get(0).returnResource(jedis);
 		}
 		
@@ -176,7 +175,7 @@ public class DataManager extends MgrBase {
 				record.setPlayerid(playerid);
 				record.setCrdate(new Date());		
 				QuestLog.getRootLogger().info(JSON.toJSONString(record));
-				log.warn("pid:"+playerid+" done daily quest");
+				LogMgr.getInstance().log("pid:"+playerid+" done daily quest");
 			}	
 			DataManager.getInstance().updatePlayerQuest(player);
 			return true;
@@ -189,18 +188,18 @@ public class DataManager extends MgrBase {
 		if (playerstr!=null)
 			loginStr += "playerid:"+playerstr;
 		loginStr += ",setting:"+settingStr+",ip:"+loginAction.getIpAddress(request);
-		log.warn(loginStr);
+		LogMgr.getInstance().log(loginStr);
 //		return null;
 		if (settingStr.indexOf("android:true")<0&&settingStr.indexOf("iphone:true")<0){
 			String pwd = request.getParameter("pwd");
 			if (pwd==null||!pwd.endsWith("hdcf")){
-				log.warn("illegal access!!");
+				LogMgr.getInstance().log("illegal access!!");
 				return loginAction.msgStr(RetMsg.MSG_IllegalAccess);
 			}
 		}
 			
 		if (!Pattern.matches("[0-9]+", openId)){
-			log.warn("illegal openid!!");
+			LogMgr.getInstance().log("illegal openid!!");
 			return loginAction.msgStr(RetMsg.MSG_WrongOpenID);
 		}
 		
@@ -332,7 +331,7 @@ public class DataManager extends MgrBase {
 		DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
 		dataThread.push(player);
 		//saver.add(player);
-		//log.warn(System.currentTimeMillis());
+		//LogMgr.getInstance().log(System.currentTimeMillis());
 		return true;
 	}
 
@@ -350,14 +349,14 @@ public class DataManager extends MgrBase {
 		jedisClient.returnResource(jedis);
 		if (idstr!=null){
 			playerid = Integer.valueOf(idstr);
-				//log.warn("find player :"+playerid);
+				//LogMgr.getInstance().log("find player :"+playerid);
 			//playerMaps.put(playerid, player);
 				playerIdMaps.put(playerName, playerid);
 			return findPlayer(playerid);
 		}
 		long cost = System.currentTimeMillis()-s;
 		if (cost>10)
-			log.warn("register find cost :"+cost+",name:"+playerName);
+			LogMgr.getInstance().log("register find cost :"+cost+",name:"+playerName);
 		return null;
 	}
 
@@ -374,14 +373,14 @@ public class DataManager extends MgrBase {
 			jedisClient.returnResource(jedis);			
 			if (itemstr!=null){
 				player = (Player)JSON.parseObject(itemstr,Player.class);
-				//log.warn("find player :"+player.getPlayerid());
+				//LogMgr.getInstance().log("find player :"+player.getPlayerid());
 				//playerMaps.put(playerid, player);
 				if (!playerIdMaps.containsKey(player.getPlayername())){
 					playerIdMaps.put(player.getPlayername(), playerid);
 				}
 			}
 		}
-		//log.warn("findid cost :"+(System.currentTimeMillis()-s));
+		//LogMgr.getInstance().log("findid cost :"+(System.currentTimeMillis()-s));
 		return player;
 	}
 
@@ -411,12 +410,12 @@ public class DataManager extends MgrBase {
 			int money = signinMoneys.get(count);
 			int exp = signinExps.get(count);
 			SavingManager.getInstance().updateLiveSaving(playerid,money);
-			log.warn("pid:"+playerid+" signin days:"+days+" add prize,money: "+money+", exp:"+exp);
 			p.setExp(p.getExp()+exp);
 			p.setLastlogin(new Date());
 			p.setEventCount(0);
 			this.addSignin(playerid);
 			data.setExp(p.getExp());
+			LogMgr.getInstance().log("pid:"+playerid+" signin days:"+days+" add prize,money: "+money+", exp:"+exp);
 			break;
 		case 2:
 			p.setOpenstock((byte)1);
@@ -428,7 +427,7 @@ public class DataManager extends MgrBase {
 			if (amount>0){
 				if (amount>10000)
 				{
-					log.warn("pid:"+playerid+" error,flush event,amount:"+amount);
+					LogMgr.getInstance().log("pid:"+playerid+" error,flush event,amount:"+amount);
 					return "";
 				}
 				//不同一天登陆不允许正向事件:
@@ -436,13 +435,13 @@ public class DataManager extends MgrBase {
 					return "";
 				}
 				if (p.getEventCount()>50){
-					log.warn("pid:"+playerid+" error,flush event count");
+					LogMgr.getInstance().log("pid:"+playerid+" error,flush event count");
 					return "";
 				}
 				
 				p.setEventCount(p.getEventCount()+1);
 			}
-			log.warn("pid:"+playerid+" event fire, amount:"+amount);
+			LogMgr.getInstance().log("pid:"+playerid+" event fire, amount:"+amount);
 			SavingManager.getInstance().updateLiveSaving(playerid,amount);
 			break;
 			
@@ -502,7 +501,7 @@ public class DataManager extends MgrBase {
 		String strinit = j3.get(MgrBase.DATAKEY_DATA_INIT);
 		init = JSON.parseObject(strinit, Init.class);
 
-		log.warn("find init:"+strinit);
+		LogMgr.getInstance().log("find init:"+strinit);
 		
 		questDataMap = Collections
 				.synchronizedMap(new HashMap<Integer, Quest>());
@@ -511,7 +510,7 @@ public class DataManager extends MgrBase {
 			Quest q = JSON.parseObject(qstr,Quest.class);
 			questDataMap.put(q.getId(), q);
 		}
-		log.warn("init questdata "+questDataMap.size());
+		LogMgr.getInstance().log("init questdata "+questDataMap.size());
 		
 		playerIdMaps = Collections
 				.synchronizedMap(new HashMap<String, Integer>());
@@ -563,7 +562,7 @@ public class DataManager extends MgrBase {
 //			playerIdMaps.put(player.getPlayername(), player.getPlayerid());
 //		}
 //		redisClients.get(0).returnResource(jedis);
-//		log.warn("load all players :" + items.size());
+//		LogMgr.getInstance().log("load all players :" + items.size());
 
 	}
 	
@@ -726,7 +725,7 @@ public class DataManager extends MgrBase {
 			str += ", ps:"+psstr;
 		}
 		str += ", ret:"+ret;
-		log.warn(str);
+		LogMgr.getInstance().log(str);
 		return "设置结果:"+ret;
 	}
 

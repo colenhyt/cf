@@ -63,7 +63,7 @@ public class InsureManager extends MgrBase{
     		if (!insureCfgMap.containsKey(insure.getId()))
     			insureCfgMap.put(insure.getId(), insure);
     	}
-    	log.warn("init insuredata:"+insureCfgMap.size());
+    	LogMgr.getInstance().log("init insuredata:"+insureCfgMap.size());
     	
     	insuresMap = Collections.synchronizedMap(new HashMap<Integer,List<Insure>>());
     	
@@ -76,8 +76,8 @@ public class InsureManager extends MgrBase{
 //    		insuresMap.put(Integer.valueOf(strpid), list);
 //    	}
 //    	jedisClient.returnResource(jedis);
-//    	log.warn("load insures :" + playerids.size());   
-//    	log.warn("insure init :");
+//    	LogMgr.getInstance().log("load insures :" + playerids.size());   
+//    	LogMgr.getInstance().log("insure init :");
     }
     
     public synchronized Insure getInsure(int playerId,int itemid){

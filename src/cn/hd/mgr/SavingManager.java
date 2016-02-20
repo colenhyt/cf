@@ -82,7 +82,7 @@ public class SavingManager extends MgrBase{
     		if (!savingCfgMap.containsKey(saving.getId()))
     			savingCfgMap.put(saving.getId(), saving);
     	}
-    	log.warn("init savingdata:"+savingCfgMap.size());
+    	LogMgr.getInstance().log("init savingdata:"+savingCfgMap.size());
 
     	savingsMap = Collections.synchronizedMap(new HashMap<Integer,List<Saving>>());
     	
@@ -95,18 +95,28 @@ public class SavingManager extends MgrBase{
 //    	Set<String> playerids = jedis.hkeys(super.DATAKEY_SAVING);
 //    	for (String strpid:playerids){
 //    		String jsonitems = jedis.hget(super.DATAKEY_SAVING, strpid);
-////    		log.warn("get saving:"+strpid+",data:"+jsonitems);
+////    		LogMgr.getInstance().log("get saving:"+strpid+",data:"+jsonitems);
 //    		List<Saving> list = JSON.parseArray(jsonitems, Saving.class);
 //    		
 //    		savingsMap.put(Integer.valueOf(strpid), list);
 //    	}
 		redisClients.get(0).returnResource(jedis);
-//    	log.warn("saving init:"+playerids.size());
+//    	LogMgr.getInstance().log("saving init:"+playerids.size());
     }
     
     public synchronized void updateLiveSaving(int playerid,float addedAmount){
-		log.warn("pid:"+playerid+" added live saving:"+addedAmount);
-		savingAction.pushLive(playerid, addedAmount);
+		Saving saving2 = getSaving(playerid, 1);
+		if (saving2==null){
+			LogMgr.getInstance().log("pid:"+playerid+" error, live saving not found");
+			return;
+		}
+		float newAmount = saving2.getAmount()+addedAmount;
+		if (newAmount<0)
+			newAmount = 0;
+			
+		LogMgr.getInstance().log("pid:"+playerid+" (live saving"+saving2.getAmount()+") added :"+addedAmount);
+		saving2.setAmount(newAmount);
+		savingAction.playerMoneyUpdate(saving2);			
     }
     
     public synchronized boolean updateLiveSaving(Saving record){
@@ -201,7 +211,7 @@ public class SavingManager extends MgrBase{
 			String liststr = jedis.hget(MgrBase.DATAKEY_SAVING, String.valueOf(playerId));
 			jedisClient.returnResource(jedis);    	
 			if (liststr!=null){
-				log.warn("pid:"+playerId+" get saving "+liststr);
+				LogMgr.getInstance().log("pid:"+playerId+" get saving "+liststr);
 				list = JSON.parseArray(liststr, Saving.class);
 				//savingsMap.put(playerId, list);
 			}

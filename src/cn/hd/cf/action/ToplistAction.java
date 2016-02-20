@@ -5,6 +5,7 @@ import java.util.List;
 import net.sf.json.JSONArray;
 import cn.hd.base.BaseAction;
 import cn.hd.cf.model.Toplist;
+import cn.hd.mgr.LogMgr;
 import cn.hd.mgr.ToplistManager;
 
 public class ToplistAction extends BaseAction {
@@ -54,7 +55,7 @@ public class ToplistAction extends BaseAction {
 	}
 	
 	public String zan(){
-		log.warn("toplist zan: playerid="+toplist.getPlayerid()+",zan="+toplist.getZan());
+		LogMgr.getInstance().log("toplist zan: playerid="+toplist.getPlayerid()+",zan="+toplist.getZan());
 		ToplistManager.getInstance().updateZan(toplist);
 		return null;
 	}

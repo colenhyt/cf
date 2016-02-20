@@ -22,6 +22,7 @@ import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
 import cn.hd.mgr.DataManager;
+import cn.hd.mgr.LogMgr;
 import cn.hd.mgr.SavingManager;
 import cn.hd.mgr.StockManager;
 import cn.hd.mgr.ToplistManager;
@@ -47,7 +48,7 @@ public class LoginAction extends SavingAction {
     	Map<String, String> params = new HashMap<String, String>();  
     	params.put(DataManager.getInstance().openidparam, openid); 
     	String json = HttpXmlClient.post(DataManager.getInstance().openidurl, params);  
-    	log.warn(json);
+    	LogMgr.getInstance().log(json);
 		return 0;
 	}
 	
@@ -163,14 +164,14 @@ public class LoginAction extends SavingAction {
 			SavingManager.getInstance().updateSavings(playerId,savings);
 			Player player2 = DataManager.getInstance().findPlayer(playerId);	
 			if (player2!=null){
-				log.warn("pid:"+playerId+" update toplist:"+top);
+				LogMgr.getInstance().log("pid:"+playerId+" update toplist:"+top);
 				ToplistManager.getInstance().updateToplist(playerId,player2.getPlayername(),amount);
 			}
 		}	
 		if (top==0){
 			Player player2 = DataManager.getInstance().findPlayer(playerId);	
 			if (player2!=null){
-				log.warn("pid:"+playerId+" update toplist:"+top);
+				LogMgr.getInstance().log("pid:"+playerId+" update toplist:"+top);
 				ToplistManager.getInstance().updateToplist(playerId,player2.getPlayername(),amount);
 				top = ToplistManager.getInstance().findCountByGreaterMoney(
 						playerId, 0, amount);
@@ -178,7 +179,7 @@ public class LoginAction extends SavingAction {
 			}
 		}
 		String data = JSON.toJSONString(mdata)+";"+JSON.toJSONString(insures)+";"+JSON.toJSONString(stocks)+";"+top;
-		log.warn("pid:"+playerId+" get login data:"+data);
+		LogMgr.getInstance().log("pid:"+playerId+" get login data:"+data);
 		return data;
 	}
 	//
@@ -225,14 +226,14 @@ public class LoginAction extends SavingAction {
 			usaving.setCreatetime(saving.getCreatetime());
 			usaving.setQty(saving.getQty());
 			usaving.setProfit(inter);
-//			log.warn("add usersaving:"+JSON.toJSONString(usaving));
+//			LogMgr.getInstance().log("add usersaving:"+JSON.toJSONString(usaving));
 			mdata.put(saving.getItemid(), usaving);
 		}
 		if (liveUpdate==true){
 			SavingManager.getInstance().updateLiveSaving(liveSaving);
 			super.playerTopUpdate(playerId);			
 		}
-//		log.warn("mdata return :"+JSON.toJSONString(mdata));
+//		LogMgr.getInstance().log("mdata return :"+JSON.toJSONString(mdata));
 		return mdata;
 	}
 
@@ -242,14 +243,14 @@ public class LoginAction extends SavingAction {
 			if (!player.getOpenid().equals(player.getOpenid()))
 				return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
 			
-			log.warn("pid:"+player.getPlayerid()+" login,openid:"+player.getOpenid()+",name:"+player.getPlayername());
+			LogMgr.getInstance().log("pid:"+player.getPlayerid()+" login,openid:"+player.getOpenid()+",name:"+player.getPlayername());
 			int assignCode = assignDailyQuest(player);
 			if (assignCode==1){
-				log.warn("pid:"+player.getPlayerid()+" assign quest,login:"+player.getQuestStr());
+				LogMgr.getInstance().log("pid:"+player.getPlayerid()+" assign quest,login:"+player.getQuestStr());
 			}
 			boolean newSignin = countSignin(player);
 			if (newSignin){
-				log.warn("pid:"+player.getPlayerid()+" reset signin:"+player.getSigninCount());
+				LogMgr.getInstance().log("pid:"+player.getPlayerid()+" reset signin:"+player.getSigninCount());
 			}
 			if (newSignin||assignCode==1||assignCode==2){
 				DataManager.getInstance().updatePlayerQuest(player);
@@ -270,7 +271,7 @@ public class LoginAction extends SavingAction {
 		Player playerBlob = null;
 		if (player.getPlayerid()>0){
 			playerBlob = DataManager.getInstance().findPlayer(player.getPlayerid());
-//			log.warn("find player:"+playerBlob);
+//			LogMgr.getInstance().log("find player:"+playerBlob);
 			if (playerBlob!=null)
 				return loginPlayer(playerBlob);
 		}
@@ -279,7 +280,7 @@ public class LoginAction extends SavingAction {
 		playerBlob = DataManager.getInstance().findPlayer(player.getPlayername());
 		long cost = System.currentTimeMillis()-s;
 		if (cost>10)		
-			log.warn("action cost :"+cost+" openid:"+player.getOpenid());
+			LogMgr.getInstance().log("action cost :"+cost+" openid:"+player.getOpenid());
 		if (playerBlob==null)
 		{
 			return register();
@@ -356,7 +357,7 @@ public class LoginAction extends SavingAction {
 			data += ",saving:"+savingStr;
 		}
 		data += "}";
-	  log.warn("pid:"+player.getPlayerid()+" loginback:"+data);
+	  LogMgr.getInstance().log("pid:"+player.getPlayerid()+" loginback:"+data);
 	  return data;
 	}
 	
@@ -443,7 +444,7 @@ public class LoginAction extends SavingAction {
 			playerBlob.setCreateTimeStr(cstr);
 			playerBlob.setPlayerid(DataManager.getInstance().assignNextId());
 			assignDailyQuest(playerBlob);
-			log.warn("pid:"+playerBlob.getPlayerid()+" assign quest register:"+playerBlob.getQuestStr());
+			LogMgr.getInstance().log("pid:"+playerBlob.getPlayerid()+" assign quest register:"+playerBlob.getQuestStr());
 			boolean ret = DataManager.getInstance().addPlayer(playerBlob);
 			if (ret==false){
 				return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
@@ -470,7 +471,7 @@ public class LoginAction extends SavingAction {
 				ToplistManager.getInstance().addRegisterToplist(playerBlob.getPlayerid(),playerBlob.getPlayername(),saving.getAmount());	
 			}
 //			JSONObject obj = JSONObject.fromObject(playerBlob);	
-			log.warn("pid:"+playerBlob.getPlayerid()+" register success,openid:'"+playerBlob.getOpenid()+"',name:"+player.getPlayername());
+			LogMgr.getInstance().log("pid:"+playerBlob.getPlayerid()+" register success,openid:'"+playerBlob.getOpenid()+"',name:"+player.getPlayername());
 //			write(obj.toString(),"utf-8");
 			
 			return serialize(playerBlob,1,JSON.toJSONString(savings));

@@ -1,12 +1,12 @@
 package cn.hd.cf.action;
 
 import java.util.Date;
-import java.util.Map;
 
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Saving;
 import cn.hd.mgr.DataManager;
 import cn.hd.mgr.InsureManager;
+import cn.hd.mgr.LogMgr;
 import cn.hd.mgr.SavingManager;
 
 import com.alibaba.fastjson.JSON;
@@ -43,17 +43,17 @@ public class InsureAction extends SavingAction {
 			if (doneQuest){
 				changeAmount += 5000;
 				
-				log.warn("pid:"+insure.getPlayerid()+" insure quest prize 5000,type:"+doType);
+				LogMgr.getInstance().log("pid:"+insure.getPlayerid()+" insure quest prize 5000,type:"+doType);
 			}
 			
 			liveSaving.setAmount(liveSaving.getAmount()+changeAmount);
 			insure.setLiveamount(liveSaving.getAmount());
 			String str = JSON.toJSONString(insure);
-			log.info("pid:"+insure.getPlayerid()+" add insure itemid="+insure.getItemid()+",str"+str);
+			LogMgr.getInstance().log("pid:"+insure.getPlayerid()+" add insure itemid="+insure.getItemid()+",str"+str);
 			playerMoneyUpdate(liveSaving);	
 			return msgStr2(RetMsg.MSG_OK,str);
 		}else {
-			log.warn("pid:"+insure.getPlayerid()+", warn, insure error: "+ret);
+			LogMgr.getInstance().log("pid:"+insure.getPlayerid()+", warn, insure error: "+ret);
 			return msgStr(ret);
 		}
 
