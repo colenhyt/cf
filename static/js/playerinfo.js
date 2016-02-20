@@ -22,6 +22,9 @@ Playerinfo.prototype.showInfo = function(jsondata){
 	playAudioHandler('open1');	
 	var texp = store.get("exp");
 	var lv = g_title.getLevel(jsondata.data.exp);
+	var nextLv = lv+1;
+	if (nextLv>10)
+	 nextLv = 10;
 	var expPer = jsondata.data.exp/g_title.getData(lv+1).exp;
 	expPer = parseInt(expPer*100);
 	if (expPer>100)
@@ -39,7 +42,7 @@ Playerinfo.prototype.showInfo = function(jsondata){
       content += "<table class='cfinfo_tabl'>"
      content += "<tr><td>昵&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp称: </td><td> <span style='color:yellow'>"+jsondata.data.playername.substring(0,10)+"</span>	</td></tr>"	
      content += "<tr><td><div class='cfplayer_info3'>当前等级:</div> </td><td> <span style='color:yellow'>"+lv+"</span> "+g_title.getData(lv).name+"</td></tr>"	
-     content += "<tr><td>下一等级: </td><td> <span style='color:yellow'>"+(lv+1)+"</span> "+g_title.getData(lv+1).name+"</td></tr>"	
+     content += "<tr><td>下一等级: </td><td> <span style='color:yellow'>"+(nextLv)+"</span> "+g_title.getData(lv+1).name+"</td></tr>"	
      content += "<tr><td> 经&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp验: </td>"
      content += "<td><div class='cfinfo_exp_bg'><div class='cfinfo_exp_img' id='cfinfo_exp_img' style='width:"+expPer+"%'></div>"
      content += "<div class='cfinfo_exp'><span style='color:yellow'>"+jsondata.data.exp+"</span>/"+g_title.getData(lv+1).exp+"</div></div></td></tr>"	

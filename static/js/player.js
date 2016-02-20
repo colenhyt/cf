@@ -145,8 +145,8 @@ Player.prototype.updateData = function(prop) {
 			this.data[key] = prop[key];
     }
      var newLevel = g_title.getLevel();
-     if (newLevel>oldLevel)
-     	g_uplevel.open();
+//     if (newLevel>oldLevel)
+//     	g_uplevel.open();
  	this.flushPageview();
     store.set(this.name,this.data);
 }
@@ -240,6 +240,10 @@ Player.prototype.commitData = function(type,itemid,amount) {
 			var updateStr = "playerid="+this.data.playerid+"&amount="+amount+"&type="+type+"&itemid="+itemid;
 			$.ajax({type:"post",url:"/cf/player_update.jsp",data:updateStr,success:function(dataobj){
 			var obj = cfeval(dataobj);
+			if (obj!=null&&obj.playerid==g_player.data.playerid&&obj.exp!=null&&obj.exp>0){
+			g_player.data.exp = obj.exp;
+			 g_player.flushPageview();
+			}
 		    }});
 		}   catch  (e)   {
 	   	 logerr(e.name);
@@ -268,17 +272,6 @@ Player.prototype.prize = function(prizes) {
       //this.broke();
      }
      
- //    if (cashUpdate==true){
-// 		try  {
-//			var obj = {itemid:1,amount:this.saving[1].amount,playerid:this.data.playerid};
-//			var updateStr = obj2ParamStr("saving",obj);
-//			$.ajax({type:"post",url:"/cf/saving_updatelive.do",data:updateStr,success:function(dataobj){
-//			var obj = cfeval(dataobj);
-//		    }});
-//		}   catch  (e)   {
-//	   	 logerr(e.name);
-//		}     	
-//     }
      this.updateData(prop);
 }
 
