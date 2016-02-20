@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.sf.json.JSONObject;
 import cn.hd.base.Base;
@@ -20,7 +22,6 @@ import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
 import cn.hd.mgr.DataManager;
-import cn.hd.mgr.InsureManager;
 import cn.hd.mgr.SavingManager;
 import cn.hd.mgr.StockManager;
 import cn.hd.mgr.ToplistManager;
@@ -32,6 +33,7 @@ import com.alibaba.fastjson.JSON;
 
 public class LoginAction extends SavingAction {
 	private Player player;
+	Pattern p = Pattern.compile("[1-5]+");
 	
 	public String connect(){
 		Message msg = new Message();
@@ -83,36 +85,28 @@ public class LoginAction extends SavingAction {
 		if (savings==null||savings.size()<=0)
 			return JSON.toJSONString(mdata);
 		
-		Date currDate = new Date();
-	    Calendar cCurr = Calendar.getInstance(); 
-	    cCurr.setTime(currDate);
-	    Calendar c2 = Calendar.getInstance(); 
 		Saving liveSaving = null;
 		int liveIndex = 0;
 		boolean hasUpdate = false;
 		for (int i=0;i<savings.size();i++){
-			Saving saving = savings.get(i);
 			float inter = 0;
-	        c2.setTime(saving.getUpdatetime());
-	        float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
-	        float periodMinutes = saving.getPeriod()*60*24;//天:分钟
+			Saving saving = savings.get(i);
 			if (saving.getType()==0)		//活期
 			{
+				inter = getLiveInter(saving);	//活期利息
 				liveSaving = saving;
-				periodMinutes = 60*24;//天:分钟
-				long diff = (long)(diffdd/periodMinutes);
-				inter = diff * saving.getAmount()*saving.getRate()/100;
-				if (inter>1){
+				liveIndex = i;
+				if (inter>=1){
 					hasUpdate = true;
-					liveIndex = i;
-					saving.setAmount(saving.getAmount()+inter);					
+					saving.setAmount(saving.getAmount()+inter);	
+					saving.setUpdatetime(new Date());
 				}else
 					inter = 0;		//不算利息
 			}else if (isSavingTimeout(saving))		//定期到期
 			{
 				hasUpdate = true;
 				saving.setStatus((byte)1);
-				log.debug("pid:"+playerId+" saving timeout,get inter:"+saving.getItemid()+",inter: "+inter);
+				log.debug("pid:"+playerId+" saving timeout");
 			}
 			saving.setProfit(inter);
 		}
@@ -249,15 +243,15 @@ public class LoginAction extends SavingAction {
 				return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
 			
 			log.warn("pid:"+player.getPlayerid()+" login,openid:"+player.getOpenid()+",name:"+player.getPlayername());
-			boolean newAssign = assignDailyQuest(player);
-			if (newAssign){
+			int assignCode = assignDailyQuest(player);
+			if (assignCode==1){
 				log.warn("pid:"+player.getPlayerid()+" assign quest,login:"+player.getQuestStr());
 			}
 			boolean newSignin = countSignin(player);
 			if (newSignin){
 				log.warn("pid:"+player.getPlayerid()+" reset signin:"+player.getSigninCount());
 			}
-			if (newSignin||newAssign){
+			if (newSignin||assignCode==1||assignCode==2){
 				DataManager.getInstance().updatePlayerQuest(player);
 			}
 			return serialize(player,0,null); 
@@ -328,13 +322,16 @@ public class LoginAction extends SavingAction {
 	  }
 	
 	private synchronized boolean countSignin(Player p){
-		Date now = new Date();
 		Date last = p.getLastlogin();
 		if (DateUtil.isToday(last)){
 			return false;
 		}
+		if (DateUtil.isToday(p.getSigninCountTime())){
+			return false;
+		}
 
 		if (last!=null){
+			Date now = new Date();
 			int dayBet = daysOfTwo(last,now);
 			if (dayBet==1&&p.getSigninCount()<=7){
 				p.setSigninCount(p.getSigninCount()+1);
@@ -343,6 +340,9 @@ public class LoginAction extends SavingAction {
 			}
 		}else
 			p.setSigninCount(1);
+		
+		//设置设值时间:
+		p.setSigninCountTime(new Date());
 		
 		return true;
 	}
@@ -360,41 +360,43 @@ public class LoginAction extends SavingAction {
 	  return data;
 	}
 	
-	public static void main(String[] args){
-		Date a = new Date(1454488250538L);
-		LoginAction l = new LoginAction();
-		Player p = new Player();
-		p.setQuestStr("2");
-//		p.setQuestDoneTime(new Date());
-		l.assignDailyQuest(p);
-		System.out.println(p.getQuestStr());
+	public Vector<Integer> getInts(String queststr){
+		Vector<Integer> strs = new Vector<Integer>();
+		if (queststr!=null&&queststr.trim().length()>0){
+			String[] qs = queststr.trim().split(",");
+			for (int i=0;i<qs.length;i++){
+				Matcher m = p.matcher(qs[i].trim());		
+				if (m.matches()){
+					strs.add(Integer.valueOf(qs[i].trim()));
+				}
+			}
+		}
+		return strs;
 	}
-	public boolean assignDailyQuest(Player p){
+	
+	public static void main(String[] args){
+		LoginAction l = new LoginAction();
+		SavingManager.getInstance().init();
+		
+	}
+	
+	public int assignDailyQuest(Player p){
 		Date qdoneTime = p.getQuestDoneTime();
-		
-		Date now = new Date();
-		if (qdoneTime!=null){
-			if (DateUtil.isToday(qdoneTime))
-				return false;
-		}
+		if (DateUtil.isToday(qdoneTime))
+			return 0;
 		Date assignTime = p.getQuestassigntime();
-		if (assignTime!=null){
-			if (DateUtil.isToday(assignTime))
-				return false;
-		}		
+		if (DateUtil.isToday(assignTime))
+			return 0;
 		
-		int assignC = 2;
+		Vector<Integer> qss = getInts(p.getQuestStr());
+		if (qss.size()>=2){
+			p.setQuestassigntime(new Date());		//不需要分配，重置分配时间
+			return 2;
+		}
+		
 		int notDoneId = -1;
-		String queststr = p.getQuestStr();
-		if (queststr!=null&&queststr.length()>0){
-			String[] qs = queststr.split(",");
-			assignC = 2 - qs.length;
-			if (qs.length>0)
-				notDoneId = Integer.valueOf(qs[0]);
-		}
-		if (assignC<=0){
-			return false;
-		}
+		if (qss.size()>0)
+			notDoneId = qss.get(0);
 		
 		Vector<Integer> qids = new Vector<Integer>();
 		for (int i=1;i<=5;i++){
@@ -404,19 +406,22 @@ public class LoginAction extends SavingAction {
 		
 		int indx1 = (int)(Math.random()*qids.size());
 		int qid1 = qids.get(indx1);
-		if (assignC==1){
-			queststr += ","+qid1;
-		}else
-			queststr = String.valueOf(qid1);
-		qids.remove(indx1);
-		if (assignC>1){
+		qss.add(qid1);
+		if (qss.size()<2){ //再随机一个:
+			qids.remove(indx1);
 			int indx2 = (int)(Math.random()*qids.size());
 			int qid2 = qids.get(indx2);
-			queststr += ","+qid2;
+			qss.add(qid2);
+		}
+		String queststr = "";
+		for (int i=0;i<qss.size();i++){
+			queststr += qss.get(i);
+			if (i==0)
+				queststr += ",";
 		}
 		p.setQuestStr(queststr);
 		p.setQuestassigntime(new Date());
-		return true;
+		return 1;
 	}
 	
 	public synchronized String register(){
@@ -430,7 +435,6 @@ public class LoginAction extends SavingAction {
 			}
 			
 	//		String ipAddr = getHttpRequest().getRemoteAddr();
-			Date time = new Date(); 
 			playerBlob.setOpenid(player.getOpenid());
 			playerBlob.setPlayername(player.getPlayername());
 			playerBlob.setSex(player.getSex());
@@ -447,6 +451,7 @@ public class LoginAction extends SavingAction {
 			Map<Integer, Saving> savings = (new HashMap<Integer,Saving>());
 			//活期存款:
 			if (init!=null&&init.getMoney()>0){
+				Date time = new Date(); 
 				Saving savingCfg = SavingManager.getInstance().getSavingCfg(1);
 				Saving saving = new Saving();
 				saving.setName(savingCfg.getName());
@@ -455,10 +460,10 @@ public class LoginAction extends SavingAction {
 				saving.setItemid(savingCfg.getId());
 				saving.setQty(1);
 				saving.setUpdatetime(time);
+				saving.setCreatetime(time);
 				saving.setType(savingCfg.getType());
 				saving.setPlayerid(playerBlob.getPlayerid());
 				saving.setAmount(Float.valueOf(init.getMoney().intValue()));
-				saving.setCreatetime(time);
 				SavingManager.getInstance().addFirstSaving(saving.getPlayerid(), saving);
 				savings.put(saving.getItemid(), saving);
 				//top = DataManager.getInstance().get_registerTop(saving.getAmount());

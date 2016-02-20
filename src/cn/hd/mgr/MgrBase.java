@@ -54,6 +54,10 @@ public class MgrBase {
 		URL  res = Thread.currentThread().getContextClassLoader().getResource("/");
 		String cfgstr = FileUtil.readFile(path + "config.properties");
 		if (cfgstr == null || cfgstr.trim().length() <= 0) {
+			if (res==null){
+				log.warn("game start failed: "+path);
+				return;
+			}
 			cfgstr = FileUtil.readFile(res.getPath() + "config.properties");
 			if (cfgstr==null|| cfgstr.trim().length() <= 0){
 			log.warn("game start failed: "+path);

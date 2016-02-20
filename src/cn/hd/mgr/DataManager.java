@@ -151,6 +151,9 @@ public class DataManager extends MgrBase {
 		//saving
 		int questid = -1;
 		String queststr = player.getQuestStr();
+		if (queststr==null)
+			return false;
+		
 		if (doType==1&&queststr.indexOf("5")>=0){
 			questid = 5;
 		}else if (doType==2&&queststr.indexOf("1")>=0){
@@ -164,13 +167,15 @@ public class DataManager extends MgrBase {
 		}
 		
 		if (questid>0){
-			//SavingManager.getInstance().updateLiveSaving(playerid,(float)5000);
-			
 			queststr = queststr.replace(String.valueOf(questid), "").replace(",","");
 			player.setQuestStr(queststr);
 			if (queststr.length()<=0||queststr.split(",").length<=0){
 				player.setQuestDoneTime(new Date());
-				this.addDoneQuest(playerid);
+				
+				Quest record = new Quest();
+				record.setPlayerid(playerid);
+				record.setCrdate(new Date());		
+				QuestLog.getRootLogger().info(JSON.toJSONString(record));
 				log.warn("pid:"+playerid+" done daily quest");
 			}	
 			DataManager.getInstance().updatePlayerQuest(player);
@@ -385,23 +390,23 @@ public class DataManager extends MgrBase {
 		dataThread.updatePlayer(player);
 	}
 	
-	public synchronized void update(int playerid,int type,String itemstr,String amountStr){
+	public synchronized String update(int playerid,int type,String itemstr,String amountStr){
 		Player p = findPlayer(playerid);
-		if (p==null) return;
+		if (p==null) return "";
 		Date last = p.getLastlogin();
 
+		Player data = new Player();
+		data.setPlayerid(playerid);
 		switch (type){
 		case 0:
 			if (DateUtil.isToday(last)){
-				return;
+				return "";
 			}
 			
-			log.warn("haha");
 			Integer days = p.getSigninCount();
 			if (days<1)
-				return;
+				return "";
 			
-			log.warn("haha");
 			int count = (days-1)%signinMoneys.size();
 			int money = signinMoneys.get(count);
 			int exp = signinExps.get(count);
@@ -411,6 +416,7 @@ public class DataManager extends MgrBase {
 			p.setLastlogin(new Date());
 			p.setEventCount(0);
 			this.addSignin(playerid);
+			data.setExp(p.getExp());
 			break;
 		case 2:
 			p.setOpenstock((byte)1);
@@ -423,15 +429,15 @@ public class DataManager extends MgrBase {
 				if (amount>10000)
 				{
 					log.warn("pid:"+playerid+" error,flush event,amount:"+amount);
-					return;
+					return "";
 				}
 				//不同一天登陆不允许正向事件:
 				if (last==null||!DateUtil.isToday(last)){
-					return;
+					return "";
 				}
 				if (p.getEventCount()>50){
 					log.warn("pid:"+playerid+" error,flush event count");
-					return;
+					return "";
 				}
 				
 				p.setEventCount(p.getEventCount()+1);
@@ -443,6 +449,7 @@ public class DataManager extends MgrBase {
 		}
 		DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
 		dataThread.updatePlayer(p);
+		return JSON.toJSONString(data);
 	}
 	
 	public synchronized void addSignin(int playerid) {
@@ -450,13 +457,6 @@ public class DataManager extends MgrBase {
 		record.setPlayerid(playerid);
 		record.setCrdate(new Date());		
 		SigninLog.getRootLogger().info(JSON.toJSONString(record));
-	}
-
-	public synchronized void addDoneQuest(int playerid) {
-		Quest record = new Quest();
-		record.setPlayerid(playerid);
-		record.setCrdate(new Date());		
-		QuestLog.getRootLogger().info(JSON.toJSONString(record));
 	}
 
 	public synchronized boolean updateZan(int playerid, int zan) {

@@ -9,8 +9,18 @@ public class Player {
 	private Date questassigntime;
 	private int signinCount = 1;
 	private String ipAddress;
+	private Date signinCountTime;
+	
 	public String getIpAddress() {
 		return ipAddress;
+	}
+
+	public Date getSigninCountTime() {
+		return signinCountTime;
+	}
+
+	public void setSigninCountTime(Date signinCountTime) {
+		this.signinCountTime = signinCountTime;
 	}
 
 	public void setIpAddress(String ipAddress) {

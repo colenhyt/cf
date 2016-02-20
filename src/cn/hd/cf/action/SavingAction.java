@@ -34,24 +34,6 @@ public class SavingAction extends BaseAction {
 		this.saving = saving;
 	}
 
-	//更新活期存款金钱:
-	public String updatelive()
-	{
-		Saving currLive = SavingManager.getInstance().getSaving(saving.getPlayerid(), 1);
-		currLive.setAmount(saving.getAmount());
-		currLive.setUpdatetime(new Date());	
-		boolean update = SavingManager.getInstance().updateSavingAmount(currLive);	
-		
-		log.warn("pid:"+saving.getPlayerid()+" livesaving update value="+currLive.getAmount()+";itemid="+currLive.getItemid());
-		 playerTopUpdate(saving.getPlayerid());
-		 
-		if (update==false){
-			super.writeMsg(RetMsg.MSG_SQLExecuteError);
-		}else
-			super.writeMsg(RetMsg.MSG_OK);
-		return null;
-	}
-	
 	public int pushLive(int playerId,float amount)
 	{
 		Saving saving2 = SavingManager.getInstance().getSaving(playerId, 1);
@@ -113,8 +95,10 @@ public class SavingAction extends BaseAction {
 		return false;
 	}
 	
-	protected float getLiveInter(Saving saving)
+	public float getLiveInter(Saving saving)
 	{
+		if (saving==null||saving.getUpdatetime()==null) return 0;
+		
 		Saving savingCfg = SavingManager.getInstance().getSavingCfg(1);
 		 Calendar c2 = Calendar.getInstance(); 
         c2.setTime(saving.getUpdatetime());
