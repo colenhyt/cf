@@ -57,13 +57,14 @@ public class InsureManager extends MgrBase{
 		Jedis j3 = jedisClient3.getJedis();
 		
 		String dataStr = j3.get(MgrBase.DATAKEY_DATA_INSURE);
+		jedisClient3.returnResource(j3);
 		List<Insure> data2 = JSON.parseArray(dataStr, Insure.class);    	
     	for (int i=0;i<data2.size();i++){
     		Insure insure = data2.get(i);
     		if (!insureCfgMap.containsKey(insure.getId()))
     			insureCfgMap.put(insure.getId(), insure);
     	}
-    	LogMgr.getInstance().log("init insuredata:"+insureCfgMap.size());
+    	log.warn("init insuredata:"+insureCfgMap.size());
     	
     	insuresMap = Collections.synchronizedMap(new HashMap<Integer,List<Insure>>());
     	

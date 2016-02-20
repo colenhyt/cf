@@ -63,7 +63,7 @@ public class StockAction extends SavingAction {
 		}
 		String quotestr = JSON.toJSONString(mquotes);
 		write(quotestr,"utf-8");		
-		LogMgr.getInstance().log("request some stocks last quote:"+quotestr);
+		log.warn("request some stocks last quote:"+quotestr);
 		return null;
 	}	
 
@@ -96,17 +96,17 @@ public class StockAction extends SavingAction {
 				boolean doneQuest = DataManager.getInstance().doneQuest(stock.getPlayerid(), doType);
 				if (doneQuest){
 					changeAmount += 5000;
-					LogMgr.getInstance().log("pid:"+stock.getPlayerid()+" stock quest prize 5000,type:"+doType);
+					LogMgr.getInstance().log(stock.getPlayerid()," stock quest prize 5000,type:"+doType);
 				}
 				
 				liveSaving.setAmount(liveSaving.getAmount()+changeAmount);
 				stock.setLiveamount(liveSaving.getAmount());
 				String str = JSON.toJSONString(stock);
-				LogMgr.getInstance().log("pid:"+stock.getPlayerid()+" buy stock,str:"+str);
+				LogMgr.getInstance().log(stock.getPlayerid()," buy stock,str:"+str);
 				playerMoneyUpdate(liveSaving);	
 				return msgStr2(RetMsg.MSG_OK,str);
 			}else {
-				LogMgr.getInstance().log("pid:"+stock.getPlayerid()+" warn,stock error:"+stock.getPlayerid()+",item:"+stock.getItemid()+",qty:"+stock.getQty()+",ret:"+ret);
+				LogMgr.getInstance().log(stock.getPlayerid()," warn,stock error:"+stock.getPlayerid()+",item:"+stock.getItemid()+",qty:"+stock.getQty()+",ret:"+ret);
 				return msgStr(ret);
 			}
 	}	

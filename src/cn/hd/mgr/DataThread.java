@@ -28,6 +28,7 @@ public class DataThread extends Thread {
 	private Vector<Player>	updatePlayersVect;	
 	private Map<Integer,String>		updateSavingMap;
 	
+	private Map<Integer,Vector<String>>		playerLogs;
 	private Map<Integer,String>		updateInsureMap;
 	private Map<Integer,String>		updateStockMap;
 	private int updateDuration = 500;
@@ -59,6 +60,8 @@ public class DataThread extends Thread {
 		updateInsureMap = new HashMap<Integer,String>();
 		
 		updateStockMap = new HashMap<Integer,String>();
+		
+		playerLogs = new HashMap<Integer,Vector<String>>();
 		
 		newStockVect = new Vector<Stock>();
 		deleteStockVect = new Vector<Stock>();		
@@ -129,7 +132,16 @@ public class DataThread extends Thread {
 	public synchronized void addDoneQuest(int playerid){
 		doneQuestVect.add(playerid);
 	}
-		
+	
+	public synchronized void addLog(int playerid,String logStr){
+		Vector<String> ss = playerLogs.get(playerid);
+		if (ss==null){
+			ss = new Vector<String>();
+		}
+		ss.add(logStr);
+		playerLogs.put(playerid, ss);
+	}
+	
 	public void run() {
 		Jedis jedis = null;
 		while (1==1){
@@ -145,8 +157,6 @@ public class DataThread extends Thread {
 					}
 	        		Pipeline p = jedis.pipelined();
 	        	if (newPlayersVect.size()>0){
-//		    		PlayerService service= new PlayerService();
-//		    		service.addPlayers(newPlayersVect);
 	        		for (int i=0;i<newPlayersVect.size();i++){
 	        			Player item = newPlayersVect.get(i);
 	        			p.hset(MgrBase.DATAKEY_PLAYER, String.valueOf(item.getPlayerid()), JSON.toJSONString(item));
@@ -155,6 +165,7 @@ public class DataThread extends Thread {
 		    		//log.warn("batch add players :"+newPlayersVect.size());
 		    		newPlayersVect.clear(); 	        		
 	        	}
+	        	      	
 	        	
 	        	if (updatePlayersVect.size()>0){
 	        		for (int i=0;i<updatePlayersVect.size();i++){
@@ -165,13 +176,23 @@ public class DataThread extends Thread {
 		    		updatePlayersVect.clear(); 	        		
 	        	}
 	        	
+	    		if (playerLogs.size()>0){
+	        		Set<Integer> ps = playerLogs.keySet();
+	        		for (int playerid:ps){
+	        			Vector<String> logstr = playerLogs.get(playerid);
+	        			for (String s:logstr){
+	        				p.lpush(MgrBase.DATAKEY_DATA_LOG+playerid, s);
+	        			}
+	        		}
+	        		playerLogs.clear();    	    			
+	    		}
+	    		
 	    		if (updateSavingMap.size()>0){
 	        		Set<Integer> ps = updateSavingMap.keySet();
 	        		for (int playerid:ps){
 	        			String json = updateSavingMap.get(playerid);
 	        			p.hset(MgrBase.DATAKEY_SAVING, String.valueOf(playerid), json);
 	        		}
-//		    		log.warn("batch set saving :"+updateSavingMap.size());
 		    		updateSavingMap.clear();    	    			
 	    		}
 	    		

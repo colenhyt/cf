@@ -8,10 +8,13 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
-public class LogMgr {
+import cn.hd.util.RedisClient;
+
+public class LogMgr  extends MgrBase {
 	private Vector<String> addedLogs;
 	SimpleDateFormat formatter = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 	protected Logger  log = Logger.getLogger(getClass()); 
+	String ipAddStr;
 
 	private static LogMgr uniqueInstance = null;
 
@@ -24,27 +27,39 @@ public class LogMgr {
 	
 	public LogMgr(){
 		addedLogs = new Vector<String>();
-	}
-	
-	public void log(String desc){
-		String logstr = formatter.format(new Date());
-		logstr += " "+(desc);
+		
+		dataThreads = new Vector<DataThread>();
+		
+		for (int i=0;i<redisCfg4.getThreadCount();i++){
+			 //read:
+			
+			 //write:
+			 DataThread dataThread = new DataThread(redisCfg4);
+			dataThreads.add(dataThread);
+			dataThread.setUpdateDuration(2000);
+			dataThread.start();
+		 }		
+		
 		try {
 			InetAddress addr = InetAddress.getLocalHost();
-			String ip=addr.getHostAddress().toString();	
-			logstr += ",ip:"+(ip);
-//			log.warn("ip address "+ip);
+			ipAddStr =addr.getHostAddress().toString();	
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
-		}
-		log.warn(logstr);
-		
-		addedLogs.add(logstr);
+			log.warn(e.getMessage());;
+		}		
+	}
+	
+	public void log(int playerid,String desc){
+		String str = "ip:"+(ipAddStr)+" "+(desc);
+		log.warn(str);
+		String logstr = formatter.format(new Date());
+		logstr += " "+str;
+		int index = playerid%dataThreads.size();
+		//dataThreads.get(index).addLog(playerid,logstr);
 	}
 	
 	public static void main(String[] args){
 		LogMgr l = new LogMgr();
-		l.log("aaa");
+		l.log(1,"aaa");
 	}
 }

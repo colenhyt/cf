@@ -36,7 +36,7 @@ public class SavingAction extends BaseAction {
 	}
 
 	public boolean playerMoneyUpdate(Saving saving){
-		LogMgr.getInstance().log("pid:"+saving.getPlayerid()+" liveupdate value="+saving.getAmount());
+		LogMgr.getInstance().log(saving.getPlayerid()," liveupdate value="+saving.getAmount());
 		boolean u = SavingManager.getInstance().updateLiveSaving(saving);	
 		 playerTopUpdate(saving.getPlayerid());
 		//更新排行榜金钱:
@@ -143,7 +143,7 @@ public class SavingAction extends BaseAction {
 			}
 			//已到期的存款:
 			boolean isout = isSavingTimeout(saving2);
-			LogMgr.getInstance().log("pid:"+saving.getPlayerid()+" saving is out:"+isout);
+			LogMgr.getInstance().log(saving.getPlayerid()," saving is out:"+isout);
 			float inter  = 0;
 			if ((saving.getStatus()!=null&&saving.getStatus()==1)||isout)		
 			{
@@ -155,7 +155,7 @@ public class SavingAction extends BaseAction {
 				BigDecimal b = new BigDecimal(inter);  
 				int iInter = (int)b.setScale(0,BigDecimal.ROUND_HALF_UP).floatValue();
 				changeAmount += iInter;	
-				LogMgr.getInstance().log("pid:"+saving.getPlayerid()+" get inter:"+iInter);
+				LogMgr.getInstance().log(saving.getPlayerid()," get inter:"+iInter);
 				newsaving.setProfit((float)iInter);				
 			}
 			list.remove(itemIndex);
@@ -188,7 +188,7 @@ public class SavingAction extends BaseAction {
 			boolean doneQuest = DataManager.getInstance().doneQuest(saving.getPlayerid(), 1);
 			if (doneQuest){
 				changeAmount += 5000;
-				LogMgr.getInstance().log("pid:"+saving.getPlayerid()+" saving quest prize 5000");
+				LogMgr.getInstance().log(saving.getPlayerid()," saving quest prize 5000");
 			}
 		}
 		
@@ -198,12 +198,12 @@ public class SavingAction extends BaseAction {
 			newsaving.setLiveamount(liveSaving.getAmount());
 			list.get(liveIndex).setAmount(liveSaving.getAmount());
 			String str = JSON.toJSONString(newsaving);
-			LogMgr.getInstance().log("pid:"+saving.getPlayerid()+" add/remove saving itemid="+saving.getItemid()+",ret:"+ret+",amount:"+saving.getAmount()+", retdata:"+str);
+			LogMgr.getInstance().log(saving.getPlayerid()," add/remove saving itemid="+saving.getItemid()+",ret:"+ret+",amount:"+saving.getAmount()+", retdata:"+str);
 			SavingManager.getInstance().updateSavings(saving.getPlayerid(), list);
 			playerTopUpdate(saving.getPlayerid());
 			return msgStr2(RetMsg.MSG_OK,str);
 		}else {
-			LogMgr.getInstance().log("pid:"+saving.getPlayerid()+",error,saving: "+ret);
+			LogMgr.getInstance().log(saving.getPlayerid(),",error,saving: "+ret);
 			return msgStr(ret);
 		}
 	}
@@ -244,7 +244,7 @@ public class SavingAction extends BaseAction {
 					}else {		//保险到期，移除
 						inter = -1;
 					}
-					LogMgr.getInstance().log("pid:"+playerId+" insure timeout:"+JSON.toJSONString(insure));
+					LogMgr.getInstance().log(playerId," insure timeout:"+JSON.toJSONString(insure));
 //					System.out.println("insure overdate:"+insure.getItemid());
 				}else {
 					insureamount += insure.getAmount();

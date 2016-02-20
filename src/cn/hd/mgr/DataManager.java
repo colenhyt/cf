@@ -81,7 +81,7 @@ public class DataManager extends MgrBase {
 				currMaxPlayerId = idStep;
 			jedis.set(super.DATAKEY_GUID_PLAYER,String.valueOf(currMaxPlayerId));
 			nextPlayerId = currMaxPlayerId - idStep;
-			LogMgr.getInstance().log("reset guid id "+currMaxPlayerId);
+			log.warn("reset guid id "+currMaxPlayerId);
 			redisClients.get(0).returnResource(jedis);
 		}
 		
@@ -138,6 +138,10 @@ public class DataManager extends MgrBase {
 			}
 		}
 		xxx += "<br><br>";
+		xxx += "日志:<br>";
+		xxx += getData(p.getPlayerid(),5);
+		
+		xxx += "<br><br>";
 		xxx += "top :"+getData(p.getPlayerid(),4)+" <br>";
 		return str + xxx;
 	}
@@ -175,7 +179,7 @@ public class DataManager extends MgrBase {
 				record.setPlayerid(playerid);
 				record.setCrdate(new Date());		
 				QuestLog.getRootLogger().info(JSON.toJSONString(record));
-				LogMgr.getInstance().log("pid:"+playerid+" done daily quest");
+				LogMgr.getInstance().log(playerid," done daily quest");
 			}	
 			DataManager.getInstance().updatePlayerQuest(player);
 			return true;
@@ -188,18 +192,18 @@ public class DataManager extends MgrBase {
 		if (playerstr!=null)
 			loginStr += "playerid:"+playerstr;
 		loginStr += ",setting:"+settingStr+",ip:"+loginAction.getIpAddress(request);
-		LogMgr.getInstance().log(loginStr);
+		log.warn(loginStr);
 //		return null;
 		if (settingStr.indexOf("android:true")<0&&settingStr.indexOf("iphone:true")<0){
 			String pwd = request.getParameter("pwd");
 			if (pwd==null||!pwd.endsWith("hdcf")){
-				LogMgr.getInstance().log("illegal access!!");
+				log.warn("illegal access!!");
 				return loginAction.msgStr(RetMsg.MSG_IllegalAccess);
 			}
 		}
 			
 		if (!Pattern.matches("[0-9]+", openId)){
-			LogMgr.getInstance().log("illegal openid!!");
+			log.warn("illegal openid!!");
 			return loginAction.msgStr(RetMsg.MSG_WrongOpenID);
 		}
 		
@@ -229,6 +233,14 @@ public class DataManager extends MgrBase {
 		} else if (typeid == 4) {
 			int top = get_top(playerid);
 			data = String.valueOf(top);
+		} else if (typeid==5){
+			Jedis j4 = jedisClient4.getJedis();
+			String key = MgrBase.DATAKEY_DATA_LOG+playerid;
+			int len = (j4.llen(key).intValue());
+			for (int i=len-1;i>=0;i--)
+			{
+				data += j4.lindex(key,i)+"<br>";
+			}
 		}
 		return data;
 	}
@@ -356,7 +368,7 @@ public class DataManager extends MgrBase {
 		}
 		long cost = System.currentTimeMillis()-s;
 		if (cost>10)
-			LogMgr.getInstance().log("register find cost :"+cost+",name:"+playerName);
+			log.warn("register find cost :"+cost+",name:"+playerName);
 		return null;
 	}
 
@@ -415,7 +427,7 @@ public class DataManager extends MgrBase {
 			p.setEventCount(0);
 			this.addSignin(playerid);
 			data.setExp(p.getExp());
-			LogMgr.getInstance().log("pid:"+playerid+" signin days:"+days+" add prize,money: "+money+", exp:"+exp);
+			LogMgr.getInstance().log(playerid," signin days:"+days+" add prize,money: "+money+", exp:"+exp);
 			break;
 		case 2:
 			p.setOpenstock((byte)1);
@@ -427,7 +439,7 @@ public class DataManager extends MgrBase {
 			if (amount>0){
 				if (amount>10000)
 				{
-					LogMgr.getInstance().log("pid:"+playerid+" error,flush event,amount:"+amount);
+					log.warn("pid:"+playerid+" error,flush event,amount:"+amount);
 					return "";
 				}
 				//不同一天登陆不允许正向事件:
@@ -435,13 +447,13 @@ public class DataManager extends MgrBase {
 					return "";
 				}
 				if (p.getEventCount()>50){
-					LogMgr.getInstance().log("pid:"+playerid+" error,flush event count");
+					log.warn("pid:"+playerid+" error,flush event count");
 					return "";
 				}
 				
 				p.setEventCount(p.getEventCount()+1);
 			}
-			LogMgr.getInstance().log("pid:"+playerid+" event fire, amount:"+amount);
+			LogMgr.getInstance().log(playerid," event fire, amount:"+amount);
 			SavingManager.getInstance().updateLiveSaving(playerid,amount);
 			break;
 			
@@ -501,16 +513,17 @@ public class DataManager extends MgrBase {
 		String strinit = j3.get(MgrBase.DATAKEY_DATA_INIT);
 		init = JSON.parseObject(strinit, Init.class);
 
-		LogMgr.getInstance().log("find init:"+strinit);
+		log.warn("find init:"+strinit);
 		
 		questDataMap = Collections
 				.synchronizedMap(new HashMap<Integer, Quest>());
 		List<String> queststrs = j3.hvals(MgrBase.DATAKEY_DATA_QUEST);
+		jedisClient3.returnResource(j3);
 		for (String qstr:queststrs){
 			Quest q = JSON.parseObject(qstr,Quest.class);
 			questDataMap.put(q.getId(), q);
 		}
-		LogMgr.getInstance().log("init questdata "+questDataMap.size());
+		log.warn("init questdata "+questDataMap.size());
 		
 		playerIdMaps = Collections
 				.synchronizedMap(new HashMap<String, Integer>());
@@ -562,7 +575,7 @@ public class DataManager extends MgrBase {
 //			playerIdMaps.put(player.getPlayername(), player.getPlayerid());
 //		}
 //		redisClients.get(0).returnResource(jedis);
-//		LogMgr.getInstance().log("load all players :" + items.size());
+//		log.warn("load all players :" + items.size());
 
 	}
 	
@@ -725,7 +738,7 @@ public class DataManager extends MgrBase {
 			str += ", ps:"+psstr;
 		}
 		str += ", ret:"+ret;
-		LogMgr.getInstance().log(str);
+		log.warn(str);
 		return "设置结果:"+ret;
 	}
 

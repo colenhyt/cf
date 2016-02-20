@@ -43,17 +43,17 @@ public class InsureAction extends SavingAction {
 			if (doneQuest){
 				changeAmount += 5000;
 				
-				LogMgr.getInstance().log("pid:"+insure.getPlayerid()+" insure quest prize 5000,type:"+doType);
+				LogMgr.getInstance().log(insure.getPlayerid()," insure quest prize 5000,type:"+doType);
 			}
 			
 			liveSaving.setAmount(liveSaving.getAmount()+changeAmount);
 			insure.setLiveamount(liveSaving.getAmount());
 			String str = JSON.toJSONString(insure);
-			LogMgr.getInstance().log("pid:"+insure.getPlayerid()+" add insure itemid="+insure.getItemid()+",str"+str);
+			LogMgr.getInstance().log(insure.getPlayerid()," add insure itemid="+insure.getItemid()+",str"+str);
 			playerMoneyUpdate(liveSaving);	
 			return msgStr2(RetMsg.MSG_OK,str);
 		}else {
-			LogMgr.getInstance().log("pid:"+insure.getPlayerid()+", warn, insure error: "+ret);
+			LogMgr.getInstance().log(insure.getPlayerid(),", warn, insure error: "+ret);
 			return msgStr(ret);
 		}
 

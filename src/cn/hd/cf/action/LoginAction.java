@@ -48,7 +48,7 @@ public class LoginAction extends SavingAction {
     	Map<String, String> params = new HashMap<String, String>();  
     	params.put(DataManager.getInstance().openidparam, openid); 
     	String json = HttpXmlClient.post(DataManager.getInstance().openidurl, params);  
-    	LogMgr.getInstance().log(json);
+//    	LogMgr.getInstance().log(json);
 		return 0;
 	}
 	
@@ -107,7 +107,7 @@ public class LoginAction extends SavingAction {
 			{
 				hasUpdate = true;
 				saving.setStatus((byte)1);
-				log.debug("pid:"+playerId+" saving timeout");
+				LogMgr.getInstance().log(playerId,"saving timeout,itemid:"+saving.getItemid());
 			}
 			saving.setProfit(inter);
 		}
@@ -122,64 +122,65 @@ public class LoginAction extends SavingAction {
 		
 		
 		//存款返回数据:
-		float savingamount = 0;		
-		for (Saving item:savings){
-			Saving usaving = new Saving();
-			usaving.setItemid(item.getItemid());
-			usaving.setAmount(item.getAmount());
-			usaving.setCreatetime(item.getCreatetime());
-			usaving.setQty(item.getQty());
-			usaving.setProfit(item.getProfit());
-			savingamount += item.getAmount();
-			mdata.put(usaving.getItemid(), usaving);			
-		}
-		savingamount = Float.valueOf(savingamount).intValue();
+//		float savingamount = 0;		
+//		for (Saving item:savings){
+//			Saving usaving = new Saving();
+//			usaving.setItemid(item.getItemid());
+//			usaving.setAmount(item.getAmount());
+//			usaving.setCreatetime(item.getCreatetime());
+//			usaving.setQty(item.getQty());
+//			usaving.setProfit(item.getProfit());
+//			savingamount += item.getAmount();
+//			mdata.put(usaving.getItemid(), usaving);			
+//		}
+//		savingamount = Float.valueOf(savingamount).intValue();
+//		
+//		//股票返回数据:
+//		float stockamount = 0;
+//		Map<Integer,List<Stock>> stocks = new HashMap<Integer,List<Stock>>();		
+//		List<Stock> ss = StockManager.getInstance().getStockList(playerId);
+//		if (ss!=null){
+//		for (int i=0;i<ss.size();i++){
+//			Stock ps = ss.get(i);
+//			if (ps==null) continue;
+//			List<Stock> list = stocks.get(ps.getItemid());
+//			if (list==null){
+//				list = new ArrayList<Stock>();
+//				stocks.put(ps.getItemid(), list);
+//			}
+//			List<Quote> qq = StockManager.getInstance().getLastQuotes(ps.getItemid());
+//			if (qq.size()>0)
+//				stockamount += qq.get(0).getPrice()*ps.getQty();			
+//			list.add(ss.get(i));
+//		}		
+//		}
+//		stockamount = Float.valueOf(stockamount).intValue();
+//		
+//		float amount = savingamount + insureamount + stockamount;
+//		int top = ToplistManager.getInstance().findCountByGreaterMoney(
+//				playerId, 0, amount);
+//		top++;
 		
-		//股票返回数据:
-		float stockamount = 0;
-		Map<Integer,List<Stock>> stocks = new HashMap<Integer,List<Stock>>();		
-		List<Stock> ss = StockManager.getInstance().getStockList(playerId);
-		if (ss!=null){
-		for (int i=0;i<ss.size();i++){
-			Stock ps = ss.get(i);
-			if (ps==null) continue;
-			List<Stock> list = stocks.get(ps.getItemid());
-			if (list==null){
-				list = new ArrayList<Stock>();
-				stocks.put(ps.getItemid(), list);
-			}
-			List<Quote> qq = StockManager.getInstance().getLastQuotes(ps.getItemid());
-			if (qq.size()>0)
-				stockamount += qq.get(0).getPrice()*ps.getQty();			
-			list.add(ss.get(i));
-		}		
-		}
-		stockamount = Float.valueOf(stockamount).intValue();
-		float amount = savingamount + insureamount + stockamount;
-		int top = ToplistManager.getInstance().findCountByGreaterMoney(
-				playerId, 0, amount);
-		top++;
-		
-		if (hasUpdate==true){
-			SavingManager.getInstance().updateSavings(playerId,savings);
-			Player player2 = DataManager.getInstance().findPlayer(playerId);	
-			if (player2!=null){
-				LogMgr.getInstance().log("pid:"+playerId+" update toplist:"+top);
-				ToplistManager.getInstance().updateToplist(playerId,player2.getPlayername(),amount);
-			}
-		}	
-		if (top==0){
-			Player player2 = DataManager.getInstance().findPlayer(playerId);	
-			if (player2!=null){
-				LogMgr.getInstance().log("pid:"+playerId+" update toplist:"+top);
-				ToplistManager.getInstance().updateToplist(playerId,player2.getPlayername(),amount);
-				top = ToplistManager.getInstance().findCountByGreaterMoney(
-						playerId, 0, amount);
-				top++;
-			}
-		}
-		String data = JSON.toJSONString(mdata)+";"+JSON.toJSONString(insures)+";"+JSON.toJSONString(stocks)+";"+top;
-		LogMgr.getInstance().log("pid:"+playerId+" get login data:"+data);
+//		if (hasUpdate==true){
+//			SavingManager.getInstance().updateSavings(playerId,savings);
+//			Player player2 = DataManager.getInstance().findPlayer(playerId);	
+//			if (player2!=null){
+//				LogMgr.getInstance().log(playerId," update toplist:"+top);
+//				ToplistManager.getInstance().updateToplist(playerId,player2.getPlayername(),amount);
+//			}
+//		}	
+//		if (top==0){
+//			Player player2 = DataManager.getInstance().findPlayer(playerId);	
+//			if (player2!=null){
+//				LogMgr.getInstance().log(playerId," update toplist:"+top);
+//				ToplistManager.getInstance().updateToplist(playerId,player2.getPlayername(),amount);
+//				top = ToplistManager.getInstance().findCountByGreaterMoney(
+//						playerId, 0, amount);
+//				top++;
+//			}
+//		}
+		String data = JSON.toJSONString(mdata)+";"+JSON.toJSONString(insures)+";"+JSON.toJSONString("")+";"+0;
+		LogMgr.getInstance().log(playerId," get login data:"+data);
 		return data;
 	}
 	//
@@ -218,7 +219,7 @@ public class LoginAction extends SavingAction {
 				liveUpdate = true;
 				saving.setStatus((byte)1);
 				SavingManager.getInstance().updateSaving(playerId, saving);
-				log.debug("pid:"+playerId+" saving timeout,get inter:"+saving.getItemid()+",inter: "+inter);
+				LogMgr.getInstance().log(playerId," saving timeout,get inter:"+saving.getItemid()+",inter: "+inter);
 			}
 			Saving usaving = new Saving();
 			usaving.setItemid(saving.getItemid());
@@ -243,14 +244,14 @@ public class LoginAction extends SavingAction {
 			if (!player.getOpenid().equals(player.getOpenid()))
 				return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
 			
-			LogMgr.getInstance().log("pid:"+player.getPlayerid()+" login,openid:"+player.getOpenid()+",name:"+player.getPlayername());
+			LogMgr.getInstance().log(player.getPlayerid()," login,openid:"+player.getOpenid()+",name:"+player.getPlayername());
 			int assignCode = assignDailyQuest(player);
 			if (assignCode==1){
-				LogMgr.getInstance().log("pid:"+player.getPlayerid()+" assign quest,login:"+player.getQuestStr());
+				LogMgr.getInstance().log(player.getPlayerid()," assign quest,login:"+player.getQuestStr());
 			}
 			boolean newSignin = countSignin(player);
 			if (newSignin){
-				LogMgr.getInstance().log("pid:"+player.getPlayerid()+" reset signin:"+player.getSigninCount());
+				LogMgr.getInstance().log(player.getPlayerid()," reset signin:"+player.getSigninCount());
 			}
 			if (newSignin||assignCode==1||assignCode==2){
 				DataManager.getInstance().updatePlayerQuest(player);
@@ -280,7 +281,7 @@ public class LoginAction extends SavingAction {
 		playerBlob = DataManager.getInstance().findPlayer(player.getPlayername());
 		long cost = System.currentTimeMillis()-s;
 		if (cost>10)		
-			LogMgr.getInstance().log("action cost :"+cost+" openid:"+player.getOpenid());
+			log.warn("action cost :"+cost+" openid:"+player.getOpenid());
 		if (playerBlob==null)
 		{
 			return register();
@@ -357,7 +358,7 @@ public class LoginAction extends SavingAction {
 			data += ",saving:"+savingStr;
 		}
 		data += "}";
-	  LogMgr.getInstance().log("pid:"+player.getPlayerid()+" loginback:"+data);
+	  LogMgr.getInstance().log(player.getPlayerid()," loginback:"+data);
 	  return data;
 	}
 	
@@ -444,7 +445,7 @@ public class LoginAction extends SavingAction {
 			playerBlob.setCreateTimeStr(cstr);
 			playerBlob.setPlayerid(DataManager.getInstance().assignNextId());
 			assignDailyQuest(playerBlob);
-			LogMgr.getInstance().log("pid:"+playerBlob.getPlayerid()+" assign quest register:"+playerBlob.getQuestStr());
+			LogMgr.getInstance().log(playerBlob.getPlayerid()," assign quest register:"+playerBlob.getQuestStr());
 			boolean ret = DataManager.getInstance().addPlayer(playerBlob);
 			if (ret==false){
 				return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
@@ -471,7 +472,7 @@ public class LoginAction extends SavingAction {
 				ToplistManager.getInstance().addRegisterToplist(playerBlob.getPlayerid(),playerBlob.getPlayername(),saving.getAmount());	
 			}
 //			JSONObject obj = JSONObject.fromObject(playerBlob);	
-			LogMgr.getInstance().log("pid:"+playerBlob.getPlayerid()+" register success,openid:'"+playerBlob.getOpenid()+"',name:"+player.getPlayername());
+			LogMgr.getInstance().log(playerBlob.getPlayerid()," register success,openid:'"+playerBlob.getOpenid()+"',name:"+player.getPlayername());
 //			write(obj.toString(),"utf-8");
 			
 			return serialize(playerBlob,1,JSON.toJSONString(savings));

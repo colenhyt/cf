@@ -75,6 +75,7 @@ public class SavingManager extends MgrBase{
     	savingCfgMap = new HashMap<Integer,Saving>();
 		Jedis j3 = jedisClient3.getJedis();
 		String dataStr = j3.get(MgrBase.DATAKEY_DATA_SAVING);
+		jedisClient3.returnResource(j3);
 		List<Saving> data2 = JSON.parseArray(dataStr, Saving.class);
 		
     	for (int i=0;i<data2.size();i++){
@@ -82,7 +83,7 @@ public class SavingManager extends MgrBase{
     		if (!savingCfgMap.containsKey(saving.getId()))
     			savingCfgMap.put(saving.getId(), saving);
     	}
-    	LogMgr.getInstance().log("init savingdata:"+savingCfgMap.size());
+    	log.warn("init savingdata:"+savingCfgMap.size());
 
     	savingsMap = Collections.synchronizedMap(new HashMap<Integer,List<Saving>>());
     	
@@ -107,14 +108,14 @@ public class SavingManager extends MgrBase{
     public synchronized void updateLiveSaving(int playerid,float addedAmount){
 		Saving saving2 = getSaving(playerid, 1);
 		if (saving2==null){
-			LogMgr.getInstance().log("pid:"+playerid+" error, live saving not found");
+			LogMgr.getInstance().log(playerid," error, live saving not found");
 			return;
 		}
 		float newAmount = saving2.getAmount()+addedAmount;
 		if (newAmount<0)
 			newAmount = 0;
 			
-		LogMgr.getInstance().log("pid:"+playerid+" (live saving"+saving2.getAmount()+") added :"+addedAmount);
+		LogMgr.getInstance().log(playerid," (live saving"+saving2.getAmount()+") added :"+addedAmount);
 		saving2.setAmount(newAmount);
 		savingAction.playerMoneyUpdate(saving2);			
     }
@@ -211,7 +212,7 @@ public class SavingManager extends MgrBase{
 			String liststr = jedis.hget(MgrBase.DATAKEY_SAVING, String.valueOf(playerId));
 			jedisClient.returnResource(jedis);    	
 			if (liststr!=null){
-				LogMgr.getInstance().log("pid:"+playerId+" get saving "+liststr);
+				log.warn("pid:"+playerId+" get saving "+liststr);
 				list = JSON.parseArray(liststr, Saving.class);
 				//savingsMap.put(playerId, list);
 			}

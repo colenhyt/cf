@@ -31,6 +31,7 @@ public class MgrBase {
 	public final static String DATAKEY_DATA_INSURE = "insuredata";
 	public final static String DATAKEY_DATA_STOCK = "stockdata";
 	public final static String DATAKEY_DATA_QUEST = "questdata";
+	public final static String DATAKEY_DATA_LOG = "logdata";
 	protected Logger  log = Logger.getLogger(getClass()); 
 	protected int tick = 0;
 	protected final int UPDATE_PERIOD = 20*30;		//20*60: 一小时
@@ -39,11 +40,13 @@ public class MgrBase {
 	protected Vector<DataThread>	dataThreads;
 	protected long toplistTime = 600;
 	protected RedisClient		jedisClient3;
+	protected RedisClient		jedisClient4;
 	public Config cfg;
 	public RedisConfig redisCfg;
 	public RedisConfig redisCfg1;
 	public RedisConfig redisCfg2;
 	public RedisConfig redisCfg3;
+	public RedisConfig redisCfg4;
 	public int threadCount;
 	public JSONObject cfgObj;
 	public String openidurl;
@@ -79,6 +82,9 @@ public class MgrBase {
 		
 		String cfgstr3 = cfgObj.getString("redisCfg3");
 		redisCfg3 = JSON.parseObject(cfgstr3, RedisConfig.class);
+		
+		redisCfg4 = JSON.parseObject(cfgObj.getString("redisCfg4"), RedisConfig.class);
+		jedisClient4 = new RedisClient(redisCfg4);
 
 		if (cfgObj.containsKey("toplistTime")){
 			toplistTime = Long.valueOf(cfgObj.getString("toplistTime"));

@@ -116,7 +116,7 @@ public class StockManager extends MgrBase{
 	    		quoteMap.put(stock.getId(), qquotes);
 	    		
 	    }	
-    	LogMgr.getInstance().log("stock init :"+quoteMap.size());
+	   	log.warn("stock init :"+quoteMap.size());
 
 				
      }
@@ -321,11 +321,11 @@ public class StockManager extends MgrBase{
 				needRemoveQty -= ss.getQty();
 				list.remove(i);
 				i--;
-				LogMgr.getInstance().log("delete stock:"+ss.getQty());
+				LogMgr.getInstance().log(playerId,"delete stock:"+ss.getQty());
 			}else {
 				ss.setQty(ss.getQty()-needRemoveQty);
 				ss.setAmount(ss.getQty()*ss.getPrice());
-				LogMgr.getInstance().log("update stock:"+ss.getQty());
+				LogMgr.getInstance().log(playerId,"update stock:"+ss.getQty());
 				needRemoveQty = 0;
 //				dataThread.updateStock(ss);
 			}

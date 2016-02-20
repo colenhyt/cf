@@ -60,7 +60,7 @@ public class ToplistManager extends MgrBase{
 			return;
 		}
 		jedisClient.returnResource(jedis);
-    	LogMgr.getInstance().log("toplist init,reloadtime:"+toplistTime+"s");
+    	log.warn("toplist init,reloadtime:"+toplistTime+"s");
     	
     	load();
     }
@@ -86,7 +86,7 @@ public class ToplistManager extends MgrBase{
     		if (!toplistMap.containsKey(item.getPlayerid()))
     			toplistMap.put(item.getPlayerid(), item);
     	}
-    	LogMgr.getInstance().log("reload toplist data:" + itemstrs.size());      	
+    	log.warn("reload toplist data:" + itemstrs.size());      	
     }
     
 	public synchronized Toplist findByPlayerId(int playerid){		
@@ -263,7 +263,7 @@ public class ToplistManager extends MgrBase{
 				item.setOpenid(p.getOpenid());
 			list.add(item);
     	}
-    	LogMgr.getInstance().log("get all toplist data:" + itemstrs.size()); 
+    	log.warn("get all toplist data:" + itemstrs.size()); 
 		Collections.sort((List<Toplist>)list);
  
 		List<Toplist> tops = new ArrayList<Toplist>();
@@ -287,7 +287,7 @@ public class ToplistManager extends MgrBase{
 			if (i>=count) break;
 			tops.add(list.get(i));
 		}
-		LogMgr.getInstance().log("get all toplist,count:"+tops.size());
+		log.warn("get all toplist,count:"+tops.size());
 		return tops;
 	}
 

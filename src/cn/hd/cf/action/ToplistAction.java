@@ -55,7 +55,7 @@ public class ToplistAction extends BaseAction {
 	}
 	
 	public String zan(){
-		LogMgr.getInstance().log("toplist zan: playerid="+toplist.getPlayerid()+",zan="+toplist.getZan());
+		LogMgr.getInstance().log(toplist.getPlayerid()," zan="+toplist.getZan());
 		ToplistManager.getInstance().updateZan(toplist);
 		return null;
 	}
