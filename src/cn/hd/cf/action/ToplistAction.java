@@ -13,20 +13,20 @@ public class ToplistAction extends BaseAction {
 
 	public String list(){
 		ToplistManager.getInstance().load();
-		float money = ToplistManager.getInstance().calculatePlayerMoney(toplist.getPlayerid());
-		ToplistManager.getInstance().updateToplist(toplist.getPlayerid(),null,money);
+//		float money = ToplistManager.getInstance().calculatePlayerMoney(toplist.getPlayerid());
+//		ToplistManager.getInstance().updateToplist(toplist.getPlayerid(),null,money);
 		List<Toplist> weeklist = ToplistManager.getInstance().findByType(0);
 		List<Toplist> monthlist = ToplistManager.getInstance().findByType(1);
 		
 		Toplist weektop = ToplistManager.getInstance().findByPlayerId(toplist.getPlayerid());
 		Toplist monthtop = null;
 		if (weektop!=null){
-			float fMm = weektop.getMoney().floatValue();
-			int week = ToplistManager.getInstance().findCountByGreaterMoney(toplist.getPlayerid(),0,fMm);
+//			float fMm = weektop.getMoney().floatValue();
+			int week = ToplistManager.getInstance().getTopNumber(toplist.getPlayerid(),0);
 			weektop.setTop(week+1);
 			weeklist.add(weektop);
 
-			int mm = ToplistManager.getInstance().findCountByGreaterMoney(toplist.getPlayerid(),1,fMm);
+			int mm = ToplistManager.getInstance().getTopNumber(toplist.getPlayerid(),1);
 			monthtop = new Toplist();
 			monthtop.setPlayername(weektop.getPlayername());
 			monthtop.setPlayerid(weektop.getPlayerid());

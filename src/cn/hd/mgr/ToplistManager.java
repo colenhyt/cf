@@ -154,7 +154,14 @@ public class ToplistManager extends MgrBase{
 	public synchronized boolean addRegisterToplist(int playerid,String playerName,double money){
 			Toplist newtop = new Toplist();
 			newtop.setPlayerid(playerid);
-			newtop.setPlayername(playerName);
+			String pName = playerName;
+			if (pName==null){
+				Player p = DataManager.getInstance().findPlayer(playerid);
+				if (p!=null){
+					pName = p.getPlayername();
+				}
+			}
+			newtop.setPlayername(pName);
 			newtop.setCreatetime(new Date());
 			newtop.setUpdatetime(new Date());
 			int imoney = Double.valueOf(money).intValue();
@@ -241,6 +248,18 @@ public class ToplistManager extends MgrBase{
 		return tops;
 	}
 	
+	public int getTopNumber(int playerid,int type){
+		Toplist top = findByPlayerId(playerid);
+		float fPMoney = 0;
+		if (top==null){
+			fPMoney = calculatePlayerMoney(playerid);
+		}else
+			fPMoney = top.getMoney().floatValue();
+		
+		return findTopCount(top,type,fPMoney);			
+
+	}
+	
 	public long getTopCount(){
     	Jedis jedis = jedisClient.getJedis();   	
 		
@@ -318,8 +337,39 @@ public class ToplistManager extends MgrBase{
 			return topAction.list();
 		}
 
+	public float getStockAmount(int playerid){
+		List<Stock> stocks = StockManager.getInstance().getStockList(playerid);
+		float stockamount = 0;
+		if (stocks!=null){
+			for (int i=0;i<stocks.size();i++){
+				Stock ps = stocks.get(i);
+				if (ps==null) continue;
+				List<Quote> qq = StockManager.getInstance().getLastQuotes(ps.getItemid());
+				if (qq.size()>0)
+					stockamount += qq.get(0).getPrice()*ps.getQty();
+			}   			
+		}
+		stockamount = Float.valueOf(stockamount).intValue();
+		return stockamount;
+	}
 	
-	public float calculatePlayerMoney(int playerId){
+	public synchronized float getCurrentTotalMoney(int playerId,float totalSaving){
+		float savingamount = Float.valueOf(totalSaving).intValue();
+		
+		float insureamount = 0;
+		List<Insure> insures = InsureManager.getInstance().getInsureList(playerId);
+		if (insures!=null){
+		for (int i=0;i<insures.size();i++){
+			insureamount += insures.get(i).getAmount();
+		}
+		}
+		insureamount = Float.valueOf(insureamount).intValue();
+
+		float amount = savingamount + insureamount + getStockAmount(playerId);
+		return amount;
+	}
+	
+	public synchronized float calculatePlayerMoney(int playerId){
 		List<Saving> savings = SavingManager.getInstance().getSavingList(playerId);
 		float savingamount = 0;
 		if (savings!=null){
@@ -336,19 +386,8 @@ public class ToplistManager extends MgrBase{
 		}
 		}
 		insureamount = Float.valueOf(insureamount).intValue();
-		List<Stock> stocks = StockManager.getInstance().getStockList(playerId);
-		float stockamount = 0;
-		if (stocks!=null){
-			for (int i=0;i<stocks.size();i++){
-				Stock ps = stocks.get(i);
-				if (ps==null) continue;
-				List<Quote> qq = StockManager.getInstance().getLastQuotes(ps.getItemid());
-				if (qq.size()>0)
-					stockamount += qq.get(0).getPrice()*ps.getQty();
-			}   			
-		}
-		stockamount = Float.valueOf(stockamount).intValue();
-		float amount = savingamount + insureamount + stockamount;
+
+		float amount = savingamount + insureamount + getStockAmount(playerId);
 		return amount;
 	}
 	

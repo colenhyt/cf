@@ -322,11 +322,10 @@ public class DataManager extends MgrBase {
 	}
 	
 	public synchronized int get_top(int playerid) {
-		float fMm = ToplistManager.getInstance().calculatePlayerMoney(playerid);
-		
 		ToplistManager.getInstance().load();
-		int top = ToplistManager.getInstance().findCountByGreaterMoney(
-				playerid, 0, fMm);
+	
+		int top = ToplistManager.getInstance().getTopNumber(
+				playerid, 0);
 		// 800ms/1k
 		return top+1;
 	}
@@ -421,12 +420,14 @@ public class DataManager extends MgrBase {
 			int count = (days-1)%signinMoneys.size();
 			int money = signinMoneys.get(count);
 			int exp = signinExps.get(count);
-			SavingManager.getInstance().updateLiveSaving(playerid,money);
 			p.setExp(p.getExp()+exp);
 			p.setLastlogin(new Date());
 			p.setEventCount(0);
 			this.addSignin(playerid);
 			data.setExp(p.getExp());
+			float newTotal = SavingManager.getInstance().updateLiveSaving(playerid,money);
+			int newTop = ToplistManager.getInstance().findTopCount(null,0,newTotal);
+			data.setTop(newTop+1);
 			LogMgr.getInstance().log(playerid," signin days:"+days+" add prize,money: "+money+", exp:"+exp);
 			break;
 		case 2:
@@ -454,7 +455,9 @@ public class DataManager extends MgrBase {
 				p.setEventCount(p.getEventCount()+1);
 			}
 			LogMgr.getInstance().log(playerid," event fire, amount:"+amount);
-			SavingManager.getInstance().updateLiveSaving(playerid,amount);
+			float newTotal2 = SavingManager.getInstance().updateLiveSaving(playerid,amount);
+			int newTop2 = ToplistManager.getInstance().findTopCount(null,0,newTotal2);
+			data.setTop(newTop2+1);
 			break;
 			
 		}
@@ -649,7 +652,14 @@ public class DataManager extends MgrBase {
 				ret = SavingManager.getInstance().deleteSaving(p.getPlayerid(), saving);
 				break;
 			}
-			Saving saving2 = SavingManager.getInstance().getSaving(p.getPlayerid(), itemid);
+			List<Saving> list = SavingManager.getInstance().getSavingList(p.getPlayerid());
+			Saving saving2 = null;
+			for (Saving item:list){
+				if (item.getItemid()==itemid){
+					saving2 = item;
+					item.setAmount(item.getAmount()+qty);
+				}
+			}
 			//add saving:
 			if (saving2==null){
 				Saving savingCfg = SavingManager.getInstance().getSavingCfg(itemid);
@@ -661,12 +671,9 @@ public class DataManager extends MgrBase {
 				saving.setQty(1);
 				saving.setType(savingCfg.getType());
 				saving.setPeriod(savingCfg.getPeriod());			
-				SavingManager.getInstance().addSaving(p.getPlayerid(), saving);
-			}else {
-				saving2.setAmount(saving2.getAmount()+qty);
-				SavingManager.getInstance().updateSavingAmount(saving2);	
+				list.add(saving);
 			}
-			loginAction.playerTopUpdate(p.getPlayerid());	
+			SavingManager.getInstance().updateSavings(p.getPlayerid(), list);
 			break;
 		case 2:		//insure
 			if (itemid<=0||itemid>8){

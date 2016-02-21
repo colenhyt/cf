@@ -105,19 +105,41 @@ public class SavingManager extends MgrBase{
 //    	LogMgr.getInstance().log("saving init:"+playerids.size());
     }
     
-    public synchronized void updateLiveSaving(int playerid,float addedAmount){
-		Saving saving2 = getSaving(playerid, 1);
-		if (saving2==null){
-			LogMgr.getInstance().log(playerid," error, live saving not found");
-			return;
+    public synchronized float updateLiveSaving(int playerid,float addedAmount){
+		List<Saving> savings = SavingManager.getInstance().getSavingList(playerid);
+		int liveIndex = 0;
+		if (savings!=null){
+			for (int i=0;i<savings.size();i++){
+				Saving saving = savings.get(i);
+				if (saving.getItemid()==1){	//活期
+					saving.setAmount(saving.getAmount()+addedAmount);
+					if (saving.getAmount()<0)
+						saving.setAmount((float)0);
+					liveIndex = i;
+				}
+			}			
 		}
-		float newAmount = saving2.getAmount()+addedAmount;
-		if (newAmount<0)
-			newAmount = 0;
-			
-		LogMgr.getInstance().log(playerid," (live saving"+saving2.getAmount()+") added :"+addedAmount);
-		saving2.setAmount(newAmount);
-		savingAction.playerMoneyUpdate(saving2);			
+		
+		float newTotal = updateSavings(playerid, savings);
+		LogMgr.getInstance().log(playerid," live saving added:"+addedAmount+" new value:"+savings.get(liveIndex).getAmount());
+		return newTotal;
+    }
+    
+    public synchronized float updateLiveSaving(int playerid,Saving liveSaving){
+		List<Saving> savings = SavingManager.getInstance().getSavingList(playerid);
+		if (savings!=null){
+			for (Saving saving:savings){
+				if (saving.getItemid()==liveSaving.getItemid()){	//活期
+					saving.setAmount(liveSaving.getAmount());
+					if (saving.getAmount()<0)
+						saving.setAmount((float)0);
+				}
+			}			
+		}
+		
+		float newMoney = updateSavings(playerid, savings);		
+		LogMgr.getInstance().log(playerid," live saving update:"+liveSaving.getAmount());
+		return newMoney;
     }
     
     public synchronized boolean updateLiveSaving(Saving record){
@@ -125,10 +147,16 @@ public class SavingManager extends MgrBase{
     	return updateSavingAmount(record);
     }
     
-    public synchronized boolean updateSavings(int playerid,List<Saving> list){ 
+    public synchronized float updateSavings(int playerid,List<Saving> list){     	
     		DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
     		dataThread.updateSaving(playerid, JSON.toJSONString(list));
-    		return true;
+    		float savingAmount = 0;
+    		for (Saving item:list){
+    			savingAmount += item.getAmount();
+    		}    	
+        	float newTotal = ToplistManager.getInstance().getCurrentTotalMoney(playerid, savingAmount);
+    		ToplistManager.getInstance().updateToplist(playerid,null,newTotal);			    		
+    		return newTotal;
     }
     
     

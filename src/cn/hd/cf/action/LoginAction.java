@@ -88,6 +88,7 @@ public class LoginAction extends SavingAction {
 		
 		Saving liveSaving = null;
 		int liveIndex = 0;
+		float savingamount = 0;
 		boolean hasUpdate = false;
 		for (int i=0;i<savings.size();i++){
 			float inter = 0;
@@ -103,13 +104,16 @@ public class LoginAction extends SavingAction {
 					saving.setUpdatetime(new Date());
 				}else
 					inter = 0;		//不算利息
-			}else if (isSavingTimeout(saving))		//定期到期
-			{
-				hasUpdate = true;
-				saving.setStatus((byte)1);
-				LogMgr.getInstance().log(playerId,"saving timeout,itemid:"+saving.getItemid());
+			}else {
+				savingamount += saving.getAmount();
+				if (isSavingTimeout(saving)){		//定期到期
+					hasUpdate = true;
+					saving.setStatus((byte)1);
+					LogMgr.getInstance().log(playerId,"saving timeout,itemid:"+saving.getItemid());
+				}
 			}
 			saving.setProfit(inter);
+			mdata.put(saving.getItemid(), saving);			
 		}
 		float oriLiveValue = liveSaving.getAmount();
 		Map<Integer,Insure>	insures = new HashMap<Integer,Insure>();	
@@ -117,69 +121,17 @@ public class LoginAction extends SavingAction {
 		float insureamount = findUpdatedInsures(playerId,liveSaving,insures);
 		if (liveSaving.getAmount()!=oriLiveValue){
 			savings.get(liveIndex).setAmount(liveSaving.getAmount());
+			mdata.get(1).setAmount(liveSaving.getAmount());
 			hasUpdate = true;
 		}
 		
-		
-		//存款返回数据:
-//		float savingamount = 0;		
-//		for (Saving item:savings){
-//			Saving usaving = new Saving();
-//			usaving.setItemid(item.getItemid());
-//			usaving.setAmount(item.getAmount());
-//			usaving.setCreatetime(item.getCreatetime());
-//			usaving.setQty(item.getQty());
-//			usaving.setProfit(item.getProfit());
-//			savingamount += item.getAmount();
-//			mdata.put(usaving.getItemid(), usaving);			
-//		}
-//		savingamount = Float.valueOf(savingamount).intValue();
-//		
-//		//股票返回数据:
-//		float stockamount = 0;
-//		Map<Integer,List<Stock>> stocks = new HashMap<Integer,List<Stock>>();		
-//		List<Stock> ss = StockManager.getInstance().getStockList(playerId);
-//		if (ss!=null){
-//		for (int i=0;i<ss.size();i++){
-//			Stock ps = ss.get(i);
-//			if (ps==null) continue;
-//			List<Stock> list = stocks.get(ps.getItemid());
-//			if (list==null){
-//				list = new ArrayList<Stock>();
-//				stocks.put(ps.getItemid(), list);
-//			}
-//			List<Quote> qq = StockManager.getInstance().getLastQuotes(ps.getItemid());
-//			if (qq.size()>0)
-//				stockamount += qq.get(0).getPrice()*ps.getQty();			
-//			list.add(ss.get(i));
-//		}		
-//		}
-//		stockamount = Float.valueOf(stockamount).intValue();
-//		
-//		float amount = savingamount + insureamount + stockamount;
-//		int top = ToplistManager.getInstance().findCountByGreaterMoney(
-//				playerId, 0, amount);
-//		top++;
-		
-//		if (hasUpdate==true){
-//			SavingManager.getInstance().updateSavings(playerId,savings);
-//			Player player2 = DataManager.getInstance().findPlayer(playerId);	
-//			if (player2!=null){
-//				LogMgr.getInstance().log(playerId," update toplist:"+top);
-//				ToplistManager.getInstance().updateToplist(playerId,player2.getPlayername(),amount);
-//			}
-//		}	
-//		if (top==0){
-//			Player player2 = DataManager.getInstance().findPlayer(playerId);	
-//			if (player2!=null){
-//				LogMgr.getInstance().log(playerId," update toplist:"+top);
-//				ToplistManager.getInstance().updateToplist(playerId,player2.getPlayername(),amount);
-//				top = ToplistManager.getInstance().findCountByGreaterMoney(
-//						playerId, 0, amount);
-//				top++;
-//			}
-//		}
-		String data = JSON.toJSONString(mdata)+";"+JSON.toJSONString(insures)+";"+JSON.toJSONString("")+";"+0;
+		if (hasUpdate==true){
+			savingamount += liveSaving.getAmount();
+			SavingManager.getInstance().updateSavings(playerId,savings);
+			float amount = savingamount + insureamount + ToplistManager.getInstance().getStockAmount(playerId);
+			ToplistManager.getInstance().updateToplist(playerId,null,amount);	
+		}	
+		String data = JSON.toJSONString(mdata)+";"+JSON.toJSONString(insures);
 		LogMgr.getInstance().log(playerId," get login data:"+data);
 		return data;
 	}

@@ -34,14 +34,6 @@ public class SavingAction extends BaseAction {
 	public void setSaving(Saving saving) {
 		this.saving = saving;
 	}
-
-	public boolean playerMoneyUpdate(Saving saving){
-		LogMgr.getInstance().log(saving.getPlayerid()," liveupdate value="+saving.getAmount());
-		boolean u = SavingManager.getInstance().updateLiveSaving(saving);	
-		 playerTopUpdate(saving.getPlayerid());
-		//更新排行榜金钱:
-		return u;
-	}
 	
 	public synchronized boolean playerTopUpdate(int playerid){
 		Player player = DataManager.getInstance().findPlayer(playerid);
@@ -200,7 +192,6 @@ public class SavingAction extends BaseAction {
 			String str = JSON.toJSONString(newsaving);
 			LogMgr.getInstance().log(saving.getPlayerid()," add/remove saving itemid="+saving.getItemid()+",ret:"+ret+",amount:"+saving.getAmount()+", retdata:"+str);
 			SavingManager.getInstance().updateSavings(saving.getPlayerid(), list);
-			playerTopUpdate(saving.getPlayerid());
 			return msgStr2(RetMsg.MSG_OK,str);
 		}else {
 			LogMgr.getInstance().log(saving.getPlayerid(),",error,saving: "+ret);
@@ -257,7 +248,10 @@ public class SavingAction extends BaseAction {
 				uinsure.setQty(insure.getQty());
 				uinsure.setProfit(inter);
 				mdata.put(insure.getItemid(), uinsure);
-				InsureManager.getInstance().updateInsures(playerId, notTimeoutInsures);
+				//有到期，更新未过期的
+				if (notTimeoutInsures.size()!=insures.size()){
+					InsureManager.getInstance().updateInsures(playerId, notTimeoutInsures);
+				}
 			}
 			}catch (Exception e){
 				e.printStackTrace();

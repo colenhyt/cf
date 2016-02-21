@@ -29,8 +29,9 @@ public class InsureAction extends SavingAction {
 		
 		float changeAmount = 0 - insure.getAmount();
 		
-		insure.setCreatetime(new Date());
-		insure.setUpdatetime(new Date());
+		Date d1 = new Date(System.currentTimeMillis());
+		insure.setCreatetime(d1);
+		insure.setUpdatetime(d1);
 		Insure incfg = InsureManager.getInstance().getInsureCfg(insure.getItemid());
 		insure.setPeriod(incfg.getPeriod()*insure.getQty());
 		insure.setType(incfg.getType());
@@ -50,7 +51,7 @@ public class InsureAction extends SavingAction {
 			insure.setLiveamount(liveSaving.getAmount());
 			String str = JSON.toJSONString(insure);
 			LogMgr.getInstance().log(insure.getPlayerid()," add insure itemid="+insure.getItemid()+",str"+str);
-			playerMoneyUpdate(liveSaving);	
+			SavingManager.getInstance().updateLiveSaving(insure.getPlayerid(),liveSaving);	
 			return msgStr2(RetMsg.MSG_OK,str);
 		}else {
 			LogMgr.getInstance().log(insure.getPlayerid(),", warn, insure error: "+ret);

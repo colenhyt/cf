@@ -103,7 +103,7 @@ public class StockAction extends SavingAction {
 				stock.setLiveamount(liveSaving.getAmount());
 				String str = JSON.toJSONString(stock);
 				LogMgr.getInstance().log(stock.getPlayerid()," buy stock,str:"+str);
-				playerMoneyUpdate(liveSaving);	
+				SavingManager.getInstance().updateLiveSaving(stock.getPlayerid(),liveSaving);	
 				return msgStr2(RetMsg.MSG_OK,str);
 			}else {
 				LogMgr.getInstance().log(stock.getPlayerid()," warn,stock error:"+stock.getPlayerid()+",item:"+stock.getItemid()+",qty:"+stock.getQty()+",ret:"+ret);

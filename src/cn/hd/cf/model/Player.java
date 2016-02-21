@@ -10,7 +10,16 @@ public class Player {
 	private int signinCount = 1;
 	private String ipAddress;
 	private Date signinCountTime;
+	private int top;
 	
+	public int getTop() {
+		return top;
+	}
+
+	public void setTop(int top) {
+		this.top = top;
+	}
+
 	public String getIpAddress() {
 		return ipAddress;
 	}

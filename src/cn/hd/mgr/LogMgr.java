@@ -30,15 +30,15 @@ public class LogMgr  extends MgrBase {
 		
 		dataThreads = new Vector<DataThread>();
 		
-		for (int i=0;i<redisCfg4.getThreadCount();i++){
-			 //read:
-			
-			 //write:
-			 DataThread dataThread = new DataThread(redisCfg4);
-			dataThreads.add(dataThread);
-			dataThread.setUpdateDuration(2000);
-			dataThread.start();
-		 }		
+//		for (int i=0;i<redisCfg4.getThreadCount();i++){
+//			 //read:
+//			
+//			 //write:
+//			 DataThread dataThread = new DataThread(redisCfg4);
+//			dataThreads.add(dataThread);
+//			dataThread.setUpdateDuration(2000);
+//			dataThread.start();
+//		 }		
 		
 		try {
 			InetAddress addr = InetAddress.getLocalHost();
@@ -50,11 +50,11 @@ public class LogMgr  extends MgrBase {
 	}
 	
 	public void log(int playerid,String desc){
-		String str = "ip:"+(ipAddStr)+" "+(desc);
+		String str = "ip:"+(ipAddStr)+" pid:"+playerid+(desc);
 		log.warn(str);
 		String logstr = formatter.format(new Date());
 		logstr += " "+str;
-		int index = playerid%dataThreads.size();
+		//int index = playerid%dataThreads.size();
 		//dataThreads.get(index).addLog(playerid,logstr);
 	}
 	

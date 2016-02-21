@@ -83,8 +83,8 @@ public class MgrBase {
 		String cfgstr3 = cfgObj.getString("redisCfg3");
 		redisCfg3 = JSON.parseObject(cfgstr3, RedisConfig.class);
 		
-		redisCfg4 = JSON.parseObject(cfgObj.getString("redisCfg4"), RedisConfig.class);
-		jedisClient4 = new RedisClient(redisCfg4);
+//		redisCfg4 = JSON.parseObject(cfgObj.getString("redisCfg4"), RedisConfig.class);
+//		jedisClient4 = new RedisClient(redisCfg4);
 
 		if (cfgObj.containsKey("toplistTime")){
 			toplistTime = Long.valueOf(cfgObj.getString("toplistTime"));
