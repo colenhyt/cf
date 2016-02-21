@@ -1,5 +1,3 @@
-1.跨日会多分配一个任务
-2.getSaving调用次数太多;
-3.request some stocks last quote:没有股票时可以不发call
-
+2. ToplistAction.list实时算money导致性能问题，不实时算导致排行榜数据误解问题
+3. get_top 性能低下
 4. player,saving的实时更新需要过一遍是否符合事务
