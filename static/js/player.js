@@ -240,9 +240,16 @@ Player.prototype.commitData = function(type,itemid,amount) {
 			var updateStr = "playerid="+this.data.playerid+"&amount="+amount+"&type="+type+"&itemid="+itemid;
 			$.ajax({type:"post",url:"/cf/player_update.jsp",data:updateStr,success:function(dataobj){
 			var obj = cfeval(dataobj);
-			if (obj!=null&&obj.playerid==g_player.data.playerid&&obj.exp!=null&&obj.exp>0){
-			g_player.data.exp = obj.exp;
-			 g_player.flushPageview();
+			if (obj!=null&&obj.playerid==g_player.data.playerid){
+				if (obj.exp!=null&&obj.exp>0)
+				{
+					g_player.data.exp = obj.exp;
+				}
+				if (obj.top!=null&&obj.top>0)
+				{
+					g_player.data.weektop = obj.top;
+				}
+				 g_player.flushPageview();
 			}
 		    }});
 		}   catch  (e)   {
