@@ -425,7 +425,7 @@ public class DataManager extends MgrBase {
 			p.setEventCount(0);
 			this.addSignin(playerid);
 			data.setExp(p.getExp());
-			float newTotal = SavingManager.getInstance().updateLiveSaving(playerid,money);
+			float newTotal = SavingManager.getInstance().updateLiveSavingAndTop(playerid,money);
 			int newTop = ToplistManager.getInstance().findTopCount(null,0,newTotal);
 			data.setTop(newTop+1);
 			LogMgr.getInstance().log(playerid," signin days:"+days+" add prize,money: "+money+", exp:"+exp);
@@ -455,7 +455,7 @@ public class DataManager extends MgrBase {
 				p.setEventCount(p.getEventCount()+1);
 			}
 			LogMgr.getInstance().log(playerid," event fire, amount:"+amount);
-			float newTotal2 = SavingManager.getInstance().updateLiveSaving(playerid,amount);
+			float newTotal2 = SavingManager.getInstance().updateLiveSavingAndTop(playerid,amount);
 			int newTop2 = ToplistManager.getInstance().findTopCount(null,0,newTotal2);
 			data.setTop(newTop2+1);
 			break;

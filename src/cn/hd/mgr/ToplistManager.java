@@ -336,36 +336,13 @@ public class ToplistManager extends MgrBase{
 		topAction.setToplist(toplist);	
 			return topAction.list();
 		}
-
-	public float getStockAmount(int playerid){
-		List<Stock> stocks = StockManager.getInstance().getStockList(playerid);
-		float stockamount = 0;
-		if (stocks!=null){
-			for (int i=0;i<stocks.size();i++){
-				Stock ps = stocks.get(i);
-				if (ps==null) continue;
-				List<Quote> qq = StockManager.getInstance().getLastQuotes(ps.getItemid());
-				if (qq.size()>0)
-					stockamount += qq.get(0).getPrice()*ps.getQty();
-			}   			
-		}
-		stockamount = Float.valueOf(stockamount).intValue();
-		return stockamount;
-	}
 	
 	public synchronized float getCurrentTotalMoney(int playerId,float totalSaving){
 		float savingamount = Float.valueOf(totalSaving).intValue();
 		
-		float insureamount = 0;
-		List<Insure> insures = InsureManager.getInstance().getInsureList(playerId);
-		if (insures!=null){
-		for (int i=0;i<insures.size();i++){
-			insureamount += insures.get(i).getAmount();
-		}
-		}
-		insureamount = Float.valueOf(insureamount).intValue();
+		float insureamount = InsureManager.getInstance().getInsureAmount(playerId);
 
-		float amount = savingamount + insureamount + getStockAmount(playerId);
+		float amount = savingamount + insureamount + StockManager.getInstance().getStockAmount(playerId);
 		return amount;
 	}
 	
@@ -378,16 +355,9 @@ public class ToplistManager extends MgrBase{
 			}			
 		}
 		savingamount = Float.valueOf(savingamount).intValue();
-		float insureamount = 0;
-		List<Insure> insures = InsureManager.getInstance().getInsureList(playerId);
-		if (insures!=null){
-		for (int i=0;i<insures.size();i++){
-			insureamount += insures.get(i).getAmount();
-		}
-		}
-		insureamount = Float.valueOf(insureamount).intValue();
+		float insureamount = InsureManager.getInstance().getInsureAmount(playerId);
 
-		float amount = savingamount + insureamount + getStockAmount(playerId);
+		float amount = savingamount + insureamount + StockManager.getInstance().getStockAmount(playerId);
 		return amount;
 	}
 	

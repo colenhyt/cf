@@ -128,7 +128,7 @@ public class LoginAction extends SavingAction {
 		if (hasUpdate==true){
 			savingamount += liveSaving.getAmount();
 			SavingManager.getInstance().updateSavings(playerId,savings);
-			float amount = savingamount + insureamount + ToplistManager.getInstance().getStockAmount(playerId);
+			float amount = savingamount + insureamount + StockManager.getInstance().getStockAmount(playerId);
 			ToplistManager.getInstance().updateToplist(playerId,null,amount);	
 		}	
 		String data = JSON.toJSONString(mdata)+";"+JSON.toJSONString(insures);

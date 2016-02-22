@@ -4,15 +4,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import net.sf.json.JSONArray;
 import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
 import cn.hd.mgr.DataManager;
+import cn.hd.mgr.InsureManager;
 import cn.hd.mgr.LogMgr;
 import cn.hd.mgr.SavingManager;
 import cn.hd.mgr.StockManager;
+import cn.hd.mgr.ToplistManager;
 
 import com.alibaba.fastjson.JSON;
 
@@ -75,39 +78,77 @@ public class StockAction extends SavingAction {
 			return msgStr(RetMsg.MSG_StockIsClosed);
 		}
 		
+		if (stock.getQty()>0){
+			return this.buyStock();
+		}else {
+			return this.sellStock();
+		}
+	}	
+
+	public synchronized String sellStock(){
+		Saving liveSaving = SavingManager.getInstance().getSaving(stock.getPlayerid(), 1);
+		float changeAmount = 0 - stock.getAmount();
+		
+		int ret = RetMsg.MSG_OK;
+		int doType = 5;
+		int qq = (0 - stock.getQty());
+		Vector<Float> retps = stockMgr.deleteStock(stock.getPlayerid(), stock.getItemid(), qq);
+		if (retps.size()==2){
+			
+			boolean doneQuest = DataManager.getInstance().doneQuest(stock.getPlayerid(), doType);
+			if (doneQuest){
+				changeAmount += 5000;
+				LogMgr.getInstance().log(stock.getPlayerid()," stock quest prize 5000,type:"+doType);
+			}
+			
+			liveSaving.setAmount(liveSaving.getAmount()+changeAmount);
+			//更新活期存款
+			float savingamount = SavingManager.getInstance().updateLiveSaving(stock.getPlayerid(),liveSaving);
+			//更新排行榜:
+			float amount = savingamount + InsureManager.getInstance().getInsureAmount(stock.getPlayerid()) + retps.get(1);
+			ToplistManager.getInstance().updateToplist(stock.getPlayerid(),null,amount);	
+			
+			//构造返回消息
+			stock.setLiveamount(liveSaving.getAmount());
+			float profit = changeAmount - retps.get(0)*qq;
+			stock.setProfit(profit);
+			String str = JSON.toJSONString(stock);
+			LogMgr.getInstance().log(stock.getPlayerid()," buy stock,str:"+str);
+			return msgStr2(RetMsg.MSG_OK,str);
+		}else {
+			LogMgr.getInstance().log(stock.getPlayerid()," warn,stock error:"+stock.getPlayerid()+",item:"+stock.getItemid()+",qty:"+stock.getQty()+",ret:"+ret);
+			return msgStr(ret);
+		}
+	}
+
+	public synchronized String buyStock(){
 		Saving liveSaving = SavingManager.getInstance().getSaving(stock.getPlayerid(), 1);
 		
 		float changeAmount = 0 - stock.getAmount();
 		
-			int ret = RetMsg.MSG_OK;
-			int doType = 4;
-			if (stock.getQty()>0){
-				if (liveSaving.getAmount()<stock.getAmount())
-					return msgStr(RetMsg.MSG_MoneyNotEnough);
-				stock.setCreatetime(new Date());
-				ret = stockMgr.addStock(stock.getPlayerid(), stock);	
-			}else {
-				doType = 5;
-				int qq = (0 - stock.getQty());
-				ret = stockMgr.deleteStock(stock.getPlayerid(), stock.getItemid(), qq);
+		int ret = RetMsg.MSG_OK;
+		int doType = 4;
+		if (liveSaving.getAmount()<stock.getAmount())
+			return msgStr(RetMsg.MSG_MoneyNotEnough);
+		stock.setCreatetime(new Date());
+		ret = stockMgr.addStock(stock.getPlayerid(), stock);	
+		if (ret==RetMsg.MSG_OK){
+			
+			boolean doneQuest = DataManager.getInstance().doneQuest(stock.getPlayerid(), doType);
+			if (doneQuest){
+				changeAmount += 5000;
+				LogMgr.getInstance().log(stock.getPlayerid()," stock quest prize 5000,type:"+doType);
 			}
-			if (ret==RetMsg.MSG_OK){
-				
-				boolean doneQuest = DataManager.getInstance().doneQuest(stock.getPlayerid(), doType);
-				if (doneQuest){
-					changeAmount += 5000;
-					LogMgr.getInstance().log(stock.getPlayerid()," stock quest prize 5000,type:"+doType);
-				}
-				
-				liveSaving.setAmount(liveSaving.getAmount()+changeAmount);
-				stock.setLiveamount(liveSaving.getAmount());
-				String str = JSON.toJSONString(stock);
-				LogMgr.getInstance().log(stock.getPlayerid()," buy stock,str:"+str);
-				SavingManager.getInstance().updateLiveSaving(stock.getPlayerid(),liveSaving);	
-				return msgStr2(RetMsg.MSG_OK,str);
-			}else {
-				LogMgr.getInstance().log(stock.getPlayerid()," warn,stock error:"+stock.getPlayerid()+",item:"+stock.getItemid()+",qty:"+stock.getQty()+",ret:"+ret);
-				return msgStr(ret);
-			}
-	}	
+			
+			liveSaving.setAmount(liveSaving.getAmount()+changeAmount);
+			stock.setLiveamount(liveSaving.getAmount());
+			String str = JSON.toJSONString(stock);
+			LogMgr.getInstance().log(stock.getPlayerid()," buy stock,str:"+str);
+			SavingManager.getInstance().updateLiveSaving(stock.getPlayerid(),liveSaving);	
+			return msgStr2(RetMsg.MSG_OK,str);
+		}else {
+			LogMgr.getInstance().log(stock.getPlayerid()," warn,stock error:"+stock.getPlayerid()+",item:"+stock.getItemid()+",qty:"+stock.getQty()+",ret:"+ret);
+			return msgStr(ret);
+		}
+	}
 }

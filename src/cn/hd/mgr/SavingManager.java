@@ -105,7 +105,7 @@ public class SavingManager extends MgrBase{
 //    	LogMgr.getInstance().log("saving init:"+playerids.size());
     }
     
-    public synchronized float updateLiveSaving(int playerid,float addedAmount){
+    public synchronized float updateLiveSavingAndTop(int playerid,float addedAmount){
 		List<Saving> savings = SavingManager.getInstance().getSavingList(playerid);
 		int liveIndex = 0;
 		if (savings!=null){
@@ -126,20 +126,26 @@ public class SavingManager extends MgrBase{
     }
     
     public synchronized float updateLiveSaving(int playerid,Saving liveSaving){
+    	boolean found = false;
 		List<Saving> savings = SavingManager.getInstance().getSavingList(playerid);
+		float savingAmount = 0;
 		if (savings!=null){
 			for (Saving saving:savings){
 				if (saving.getItemid()==liveSaving.getItemid()){	//活期
+					found = true;
 					saving.setAmount(liveSaving.getAmount());
 					if (saving.getAmount()<0)
 						saving.setAmount((float)0);
 				}
+				savingAmount += saving.getAmount();
 			}			
 		}
-		
-		float newMoney = updateSavings(playerid, savings);		
+		if (found){
+			DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
+			dataThread.updateSaving(playerid, JSON.toJSONString(savings));
+		}
 		LogMgr.getInstance().log(playerid," live saving update:"+liveSaving.getAmount());
-		return newMoney;
+		return savingAmount;
     }
     
     public synchronized boolean updateLiveSaving(Saving record){

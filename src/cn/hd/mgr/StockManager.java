@@ -183,8 +183,24 @@ public class StockManager extends MgrBase{
     	}	
     	return list;		
 	}
-    
-    public List<Quote> getBigQuotes(int stockid){
+
+	public synchronized float getStockAmount(int playerid){
+		List<Stock> stocks = getStockList(playerid);
+		float stockamount = 0;
+		if (stocks!=null){
+			for (int i=0;i<stocks.size();i++){
+				Stock ps = stocks.get(i);
+				if (ps==null) continue;
+				List<Quote> qq = getLastQuotes(ps.getItemid());
+				if (qq.size()>0)
+					stockamount += qq.get(0).getPrice()*ps.getQty();
+			}   			
+		}
+		stockamount = Float.valueOf(stockamount).intValue();
+		return stockamount;
+	}
+	
+    public synchronized List<Quote> getBigQuotes(int stockid){
     	LinkedList<Quote> details = quoteMap.get(stockid);
     	List<Quote> quotes = new ArrayList<Quote>();
     	for (int i=0;i<details.size();i+=2){
@@ -195,7 +211,7 @@ public class StockManager extends MgrBase{
     	return quotes;
     }
     
-    public List<Quote> getLastQuotes(int stockid){
+    public synchronized List<Quote> getLastQuotes(int stockid){
     	List<Quote> quotes = new ArrayList<Quote>();
     	if (stockid>=0){
     		LinkedList<Quote> q = quoteMap.get(stockid);
@@ -206,7 +222,7 @@ public class StockManager extends MgrBase{
     	return quotes;
     }
     
-    public boolean isStockOpen(){
+    public synchronized boolean isStockOpen(){
 		Date now = new Date();
 		Calendar cl = Calendar.getInstance();
 		cl.setTime(now);
@@ -303,11 +319,13 @@ public class StockManager extends MgrBase{
 		return RetMsg.MSG_OK;
 	}
 
-	public synchronized int deleteStock(int playerId,int stockId,int qty){
+	public synchronized Vector<Float> deleteStock(int playerId,int stockId,int qty){
 		List<Stock> list = getStockList(playerId);
+		Vector<Float> reps = new Vector<Float>();
 		if (list==null)
-			return RetMsg.MSG_StockNotExist;
+			return reps;
 		
+		float boughtPs = 0;
 		int needRemoveQty = qty;
 		boolean updated = false;
 		for (int i=0;i<list.size();i++){
@@ -316,6 +334,7 @@ public class StockManager extends MgrBase{
 				continue;
 			
 			updated = true;
+			boughtPs = ss.getPrice();
 			
 			if (ss.getQty()<=needRemoveQty){
 				needRemoveQty -= ss.getQty();
@@ -327,17 +346,22 @@ public class StockManager extends MgrBase{
 				ss.setAmount(ss.getQty()*ss.getPrice());
 				LogMgr.getInstance().log(playerId,"update stock:"+ss.getQty());
 				needRemoveQty = 0;
-//				dataThread.updateStock(ss);
 			}
 			if (needRemoveQty==0) {
 				break;
 			}
 		}		
+		float totalStockAmount = 0;
 		if (updated){
+			reps.add(boughtPs);
+			for (Stock stock:list){
+				totalStockAmount += stock.getQty()*stock.getPrice();
+			}
+			reps.add(totalStockAmount);
 			DataThread dataThread = dataThreads.get(playerId%dataThreads.size());
 			dataThread.updateStock(playerId, JSON.toJSONString(list));
 		}
-		return RetMsg.MSG_OK;
+		return reps;
 	}
 
 	public synchronized String add(int playerid,int itemid,int qty,float price,float amount){

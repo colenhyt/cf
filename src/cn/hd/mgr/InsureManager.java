@@ -96,6 +96,18 @@ public class InsureManager extends MgrBase{
     	return insure;
 	}
     
+    public synchronized float getInsureAmount(int playerId){
+		float insureamount = 0;
+		List<Insure> insures = getInsureList(playerId);
+		if (insures!=null){
+		for (int i=0;i<insures.size();i++){
+			insureamount += insures.get(i).getAmount();
+		}
+		}
+		insureamount = Float.valueOf(insureamount).intValue();
+		return insureamount;
+	}
+    
     public synchronized List<Insure> getInsureList(int playerId){
     	List<Insure> list = null;
     	if (list==null){
