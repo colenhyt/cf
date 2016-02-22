@@ -432,7 +432,8 @@ Stock.prototype.requestBuy = function(id,qty,ps) {
   g_msg.showload("g_stock.requestBuy",true);
  
 	var dataParam = "type=3&playerid="+g_stock.buyItem.playerid+"&itemid="+g_stock.buyItem.itemid;
-	dataParam += "&qty="+g_stock.buyItem.qty+"&price="+g_stock.buyItem.price+"&amount="+g_stock.buyItem.amount;
+	var amount = g_stock.buyItem.amount;
+	dataParam += "&qty="+g_stock.buyItem.qty+"&price="+g_stock.buyItem.price+"&amount="+amount;
 
 	try    {
 		$.ajax({type:"post",url:"/cf/data_update.jsp",data:dataParam,success:function(data){
@@ -458,6 +459,9 @@ Stock.prototype.buyCallback = function(ret){
    var item = store.get(this.name)[id];
    if (item==null) return;
    
+   var stockback = cfeval(ret.desc);
+   
+	g_player.updateData({"cash":stockback.liveamount});
    var amount = buyitem.amount;
    
    var pitems = g_player.getData(this.name);
@@ -493,6 +497,16 @@ Stock.prototype.buyCallback = function(ret){
 		g_msg.tip("购买<span style='color:red'>"+item.name+"</span>成功,金额:"+buyitem.amount);
 	else
 		g_msg.tip("抛售<span style='color:red'>"+item.name+"</span>成功,金额:"+(0-buyitem.amount));
+	
+	//卖出利润:
+   if (qty<0&&stockback.profit!=0){
+		var desc;
+    	if (stockback.profit>0){
+    		desc = "卖出收益: "+ ForDight(stockback.profit);
+    	}else
+    		desc = "卖出亏损: "+ ForDight((0-stockback.profit));
+		g_msg.tip(desc);
+   }
 	
 	$('#'+this.tagdetailname).modal("hide");  
 	
