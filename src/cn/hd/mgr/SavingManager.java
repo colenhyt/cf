@@ -38,6 +38,15 @@ public class SavingManager extends MgrBase{
         return uniqueInstance;  
      } 
     
+	/**
+	 * 增加存款
+	 * @param int playerid
+	 * @param int item id
+	 * @param int 数量
+	 * @param float 价格
+	 * @param float 金额
+	 * @return String 存款数据
+	 * */
     public synchronized String add(int playerid,int itemid,int qty,float price,float amount){
 		Player p = DataManager.getInstance().findPlayer(playerid);
 		if (p==null){
@@ -105,6 +114,12 @@ public class SavingManager extends MgrBase{
 //    	LogMgr.getInstance().log("saving init:"+playerids.size());
     }
     
+	/**
+	 * 玩家活期存款增加资金
+	 * @param int playerid
+	 * @param float 增加资金
+	 * @return float 存款总额
+	 * */
     public synchronized float updateLiveSavingAndTop(int playerid,float addedAmount){
 		List<Saving> savings = SavingManager.getInstance().getSavingList(playerid);
 		int liveIndex = 0;
@@ -125,6 +140,12 @@ public class SavingManager extends MgrBase{
 		return newTotal;
     }
     
+	/**
+	 * 更新玩家活期存款
+	 * @param int playerid
+	 * @param Saving 活期saving对象
+	 * @return float 存款总额
+	 * */
     public synchronized float updateLiveSaving(int playerid,Saving liveSaving){
     	boolean found = false;
 		List<Saving> savings = SavingManager.getInstance().getSavingList(playerid);
@@ -153,6 +174,12 @@ public class SavingManager extends MgrBase{
     	return updateSavingAmount(record);
     }
     
+	/**
+	 * 更新玩家活期存款
+	 * @param int playerid
+	 * @param Saving saving对象列表
+	 * @return float 存款总额
+	 * */
     public synchronized float updateSavings(int playerid,List<Saving> list){     	
     		DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
     		dataThread.updateSaving(playerid, JSON.toJSONString(list));
@@ -212,6 +239,12 @@ public class SavingManager extends MgrBase{
     	return true;
     }
     
+	/**
+	 * 获取玩家某个存款
+	 * @param int playerid
+	 * @param int 存款id
+	 * @return Saving 对象
+	 * */
     public synchronized Saving getSaving(int playerId,int itemid){
 		Saving saving = null;
     	List<Saving> list = getSavingList(playerId);
@@ -237,6 +270,12 @@ public class SavingManager extends MgrBase{
     	}
     	return itemids;
     }
+    
+	/**
+	 * 获取玩家所有存款
+	 * @param int playerid
+	 * @return Saving 对象列表
+	 * */
     public synchronized List<Saving> getSavingList(int playerId){
     	List<Saving> list = null;
     	if (list==null){
@@ -254,6 +293,12 @@ public class SavingManager extends MgrBase{
     	return list;
 	}
     
+	/**
+	 * 删除存款
+	 * @param int playerid
+	 * @param Saving 对象
+	 * @return int 0表示增加成功
+	 * */
 	public synchronized int deleteSaving(int playerId,Saving record){
 		List<Saving> list = getSavingList(playerId);
 		if (list==null)
@@ -275,6 +320,12 @@ public class SavingManager extends MgrBase{
 		return RetMsg.MSG_SavingNotExist;
 	}
 
+	/**
+	 * 增加活期存款
+	 * @param int playerid
+	 * @param Saving 对象
+	 * @return int 0表示增加成功
+	 * */
 	public synchronized int addFirstSaving(int playerId,Saving record){
 		List<Saving> list  = new ArrayList<Saving>();
 		//savingsMap.put(playerId, list);
@@ -284,6 +335,12 @@ public class SavingManager extends MgrBase{
 		return RetMsg.MSG_OK;
 	}
 
+	/**
+	 * 增加存款
+	 * @param int playerid
+	 * @param Saving 对象
+	 * @return int 0表示增加成功
+	 * */
 	public synchronized int addSaving(int playerId,Saving record){
 		List<Saving> list = getSavingList(playerId);
 		boolean found = false;

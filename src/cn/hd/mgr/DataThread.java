@@ -74,6 +74,11 @@ public class DataThread extends Thread {
 		doneQuestVect = new Vector<Integer>();
 	}
 	
+	/**
+	 * 存储新增
+	 * @param Player 对象
+	 * @return 无
+	 * */
 	public synchronized void push(Player record){
 		InetAddress addr;
 		try {
@@ -88,6 +93,11 @@ public class DataThread extends Thread {
 		newPlayersVect.add(record);
 	}
 	
+	/**
+	 * 存储玩家更新
+	 * @param Player 玩家对象
+	 * @return 无
+	 * */
 	public synchronized void updatePlayer(Player record){
 		InetAddress addr;
 		try {
@@ -102,26 +112,51 @@ public class DataThread extends Thread {
 		updatePlayersVect.add(record);
 	}
 	
-	public synchronized void updateStock(Stock record){
-		updateStockVect.add(record);
-	}
-	
+	/**
+	 * 存储存款
+	 * @param int playerid
+	 * @param String 玩家存款数据
+	 * @return 无
+	 * */
 	public synchronized void updateSaving(int playerid,String jsonSavings){
 		updateSavingMap.put(playerid, jsonSavings);
 	}
 	
+	/**
+	 * 存储存款
+	 * @param int playerid
+	 * @param String 玩家保险数据
+	 * @return 无
+	 * */
 	public synchronized void updateInsure(int playerid,String jsonInsures){
 		updateInsureMap.put(playerid, jsonInsures);
 	}
 	
+	/**
+	 * 存储存款
+	 * @param int playerid
+	 * @param String 玩家股票数据
+	 * @return 无
+	 * */
 	public synchronized void updateStock(int playerid,String jsonStocks){
 		updateStockMap.put(playerid, jsonStocks);
 	}
 	
+	/**
+	 * 存储存款
+	 * @param int playerid
+	 * @param String 玩家排行榜数据
+	 * @return 无
+	 * */
 	public synchronized void updateToplist(Toplist record){
 		updateToplistVect.add(record);
 	}	
 	
+	/**
+	 * 存储签到
+	 * @param int playerid
+	 * @return 无
+	 * */
 	public synchronized void addSignin(int playerid){
 		Signin record = new Signin();
 		record.setPlayerid(playerid);
@@ -129,10 +164,21 @@ public class DataThread extends Thread {
 		signinVect.add(JSON.toJSONString(record));
 	}
 	
+	/**
+	 * 存储任务
+	 * @param int playerid
+	 * @return 无
+	 * */
 	public synchronized void addDoneQuest(int playerid){
 		doneQuestVect.add(playerid);
 	}
 	
+	/**
+	 * 存储日志
+	 * @param int playerid
+	 * @param String log
+	 * @return 无
+	 * */
 	public synchronized void addLog(int playerid,String logStr){
 		Vector<String> ss = playerLogs.get(playerid);
 		if (ss==null){
@@ -142,6 +188,10 @@ public class DataThread extends Thread {
 		playerLogs.put(playerid, ss);
 	}
 	
+	/**
+	 * 异步数据落地
+	 * @return 无
+	 * */
 	public void run() {
 		Jedis jedis = null;
 		while (1==1){

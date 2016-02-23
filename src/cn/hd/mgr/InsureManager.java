@@ -81,6 +81,12 @@ public class InsureManager extends MgrBase{
 //    	LogMgr.getInstance().log("insure init :");
     }
     
+	/**
+	 * 获取保险
+	 * @param int playerid
+	 * @param int itemid
+	 * @return Insure 对象
+	 * */
     public synchronized Insure getInsure(int playerId,int itemid){
 		Insure insure = null;
     	List<Insure> list = getInsureList(playerId);
@@ -96,6 +102,11 @@ public class InsureManager extends MgrBase{
     	return insure;
 	}
     
+	/**
+	 * 获取玩家保险总金额
+	 * @param int playerid
+	 * @return float 保险总金额
+	 * */
     public synchronized float getInsureAmount(int playerId){
 		float insureamount = 0;
 		List<Insure> insures = getInsureList(playerId);
@@ -108,6 +119,11 @@ public class InsureManager extends MgrBase{
 		return insureamount;
 	}
     
+	/**
+	 * 获取玩家全部保险
+	 * @param int playerid
+	 * @return Insure list 对象
+	 * */
     public synchronized List<Insure> getInsureList(int playerId){
     	List<Insure> list = null;
     	if (list==null){
@@ -124,6 +140,12 @@ public class InsureManager extends MgrBase{
     	return list;
 	}
     
+	/**
+	 * 更新保险
+	 * @param int playerid
+	 * @param Insure 对象
+	 * @return int 0表示操作成功
+	 * */
 	public synchronized int updateInsure(int playerId,Insure record){
 		List<Insure> list = getInsureList(playerId);
 		if (list==null)
@@ -147,6 +169,12 @@ public class InsureManager extends MgrBase{
 		return RetMsg.MSG_InsureNotExist;
 	}
 
+	/**
+	 * 增加保险
+	 * @param int playerid
+	 * @param Insure 对象
+	 * @return int 0表示增加成功
+	 * */
 	public synchronized int addInsure(int playerId,Insure record){
 		List<Insure> list = getInsureList(playerId);
 		boolean found = false;
@@ -170,6 +198,15 @@ public class InsureManager extends MgrBase{
 		return RetMsg.MSG_OK;
 	}
 
+	/**
+	 * 增加保险
+	 * @param int playerid
+	 * @param int item id
+	 * @param int 数量
+	 * @param float 价格
+	 * @param float 金额
+	 * @return String 保险数据
+	 * */
 	public synchronized String add(int playerid,int itemid,int qty,float price,float amount){
 		
 		Player p = DataManager.getInstance().findPlayer(playerid);
@@ -186,11 +223,23 @@ public class InsureManager extends MgrBase{
 		return action.add();
 	}
 
+	/**
+	 * 更新全部保险
+	 * @param int playerid
+	 * @param List<Insure> 全部保险
+	 * @return 无
+	 * */
 	public synchronized void updateInsures(int playerId,List<Insure> insures){
 		DataThread dataThread = dataThreads.get(playerId%dataThreads.size());
 		dataThread.updateInsure(playerId, JSON.toJSONString(insures));
 	}
 	
+	/**
+	 * 删除保险
+	 * @param int playerid
+	 * @param Insure 对象
+	 * @return int 0 表示操作成功
+	 * */
 	public synchronized int deleteInsure(int playerId,Insure record){
 		List<Insure> list = getInsureList(playerId);
 		if (list==null)
@@ -211,24 +260,4 @@ public class InsureManager extends MgrBase{
 		}
 		return RetMsg.MSG_InsureNotExist;
 	}
-
-	public static void main(String[] args) {
-		
-    	InsureManager stmgr = InsureManager.getInstance();
-    	stmgr.init();
-//    	Insure ss = new Insure();
-//    	ss.setItemid(2);
-//    	stmgr.addInsure(1, ss);
-//    	Insure s2 = new Insure();
-//    	s2.setPlayerid(1);
-//    	s2.setItemid(2);
-//    	stmgr.deleteInsure(1, s2);
-		Insure sa = new Insure();
-		sa.setPlayerid(265);
-		sa.setItemid(1);
-		sa.setAmount((float)30);
-		stmgr.deleteInsure(1, sa);
-		stmgr.addInsure(sa.getPlayerid(), sa);
-		stmgr.deleteInsure(sa.getPlayerid(), sa);
-    }
 }

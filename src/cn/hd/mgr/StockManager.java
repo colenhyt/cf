@@ -183,7 +183,12 @@ public class StockManager extends MgrBase{
     	}	
     	return list;		
 	}
-
+    
+	/**
+	 * 获取玩家股票总金额
+	 * @param int playerid
+	 * @return float 总金额
+	 * */
 	public synchronized float getStockAmount(int playerid){
 		List<Stock> stocks = getStockList(playerid);
 		float stockamount = 0;
@@ -200,6 +205,11 @@ public class StockManager extends MgrBase{
 		return stockamount;
 	}
 	
+	/**
+	 * 取股票行情
+	 * @param int 股票id
+	 * @return List<Quote> 行情列表
+	 * */
     public synchronized List<Quote> getBigQuotes(int stockid){
     	LinkedList<Quote> details = quoteMap.get(stockid);
     	List<Quote> quotes = new ArrayList<Quote>();
@@ -211,6 +221,11 @@ public class StockManager extends MgrBase{
     	return quotes;
     }
     
+	/**
+	 * 取股票最新行情
+	 * @param int 股票id
+	 * @return List<Quote> 行情列表
+	 * */
     public synchronized List<Quote> getLastQuotes(int stockid){
     	List<Quote> quotes = new ArrayList<Quote>();
     	if (stockid>=0){
@@ -222,6 +237,10 @@ public class StockManager extends MgrBase{
     	return quotes;
     }
     
+	/**
+	 * 交易市场是否开市
+	 * @return boolean true表示开市, false表示休市
+	 * */
     public synchronized boolean isStockOpen(){
 		Date now = new Date();
 		Calendar cl = Calendar.getInstance();
@@ -307,6 +326,12 @@ public class StockManager extends MgrBase{
 
 	}
     
+	/**
+	 * 增加玩家股票
+	 * @param int playerid
+	 * @param Stock 对象
+	 * @return int 0表示增加成功
+	 * */
     public synchronized int addStock(int playerId,Stock record){
 		List<Stock> list = getStockList(playerId);
 		if (list==null){
@@ -319,6 +344,13 @@ public class StockManager extends MgrBase{
 		return RetMsg.MSG_OK;
 	}
 
+	/**
+	 * 抛售玩家股票
+	 * @param int playerid
+	 * @param int 股票ID
+	 * @param int 抛售数量
+	 * @return Vector 股票剩余总额
+	 * */
 	public synchronized Vector<Float> deleteStock(int playerId,int stockId,int qty){
 		List<Stock> list = getStockList(playerId);
 		Vector<Float> reps = new Vector<Float>();
@@ -364,6 +396,15 @@ public class StockManager extends MgrBase{
 		return reps;
 	}
 
+	/**
+	 * 增加玩家股票
+	 * @param int playerid
+	 * @param int item id
+	 * @param int 数量
+	 * @param float 价格
+	 * @param float 金额
+	 * @return String 股票数据
+	 * */
 	public synchronized String add(int playerid,int itemid,int qty,float price,float amount){
 		Player p = DataManager.getInstance().findPlayer(playerid);
 		if (p==null){

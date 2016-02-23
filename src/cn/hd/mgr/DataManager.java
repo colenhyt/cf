@@ -67,6 +67,10 @@ public class DataManager extends MgrBase {
 		nextPlayerId = 0;
 	}
 
+	/**
+	 * 申请新playerid
+	 * @return int player 新ID
+	 * */
 	public synchronized int assignNextId() {
 		if (currMaxPlayerId==-1||nextPlayerId+1>currMaxPlayerId){
 			Jedis jedis = redisClients.get(0).getJedis();
@@ -146,6 +150,12 @@ public class DataManager extends MgrBase {
 		return str + xxx;
 	}
 
+	/**
+	 * 玩家完成任务
+	 * @param int playerid
+	 * @param int 任务类型
+	 * @return boolean true为更新成功，false为更新失败
+	 * */
 	public synchronized boolean doneQuest(int playerid,int doType){
 		Player player = findPlayer(playerid);
 		if (player==null)
@@ -224,6 +234,12 @@ public class DataManager extends MgrBase {
 		return loginAction.login();
 	}
 
+	/**
+	 * 获取玩家数据
+	 * @param int playerid
+	 * @param int 类型，包括存款，股票，保险
+	 * @return String json数据
+	 * */
 	public synchronized String getData(int playerid, int typeid) {
 		String data = "";
 		if (typeid == 1) {
@@ -245,11 +261,11 @@ public class DataManager extends MgrBase {
 		return data;
 	}
 
-	public synchronized String get_saving(int playerid) {
-		Map<Integer, Saving> data = loginAction.findUpdatedSavings(playerid);
-		return JSON.toJSONString(data);
-	}
-
+	/**
+	 * 根据玩家id得到存款数据
+	 * @param int playerid
+	 * @return String 玩家存款json数据
+	 * */
 	public synchronized String get_saving2(int playerid) {
 		List<Saving> savings = SavingManager.getInstance().getSavingList(playerid);
 		if (savings==null) return "{}";
@@ -260,6 +276,11 @@ public class DataManager extends MgrBase {
 		return JSON.toJSONString(mdata);
 	}
 
+	/**
+	 * 获取玩家数据集
+	 * @param int playerid
+	 * @return String 玩家json数据
+	 * */
 	public String get_info(int playerid){
 		Player player = this.findPlayer(playerid);
 		if (player==null)
@@ -268,6 +289,11 @@ public class DataManager extends MgrBase {
 		return loginAction.getPlayerJsonData(player);
 	}
 	
+	/**
+	 * 根据玩家id得到保险数据
+	 * @param int playerid
+	 * @return String 玩家保险json数据
+	 * */
 	public synchronized String get_insure2(int playerid) {
 		List<Insure> insures = InsureManager.getInstance().getInsureList(playerid);
 		if (insures==null) return "{}";
@@ -278,6 +304,11 @@ public class DataManager extends MgrBase {
 		return JSON.toJSONString(mdata);
 	}
 	
+	/**
+	 * 根据玩家id得到股票数据
+	 * @param int playerid
+	 * @return String 玩家股票00json数据
+	 * */
 	public synchronized String get_stock(int playerid) {
 		Map<Integer, List<Stock>> data = StockManager.getInstance()
 				.findMapStocks(playerid);
@@ -321,6 +352,11 @@ public class DataManager extends MgrBase {
 		return top+1;
 	}
 	
+	/**
+	 * 根据玩家id得到排名
+	 * @param int playerid
+	 * @return int 玩家周排名
+	 * */
 	public synchronized int get_top(int playerid) {
 		ToplistManager.getInstance().load();
 	
@@ -330,6 +366,11 @@ public class DataManager extends MgrBase {
 		return top+1;
 	}
 
+	/**
+	 * 新增玩家
+	 * @param Player 对象
+	 * @return boolean true表示增加成功，false表示增加失败
+	 * */
 	public synchronized boolean addPlayer(Player player) {
 		int playerid = player.getPlayerid();
 //		Player pp = findPlayer(playerid);
@@ -346,6 +387,11 @@ public class DataManager extends MgrBase {
 		return true;
 	}
 
+	/**
+	 * 根据昵称获取玩家对象
+	 * @param String 玩家昵称
+	 * @return Player 对象
+	 * */
 	public synchronized Player findPlayer(String playerName) {
 		long s = System.currentTimeMillis();
 		Integer playerid = playerIdMaps.get(playerName);
@@ -371,6 +417,11 @@ public class DataManager extends MgrBase {
 		return null;
 	}
 
+	/**
+	 * 根据playerid获取玩家对象
+	 * @param int 玩家id
+	 * @return Player 对象
+	 * */
 	public synchronized Player findPlayer(int playerid) {
 		Player player = null;
 		long s = System.currentTimeMillis();
@@ -400,6 +451,14 @@ public class DataManager extends MgrBase {
 		dataThread.updatePlayer(player);
 	}
 	
+	/**
+	 * 更新玩家数据集
+	 * @param int playerid
+	 * @param int 类型，包括签到，开通股票账户，完成任务，以及事件
+	 * @param String itemid
+	 * @param String 金额
+	 * @return String 玩家保险json数据
+	 * */
 	public synchronized String update(int playerid,int type,String itemstr,String amountStr){
 		Player p = findPlayer(playerid);
 		if (p==null) return "";
@@ -466,6 +525,11 @@ public class DataManager extends MgrBase {
 		return JSON.toJSONString(data);
 	}
 	
+	/**
+	 * 增加签到记录
+	 * @param int playerid
+	 * @return 无
+	 * */
 	public synchronized void addSignin(int playerid) {
 		Signin record = new Signin();
 		record.setPlayerid(playerid);

@@ -103,6 +103,13 @@ public class ToplistManager extends MgrBase{
 		return item;
 	}
 	
+	/**
+	 * 根据财富值取得排名
+	 * @param Toplist对象
+	 * @param int 类型
+	 * @param float 财富值
+	 * @return int 排名
+	 * */
 	public synchronized int findTopCount(Toplist top,int type,float fPMoney){
 		int intMoney = Float.valueOf(fPMoney).intValue();
 		BigDecimal fMoney = BigDecimal.valueOf(intMoney);
@@ -138,6 +145,11 @@ public class ToplistManager extends MgrBase{
 		return cc;
 	}	
 	
+	/**
+	 * 玩家排名点赞
+	 * @param Toplist对象
+	 * @return int 0表示点赞成功
+	 * */
 	public synchronized int updateZan(Toplist toplist){
 		System.out.println("update zan: "+(toplist==null));
 		Toplist top = findByPlayerId(toplist.getPlayerid());
@@ -151,6 +163,13 @@ public class ToplistManager extends MgrBase{
 	}
 	
 	
+	/**
+	 * 新注册用户增加排名
+	 * @param int playerid
+	 * @param String 玩家昵称
+	 * @param double 财富值
+	 * @return boolean true表示增加成功
+	 * */
 	public synchronized boolean addRegisterToplist(int playerid,String playerName,double money){
 			Toplist newtop = new Toplist();
 			newtop.setPlayerid(playerid);
@@ -173,6 +192,13 @@ public class ToplistManager extends MgrBase{
 		return true;		
 	}
 	
+	/**
+	 * 新户增加排名
+	 * @param int playerid
+	 * @param String 玩家昵称
+	 * @param double 财富值
+	 * @return boolean true表示增加成功
+	 * */
 	public synchronized boolean addToplist(int playerid,String playerName,double money){
 		Toplist newtop = findByPlayerId(playerid);
 		if (newtop==null) {
@@ -248,6 +274,12 @@ public class ToplistManager extends MgrBase{
 		return tops;
 	}
 	
+	/**
+	 * 获取某个玩家排名
+	 * @param Toplist对象
+	 * @param int 类型
+	 * @return int 排名
+	 * */
 	public int getTopNumber(int playerid,int type){
 		Toplist top = findByPlayerId(playerid);
 		float fPMoney = 0;
@@ -268,6 +300,11 @@ public class ToplistManager extends MgrBase{
 		return count;
 	}
 	
+	/**
+	 * 获取排名数据
+	 * @param int 数量
+	 * @return String json排名数据
+	 * */
 	public synchronized String getActivityList(int count){
 		
     	Jedis jedis = jedisClient.getJedis();   	
@@ -310,6 +347,13 @@ public class ToplistManager extends MgrBase{
 		return tops;
 	}
 
+	/**
+	 * 更新排行榜排名
+	 * @param int playerid
+	 * @param String 玩家昵称
+	 * @param float 财富值
+	 * @return boolean true表示更新成功
+	 * */
 	public synchronized boolean updateToplist(int playerid,String playerName,double money){
 		Toplist toplist = findByPlayerId(playerid);
 		int imoney = Double.valueOf(money).intValue();
@@ -329,13 +373,6 @@ public class ToplistManager extends MgrBase{
 		}
 		return true;		
 	}
-	
-	public String list(int playerid,int type){
-		Toplist toplist = new Toplist();
-		toplist.setPlayerid(playerid);
-		topAction.setToplist(toplist);	
-			return topAction.list();
-		}
 	
 	public synchronized float getCurrentTotalMoney(int playerId,float totalSaving){
 		float savingamount = Float.valueOf(totalSaving).intValue();
@@ -366,6 +403,11 @@ public class ToplistManager extends MgrBase{
 		return findTopCount(top,type,fPMoney);
 	}
 
+	/**
+	 * 取排名数据
+	 * @param int 类型，表示当周还是当月
+	 * @return List<Toplist> 排名列表
+	 * */
 	public synchronized List<Toplist> findByType(int type){
 		List<Toplist> tops = new ArrayList<Toplist>();
 		
@@ -392,8 +434,6 @@ public class ToplistManager extends MgrBase{
 		double a = 3.91948171;
 		int ia = Double.valueOf(a).intValue();
 		long st = System.currentTimeMillis();
-		String str = ToplistManager.getInstance().list(0,0);
-		System.out.println(str);
 		System.out.println("cost time: "+(System.currentTimeMillis()-st)+"ms");
 //		ToplistManager.getInstance().findByType(0);
 //		Toplist record = new Toplist();
