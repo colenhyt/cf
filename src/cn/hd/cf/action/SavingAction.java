@@ -48,7 +48,11 @@ public class SavingAction extends BaseAction {
 	}
 
 
-	//存款是否到期:
+	/**
+	 * 存款是否到期
+	 * @param saving 对象
+	 * @return boolean true为已到期，false为未到期
+	 * */
 	public boolean isSavingTimeout(Saving saving)
 	{
 		//活期不存在存款取款:
@@ -71,6 +75,11 @@ public class SavingAction extends BaseAction {
 		return false;
 	}
 	
+	/**
+	 * 获得当前存款的活期利息
+	 * @param saving 对象
+	 * @return float 利息值
+	 * */
 	public float getLiveInter(Saving saving)
 	{
 		if (saving==null||saving.getUpdatetime()==null) return 0;
@@ -89,6 +98,11 @@ public class SavingAction extends BaseAction {
 		return inter;
 	}
 	
+	/**
+	 * 增加/取出存款
+	 * @param saving 对象
+	 * @return 增加/取出 存款对象json数据
+	 * */
 	public synchronized String add()
 	{
 		//活期不存在存款取款:

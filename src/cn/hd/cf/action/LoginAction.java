@@ -78,7 +78,11 @@ public class LoginAction extends SavingAction {
 		return obj.toString();
 	}
 	
-	//
+	/**
+	 * 获取玩家存款保险数据
+	 * @param playerid
+	 * @return string json返回数据
+	 * */
 	public synchronized String get_savingAndInsure(int playerId)
 	{
 		Map<Integer,Saving>	 mdata = new HashMap<Integer,Saving>();
@@ -135,61 +139,13 @@ public class LoginAction extends SavingAction {
 		LogMgr.getInstance().log(playerId," get login data:"+data);
 		return data;
 	}
-	//
-	public synchronized Map<Integer,Saving> findUpdatedSavings(int playerId)
-	{
-		List<Integer> savingids = SavingManager.getInstance().getSavingIds(playerId);
-		Map<Integer,Saving>	 mdata = new HashMap<Integer,Saving>();
-		if (savingids==null||savingids.size()<=0)
-			return mdata;
-		
-		Date currDate = new Date();
-	    Calendar cCurr = Calendar.getInstance(); 
-	    cCurr.setTime(currDate);
-	    Calendar c2 = Calendar.getInstance(); 
-		Saving liveSaving = null;
-		boolean liveUpdate = false;
-		for (Integer itemid:savingids){
-			Saving saving = SavingManager.getInstance().getSaving(playerId, itemid);
-			float inter = 0;
-	        c2.setTime(saving.getUpdatetime());
-	        float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
-	        float periodMinutes = saving.getPeriod()*60*24;//天:分钟
-			if (saving.getType()==0)		//活期
-			{
-				liveSaving = saving;
-				periodMinutes = 60*24;//天:分钟
-				long diff = (long)(diffdd/periodMinutes);
-				inter = diff * saving.getAmount()*saving.getRate()/100;
-				if (inter>1){
-					liveUpdate = true;
-					saving.setAmount(saving.getAmount()+inter);					
-				}else
-					inter = 0;		//不算利息
-			}else if (isSavingTimeout(saving))		//定期到期
-			{
-				liveUpdate = true;
-				saving.setStatus((byte)1);
-				SavingManager.getInstance().updateSaving(playerId, saving);
-				LogMgr.getInstance().log(playerId," saving timeout,get inter:"+saving.getItemid()+",inter: "+inter);
-			}
-			Saving usaving = new Saving();
-			usaving.setItemid(saving.getItemid());
-			usaving.setAmount(saving.getAmount());
-			usaving.setCreatetime(saving.getCreatetime());
-			usaving.setQty(saving.getQty());
-			usaving.setProfit(inter);
-//			LogMgr.getInstance().log("add usersaving:"+JSON.toJSONString(usaving));
-			mdata.put(saving.getItemid(), usaving);
-		}
-		if (liveUpdate==true){
-			SavingManager.getInstance().updateLiveSaving(liveSaving);
-			super.playerTopUpdate(playerId);			
-		}
-//		LogMgr.getInstance().log("mdata return :"+JSON.toJSONString(mdata));
-		return mdata;
-	}
 
+
+	/**
+	 * 登录玩家数据返回
+	 * @param player 
+	 * @return string json返回数据
+	 * */
 	public synchronized String loginPlayer(Player player)
 	{
 		if (player!=null){
@@ -212,6 +168,11 @@ public class LoginAction extends SavingAction {
 		}else
 			return super.msgStr(RetMsg.MSG_WrongPlayerNameOrPwd);	
 	}
+	/**
+	 * 注册登录入口
+	 * @param player对象
+	 * @return string json返回数据
+	 * */
 	public synchronized String login()
 	{
 //		String loginstr = "";
@@ -259,6 +220,11 @@ public class LoginAction extends SavingAction {
 		this.player = player;
 	}
 	
+	/**
+	 * 判断两天差值
+	 * @param fDate 前一天，oDate后一天
+	 * @return int 天数
+	 * */
 	public static int daysOfTwo(Date fDate, Date oDate) {
 
 	       Calendar aCalendar = Calendar.getInstance();
@@ -275,6 +241,11 @@ public class LoginAction extends SavingAction {
 
 	  }
 	
+	/**
+	 * 计算签到天数
+	 * @param player 对象
+	 * @return boolean ture为要签到，false为不需要签到
+	 * */
 	private synchronized boolean countSignin(Player p){
 		Date last = p.getLastlogin();
 		if (DateUtil.isToday(last)){
@@ -328,12 +299,11 @@ public class LoginAction extends SavingAction {
 		return strs;
 	}
 	
-	public static void main(String[] args){
-		LoginAction l = new LoginAction();
-		SavingManager.getInstance().init();
-		
-	}
-	
+	/**
+	 * 分配每日任务
+	 * @param player对象
+	 * @return string json返回数据
+	 * */
 	public int assignDailyQuest(Player p){
 		Date qdoneTime = p.getQuestDoneTime();
 		if (DateUtil.isToday(qdoneTime))
@@ -378,6 +348,11 @@ public class LoginAction extends SavingAction {
 		return 1;
 	}
 	
+	/**
+	 * 注册入口和数据返回
+	 * @param player对象
+	 * @return string json返回数据
+	 * */
 	public synchronized String register(){
 			//System.out.println("玩家注册:"+player.getPlayername());
 			Player playerBlob = new Player();

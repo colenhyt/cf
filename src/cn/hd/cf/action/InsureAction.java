@@ -13,14 +13,29 @@ import com.alibaba.fastjson.JSON;
 
 public class InsureAction extends SavingAction {
 	private Insure		insure;
+
+	/**
+	 * 获取insure参数
+	 * @return insure
+	 * */
 	public Insure getInsure() {
 		return insure;
 	}
 
+	/**
+	 * 设置insure参数
+	 * @param insure 对象
+	 * @return 无
+	 * */
 	public void setInsure(Insure insure) {
 		this.insure = insure;
 	}
 
+	/**
+	 * 保险产品购买
+	 * @param insure 对象
+	 * @return 购买inusre json数据
+	 * */
 	public synchronized String add()
 	{
 		Saving liveSaving = SavingManager.getInstance().getSaving(insure.getPlayerid(), 1);
@@ -58,14 +73,5 @@ public class InsureAction extends SavingAction {
 			return msgStr(ret);
 		}
 
-	}
-	
-	public static void main(String[] args)
-	{
-		InsureAction aa = new InsureAction();
-		Insure in = new Insure();
-		in.setPlayerid(215);
-		aa.setInsure(in);
-		System.out.println("print done");
 	}
 }
