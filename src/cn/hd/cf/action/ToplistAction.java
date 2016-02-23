@@ -11,6 +11,10 @@ import cn.hd.mgr.ToplistManager;
 public class ToplistAction extends BaseAction {
 	private Toplist toplist;
 
+	/**
+	 * 获取排行榜数据
+	 * @return String 排行榜json数据
+	 * */
 	public String list(){
 		ToplistManager.getInstance().load();
 		List<Toplist> weeklist = ToplistManager.getInstance().findByType(0);
@@ -42,6 +46,10 @@ public class ToplistAction extends BaseAction {
 		return jsonObject.toString();
 	}
 	
+	/**
+	 * 月排行榜数据
+	 * @return String 排行榜 json数据
+	 * */
 	public String monthlist(){
 		List<Toplist> tt = ToplistManager.getInstance().findByType(1);
 		//System.out.println("get list :"+tt.size());
@@ -51,6 +59,11 @@ public class ToplistAction extends BaseAction {
 		return null;
 	}
 	
+	/**
+	 * 排行榜玩家点赞
+	 * @param Toplist 对象
+	 * @return String 点赞json数据返回
+	 * */
 	public String zan(){
 		LogMgr.getInstance().log(toplist.getPlayerid()," zan="+toplist.getZan());
 		ToplistManager.getInstance().updateZan(toplist);

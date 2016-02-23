@@ -35,6 +35,10 @@ public class StockAction extends SavingAction {
 		stockMgr = StockManager.getInstance();
 	}
 	
+	/**
+	 * 全部股票行情
+	 * @return String 行情json数据
+	 * */
 	public String quotes(){
 		List<Quote> lquotes = StockManager.getInstance().getBigQuotes(stock.getId());
 		JSONArray jsonObject = JSONArray.fromObject(lquotes);
@@ -43,6 +47,10 @@ public class StockAction extends SavingAction {
 		return null;
 	}
 	
+	/**
+	 * 下次行情跳动时间
+	 * @return String 行情跳动时间
+	 * */
 	public String nextquotetime(){
 		float margin = StockManager.getInstance().getMarginSec();
 		String tt = String.valueOf(margin);
@@ -51,6 +59,11 @@ public class StockAction extends SavingAction {
 		return null;
 	}
 	
+	/**
+	 * 获取特点股票行情
+	 * @param String 股票id集合
+	 * @return String 行情 json数据
+	 * */
 	public String pagelastquotes(){
 		String pp = getHttpRequest().getParameter("stockids");
 		JSONArray ppObj = JSONArray.fromObject(pp);
@@ -70,6 +83,11 @@ public class StockAction extends SavingAction {
 		return null;
 	}	
 
+	/**
+	 * 买入/抛售股票
+	 * @param Stock 股票 对象
+	 * @return String 股票 json数据
+	 * */
 	public synchronized String add(){
 		if (stock.getQty()==0){
 			return msgStr(RetMsg.MSG_StockQtyIsZero);
@@ -85,6 +103,11 @@ public class StockAction extends SavingAction {
 		}
 	}	
 
+	/**
+	 * 抛售股票
+	 * @param Stock 股票 对象
+	 * @return String 股票 json数据
+	 * */
 	public synchronized String sellStock(){
 		Saving liveSaving = SavingManager.getInstance().getSaving(stock.getPlayerid(), 1);
 		float changeAmount = 0 - stock.getAmount();
@@ -121,6 +144,11 @@ public class StockAction extends SavingAction {
 		}
 	}
 
+	/**
+	 * 买入股票
+	 * @param Stock 股票 对象
+	 * @return String 股票 json数据
+	 * */
 	public synchronized String buyStock(){
 		Saving liveSaving = SavingManager.getInstance().getSaving(stock.getPlayerid(), 1);
 		
