@@ -27,7 +27,10 @@ import com.alibaba.fastjson.JSON;
 	
 public class ToplistManager extends MgrBase{
 	Map<Integer,Toplist>		toplistMap;
+	List<Toplist>				currWeekToplist;
+	List<Toplist>				currMonthToplist;
 	ToplistAction				topAction;
+	final int					TOPLIST_MAX_COUNT = 2000;
     private static ToplistManager uniqueInstance = null;  
     private long lastLoadTime = 0;
     private RedisClient jedisClient;
@@ -62,6 +65,8 @@ public class ToplistManager extends MgrBase{
 		jedisClient.returnResource(jedis);
     	log.warn("toplist init,reloadtime:"+toplistTime+"s");
     	
+		currWeekToplist = new ArrayList<Toplist>();
+		currMonthToplist = new ArrayList<Toplist>();
     	load();
     }
     
@@ -86,7 +91,38 @@ public class ToplistManager extends MgrBase{
     		if (!toplistMap.containsKey(item.getPlayerid()))
     			toplistMap.put(item.getPlayerid(), item);
     	}
-    	log.warn("reload toplist data:" + itemstrs.size());      	
+    	
+    	log.warn("reload all toplist data:" + itemstrs.size());      
+    	
+    	
+    	//reset week and month toplist:
+		Date firstWeekDate = getFirstDate(0,new Date());
+		Date firstMonthDate = getFirstDate(1,new Date());
+		List<Toplist>  allweeklist = new ArrayList<Toplist>();
+		List<Toplist>  allmonthlist = new ArrayList<Toplist>();
+		Collection<Toplist> toplists = toplistMap.values();
+		for (Toplist top:toplists){
+			if (top.getUpdatetime().compareTo(firstWeekDate)>0){
+				allweeklist.add(top);
+			}
+			if (top.getUpdatetime().compareTo(firstMonthDate)>0){
+				allmonthlist.add(top);
+			}
+		}
+		Collections.sort((List<Toplist>)allweeklist);
+		currWeekToplist.clear();
+		for (int i=0;i<TOPLIST_MAX_COUNT;i++){
+			if (i>=allweeklist.size())break;
+			currWeekToplist.add(allweeklist.get(i));
+		}
+		Collections.sort((List<Toplist>)allmonthlist);    	
+		currMonthToplist.clear();
+		for (int i=0;i<TOPLIST_MAX_COUNT;i++){
+			if (i>=allmonthlist.size())break;
+			currMonthToplist.add(allmonthlist.get(i));
+		}
+		
+    	log.warn("reset week and month toplist,week:" + currWeekToplist.size()+",month:"+currMonthToplist.size());      
     }
     
 	public synchronized Toplist findByPlayerId(int playerid){		
@@ -101,6 +137,29 @@ public class ToplistManager extends MgrBase{
 			}
 		}		
 		return item;
+	}
+	
+	private int getIndex(int type,float fPMoney){
+		List<Toplist> list = currWeekToplist;
+		if (type==1)
+			list = currMonthToplist;
+		
+		//小于最小:
+		if (list.get(list.size()-1).getMoney().floatValue()>fPMoney) 
+			return -1;
+		
+		int top = -1;
+		int left,right,middle;
+		left = 0;
+		right = list.size()-1;
+		while (right>=left){
+			middle = (left+right)/2;
+			if (fPMoney<list.get(middle).getMoney().floatValue()){
+				left = middle+1;
+			}else
+				right = middle -1;
+		}
+		return top;
 	}
 	
 	/**
@@ -409,32 +468,36 @@ public class ToplistManager extends MgrBase{
 	 * @return List<Toplist> 排名列表
 	 * */
 	public synchronized List<Toplist> findByType(int type){
-		List<Toplist> tops = new ArrayList<Toplist>();
+		load();
 		
-		Date firstDate = getFirstDate(type,new Date());
-		
-		List<Toplist> list = new ArrayList<Toplist>();
-		Collection<Toplist> toplists = toplistMap.values();
-		for (Toplist top:toplists){
-			if (top.getUpdatetime().compareTo(firstDate)>0){
-				list.add(top);
-			}
-		}
-		Collections.sort((List<Toplist>)list);
-		for (int i=0;i<list.size();i++){
-			if (i>=100) break;
-			tops.add(list.get(i));
-		}
-		//System.out.println("取排行榜(type:"+type+"):开始时间:"+firstDate.toString()+",记录数:"+tops.size());
-		return tops;
+		if (type==0)
+			return currWeekToplist;
+		return currMonthToplist;
 	}
 
 	public static void main(String[] args){
-		ToplistManager.getInstance().init();
-		double a = 3.91948171;
-		int ia = Double.valueOf(a).intValue();
-		long st = System.currentTimeMillis();
-		System.out.println("cost time: "+(System.currentTimeMillis()-st)+"ms");
+//		ToplistManager.getInstance().init();
+		List<Float> list = new ArrayList<Float>();
+		list.add((float)100.0);
+		list.add((float)90.0);
+		list.add((float)78.0);
+		list.add((float)65.0);
+		list.add((float)56.0);
+		list.add((float)55.0);
+		list.add((float)34.0);
+		list.add((float)30.0);
+		int left,right,middle;
+		left = 0;
+		float fPMoney = 102;
+		right = list.size()-1;
+		while (right>=left){
+			middle = (left+right)/2;
+			if (fPMoney<list.get(middle).floatValue()){
+				left = middle+1;
+			}else
+				right = middle -1;
+		}
+		right = 3;
 //		ToplistManager.getInstance().findByType(0);
 //		Toplist record = new Toplist();
 //		record.setPlayerid(280);

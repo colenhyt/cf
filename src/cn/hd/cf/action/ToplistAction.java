@@ -16,7 +16,6 @@ public class ToplistAction extends BaseAction {
 	 * @return String 排行榜json数据
 	 * */
 	public String list(){
-		ToplistManager.getInstance().load();
 		List<Toplist> weeklist = ToplistManager.getInstance().findByType(0);
 		List<Toplist> monthlist = ToplistManager.getInstance().findByType(1);
 		
