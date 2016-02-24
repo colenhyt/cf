@@ -31,8 +31,8 @@ public class ToplistManager extends MgrBase{
 	List<Toplist>				currMonthToplist;
 	List<Toplist>				topWeekToplist;
 	List<Toplist>				topMonthToplist;
-	public String						topWeekToplistStr;
-	public String						topMonthToplistStr;
+	String						topWeekToplistStr;
+	String						topMonthToplistStr;
 	ToplistAction				topAction;
 	final int					TOPLIST_MAX_COUNT = 2000;
     private static ToplistManager uniqueInstance = null;  
@@ -496,13 +496,13 @@ public class ToplistManager extends MgrBase{
 	 * @param int 类型，表示当周还是当月
 	 * @return List<Toplist> 排名列表
 	 * */
-	public synchronized List<Toplist> findByType(int type){
+	public synchronized String findByType(int type){
 		load();
 		
 		if (type==0)
-			return topWeekToplist;
+			return topWeekToplistStr;
 		
-		return topMonthToplist;
+		return topMonthToplistStr;
 	}
 
 	public static void main(String[] args){

@@ -27,23 +27,10 @@ public class ToplistAction extends BaseAction {
 		}
 		int weektop = mgr.getTopNumber(toplist.getPlayerid(),0)+1;
 		int monthtop = mgr.getTopNumber(toplist.getPlayerid(),1)+1;
-		String str = weektop+";"+mgr.topWeekToplistStr+";"+monthtop+";"+mgr.topMonthToplistStr+";"+zan+";"+fMoney;
+		String str = weektop+";"+mgr.findByType(0)+";"+monthtop+";"+mgr.findByType(1)+";"+zan+";"+fMoney;
 		//System.out.println("取得排行榜数据:week:"+weeklist.size()+",month:"+monthlist.size());
 //		write(jsonObject.toString(),"utf-8");
 		return str;
-	}
-	
-	/**
-	 * 月排行榜数据
-	 * @return String 排行榜 json数据
-	 * */
-	public String monthlist(){
-		List<Toplist> tt = ToplistManager.getInstance().findByType(1);
-		//System.out.println("get list :"+tt.size());
-		JSONArray jsonObject = JSONArray.fromObject(tt);
-		
-		write(jsonObject.toString(),"utf-8");
-		return null;
 	}
 	
 	/**
