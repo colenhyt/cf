@@ -16,33 +16,21 @@ public class ToplistAction extends BaseAction {
 	 * @return String 排行榜json数据
 	 * */
 	public String list(){
-		List<Toplist> weeklist = ToplistManager.getInstance().findByType(0);
-		List<Toplist> monthlist = ToplistManager.getInstance().findByType(1);
-		
-		Toplist weektop = ToplistManager.getInstance().findByPlayerId(toplist.getPlayerid());
-		Toplist monthtop = null;
-		if (weektop!=null){
-			int week = ToplistManager.getInstance().getTopNumber(toplist.getPlayerid(),0);
-			weektop.setTop(week+1);
-			weeklist.add(weektop);
-
-			int mm = ToplistManager.getInstance().getTopNumber(toplist.getPlayerid(),1);
-			monthtop = new Toplist();
-			monthtop.setPlayername(weektop.getPlayername());
-			monthtop.setPlayerid(weektop.getPlayerid());
-			monthtop.setZan(weektop.getZan());
-			monthtop.setMoney(weektop.getMoney());
-			monthtop.setTop(mm+1);
-			
-			monthlist.add(monthtop);
+		ToplistManager mgr = ToplistManager.getInstance();
+		mgr.load();
+		int zan = 0;
+		float fMoney = 0;
+		Toplist top = mgr.findByPlayerId(toplist.getPlayerid());
+		if (top!=null) {
+			zan = top.getZan();
+			fMoney = top.getMoney().floatValue();
 		}
-
-		JSONArray jsonObject = new JSONArray();
-		jsonObject.add(weeklist);
-		jsonObject.add(monthlist);
+		int weektop = mgr.getTopNumber(toplist.getPlayerid(),0)+1;
+		int monthtop = mgr.getTopNumber(toplist.getPlayerid(),1)+1;
+		String str = weektop+";"+mgr.topWeekToplistStr+";"+monthtop+";"+mgr.topMonthToplistStr+";"+zan+";"+fMoney;
 		//System.out.println("取得排行榜数据:week:"+weeklist.size()+",month:"+monthlist.size());
 //		write(jsonObject.toString(),"utf-8");
-		return jsonObject.toString();
+		return str;
 	}
 	
 	/**

@@ -29,6 +29,10 @@ public class ToplistManager extends MgrBase{
 	Map<Integer,Toplist>		toplistMap;
 	List<Toplist>				currWeekToplist;
 	List<Toplist>				currMonthToplist;
+	List<Toplist>				topWeekToplist;
+	List<Toplist>				topMonthToplist;
+	public String						topWeekToplistStr;
+	public String						topMonthToplistStr;
 	ToplistAction				topAction;
 	final int					TOPLIST_MAX_COUNT = 2000;
     private static ToplistManager uniqueInstance = null;  
@@ -67,6 +71,8 @@ public class ToplistManager extends MgrBase{
     	
 		currWeekToplist = new ArrayList<Toplist>();
 		currMonthToplist = new ArrayList<Toplist>();
+		topWeekToplist = new ArrayList<Toplist>();
+		topMonthToplist = new ArrayList<Toplist>();
     	load();
     }
     
@@ -111,16 +117,29 @@ public class ToplistManager extends MgrBase{
 		}
 		Collections.sort((List<Toplist>)allweeklist);
 		currWeekToplist.clear();
+		topWeekToplist.clear();
 		for (int i=0;i<TOPLIST_MAX_COUNT;i++){
 			if (i>=allweeklist.size())break;
 			currWeekToplist.add(allweeklist.get(i));
 		}
+		for (int i=0;i<currWeekToplist.size();i++){
+			if (i>=100) break;
+			topWeekToplist.add(currWeekToplist.get(i));
+		}
+		topWeekToplistStr = JSON.toJSONString(topWeekToplist);
+		
 		Collections.sort((List<Toplist>)allmonthlist);    	
 		currMonthToplist.clear();
+		topMonthToplist.clear();
 		for (int i=0;i<TOPLIST_MAX_COUNT;i++){
 			if (i>=allmonthlist.size())break;
 			currMonthToplist.add(allmonthlist.get(i));
 		}
+		for (int i=0;i<currMonthToplist.size();i++){
+			if (i>=100) break;
+			topMonthToplist.add(currMonthToplist.get(i));
+		}
+		topMonthToplistStr = JSON.toJSONString(topMonthToplist);
 		
     	log.warn("reset week and month toplist,week:" + currWeekToplist.size()+",month:"+currMonthToplist.size());      
     }
@@ -192,14 +211,17 @@ public class ToplistManager extends MgrBase{
 			}
 		}
 		
-		int cc = 0;
-		Date fristDate = getFirstDate(type,new Date());
-		Collection<Toplist> toplists = toplistMap.values();
-		for (Toplist top2:toplists){
-			int later = top2.getUpdatetime().compareTo(fristDate);
-			if (top2.getMoney().floatValue()>fMoney.floatValue()&&later>0){
-				cc++;
-			}
+		List<Toplist> list = currWeekToplist;
+		if (type==1)
+			list = currMonthToplist;
+		
+		int cc = list.size();
+		for (int i=0;i<list.size();i++){
+			Toplist item = list.get(i);
+			float itemValue = item.getMoney().floatValue();
+			if (itemValue>fPMoney) continue;
+			cc = i;
+			break;
 		}
 		return cc;
 	}	
@@ -433,6 +455,13 @@ public class ToplistManager extends MgrBase{
 		return true;		
 	}
 	
+	public String list(int playerid,int type){
+		Toplist toplist = new Toplist();
+		toplist.setPlayerid(playerid);
+		topAction.setToplist(toplist);	
+			return topAction.list();
+		}
+	
 	public synchronized float getCurrentTotalMoney(int playerId,float totalSaving){
 		float savingamount = Float.valueOf(totalSaving).intValue();
 		
@@ -471,8 +500,9 @@ public class ToplistManager extends MgrBase{
 		load();
 		
 		if (type==0)
-			return currWeekToplist;
-		return currMonthToplist;
+			return topWeekToplist;
+		
+		return topMonthToplist;
 	}
 
 	public static void main(String[] args){
@@ -488,15 +518,28 @@ public class ToplistManager extends MgrBase{
 		list.add((float)30.0);
 		int left,right,middle;
 		left = 0;
-		float fPMoney = 102;
+		float fPMoney = (float)57;
 		right = list.size()-1;
+		int index = 0;
 		while (right>=left){
 			middle = (left+right)/2;
-			if (fPMoney<list.get(middle).floatValue()){
+			float mv = list.get(middle).floatValue();
+			if (fPMoney<mv){
 				left = middle+1;
-			}else
+			}else if (fPMoney>mv)
 				right = middle -1;
+			
+			float leftV = list.get(left).floatValue();
+			float rightV = list.get(right).floatValue();
+			if (leftV>=fPMoney&&fPMoney>=rightV){
+				if (leftV==fPMoney)
+					index = left;
+				else
+					index = left+1;
+				break;
+			}
 		}
+		System.out.println(index);
 		right = 3;
 //		ToplistManager.getInstance().findByType(0);
 //		Toplist record = new Toplist();
