@@ -252,11 +252,15 @@ Toplist.prototype.syncData2 = function(){
 	try  {
 		var data= "playerid="+g_player.data.playerid;
 		$.ajax({type:"post",url:"/cf/toplist_get.jsp",data:data,success:function(data){
-		 var obj = cfeval (data);
-		 if (obj.length>0){
-		 g_toplist.weekdata = obj[0];
-		 g_toplist.monthdata = obj[1];
-		 }
+		var datas = data.split(";");
+		var zan = parseInt(datas[4]);
+		var money = parseInt(datas[5]);
+		var weektop = {playerid:g_player.data.playerid,playername:g_player.data.playername,zan:zan,top:parseInt(datas[0]),money:money};
+		var monthtop = {playerid:g_player.data.playerid,playername:g_player.data.playername,zan:zan,top:parseInt(datas[2]),money:money};
+		g_toplist.weekdata = cfeval(datas[1]);
+		g_toplist.weekdata.push(weektop);
+		g_toplist.monthdata = cfeval(datas[3]);
+		g_toplist.monthdata.push(monthtop);
 		 g_toplist.showToplist(0,0);
  		 g_msg.destroyload();
 		}});
