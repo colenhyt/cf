@@ -15,7 +15,7 @@ public class ToplistAction extends BaseAction {
 	 * 获取排行榜数据
 	 * @return String 排行榜json数据
 	 * */
-	public String list(){
+	public synchronized String list(){
 		ToplistManager mgr = ToplistManager.getInstance();
 		mgr.load();
 		int zan = 0;
@@ -29,6 +29,7 @@ public class ToplistAction extends BaseAction {
 		int monthtop = mgr.getTopNumber(toplist.getPlayerid(),1)+1;
 		String str = weektop+";"+mgr.findByType(0)+";"+monthtop+";"+mgr.findByType(1)+";"+zan+";"+fMoney;
 		//System.out.println("取得排行榜数据:week:"+weeklist.size()+",month:"+monthlist.size());
+		log.warn(mgr.findByType(1));
 //		write(jsonObject.toString(),"utf-8");
 		return str;
 	}

@@ -285,7 +285,7 @@ public class SavingManager extends MgrBase{
 			String liststr = jedis.hget(MgrBase.DATAKEY_SAVING, String.valueOf(playerId));
 			jedisClient.returnResource(jedis);    	
 			if (liststr!=null){
-				log.warn("pid:"+playerId+" get saving "+liststr);
+				//log.warn("pid:"+playerId+" get saving "+liststr);
 				list = JSON.parseArray(liststr, Saving.class);
 				//savingsMap.put(playerId, list);
 			}

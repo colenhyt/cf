@@ -478,7 +478,7 @@ public class ToplistManager extends MgrBase{
 		return true;		
 	}
 	
-	public String list(int playerid,int type){
+	public synchronized String list(int playerid,int type){
 		Toplist toplist = new Toplist();
 		toplist.setPlayerid(playerid);
 		topAction.setToplist(toplist);	
@@ -530,6 +530,7 @@ public class ToplistManager extends MgrBase{
 
 	public static void main(String[] args){
 //		ToplistManager.getInstance().init();
+		Date d = new Date(1456047321192L);
 		List<Float> list = new ArrayList<Float>();
 		list.add((float)100.0);
 		list.add((float)90.0);
