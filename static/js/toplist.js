@@ -145,6 +145,8 @@ Toplist.prototype.showToplist = function(type,page)
 			 var hasImg = false;
 			 if (item.top>0){
 				topStr = item.top;
+				if (item.top==4001)
+				 topStr = ">4000";
 				if (item.top<=3)
 				 hasImg = true
 			 }

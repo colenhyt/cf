@@ -123,7 +123,10 @@ Player.prototype.flushPageview = function() {
     tag.innerHTML = "总资产: " +data.total;	
     var strTop = "";
     if (this.data.weektop>0){
-    	strTop = this.data.weektop;
+    	if (this.data.weektop==4001)
+    	 strTop = ">4000";
+    	else
+    	 strTop = this.data.weektop;
     }
     tag = document.getElementById("tagweektop");
     tag.innerHTML = "周排名: "+strTop;	
