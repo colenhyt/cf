@@ -115,6 +115,16 @@ Toplist.prototype.showToplist = function(type,page)
 				var item = tdata[i];
 				if (item.playerid==me.playerid)continue;
 				item.top = i+1;
+				var mintop = items.length;
+				if (item.money>me.money){
+				 mintop -= 1;
+				}
+				if (mintop==item.top){
+				 item.top += 1;
+				}
+				if (item.money<me.money&&item.top<=me.top){
+					item.top = me.top+1;
+				}
 				for (j=0;j<items.length;j++){
 				 if (items[j].money==item.money){
 				  item.top = items[j].top;
