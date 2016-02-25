@@ -139,6 +139,12 @@ Toplist.prototype.showToplist = function(type,page)
 			end = items.length;
 		for (var i=start;i<end;i++){
 			var item = items[i];
+			 var name = item.playername;
+			 if (name!=null)
+			 {
+				 name = item.playername.substring(0,8);
+			 }else
+				 name = "";
 			if (i==0)			//第一个：自己
 			{
 			 var topStr = "无";
@@ -150,9 +156,8 @@ Toplist.prototype.showToplist = function(type,page)
 				if (item.top<=3)
 				 hasImg = true
 			 }
-			
 			 content += "             <tr>"
-			 content += "               <td class='cftoplist_content' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.playername.substring(0,8)+"</div></td>"
+			 content += "               <td class='cftoplist_content' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+name+"</div></td>"
 			 content += "               <td class='cftoplist_c5' style='color:yellow'><div class='cficon_money toplist' onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+parseInt(item.money)+"</div></td>"
 			 if (hasImg==true)
 			  content += "               <td class='cftoplist_c4' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'><img class='cftoplist_top' src='static/img/icon_top_"+topStr+".png'></div></td>"
@@ -170,7 +175,7 @@ Toplist.prototype.showToplist = function(type,page)
 			}else {
 			
 			 content += "             <tr>"
-			 content += "               <td class='cftoplist_content'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.playername.substring(0,8)+"</div></td>"
+			 content += "               <td class='cftoplist_content'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+name+"</div></td>"
 			 content += "               <td class='cftoplist_c5'><div class='cficon_money toplist' onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+parseInt(item.money)+"</div></td>"
 			 if (item.top<=3)
 			  content += "               <td class='cftoplist_c4'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'><img class='cftoplist_top' src='static/img/icon_top_"+item.top+".png'></div></td>"
