@@ -34,7 +34,7 @@ public class ToplistManager extends MgrBase{
 	String						topWeekToplistStr;
 	String						topMonthToplistStr;
 	ToplistAction				topAction;
-	final int					TOPLIST_MAX_COUNT = 2000;
+	final int					TOPLIST_MAX_COUNT = 4000;
     private static ToplistManager uniqueInstance = null;  
     private long lastLoadTime = 0;
     private RedisClient jedisClient;
