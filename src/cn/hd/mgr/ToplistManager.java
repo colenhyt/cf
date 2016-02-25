@@ -238,6 +238,29 @@ public class ToplistManager extends MgrBase{
 			top.setZan(toplist.getZan());
 			DataThread dataThread = dataThreads.get(toplist.getPlayerid()%dataThreads.size());
 			dataThread.updateToplist(top);
+			
+			boolean update = false;
+			for (Toplist item:topWeekToplist){
+				if (item.getPlayerid().intValue()==toplist.getPlayerid().intValue()){
+					item.setZan(toplist.getZan());
+					update = true;
+					break;
+				}
+			}
+			if (update)
+				topWeekToplistStr = JSON.toJSONString(topWeekToplist);
+			
+			update = false;
+			for (Toplist item:topMonthToplist){
+				if (item.getPlayerid().intValue()==toplist.getPlayerid().intValue()){
+					item.setZan(toplist.getZan());
+					update = true;
+					break;
+				}
+			}
+			if (update)
+				topMonthToplistStr = JSON.toJSONString(topMonthToplist);
+			
 		}
 		
 		return 0;
