@@ -249,7 +249,7 @@ public class DataManager extends MgrBase {
 		} else if (typeid == 4) {
 			int top = get_top(playerid);
 			data = String.valueOf(top);
-		} else if (typeid==5){
+		} else if (typeid==5&&jedisClient4!=null){
 			Jedis j4 = jedisClient4.getJedis();
 			String key = MgrBase.DATAKEY_DATA_LOG+playerid;
 			int len = (j4.llen(key).intValue());
