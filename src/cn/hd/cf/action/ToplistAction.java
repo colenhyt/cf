@@ -1,12 +1,12 @@
 package cn.hd.cf.action;
 
-import java.util.List;
+import java.io.IOException;
 
-import net.sf.json.JSONArray;
 import cn.hd.base.BaseAction;
 import cn.hd.cf.model.Toplist;
 import cn.hd.mgr.LogMgr;
 import cn.hd.mgr.ToplistManager;
+import cn.hd.util.ZipUtil;
 
 public class ToplistAction extends BaseAction {
 	private Toplist toplist;
@@ -27,9 +27,13 @@ public class ToplistAction extends BaseAction {
 		}
 		int weektop = mgr.getTopNumber(toplist.getPlayerid(),0)+1;
 		int monthtop = mgr.getTopNumber(toplist.getPlayerid(),1)+1;
-		String str = weektop+";"+mgr.findByType(0)+";"+monthtop+";"+mgr.findByType(1)+";"+zan+";"+fMoney;
+		String a = mgr.findByType(0);
+		String b = mgr.findByType(1);
+		String str = "";
+			str = weektop+";"+a+";"+monthtop+";"+b+";"+zan+";"+fMoney;
+//			log.warn(b);
+//			log.warn(ZipUtil.compress(b).length());
 		//System.out.println("取得排行榜数据:week:"+weeklist.size()+",month:"+monthlist.size());
-		log.warn(mgr.findByType(1));
 //		write(jsonObject.toString(),"utf-8");
 		return str;
 	}

@@ -124,7 +124,13 @@ public class ToplistManager extends MgrBase{
 		}
 		for (int i=0;i<currWeekToplist.size();i++){
 			if (i>=100) break;
-			topWeekToplist.add(currWeekToplist.get(i));
+			Toplist item = new Toplist();
+			Toplist top = currWeekToplist.get(i);
+			item.setMoney(top.getMoney());
+			item.setPlayerid(top.getPlayerid());
+			item.setPlayername(top.getPlayername());
+			item.setZan(top.getZan());
+			topWeekToplist.add(item);
 		}
 		topWeekToplistStr = JSON.toJSONString(topWeekToplist);
 		
@@ -137,7 +143,13 @@ public class ToplistManager extends MgrBase{
 		}
 		for (int i=0;i<currMonthToplist.size();i++){
 			if (i>=100) break;
-			topMonthToplist.add(currMonthToplist.get(i));
+			Toplist item = new Toplist();
+			Toplist top = currMonthToplist.get(i);
+			item.setMoney(top.getMoney());
+			item.setPlayerid(top.getPlayerid());
+			item.setPlayername(top.getPlayername());
+			item.setZan(top.getZan());
+			topMonthToplist.add(item);
 		}
 		topMonthToplistStr = JSON.toJSONString(topMonthToplist);
 		
@@ -520,7 +532,6 @@ public class ToplistManager extends MgrBase{
 	 * @return List<Toplist> 排名列表
 	 * */
 	public synchronized String findByType(int type){
-		load();
 		
 		if (type==0)
 			return topWeekToplistStr;

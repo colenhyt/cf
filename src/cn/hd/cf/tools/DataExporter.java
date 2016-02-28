@@ -79,7 +79,7 @@ public class DataExporter {
 			if (p!=null){
 				item.setOpenid(p.getOpenid());
 			}
-			item.setUpdateTimeStr(item.getUpdatetime().toLocaleString());
+			//item.setUpdateTimeStr(item.getUpdatetime().toLocaleString());
 			content += JSON.toJSONString(item)+"\n";
 		}
 		FileUtil.writeFile("./toplist.data", content);;
