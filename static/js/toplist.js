@@ -269,15 +269,29 @@ Toplist.prototype.syncData2 = function(){
 	try  {
 		var data= "playerid="+g_player.data.playerid;
 		$.ajax({type:"post",url:"/cf/toplist_get.jsp",data:data,success:function(data){
-		var datas = data.split(";");
-		var zan = parseInt(datas[4]);
-		var money = parseInt(datas[5]);
-		var weektop = {playerid:g_player.data.playerid,playername:g_player.data.playername,zan:zan,top:parseInt(datas[0]),money:money};
-		var monthtop = {playerid:g_player.data.playerid,playername:g_player.data.playername,zan:zan,top:parseInt(datas[2]),money:money};
-		g_toplist.weekdata = cfeval(datas[1]);
-		g_toplist.weekdata.push(weektop);
-		g_toplist.monthdata = cfeval(datas[3]);
-		g_toplist.monthdata.push(monthtop);
+		var datas = cfeval(data);
+		var weekdata = datas[0];
+		g_toplist.weekdata = [];
+		for (var i=0;i<weekdata.length;i++){
+		 var item = {playerid:weekdata[i][0],playername:weekdata[i][1],money:weekdata[i][2],zan:weekdata[i][3],top:0};
+		 if (item.playerid==g_player.data.playerid){
+		  item.playername = g_player.data.playername;
+		  item.top = weekdata[i][4];
+		 }
+		 g_toplist.weekdata.push(item);
+		}
+		
+		var monthdata = datas[1];
+		g_toplist.monthdata = [];
+		for (var i=0;i<monthdata.length;i++){
+		 var item = {playerid:monthdata[i][0],playername:monthdata[i][1],money:monthdata[i][2],zan:monthdata[i][3],top:0};
+		 if (item.playerid==g_player.data.playerid){
+		  item.playername = g_player.data.playername;
+		  item.top = monthdata[i][4];
+		 }
+		 g_toplist.monthdata.push(item);
+		}
+				
 		 g_toplist.showToplist(0,0);
  		 g_msg.destroyload();
 		}});
