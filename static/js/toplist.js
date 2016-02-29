@@ -273,10 +273,10 @@ Toplist.prototype.syncData2 = function(){
 		var weekdata = datas[0];
 		g_toplist.weekdata = [];
 		for (var i=0;i<weekdata.length;i++){
-		 var item = {playerid:weekdata[i][0],playername:weekdata[i][1],money:weekdata[i][2],zan:weekdata[i][3],top:0};
+		 var item = {playerid:parseInt(weekdata[i][0]),playername:weekdata[i][1],money:parseInt(weekdata[i][2]),zan:parseInt(weekdata[i][3]),top:0};
 		 if (item.playerid==g_player.data.playerid){
 		  item.playername = g_player.data.playername;
-		  item.top = weekdata[i][4];
+		  item.top = parseInt(weekdata[i][4]);
 		 }
 		 g_toplist.weekdata.push(item);
 		}
