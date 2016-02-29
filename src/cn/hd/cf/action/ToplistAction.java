@@ -6,7 +6,6 @@ import cn.hd.base.BaseAction;
 import cn.hd.cf.model.Toplist;
 import cn.hd.mgr.LogMgr;
 import cn.hd.mgr.ToplistManager;
-import cn.hd.util.ZipUtil;
 
 public class ToplistAction extends BaseAction {
 	private Toplist toplist;
@@ -18,23 +17,27 @@ public class ToplistAction extends BaseAction {
 	public synchronized String list(){
 		ToplistManager mgr = ToplistManager.getInstance();
 		mgr.load();
+		int playerid = toplist.getPlayerid();
 		int zan = 0;
 		float fMoney = 0;
-		Toplist top = mgr.findByPlayerId(toplist.getPlayerid());
+		Toplist top = mgr.findByPlayerId(playerid);
 		if (top!=null) {
 			zan = top.getZan();
 			fMoney = top.getMoney().floatValue();
 		}
-		int weektop = mgr.getTopNumber(toplist.getPlayerid(),0)+1;
-		int monthtop = mgr.getTopNumber(toplist.getPlayerid(),1)+1;
-		String a = mgr.findByType(0);
-		String b = mgr.findByType(1);
-		String str = "";
-			str = weektop+";"+a+";"+monthtop+";"+b+";"+zan+";"+fMoney;
-//			log.warn(b);
-//			log.warn(ZipUtil.compress(b).length());
-		//System.out.println("取得排行榜数据:week:"+weeklist.size()+",month:"+monthlist.size());
-//		write(jsonObject.toString(),"utf-8");
+		String weekTopStr = "[";
+		int weektop = mgr.getTopNumber(playerid,0)+1;
+		weekTopStr += mgr.findByType(0);
+		weekTopStr += "["+playerid+",'',"+fMoney+","+zan+","+weektop+"]";
+		weekTopStr += "]";
+		
+		String monthTopStr = "[";
+		int monthtop = mgr.getTopNumber(playerid,1)+1;
+		monthTopStr += mgr.findByType(1);
+		monthTopStr += "["+playerid+",'',"+fMoney+","+zan+","+monthtop+"]";
+		monthTopStr += "]";
+		String str = "["+weekTopStr+","+monthTopStr+"]";
+//		log.warn(str);
 		return str;
 	}
 	

@@ -124,15 +124,9 @@ public class ToplistManager extends MgrBase{
 		}
 		for (int i=0;i<currWeekToplist.size();i++){
 			if (i>=100) break;
-			Toplist item = new Toplist();
-			Toplist top = currWeekToplist.get(i);
-			item.setMoney(top.getMoney());
-			item.setPlayerid(top.getPlayerid());
-			item.setPlayername(top.getPlayername());
-			item.setZan(top.getZan());
-			topWeekToplist.add(item);
+			topWeekToplist.add(currWeekToplist.get(i));
 		}
-		topWeekToplistStr = JSON.toJSONString(topWeekToplist);
+		topWeekToplistStr = buildTopsStr(topWeekToplist);
 		
 		Collections.sort((List<Toplist>)allmonthlist);    	
 		currMonthToplist.clear();
@@ -143,15 +137,9 @@ public class ToplistManager extends MgrBase{
 		}
 		for (int i=0;i<currMonthToplist.size();i++){
 			if (i>=100) break;
-			Toplist item = new Toplist();
-			Toplist top = currMonthToplist.get(i);
-			item.setMoney(top.getMoney());
-			item.setPlayerid(top.getPlayerid());
-			item.setPlayername(top.getPlayername());
-			item.setZan(top.getZan());
-			topMonthToplist.add(item);
+			topMonthToplist.add(currMonthToplist.get(i));
 		}
-		topMonthToplistStr = JSON.toJSONString(topMonthToplist);
+		topMonthToplistStr = buildTopsStr(topMonthToplist);
 		
     	log.warn("reset week and month toplist,week:" + currWeekToplist.size()+",month:"+currMonthToplist.size());      
     }
@@ -244,7 +232,6 @@ public class ToplistManager extends MgrBase{
 	 * @return int 0表示点赞成功
 	 * */
 	public synchronized int updateZan(Toplist toplist){
-		System.out.println("update zan: "+(toplist==null));
 		Toplist top = findByPlayerId(toplist.getPlayerid());
 		if (top!=null){
 			top.setZan(toplist.getZan());
@@ -260,7 +247,7 @@ public class ToplistManager extends MgrBase{
 				}
 			}
 			if (update)
-				topWeekToplistStr = JSON.toJSONString(topWeekToplist);
+				topWeekToplistStr = buildTopsStr(topWeekToplist);
 			
 			update = false;
 			for (Toplist item:topMonthToplist){
@@ -271,13 +258,20 @@ public class ToplistManager extends MgrBase{
 				}
 			}
 			if (update)
-				topMonthToplistStr = JSON.toJSONString(topMonthToplist);
+				topMonthToplistStr = buildTopsStr(topMonthToplist);
 			
 		}
 		
 		return 0;
 	}
 	
+	private synchronized String buildTopsStr(List<Toplist> list){
+		String itemStr = "";
+		for (Toplist item:list){
+			itemStr += "["+item.getPlayerid()+",'"+item.getPlayername()+"',"+item.getMoney().intValue()+","+item.getZan().intValue()+"],";
+		}
+		return itemStr;
+	}
 	
 	/**
 	 * 新注册用户增加排名
