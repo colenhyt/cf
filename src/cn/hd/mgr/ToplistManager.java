@@ -266,11 +266,18 @@ public class ToplistManager extends MgrBase{
 	}
 	
 	private synchronized String buildTopsStr(List<Toplist> list){
-		String itemStr = "";
+//		String itemStr = "";
+		List<Vector<String>> data = new ArrayList<Vector<String>>();
 		for (Toplist item:list){
-			itemStr += "["+item.getPlayerid()+",'"+item.getPlayername()+"',"+item.getMoney().intValue()+","+item.getZan().intValue()+"],";
+			Vector<String> a = new Vector<String>();
+			a.add(String.valueOf(item.getPlayerid()));
+			a.add(String.valueOf(item.getPlayername()));
+			a.add(String.valueOf(item.getMoney()));
+			a.add(String.valueOf(item.getZan()));
+			data.add(a);
+//			itemStr += "["+item.getPlayerid()+",\""+item.getPlayername()+"\","+item.getMoney().intValue()+","+item.getZan().intValue()+"],";
 		}
-		return itemStr;
+		return JSON.toJSONString(data);
 	}
 	
 	/**
