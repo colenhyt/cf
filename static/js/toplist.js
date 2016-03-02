@@ -284,10 +284,10 @@ Toplist.prototype.syncData2 = function(){
 		var monthdata = datas[1];
 		g_toplist.monthdata = [];
 		for (var i=0;i<monthdata.length;i++){
-		 var item = {playerid:monthdata[i][0],playername:monthdata[i][1],money:monthdata[i][2],zan:monthdata[i][3],top:0};
+		 var item = {playerid:parseInt(monthdata[i][0]),playername:monthdata[i][1],money:parseInt(monthdata[i][2]),zan:parseInt(monthdata[i][3]),top:0};
 		 if (item.playerid==g_player.data.playerid){
 		  item.playername = g_player.data.playername;
-		  item.top = monthdata[i][4];
+		  item.top = parseInt(monthdata[i][4]);
 		 }
 		 g_toplist.monthdata.push(item);
 		}
