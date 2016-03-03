@@ -28,7 +28,7 @@ public class ToplistAction extends BaseAction {
 		String weekTopStr = "[";
 		int weektop = mgr.getTopNumber(playerid,0)+1;
 		String wTopStr = mgr.findByType(0);
-		if (wTopStr.length()>0)
+		if (wTopStr.length()>2)
 			weekTopStr += wTopStr.substring(1, wTopStr.length()-1)+",";
 		weekTopStr += "["+playerid+",'',"+fMoney+","+zan+","+weektop+"]";
 		weekTopStr += "]";
@@ -36,7 +36,7 @@ public class ToplistAction extends BaseAction {
 		String monthTopStr = "[";
 		int monthtop = mgr.getTopNumber(playerid,1)+1;
 		String mTopStr = mgr.findByType(1);
-		if (mTopStr.length()>0)
+		if (mTopStr.length()>2)
 			monthTopStr += mTopStr.substring(1, mTopStr.length()-1)+",";
 		monthTopStr += "["+playerid+",'',"+fMoney+","+zan+","+monthtop+"]";
 		monthTopStr += "]";

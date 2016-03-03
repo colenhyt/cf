@@ -213,7 +213,7 @@ public class DataManager extends MgrBase {
 		}
 			
 		if (!Pattern.matches("[0-9]+", openId)){
-			log.warn("illegal openid!!");
+			log.warn("illegal openid:"+openId);
 			return loginAction.msgStr(RetMsg.MSG_WrongOpenID);
 		}
 		
@@ -817,6 +817,8 @@ public class DataManager extends MgrBase {
 		
 		long s = Long.valueOf(1454491582484L);
 		Date now = new Date();
+		String a1 = null;
+		String b = "aa"+a1;
 		Date last= new Date(1455594730831L);
 		boolean a = DateUtil.isToday(last);
 		int d = now.getYear();
