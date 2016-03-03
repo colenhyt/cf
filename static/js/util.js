@@ -77,7 +77,8 @@ function gameErr(desc){
     	tag.id = "pageerror";
     	document.body.appendChild(tag); 	
 	}
-	var content = "<span style='color:black;font-size:80%'>"+desc+"</span><br><a href=''>点击刷新</a>"
+	var content = "<span style='color:black;font-size:80%'>"+desc+"</span><br><a href=''>点击刷新</a>";
+	g_loading.clear();
 	tag.innerHTML = content;
 }
 

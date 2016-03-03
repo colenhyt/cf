@@ -23,8 +23,12 @@ Main.prototype.init = function(){
 	 
 	var openid = getPar("OPENID");
 	//!isNumValue(tel)
-	if (!openid||openid.length<=0){
-		gameErr("获取初始化参数失败，无法进入游戏!");
+	var reg = new RegExp("^[0-9]*$");
+	if (!openid||openid.length<=0||!reg.test(openid)){
+		var desc = "获取初始化参数失败，无法进入游戏!";
+		if (openid)
+		 desc += ",openid:"+openid;
+		gameErr(desc);
 		return;
 	}
 	
