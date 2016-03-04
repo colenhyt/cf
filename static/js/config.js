@@ -131,6 +131,7 @@ var MSG_StockNotExist = 13;
 var MSG_StockQtyIsZero = 14;
 var MSG_IllegalAccess = 15;
 var MSG_WrongOpenID = 16;
+var MSG_WrongStockPrice = 17;
 
 var ERR_MSG ={};
 ERR_MSG[MSG_SQLExecuteError] = "sql出错";
@@ -149,6 +150,7 @@ ERR_MSG[MSG_StockNotExist] = "找不到该股票，无法购买";
 ERR_MSG[MSG_StockQtyIsZero] = "请选择股票手数";
 ERR_MSG[MSG_IllegalAccess] = "非法客户端登入";
 ERR_MSG[MSG_WrongOpenID] = "错误OPENID";
+ERR_MSG[MSG_WrongStockPrice] = "股票购买价格不能为零";
 
 var RES_CSS_ZUI = "CSS_ZUI";
 

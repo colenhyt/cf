@@ -149,8 +149,13 @@ Stock.prototype.findStockIds = function()
 			data.push(itemid);
 		}
 	}
-	var others = randomItems(data,null,countNeed-ids.length);
-	return ids.concat(others);
+	var others = randomItems(data,countNeed-ids.length);
+	for (var i=0;i<others.length;i++){
+	 if (ids.length>=16) break;
+	 if (others[i]!=null)
+	   ids.push(others[i]);
+	}
+	return ids;
 }
 
 Stock.prototype.show = function(){
@@ -281,7 +286,11 @@ Stock.prototype.showDetail = function(id,isflush){
  	if (quote!=null) {
 		ps = ForDight(quote);
 	}
-	
+   if (ps<=0){
+   		g_msg.tip("行情尚未获取，请重新打开交易所重新加载!");	
+   		return;    
+   }
+   	
    var pitem = g_player.getStockItem(id);
    pitem.buyps = "";
 	if (pitem.qty>0){
@@ -367,6 +376,10 @@ Stock.prototype.countBuy = function(stockid,count,price)
 	if (this.waitCount==null)
 		this.waitCount = 0;
 		
+   if (price<=0){
+   		g_msg.tip("价格不能为零，购买失败!");	
+   		return;    
+   }
    var pitem = g_player.getStockItem(stockid);
    var count2 = this.waitCount+ count;
    if (count2<0&&pitem.qty<(0-count2)){
