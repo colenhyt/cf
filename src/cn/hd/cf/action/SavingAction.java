@@ -262,10 +262,10 @@ public class SavingAction extends BaseAction {
 				uinsure.setQty(insure.getQty());
 				uinsure.setProfit(inter);
 				mdata.put(insure.getItemid(), uinsure);
-				//有到期，更新未过期的
-				if (notTimeoutInsures.size()!=insures.size()){
-					InsureManager.getInstance().updateInsures(playerId, notTimeoutInsures);
-				}
+			}
+			//有到期，更新未过期的
+			if (notTimeoutInsures.size()!=insures.size()){
+				InsureManager.getInstance().updateInsures(playerId, notTimeoutInsures);
 			}
 			}catch (Exception e){
 				e.printStackTrace();
