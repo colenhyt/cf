@@ -114,7 +114,10 @@ public class DataManager extends MgrBase {
 		
 		SimpleDateFormat formatter = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 		String xxx = "玩家数据: pid:"+p.getPlayerid()+",name:"+p.getPlayername()+",openid:"+p.getOpenid()+" <br>";
-		xxx += ",createtime:"+p.getCreateTimeStr()+"<br>";
+		String ctime = p.getCreateTimeStr();
+		 if (p.getCreatetime()!=null)
+			 ctime = formatter.format(p.getCreatetime());
+		xxx += ",createtime:"+ctime+"<br>";
 		xxx += "player :"+JSON.toJSONString(p)+" <br><br>";
 		xxx += "存款 :<br>";
 		Map<Integer,Saving> savings = JSON.parseObject(get_saving2(p.getPlayerid()), new TypeReference<Map<Integer, Saving>>() {});

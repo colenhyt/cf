@@ -16,6 +16,7 @@ import net.sf.json.JSONArray;
 import org.apache.log4j.Logger;
 
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Pipeline;
 import cn.hd.base.Base;
 import cn.hd.cf.action.RetMsg;
 import cn.hd.cf.action.StockAction;
@@ -287,6 +288,10 @@ public class StockManager extends MgrBase{
 		    			ps += ps*per;
 		    		else
 		    			ps -= ps*per;
+		    		
+		    		if (ps<0.1){
+		    			ps = (float)0.1;
+		    		}
 
 					//假如前一天，取休市价，并清空行情价格
 		    		if (isNewDay){
@@ -303,24 +308,23 @@ public class StockManager extends MgrBase{
 		    		newq.setQty(quote.getQty());
 		    		newq.setUpprice(quote.getUpprice());
 		    		lquote.offer(newq);
-		    		//System.out.println("行情价格个数"+lquote.size());
-		    		//System.out.println("股票价格变化: "+stock.getName()+",涨跌幅:"+stock.getPer()+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
+//		    		System.out.println("股票价格变化: "+stock.getName()+",涨跌幅:"+stock.getPer()+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
 		    }	
 		}
 		    	
 		if (tick%STOCK_SAVE_PERIOD==0){
-			for (int i=0;i<stockData.size();i++){
-	    		Stockdata  stock = stockData.get(i);
-	 			LinkedList<Quote> lquote = quoteMap.get(stock.getId());
-	 			if (lquote==null||lquote.size()==0) continue;
-	 			stock.setCreatetime(new Date());
-	 			stock.setJsonquotes("");
-	 			stock.setQuotes(JSON.toJSONString(lquote).getBytes());
-	 			//todo: 行情更新会导致CPU占满
-//	 			Jedis jedis = jedisClient3.getJedis();   
-//	 			jedis.hset(MgrBase.DATAKEY_DATA_STOCK, String.valueOf(stock.getId()), JSON.toJSONString(stock));
-//	 			jedisClient3.returnResource(jedis);
-			}
+// 			Jedis jedis = jedisClient3.getJedis();   
+//			Pipeline p = jedis.pipelined();
+//			for (int i=0;i<stockData.size();i++){
+//	    		Stockdata  stock = stockData.get(i);
+//	 			LinkedList<Quote> lquote = quoteMap.get(stock.getId());
+//	 			if (lquote==null||lquote.size()==0) continue;
+//	 			stock.setQuotes(JSON.toJSONString(lquote).getBytes());
+//	 			//todo: 行情更新会导致CPU占满
+//	 			p.hset(MgrBase.DATAKEY_DATA_STOCK, String.valueOf(stock.getId()), JSON.toJSONString(stock));
+//			}
+//			p.sync();
+// 			jedisClient3.returnResource(jedis);
 		}		
 		//数据库保存:
 
@@ -423,6 +427,7 @@ public class StockManager extends MgrBase{
 	public static void main(String[] args) {
 //    	String a = "{'id':3,'name':'万科A','desc':'最大房地产股','price':18.7,'unit':100}";
 //    	JSONObject obj = JSONObject.fromObject(a);
+		Date d = new Date(1452488318664L);
     	StockManager stmgr = StockManager.getInstance();
     	stmgr.init();
     	//stmgr.getLastQuotes(8);
