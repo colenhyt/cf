@@ -18,4 +18,5 @@ public interface RetMsg {
 	public static int MSG_StockQtyIsZero= 14;
 	public static int MSG_IllegalAccess= 15;
 	public static int MSG_WrongOpenID= 16;
+	public static int MSG_WrongStockPrice= 17;
 }

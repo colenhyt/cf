@@ -69,6 +69,7 @@ public class StockAction extends SavingAction {
 		JSONArray ppObj = JSONArray.fromObject(pp);
 		Map<Integer,Float> mquotes = new HashMap<Integer,Float>();
 		for (int i=0;i<ppObj.size();i++){
+			if (ppObj.get(i)==null) continue;
 			String strstockid = (String)ppObj.get(i);
 			int stockid = Integer.valueOf(strstockid);
 			List<Quote> list = stockMgr.getLastQuotes(stockid);
@@ -91,6 +92,9 @@ public class StockAction extends SavingAction {
 	public synchronized String add(){
 		if (stock.getQty()==0){
 			return msgStr(RetMsg.MSG_StockQtyIsZero);
+		}
+		if (stock.getPrice()<=0){
+			return msgStr(RetMsg.MSG_WrongStockPrice);
 		}
 		if (stockMgr.isStockOpen()==false){
 			return msgStr(RetMsg.MSG_StockIsClosed);
