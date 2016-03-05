@@ -111,8 +111,9 @@ public class StockManager extends MgrBase{
 	    		}
 	    		LinkedList<Quote> qquotes = new LinkedList<Quote>();
 	    		for(int j=0;j<quotes.size();j++){
-	    			quotes.get(j).setStockid(stock.getId());
-	    			qquotes.offer(quotes.get(j));
+	    			Quote qq = new Quote();
+	    			qq.setPrice(quotes.get(j).getPrice());
+	    			qquotes.offer(qq);
 	    		}
 	    		quoteMap.put(stock.getId(), qquotes);
 	    		
@@ -303,10 +304,6 @@ public class StockManager extends MgrBase{
 		    		
 		    		Quote newq = new Quote();
 		    		newq.setPrice(ps);
-		    		newq.setStockid(stock.getId());
-		    		newq.setLowprice(quote.getLowprice());
-		    		newq.setQty(quote.getQty());
-		    		newq.setUpprice(quote.getUpprice());
 		    		lquote.offer(newq);
 //		    		System.out.println("股票价格变化: "+stock.getName()+",涨跌幅:"+stock.getPer()+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
 		    }	

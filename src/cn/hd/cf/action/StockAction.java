@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import net.sf.json.JSONArray;
 import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Stock;
@@ -18,6 +17,7 @@ import cn.hd.mgr.StockManager;
 import cn.hd.mgr.ToplistManager;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 
 public class StockAction extends SavingAction {
 	private StockManager stockMgr;
@@ -41,10 +41,9 @@ public class StockAction extends SavingAction {
 	 * */
 	public String quotes(){
 		List<Quote> lquotes = StockManager.getInstance().getBigQuotes(stock.getId());
-		JSONArray jsonObject = JSONArray.fromObject(lquotes);
-		String str = jsonObject.toString();
+		String str = JSON.toJSONString(lquotes);
 		write(str,"utf-8");		
-		System.out.println(stock.getId()+" found stocks quote sizes:"+lquotes.size()+",string:"+str.length());
+		System.out.println("stock("+stock.getId()+") found quote sizes:"+lquotes.size()+",string:"+str.length());
 		return null;
 	}
 	
@@ -67,7 +66,7 @@ public class StockAction extends SavingAction {
 	 * */
 	public String pagelastquotes(){
 		String pp = getHttpRequest().getParameter("stockids");
-		JSONArray ppObj = JSONArray.fromObject(pp);
+		JSONArray ppObj = JSON.parseArray(pp);
 		Map<Integer,Float> mquotes = new HashMap<Integer,Float>();
 		for (int i=0;i<ppObj.size();i++){
 			if (ppObj.get(i)==null) continue;
