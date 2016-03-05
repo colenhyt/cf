@@ -545,13 +545,14 @@ public class DataManager extends MgrBase {
 		if (sessionstr!=null){
 			clientSessionid = Long.valueOf(sessionstr);
 		}
+		Player p = findPlayer(playerid);
+		if (p==null) return "";
+		
 		long canSubmit = canSubmit(playerid, clientSessionid);
 		if (canSubmit<=0){
 			return loginAction.msgStr((int)RetMsg.MSG_WrongSession);
 		}
 		
-		Player p = findPlayer(playerid);
-		if (p==null) return "";
 		Date last = p.getLastlogin();
 
 		Player data = new Player();
@@ -559,12 +560,12 @@ public class DataManager extends MgrBase {
 		switch (type){
 		case 0:
 			if (DateUtil.isToday(last)){
-				return "";
+				return loginAction.msgStr2(RetMsg.MSG_ExecError, String.valueOf(canSubmit));
 			}
 			
 			Integer days = p.getSigninCount();
 			if (days<1)
-				return "";
+				return loginAction.msgStr2(RetMsg.MSG_ExecError, String.valueOf(canSubmit));
 			
 			int count = (days-1)%signinMoneys.size();
 			int money = signinMoneys.get(count);
@@ -590,15 +591,15 @@ public class DataManager extends MgrBase {
 				if (amount>10000)
 				{
 					log.warn("pid:"+playerid+" error,flush event,amount:"+amount);
-					return "";
+					return loginAction.msgStr2(RetMsg.MSG_ExecError, String.valueOf(canSubmit));
 				}
 				//不同一天登陆不允许正向事件:
 				if (last==null||!DateUtil.isToday(last)){
-					return "";
+					return loginAction.msgStr2(RetMsg.MSG_ExecError, String.valueOf(canSubmit));
 				}
 				if (p.getEventCount()>50){
 					log.warn("pid:"+playerid+" error,flush event count");
-					return "";
+					return loginAction.msgStr2(RetMsg.MSG_ExecError, String.valueOf(canSubmit));
 				}
 				
 				p.setEventCount(p.getEventCount()+1);
@@ -610,6 +611,7 @@ public class DataManager extends MgrBase {
 			break;
 			
 		}
+		data.setSessionid(canSubmit);
 		DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
 		dataThread.updatePlayer(p);
 		return JSON.toJSONString(data);

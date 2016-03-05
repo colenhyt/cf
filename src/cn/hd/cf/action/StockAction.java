@@ -89,21 +89,21 @@ public class StockAction extends SavingAction {
 	 * @param Stock 股票 对象
 	 * @return String 股票 json数据
 	 * */
-	public synchronized String add(){
+	public synchronized String add(long sessionid){
 		if (stock.getQty()==0){
-			return msgStr(RetMsg.MSG_StockQtyIsZero);
+			return msgStr2(RetMsg.MSG_StockQtyIsZero,String.valueOf(sessionid));
 		}
 		if (stock.getPrice()<=0){
-			return msgStr(RetMsg.MSG_WrongStockPrice);
+			return msgStr2(RetMsg.MSG_WrongStockPrice,String.valueOf(sessionid));
 		}
 		if (stockMgr.isStockOpen()==false){
-			return msgStr(RetMsg.MSG_StockIsClosed);
+			return msgStr2(RetMsg.MSG_StockIsClosed,String.valueOf(sessionid));
 		}
 		
 		if (stock.getQty()>0){
-			return this.buyStock();
+			return this.buyStock(sessionid);
 		}else {
-			return this.sellStock();
+			return this.sellStock(sessionid);
 		}
 	}	
 
@@ -112,11 +112,10 @@ public class StockAction extends SavingAction {
 	 * @param Stock 股票 对象
 	 * @return String 股票 json数据
 	 * */
-	public synchronized String sellStock(){
+	public synchronized String sellStock(long sessionid){
 		Saving liveSaving = SavingManager.getInstance().getSaving(stock.getPlayerid(), 1);
 		float changeAmount = 0 - stock.getAmount();
 		
-		int ret = RetMsg.MSG_OK;
 		int doType = 5;
 		int qq = (0 - stock.getQty());
 		Vector<Float> retps = stockMgr.deleteStock(stock.getPlayerid(), stock.getItemid(), qq);
@@ -139,12 +138,14 @@ public class StockAction extends SavingAction {
 			stock.setLiveamount(liveSaving.getAmount());
 			float profit = changeAmount - retps.get(0)*qq;
 			stock.setProfit(profit);
+			stock.setSessionid(sessionid);
 			String str = JSON.toJSONString(stock);
 			LogMgr.getInstance().log(stock.getPlayerid()," buy stock,str:"+str);
 			return msgStr2(RetMsg.MSG_OK,str);
 		}else {
+			int ret = RetMsg.MSG_StockNotExist;
 			LogMgr.getInstance().log(stock.getPlayerid()," warn,stock error:"+stock.getPlayerid()+",item:"+stock.getItemid()+",qty:"+stock.getQty()+",ret:"+ret);
-			return msgStr(ret);
+			return msgStr2(ret,String.valueOf(sessionid));
 		}
 	}
 
@@ -153,7 +154,7 @@ public class StockAction extends SavingAction {
 	 * @param Stock 股票 对象
 	 * @return String 股票 json数据
 	 * */
-	public synchronized String buyStock(){
+	public synchronized String buyStock(long sessionid){
 		Saving liveSaving = SavingManager.getInstance().getSaving(stock.getPlayerid(), 1);
 		
 		float changeAmount = 0 - stock.getAmount();
@@ -161,7 +162,7 @@ public class StockAction extends SavingAction {
 		int ret = RetMsg.MSG_OK;
 		int doType = 4;
 		if (liveSaving.getAmount()<stock.getAmount())
-			return msgStr(RetMsg.MSG_MoneyNotEnough);
+			return msgStr2(RetMsg.MSG_MoneyNotEnough,String.valueOf(sessionid));
 		stock.setCreatetime(new Date());
 		ret = stockMgr.addStock(stock.getPlayerid(), stock);	
 		if (ret==RetMsg.MSG_OK){
@@ -174,13 +175,14 @@ public class StockAction extends SavingAction {
 			
 			liveSaving.setAmount(liveSaving.getAmount()+changeAmount);
 			stock.setLiveamount(liveSaving.getAmount());
+			stock.setSessionid(sessionid);
 			String str = JSON.toJSONString(stock);
 			LogMgr.getInstance().log(stock.getPlayerid()," buy stock,str:"+str);
 			SavingManager.getInstance().updateLiveSaving(stock.getPlayerid(),liveSaving);	
 			return msgStr2(RetMsg.MSG_OK,str);
 		}else {
 			LogMgr.getInstance().log(stock.getPlayerid()," warn,stock error:"+stock.getPlayerid()+",item:"+stock.getItemid()+",qty:"+stock.getQty()+",ret:"+ret);
-			return msgStr(ret);
+			return msgStr2(ret,String.valueOf(sessionid));
 		}
 	}
 }

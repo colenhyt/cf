@@ -103,11 +103,11 @@ public class SavingAction extends BaseAction {
 	 * @param saving 对象
 	 * @return 增加/取出 存款对象json数据
 	 * */
-	public synchronized String add()
+	public synchronized String add(long sessionid)
 	{
 		//活期不存在存款取款:
 		if (saving.getItemid()==1){
-			return msgStr(RetMsg.MSG_NoSavingData);
+			return msgStr2(RetMsg.MSG_NoSavingData,String.valueOf(sessionid));
 		}
 		
 		Saving newsaving = new Saving();
@@ -129,7 +129,7 @@ public class SavingAction extends BaseAction {
     	}		
     	
     	if (liveSaving==null){
-    		return msgStr(RetMsg.MSG_NoSavingData);
+    		return msgStr2(RetMsg.MSG_NoSavingData,String.valueOf(sessionid));
     	}
     	
 		float changeAmount = 0 - saving.getAmount();
@@ -145,7 +145,7 @@ public class SavingAction extends BaseAction {
 				}
 			}			
 			if (saving2==null){
-				return msgStr(RetMsg.MSG_SavingNotExist);
+				return msgStr2(RetMsg.MSG_SavingNotExist,String.valueOf(sessionid));
 			}
 			//已到期的存款:
 			boolean isout = isSavingTimeout(saving2);
@@ -168,7 +168,7 @@ public class SavingAction extends BaseAction {
 			ret = RetMsg.MSG_OK;
 		}else {
 			if (liveSaving.getAmount()<saving.getAmount())
-				return msgStr(RetMsg.MSG_MoneyNotEnough);
+				return msgStr2(RetMsg.MSG_MoneyNotEnough,String.valueOf(sessionid));
 			
 			boolean found = false;
 			for (int i=0;i<list.size();i++){
@@ -178,7 +178,7 @@ public class SavingAction extends BaseAction {
 				}
 			}			
 			if (found){
-				return msgStr(RetMsg.MSG_SavingIsExist);
+				return msgStr2(RetMsg.MSG_SavingIsExist,String.valueOf(sessionid));
 			}
 			Saving savingCfg = SavingManager.getInstance().getSavingCfg(saving.getItemid());
 			saving.setName(savingCfg.getName());
@@ -202,6 +202,7 @@ public class SavingAction extends BaseAction {
 		if (ret==RetMsg.MSG_OK){
 			liveSaving.setAmount(liveSaving.getAmount()+changeAmount);
 			newsaving.setLiveamount(liveSaving.getAmount());
+			newsaving.setSessionid(sessionid);
 			list.get(liveIndex).setAmount(liveSaving.getAmount());
 			String str = JSON.toJSONString(newsaving);
 			LogMgr.getInstance().log(saving.getPlayerid()," add/remove saving itemid="+saving.getItemid()+",ret:"+ret+",amount:"+saving.getAmount()+", retdata:"+str);
@@ -209,7 +210,7 @@ public class SavingAction extends BaseAction {
 			return msgStr2(RetMsg.MSG_OK,str);
 		}else {
 			LogMgr.getInstance().log(saving.getPlayerid(),",error,saving: "+ret);
-			return msgStr(ret);
+			return msgStr2(ret,String.valueOf(sessionid));
 		}
 	}
 

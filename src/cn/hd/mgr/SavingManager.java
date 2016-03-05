@@ -48,6 +48,10 @@ public class SavingManager extends MgrBase{
 	 * @return String 存款数据
 	 * */
     public synchronized String add(int playerid,int itemid,int qty,float price,float amount,String sessionstr){
+		Player p = DataManager.getInstance().findPlayer(playerid);
+		if (p==null){
+			return savingAction.msgStr(RetMsg.MSG_PlayerNotExist);
+		}    	
 		long clientSessionid = 0;
 		if (sessionstr!=null){
 			clientSessionid = Long.valueOf(sessionstr);
@@ -56,11 +60,6 @@ public class SavingManager extends MgrBase{
 		if (canSubmit<=0){
 			return savingAction.msgStr((int)RetMsg.MSG_WrongSession);
 		}
-
-		Player p = DataManager.getInstance().findPlayer(playerid);
-		if (p==null){
-			return savingAction.msgStr(RetMsg.MSG_PlayerNotExist);
-		}    	
 		
 		Saving item = new Saving();
 		item.setPlayerid(playerid);
@@ -69,7 +68,7 @@ public class SavingManager extends MgrBase{
 		item.setAmount(amount);
 		item.setPrice(price);
     	savingAction.setSaving(item);
-    	return savingAction.add();
+    	return savingAction.add(canSubmit);
     }
     
     public void init(){

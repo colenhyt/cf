@@ -408,6 +408,10 @@ public class StockManager extends MgrBase{
 	 * @return String 股票数据
 	 * */
 	public synchronized String add(int playerid,int itemid,int qty,float price,float amount,String sessionstr){
+		Player p = DataManager.getInstance().findPlayer(playerid);
+		if (p==null){
+			return action.msgStr(RetMsg.MSG_PlayerNotExist);
+		}    	
 		long clientSessionid = 0;
 		if (sessionstr!=null){
 			clientSessionid = Long.valueOf(sessionstr);
@@ -417,10 +421,6 @@ public class StockManager extends MgrBase{
 			return action.msgStr((int)RetMsg.MSG_WrongSession);
 		}
 
-		Player p = DataManager.getInstance().findPlayer(playerid);
-		if (p==null){
-			return action.msgStr(RetMsg.MSG_PlayerNotExist);
-		}    	
 		Stock item = new Stock();
 		item.setPlayerid(playerid);
 		item.setItemid(itemid);
@@ -428,7 +428,7 @@ public class StockManager extends MgrBase{
 		item.setAmount(amount);
 		item.setPrice(price);
 		action.setStock(item);
-		return action.add();
+		return action.add(canSubmit);
 	}
 
 	public static void main(String[] args) {

@@ -36,11 +36,11 @@ public class InsureAction extends SavingAction {
 	 * @param insure 对象
 	 * @return 购买inusre json数据
 	 * */
-	public synchronized String add()
+	public synchronized String add(long sessionid)
 	{
 		Saving liveSaving = SavingManager.getInstance().getSaving(insure.getPlayerid(), 1);
 		if (liveSaving.getAmount()<insure.getAmount())
-			return msgStr(RetMsg.MSG_MoneyNotEnough);
+			return msgStr2(RetMsg.MSG_MoneyNotEnough,String.valueOf(sessionid));
 		
 		float changeAmount = 0 - insure.getAmount();
 		
@@ -64,13 +64,14 @@ public class InsureAction extends SavingAction {
 			
 			liveSaving.setAmount(liveSaving.getAmount()+changeAmount);
 			insure.setLiveamount(liveSaving.getAmount());
+			insure.setSessionid(sessionid);
 			String str = JSON.toJSONString(insure);
 			LogMgr.getInstance().log(insure.getPlayerid()," add insure itemid="+insure.getItemid()+",str"+str);
 			SavingManager.getInstance().updateLiveSaving(insure.getPlayerid(),liveSaving);	
 			return msgStr2(RetMsg.MSG_OK,str);
 		}else {
 			LogMgr.getInstance().log(insure.getPlayerid(),", warn, insure error: "+ret);
-			return msgStr(ret);
+			return msgStr2(ret,String.valueOf(sessionid));
 		}
 
 	}

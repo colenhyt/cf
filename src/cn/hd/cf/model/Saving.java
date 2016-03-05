@@ -4,7 +4,16 @@ import java.util.Date;
 
 public class Saving {
 	private float liveamount = 0;
-    public float getLiveamount() {
+	private long sessionid;
+    public long getSessionid() {
+		return sessionid;
+	}
+
+	public void setSessionid(long sessionid) {
+		this.sessionid = sessionid;
+	}
+
+	public float getLiveamount() {
 		return liveamount;
 	}
 

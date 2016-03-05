@@ -208,6 +208,11 @@ public class InsureManager extends MgrBase{
 	 * @return String 保险数据
 	 * */
 	public synchronized String add(int playerid,int itemid,int qty,float price,float amount,String sessionstr){
+		Player p = DataManager.getInstance().findPlayer(playerid);
+		if (p==null){
+			return action.msgStr(RetMsg.MSG_PlayerNotExist);
+		}    	
+
 		long clientSessionid = 0;
 		if (sessionstr!=null){
 			clientSessionid = Long.valueOf(sessionstr);
@@ -217,10 +222,6 @@ public class InsureManager extends MgrBase{
 			return action.msgStr((int)RetMsg.MSG_WrongSession);
 		}
 		
-		Player p = DataManager.getInstance().findPlayer(playerid);
-		if (p==null){
-			return action.msgStr(RetMsg.MSG_PlayerNotExist);
-		}    	
 		Insure item = new Insure();
 		item.setPlayerid(playerid);
 		item.setItemid(itemid);
@@ -228,7 +229,7 @@ public class InsureManager extends MgrBase{
 		item.setAmount(amount);
 		item.setPrice(price);
 		action.setInsure(item);
-		return action.add();
+		return action.add(canSubmit);
 	}
 
 	/**

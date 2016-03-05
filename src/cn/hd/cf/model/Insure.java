@@ -4,7 +4,17 @@ import java.util.Date;
 
 public class Insure {
 	private float liveamount;
-    public float getLiveamount() {
+	private long sessionid;
+	
+    public long getSessionid() {
+		return sessionid;
+	}
+
+	public void setSessionid(long sessionid) {
+		this.sessionid = sessionid;
+	}
+
+	public float getLiveamount() {
 		return liveamount;
 	}
 
