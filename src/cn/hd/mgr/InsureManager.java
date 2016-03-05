@@ -207,7 +207,15 @@ public class InsureManager extends MgrBase{
 	 * @param float 金额
 	 * @return String 保险数据
 	 * */
-	public synchronized String add(int playerid,int itemid,int qty,float price,float amount){
+	public synchronized String add(int playerid,int itemid,int qty,float price,float amount,String sessionstr){
+		long clientSessionid = 0;
+		if (sessionstr!=null){
+			clientSessionid = Long.valueOf(sessionstr);
+		}
+		long canSubmit = DataManager.getInstance().canSubmit(playerid, clientSessionid);
+		if (canSubmit<=0){
+			return action.msgStr((int)RetMsg.MSG_WrongSession);
+		}
 		
 		Player p = DataManager.getInstance().findPlayer(playerid);
 		if (p==null){

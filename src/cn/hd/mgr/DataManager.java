@@ -540,7 +540,16 @@ public class DataManager extends MgrBase {
 	 * @param String 金额
 	 * @return String 玩家保险json数据
 	 * */
-	public synchronized String update(int playerid,int type,String itemstr,String amountStr){
+	public synchronized String update(int playerid,int type,String itemstr,String amountStr,String sessionstr){
+		long clientSessionid = 0;
+		if (sessionstr!=null){
+			clientSessionid = Long.valueOf(sessionstr);
+		}
+		long canSubmit = canSubmit(playerid, clientSessionid);
+		if (canSubmit<=0){
+			return loginAction.msgStr((int)RetMsg.MSG_WrongSession);
+		}
+		
 		Player p = findPlayer(playerid);
 		if (p==null) return "";
 		Date last = p.getLastlogin();
