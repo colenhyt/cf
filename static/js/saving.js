@@ -173,6 +173,9 @@ Saving.prototype.requestBuy = function(id,qty,amount){
 	 
 	var dataParam = "type=1&playerid="+g_saving.buyItem.playerid+"&itemid="+g_saving.buyItem.itemid;
 	dataParam += "&qty="+g_saving.buyItem.qty+"&price="+g_saving.buyItem.price+"&amount="+g_saving.buyItem.amount;
+	var sessionid = g_player.getSession(g_player.data.playerid);
+  	if (sessionid!=null)
+  		dataParam += "&sessionid="+sessionid;
 
 	try    {
 		$.ajax({type:"post",url:"/cf/data_update.jsp",data:dataParam,success:function(data){

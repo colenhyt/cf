@@ -264,8 +264,15 @@ Player.prototype.setOpenstock = function(){
 Player.prototype.commitData = function(type,itemid,amount) {    
  		try  {
 			var updateStr = "playerid="+this.data.playerid+"&amount="+amount+"&type="+type+"&itemid="+itemid;
+			var sessionid = g_player.getSession(g_player.data.playerid);
+		  	if (sessionid!=null)
+		  		updateStr += "&sessionid="+sessionid;
 			$.ajax({type:"post",url:"/cf/player_update.jsp",data:updateStr,success:function(dataobj){
 			var obj = cfeval(dataobj);
+		    if (obj.code) {
+		     g_msg.tip("操作失败:"+ERR_MSG[obj.code]);
+		     return;
+		    }			
 			if (obj!=null&&obj.playerid==g_player.data.playerid){
 				if (obj.exp!=null&&obj.exp>0)
 				{

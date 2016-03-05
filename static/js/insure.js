@@ -318,6 +318,9 @@ Insure.prototype.requestBuy = function(id,qty,amount) {
  g_msg.showload("g_insure.requestBuy",true);
 	var dataParam = "type=2&playerid="+g_insure.buyItem.playerid+"&itemid="+g_insure.buyItem.itemid;
 	dataParam += "&qty="+g_insure.buyItem.qty+"&price="+g_insure.buyItem.price+"&amount="+g_insure.buyItem.amount;
+	var sessionid = g_player.getSession(g_player.data.playerid);
+  	if (sessionid!=null)
+  		dataParam += "&sessionid="+sessionid;
 	
 	try    {
 		$.ajax({type:"post",url:"/cf/data_update.jsp",data:dataParam,success:function(data){

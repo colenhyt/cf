@@ -447,6 +447,9 @@ Stock.prototype.requestBuy = function(id,qty,ps) {
 	var dataParam = "type=3&playerid="+g_stock.buyItem.playerid+"&itemid="+g_stock.buyItem.itemid;
 	var amount = g_stock.buyItem.amount;
 	dataParam += "&qty="+g_stock.buyItem.qty+"&price="+g_stock.buyItem.price+"&amount="+amount;
+	var sessionid = g_player.getSession(g_player.data.playerid);
+  	if (sessionid!=null)
+  		dataParam += "&sessionid="+sessionid;
 
 	try    {
 		$.ajax({type:"post",url:"/cf/data_update.jsp",data:dataParam,success:function(data){
