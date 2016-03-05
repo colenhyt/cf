@@ -31,7 +31,7 @@ import com.alibaba.fastjson.JSON;
 public class StockManager extends MgrBase{
 	protected Logger  log = Logger.getLogger(getClass()); 
 	public int STOCK_QUOTE_PERIOD = 5;
-	private int STOCK_SAVE_PERIOD = 5;
+	private int STOCK_SAVE_PERIOD = 20*30;		//30分钟保存一次
 	private Date lastUpdateDate;
 	private long lastQuoteTime;
 	private Map<Integer,LinkedList<Quote>> quoteMap;
@@ -39,8 +39,6 @@ public class StockManager extends MgrBase{
 	private List<Stockdata> stockData;
     private static StockManager uniqueInstance = null;  
 	private Vector<RedisClient> redisClients;
-	private Map<Integer,String>	stockMap;
-	private Map<Integer,List<Stock>>	stocksMap;
 	private StockAction action;
 	
     public static StockManager getInstance() {  
@@ -54,8 +52,6 @@ public class StockManager extends MgrBase{
     	action = new StockAction();
 		lastQuoteTime = System.currentTimeMillis();
 		lastUpdateDate = null;
-		stockMap = Collections.synchronizedMap(new HashMap<Integer,String>());
-		stocksMap = Collections.synchronizedMap(new HashMap<Integer,List<Stock>>());
 		
 		redisClients = new Vector<RedisClient>();
 		dataThreads = new Vector<DataThread>();
@@ -73,38 +69,25 @@ public class StockManager extends MgrBase{
     	Jedis jedis = redisClients.get(0).getJedis();   
 
     	
-//    	Set<String> playerids = jedis.hkeys(super.DATAKEY_STOCK);
-//    	for (String strpid:playerids){
-//    		String jsonitems = jedis.hget(super.DATAKEY_STOCK, strpid);
-//    		List<Stock> list = JSON.parseArray(jsonitems, Stock.class);
-//    		stocksMap.put(Integer.valueOf(strpid), list);
-//    	}
-//    	
     	redisClients.get(0).returnResource(jedis);
 //    	LogMgr.getInstance().log("load stocks :" + playerids.size());    
     	
 		stockData = new ArrayList<Stockdata>();
 	    	
 		Jedis j3 = jedisClient3.getJedis();
-		
-//		 StockdataService stockdataService = new StockdataService();			
-//		 stockData = stockdataService.findActive();
-//		for (Stockdata item:stockData){
-//			j3.hset(MgrBase.DATAKEY_DATA_STOCK, String.valueOf(item.getId()), JSON.toJSONString(item));
-//		}
-		
 		List<String> stockitems = j3.hvals(MgrBase.DATAKEY_DATA_STOCK);
 		jedisClient3.returnResource(j3);
 		
 		quoteMap = Collections.synchronizedMap(new HashMap<Integer,LinkedList<Quote>>());
 	   	for (String str:stockitems){
     		Stockdata  stock = JSON.parseObject(str,Stockdata.class);
-    		stockData.add(stock);
+   		stockData.add(stock);
     		int fre = stock.getFreq();
     		STOCK_QUOTE_PERIOD = fre*60*1000/EventManager.TICK_PERIOD;
 	    		String json = new String(stock.getQuotes());
 	    		JSONArray array = JSONArray.fromObject(json);
 	    		List<Quote> quotes = JSONArray.toList(array, Quote.class);
+	    		log.warn("quotes  length:"+array.size());
 	    		if (quotes.size()==0) {
 	    			System.out.println("该股票无行情:"+stock.getName());
 	    			continue;
@@ -305,23 +288,36 @@ public class StockManager extends MgrBase{
 		    		Quote newq = new Quote();
 		    		newq.setPrice(ps);
 		    		lquote.offer(newq);
-//		    		System.out.println("股票价格变化: "+stock.getName()+",涨跌幅:"+stock.getPer()+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
+		    		//System.out.println("股票价格变化: "+stock.getName()+",涨跌幅:"+stock.getPer()+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
 		    }	
 		}
 		    	
 		if (tick%STOCK_SAVE_PERIOD==0){
-// 			Jedis jedis = jedisClient3.getJedis();   
-//			Pipeline p = jedis.pipelined();
-//			for (int i=0;i<stockData.size();i++){
-//	    		Stockdata  stock = stockData.get(i);
-//	 			LinkedList<Quote> lquote = quoteMap.get(stock.getId());
-//	 			if (lquote==null||lquote.size()==0) continue;
-//	 			stock.setQuotes(JSON.toJSONString(lquote).getBytes());
-//	 			//todo: 行情更新会导致CPU占满
-//	 			p.hset(MgrBase.DATAKEY_DATA_STOCK, String.valueOf(stock.getId()), JSON.toJSONString(stock));
-//			}
-//			p.sync();
-// 			jedisClient3.returnResource(jedis);
+			Jedis jedis = jedisClient3.getJedis();
+			Pipeline p = jedis.pipelined();
+			for (int i=0;i<stockData.size();i++){
+	    		Stockdata  stock = stockData.get(i);
+	 			LinkedList<Quote> lquote = quoteMap.get(stock.getId());
+	 			if (lquote==null||lquote.size()==0) continue;
+	 			//只保留最新120个行情:
+	 			LinkedList<Quote> quotes = new LinkedList<Quote>();
+	 			int firstIndex = 0;
+	 			if (lquote.size()>120){
+	 				firstIndex = lquote.size() - 120;
+	 			}
+	 			for (int j=firstIndex;j<lquote.size();j++){
+		 			quotes.offer(lquote.get(j));
+	 			}
+	 			String strqu = JSON.toJSONString(quotes);
+	 			stock.setQuotes(strqu.getBytes());
+//	 			String ss = JSON.toJSONString(stock);
+	 			log.warn("update qutoes :"+quotes.size());
+    			p.hset(MgrBase.DATAKEY_DATA_STOCK, String.valueOf(stock.getId()), JSON.toJSONString(stock));
+	 			//stockDataThread.updateStockdata(stock);
+			}
+    		p.sync();
+    		jedisClient3.returnResource(jedis);
+			log.warn("resave stock quotes data");
 		}		
 		//数据库保存:
 
