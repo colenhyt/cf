@@ -9,6 +9,7 @@ String itemstr = request.getParameter("itemid");
 String qtystr = request.getParameter("qty");
 String pricestr = request.getParameter("price");
 String amountstr = request.getParameter("amount");
+String sessionid = request.getParameter("sessionid");
 int playerid = Integer.valueOf(playerstr);
 int itemid = Integer.valueOf(itemstr);
 int qty = Integer.valueOf(qtystr);
@@ -18,13 +19,13 @@ int type = Integer.valueOf(tid);
 String retStr = "";
 switch (type){
 	case 1:
-	retStr = SavingManager.getInstance().add(playerid,itemid,qty,price,amount);
+	retStr = SavingManager.getInstance().add(playerid,itemid,qty,price,amount,sessionid);
 	break;	
 	case 2:
-	retStr = InsureManager.getInstance().add(playerid,itemid,qty,price,amount);
+	retStr = InsureManager.getInstance().add(playerid,itemid,qty,price,amount,sessionid);
 	break;	
 	case 3:
-	retStr = StockManager.getInstance().add(playerid,itemid,qty,price,amount);
+	retStr = StockManager.getInstance().add(playerid,itemid,qty,price,amount,sessionid);
 	break;		
 }
 response.getWriter().print(retStr);
