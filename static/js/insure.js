@@ -70,7 +70,7 @@ Insure.prototype.buildPage = function(page)
 	if (this.dataLoaded==false&&this.reloadCount<3)
 	{
 		this.hide();
-		g_login.syncLoadData_saving(g_player.data.playerid,1);
+		g_login.syncLoadData_saving(g_player.data.playerid,2);
 		this.reloadCount++;
 		return;
 	}

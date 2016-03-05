@@ -351,7 +351,7 @@ Login.prototype.syncLoadDataCallback_insure = function(data,flag){
 	g_login.showLoginMsg(msg);
 	g_login.callbackDone();
 	g_insure.dataLoaded = true;
-	if (flag==1)
+	if (flag==1||flag==2)
 	{
 		g_insure.show();
 		g_insure.reloadCount = 0;

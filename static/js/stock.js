@@ -47,7 +47,7 @@ Stock.prototype.loadPlayerLastQuote = function()
 	if (g_stock.isOpen) return;
 
 	var stockids = g_player.stockids;
-	if (!stockids) return;
+	if (!stockids||stockids.length<=0) return;
 	
 	var jids = "stockids="+JSON.stringify(stockids);
 	try  {
