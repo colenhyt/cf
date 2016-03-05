@@ -26,6 +26,7 @@ public class MgrBase {
 	public final static String DATAKEY_INSURE = "insure";
 	public final static String DATAKEY_STOCK = "stock";
 	public final static String DATAKEY_TOPLIST = "toplist";
+	public final static String DATAKEY_SESSION = "session";
 	public final static String DATAKEY_DATA_INIT = "initdata";
 	public final static String DATAKEY_DATA_SAVING = "savingdata";
 	public final static String DATAKEY_DATA_INSURE = "insuredata";

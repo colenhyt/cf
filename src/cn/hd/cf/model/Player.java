@@ -11,7 +11,16 @@ public class Player {
 	private String ipAddress;
 	private Date signinCountTime;
 	private int top;
+	private long sessionid;
 	
+	public long getSessionid() {
+		return sessionid;
+	}
+
+	public void setSessionid(long sessionid) {
+		this.sessionid = sessionid;
+	}
+
 	public int getTop() {
 		return top;
 	}

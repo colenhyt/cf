@@ -37,6 +37,7 @@ public class DataManager extends MgrBase {
 	protected Logger log = Logger.getLogger(getClass());
 	public List<String> pps = new ArrayList<String>();
 	private final int idStep = 100;
+	private final int SESSION_PERIOD = 1000*60*10;
 	private int currMaxPlayerId = -1;
 	private Vector<RedisClient> redisClients;
 	private Vector<Integer> signinMoneys;
@@ -228,13 +229,13 @@ public class DataManager extends MgrBase {
 		if (playerstr!=null)
 			playerid = Integer.valueOf(playerstr);
 		
-		Player pp = new Player();
-		pp.setPlayername(playerName);
-		pp.setOpenid(openId);
-		pp.setSex((byte)sex);
-		pp.setPlayerid(playerid);
-		loginAction.setPlayer(pp);
-		return loginAction.login();
+		long clientSessionid = 0;
+		String sessionstr = request.getParameter("sessionid");
+		if (sessionstr!=null){
+			clientSessionid = Long.valueOf(sessionstr);
+		}
+		
+		return loginAction.login(playerid,playerName,openId,(byte)sex,clientSessionid);
 	}
 
 	/**
@@ -420,6 +421,83 @@ public class DataManager extends MgrBase {
 		return null;
 	}
 
+	//是否能执行存款，股票，保险，签到等登陆后修改数据操作:
+	public synchronized long canSubmit(int playerid,long clientSessionid) {
+		//执行操作时必须有客户端sessionid:
+		if (clientSessionid<=0)
+			return RetMsg.MSG_WrongSession;
+		
+		long sessionid = findSession(playerid);
+		if (sessionid<=0){
+			return RetMsg.MSG_WrongSession;
+		}
+		
+		long curr = System.currentTimeMillis();
+		long diff = curr - sessionid;
+		if (diff<=SESSION_PERIOD){			//未过期
+			if (sessionid!=clientSessionid)			//有效期内必须相等，否则客户端session无效
+				return RetMsg.MSG_WrongSession;
+			else
+				return sessionid;
+		}
+		
+		//session过期,重置返回新的sessionid:
+		return resetSession(playerid);
+	}
+
+	//是否能进行登陆:
+	public synchronized long canLogin(int playerid,long clientSessionid,boolean isRegister) {
+		long serverSessionid = findSession(playerid);
+		//session尚未存在
+		if (serverSessionid<=0){
+			if (clientSessionid>0)
+				return RetMsg.MSG_WrongSession;			//客户端先于服务器存在
+			else
+				return resetSession(playerid);			//注册/第一次使用, reset并返回最新的
+		}
+		
+		//注册时已有sessionid:
+		if (serverSessionid>0&&isRegister)
+			return RetMsg.MSG_WrongSession;
+		
+		long curr = System.currentTimeMillis();
+		long diff = curr - serverSessionid;
+		if (diff>SESSION_PERIOD){			//过期,,重置返回新的sessionid
+			return resetSession(playerid);
+		}
+		
+		//session未过期，服务器和客户端必须相等:
+		if (serverSessionid!=clientSessionid)
+			return RetMsg.MSG_WrongSession;
+		else
+			return serverSessionid;
+	}
+	
+	public synchronized long resetSession(int playerid) {
+		long sessionid = System.currentTimeMillis();
+		int index = playerid%redisClients.size();
+		RedisClient jedisClient = redisClients.get(index);
+		Jedis jedis = jedisClient.getJedis();
+		jedis.hset(MgrBase.DATAKEY_SESSION, String.valueOf(playerid),String.valueOf(sessionid));
+		jedisClient.returnResource(jedis);	
+		log.warn("pid:"+playerid+" session reset:"+sessionid);
+		return sessionid;
+	}
+
+	public synchronized long findSession(int playerid) {
+		long sessionid = 0;
+		int index = playerid%redisClients.size();
+		RedisClient jedisClient = redisClients.get(index);
+		Jedis jedis = jedisClient.getJedis();
+		String sessionstr = jedis.hget(MgrBase.DATAKEY_SESSION, String.valueOf(playerid));
+		jedisClient.returnResource(jedis);	
+		if (sessionstr!=null){
+			sessionid = Long.valueOf(sessionstr);
+		}
+		log.warn("pid:"+playerid+" find session:"+sessionid);
+		return sessionid;
+	}
+	
 	/**
 	 * 根据playerid获取玩家对象
 	 * @param int 玩家id

@@ -33,7 +33,6 @@ import com.alibaba.fastjson.JSON;
 
 
 public class LoginAction extends SavingAction {
-	private Player player;
 	Pattern p = Pattern.compile("[1-5]+");
 	
 	public String connect(){
@@ -143,65 +142,63 @@ public class LoginAction extends SavingAction {
 
 	/**
 	 * 登录玩家数据返回
-	 * @param player 
+	 * @param p 
 	 * @return string json返回数据
 	 * */
-	public synchronized String loginPlayer(Player player)
+	public synchronized String loginPlayer(Player p,String openid,long clientSessionid)
 	{
-		if (player!=null){
-			if (!player.getOpenid().equals(player.getOpenid()))
-				return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
+		if (!p.getOpenid().equals(openid))
+			return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
+		
+		DataManager mgr = DataManager.getInstance();
+		long canReq = mgr.canLogin(p.getPlayerid(), clientSessionid,false);
+		if (canReq<0)
+			return super.msgStr((int)canReq);
+		
+		p.setSessionid(canReq);
 			
-			LogMgr.getInstance().log(player.getPlayerid()," login,openid:"+player.getOpenid()+",name:"+player.getPlayername());
-			int assignCode = assignDailyQuest(player);
-			if (assignCode==1){
-				LogMgr.getInstance().log(player.getPlayerid()," assign quest,login:"+player.getQuestStr());
-			}
-			boolean newSignin = countSignin(player);
-			if (newSignin){
-				LogMgr.getInstance().log(player.getPlayerid()," reset signin:"+player.getSigninCount());
-			}
-			if (newSignin||assignCode==1||assignCode==2){
-				DataManager.getInstance().updatePlayerQuest(player);
-			}
-			return serialize(player,0,null); 
-		}else
-			return super.msgStr(RetMsg.MSG_WrongPlayerNameOrPwd);	
+		LogMgr.getInstance().log(p.getPlayerid()," login,openid:"+p.getOpenid()+",name:"+p.getPlayername()+",session:"+canReq);
+		int assignCode = assignDailyQuest(p);
+		if (assignCode==1){
+			LogMgr.getInstance().log(p.getPlayerid()," assign quest,login:"+p.getQuestStr());
+		}
+		boolean newSignin = countSignin(p);
+		if (newSignin){
+			LogMgr.getInstance().log(p.getPlayerid()," reset signin:"+p.getSigninCount());
+		}
+		if (newSignin||assignCode==1||assignCode==2){
+			mgr.updatePlayerQuest(p);
+		}
+		return serialize(p,0,null); 
 	}
 	/**
 	 * 注册登录入口
 	 * @param player对象
 	 * @return string json返回数据
 	 * */
-	public synchronized String login()
+	public synchronized String login(int playerid,String playername,String openid,byte sex,long clientSessionid)
 	{
-//		String loginstr = "";
-//		if (player.getOpenid()!=null&&player.getOpenid().length()>0)
-//			loginstr += "openid:'"+player.getOpenid()+"'";
-//		if (player.getPlayername()!=null&&player.getPlayername().length()>0)
-//			loginstr += ",pname:"+player.getPlayername();
-//		loginstr += " enter game";
-//		//log.info(loginstr);
-		Player playerBlob = null;
-		if (player.getPlayerid()>0){
-			playerBlob = DataManager.getInstance().findPlayer(player.getPlayerid());
+		DataManager mgr = DataManager.getInstance();
+		if (playerid>0){
+			Player playerBlob = mgr.findPlayer(playerid);
 //			LogMgr.getInstance().log("find player:"+playerBlob);
-			if (playerBlob!=null)
-				return loginPlayer(playerBlob);
+			if (playerBlob!=null) {
+				return loginPlayer(playerBlob,openid,clientSessionid);
+			}
 		}
 		
 		long s = System.currentTimeMillis();
-		playerBlob = DataManager.getInstance().findPlayer(player.getPlayername());
+		Player playerBlob2 = mgr.findPlayer(playername);
 		long cost = System.currentTimeMillis()-s;
 		if (cost>10)		
-			log.warn("action cost :"+cost+" openid:"+player.getOpenid());
-		if (playerBlob==null)
+			log.warn("action cost :"+cost+" openid:"+openid);
+		if (playerBlob2==null)
 		{
-			return register();
-		}else if (!playerBlob.getOpenid().equalsIgnoreCase(player.getOpenid())){
+			return register(playername,openid,sex,clientSessionid);
+		}else if (!playerBlob2.getOpenid().equalsIgnoreCase(openid)){
 			return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
 		}else {		//名字登陆
-			return loginPlayer(playerBlob);
+			return loginPlayer(playerBlob2,openid,clientSessionid);
 		}
 	}
 	
@@ -213,12 +210,6 @@ public class LoginAction extends SavingAction {
 		return pdata;
 	}
 	
-	public Player getPlayer() {
-		return player;
-	}
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
 	
 	/**
 	 * 判断两天差值
@@ -350,30 +341,39 @@ public class LoginAction extends SavingAction {
 	
 	/**
 	 * 注册入口和数据返回
-	 * @param player对象
+	 * @param String playername
 	 * @return string json返回数据
 	 * */
-	public synchronized String register(){
-			//System.out.println("玩家注册:"+player.getPlayername());
+	public synchronized String register(String playername,String openid,byte sex,long clientSessionid){
+		DataManager mgr = DataManager.getInstance();
+
+		//System.out.println("玩家注册:"+player.getPlayername());
 			Player playerBlob = new Player();
 			
 			//注册奖励:
-			Init init = DataManager.getInstance().getInit();
+			Init init = mgr.getInit();
 			if (init!=null){
 				playerBlob.setExp(init.getExp());
 			}
 			
 	//		String ipAddr = getHttpRequest().getRemoteAddr();
-			playerBlob.setOpenid(player.getOpenid());
-			playerBlob.setPlayername(player.getPlayername());
-			playerBlob.setSex(player.getSex());
+			playerBlob.setOpenid(openid);
+			playerBlob.setPlayername(playername);
+			playerBlob.setSex(sex);
 			SimpleDateFormat formatter = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 			String cstr = formatter.format(new Date());
 			playerBlob.setCreateTimeStr(cstr);
-			playerBlob.setPlayerid(DataManager.getInstance().assignNextId());
+			playerBlob.setPlayerid(mgr.assignNextId());
+			
+			long canReq = mgr.canLogin(playerBlob.getPlayerid(), clientSessionid,true);
+			if (canReq<0)
+				return super.msgStr((int)canReq);
+			
+			playerBlob.setSessionid(canReq);
+			
 			assignDailyQuest(playerBlob);
 			LogMgr.getInstance().log(playerBlob.getPlayerid()," assign quest register:"+playerBlob.getQuestStr());
-			boolean ret = DataManager.getInstance().addPlayer(playerBlob);
+			boolean ret = mgr.addPlayer(playerBlob);
 			if (ret==false){
 				return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
 			}
@@ -399,7 +399,7 @@ public class LoginAction extends SavingAction {
 				ToplistManager.getInstance().addRegisterToplist(playerBlob.getPlayerid(),playerBlob.getPlayername(),saving.getAmount());	
 			}
 //			JSONObject obj = JSONObject.fromObject(playerBlob);	
-			LogMgr.getInstance().log(playerBlob.getPlayerid()," register success,openid:'"+playerBlob.getOpenid()+"',name:"+player.getPlayername());
+			LogMgr.getInstance().log(playerBlob.getPlayerid()," register success,openid:'"+playerBlob.getOpenid()+"',name:"+playername);
 //			write(obj.toString(),"utf-8");
 			
 			return serialize(playerBlob,1,JSON.toJSONString(savings));

@@ -50,10 +50,10 @@ public class LogMgr  extends MgrBase {
 	}
 	
 	public void log(int playerid,String desc){
-		String str = "ip:"+(ipAddStr)+" pid:"+playerid+(desc);
+		String str = "pid:"+playerid+(desc);
 		log.warn(str);
-		String logstr = formatter.format(new Date());
-		logstr += " "+str;
+		//String logstr = formatter.format(new Date());
+		//logstr += " "+str;
 		//int index = playerid%dataThreads.size();
 		//dataThreads.get(index).addLog(playerid,logstr);
 	}
