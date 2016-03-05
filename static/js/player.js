@@ -76,6 +76,7 @@ Playerlog.prototype.updateSignin = function(feeling){
 // JavaScript Document
 Player = function(){
     this.name = "player";
+    this.sessionname = "session";
     this.count = 0;
     this.syncDuration = 5;
     this.data = {};
@@ -90,6 +91,11 @@ Player.prototype = new Datamgr();
 
 Player.prototype.init = function(){
 	this.data = store.get(this.name);
+	var sessiondata = store.get(this.sessionname);
+	if (sessiondata==null)
+	{
+		store.set(this.sessionname,{});
+	}	
 }
 
 Player.prototype.getTotal = function(data) {
@@ -195,6 +201,21 @@ Player.prototype.broke = function() {
   }
 }
 
+Player.prototype.getSession = function(playerid){
+	var sessiondata = store.get(this.sessionname);
+	if (sessiondata!=null&&playerid>0){
+	 return sessiondata[playerid];
+	}
+	return 0;
+}
+
+Player.prototype.resetSession = function(sessionid){
+	var sessiondata = store.get(this.sessionname);
+	if (sessiondata!=null){
+	  sessiondata[g_player.data.playerid] = sessionid;
+	  store.set(this.sessionname,sessiondata);
+	}
+}
 
 Player.prototype.loginback = function(data){
   var key = g_player.name+"_"+data.playername;
@@ -215,6 +236,8 @@ Player.prototype.loginback = function(data){
 	g_player.saving = {};
 	g_player.insure = {};
 	g_player.stock = {};
+	
+	g_player.resetSession(data.sessionid);
 	
     store.set(key,playerdata);
 }

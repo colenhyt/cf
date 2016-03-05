@@ -392,8 +392,9 @@ Login.prototype.canRemoveWait = function(){
 Login.prototype.loginCallback = function(obj){
  		 
 	var objdata = cfeval(obj);
-	if (objdata.code!=null&&objdata.code>0){
+	if (objdata.code!=null&&objdata.code!=0){
 	 this.msg('登陆失败: '+ERR_MSG[objdata.code]);
+	 g_loading.clear();
 	 g_username = null;
 	 return;
 	}
@@ -470,15 +471,14 @@ Login.prototype.login = function(){
       var tag = document.getElementById("inputnick");
 	  g_username = tag.value;	
 	}
-//     var player = store.get(g_player.name);
-//     if (player==null){
-//     	alert("本地数据缺失，登录失败");
-//     	return;
-//     }
+
   	var dataParam = "openid="+g_openid+"&playername="+g_username+"&sex="+g_login.sex+"&playerid="+g_playerid+"&setting="+g_setting;
+	var sessionid = g_player.getSession(g_playerid);
+  	if (sessionid!=null)
+  		dataParam += "&sessionid="+sessionid;
   	if (g_pwd!=null&&g_pwd.length>0)
   		dataParam += "&pwd="+g_pwd;
-  		
+   		
     var serverPlayer;
     var now = new Date();
     
