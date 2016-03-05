@@ -37,7 +37,7 @@ public class DataManager extends MgrBase {
 	protected Logger log = Logger.getLogger(getClass());
 	public List<String> pps = new ArrayList<String>();
 	private final int idStep = 100;
-	private final int SESSION_PERIOD = 1000*60*10;
+	private final int SESSION_PERIOD = 1000*60*15;		//15分钟，令牌
 	private int currMaxPlayerId = -1;
 	private Vector<RedisClient> redisClients;
 	private Vector<Integer> signinMoneys;
