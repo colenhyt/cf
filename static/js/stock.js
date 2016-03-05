@@ -466,6 +466,10 @@ Stock.prototype.requestBuy = function(id,qty,ps) {
 Stock.prototype.buyCallback = function(ret){
     if (ret.code) {
      g_msg.tip("操作失败:"+ERR_MSG[ret.code]);
+	 if (ret.desc)
+	 {
+	 	g_player.resetSession(ret.desc);
+	 }
      return;
     }
 
@@ -505,6 +509,7 @@ Stock.prototype.buyCallback = function(ret){
 		
 	var stockback = cfeval(ret.desc);
 			
+	g_player.resetSession(stockback.sessionid);
 	g_player.updateData({"cash":stockback.liveamount});
 	g_quest.onBuyItem(this.name,item,qty);
 				   

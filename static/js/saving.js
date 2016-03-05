@@ -191,6 +191,10 @@ Saving.prototype.requestBuy = function(id,qty,amount){
 Saving.prototype.buyCallback = function(ret){
     if (ret.code) {
      g_msg.tip("操作失败:"+ERR_MSG[ret.code]);
+	 if (ret.desc)
+	 {
+	 	g_player.resetSession(ret.desc);
+	 }
      return;
     }
 		
@@ -213,6 +217,7 @@ Saving.prototype.buyCallback = function(ret){
 	
   playAudioHandler('money');	
 	var cash = savingback.liveamount;	   
+	g_player.resetSession(savingback.sessionid);
 	g_player.updateData({"cash":cash});
 	if (savingback.amount>0)
 		g_quest.onBuyItem(this.name,item,1);

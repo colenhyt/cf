@@ -271,8 +271,13 @@ Player.prototype.commitData = function(type,itemid,amount) {
 			var obj = cfeval(dataobj);
 		    if (obj.code) {
 		     g_msg.tip("操作失败:"+ERR_MSG[obj.code]);
+			 if (obj.desc)
+			 {
+				g_player.resetSession(obj.desc);
+			 }
 		     return;
 		    }			
+			g_player.resetSession(obj.sessionid);
 			if (obj!=null&&obj.playerid==g_player.data.playerid){
 				if (obj.exp!=null&&obj.exp>0)
 				{

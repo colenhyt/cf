@@ -336,6 +336,10 @@ Insure.prototype.requestBuy = function(id,qty,amount) {
 Insure.prototype.buyCallback = function(ret){
     if (ret.code) {
      g_msg.tip("操作失败:"+ERR_MSG[ret.code]);
+	 if (ret.desc)
+	 {
+	 	g_player.resetSession(ret.desc);
+	 }
      return;
     }
 
@@ -359,6 +363,7 @@ Insure.prototype.buyCallback = function(ret){
   playAudioHandler('money');	
   
 	g_player.updateData({"cash":insureback.liveamount});
+	g_player.resetSession(insureback.sessionid);
 	g_quest.onBuyItem(this.name,item,1);
 				   
 	//tip:

@@ -115,7 +115,7 @@ var EVENT_TYPE = [
 ];
 
 var MSG_OK = 0;
-var MSG_SQLExecuteError = 1;
+var MSG_ExecError = 1;
 var MSG_MoneyNotEnough = 2;
 var MSG_NoThisStock = 3;
 var MSG_NoSavingData = 4;
@@ -135,7 +135,7 @@ var MSG_WrongStockPrice = 17;
 var MSG_WrongSession = -1;
 
 var ERR_MSG ={};
-ERR_MSG[MSG_SQLExecuteError] = "sql出错";
+ERR_MSG[MSG_ExecError] = "错误操作";
 ERR_MSG[MSG_MoneyNotEnough] = "您的钱不够";
 ERR_MSG[MSG_NoThisStock] = "这个股票不存在";
 ERR_MSG[MSG_NoSavingData] = "没有该存款";
