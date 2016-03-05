@@ -43,7 +43,7 @@ public class StockAction extends SavingAction {
 		List<Quote> lquotes = StockManager.getInstance().getBigQuotes(stock.getId());
 		String str = JSON.toJSONString(lquotes);
 		write(str,"utf-8");		
-		System.out.println("stock("+stock.getId()+") found quote sizes:"+lquotes.size()+",string:"+str.length());
+//		System.out.println("stock("+stock.getId()+") found quote sizes:"+lquotes.size()+",string:"+str.length());
 		return null;
 	}
 	

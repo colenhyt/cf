@@ -34,6 +34,7 @@ public class StockManager extends MgrBase{
 	private int STOCK_SAVE_PERIOD = 20*30;		//30分钟保存一次
 	private Date lastUpdateDate;
 	private long lastQuoteTime;
+	private final int QUOTE_MAXLENGTH = 200;
 	private Map<Integer,LinkedList<Quote>> quoteMap;
 	private int tick = 0;
 	private List<Stockdata> stockData;
@@ -191,7 +192,7 @@ public class StockManager extends MgrBase{
 	}
 	
 	/**
-	 * 取股票行情
+	 * 取股票行情,每两个取一个
 	 * @param int 股票id
 	 * @return List<Quote> 行情列表
 	 * */
@@ -285,9 +286,13 @@ public class StockManager extends MgrBase{
 		    		
 		    		//lquote.poll();	//不删除行情数据:
 		    		
+		    		if (lquote.size()>=500){
+		    			lquote.removeFirst();
+		    		}
 		    		Quote newq = new Quote();
 		    		newq.setPrice(ps);
 		    		lquote.offer(newq);
+//	    			log.warn("quotes "+lquote.size()+",str"+JSON.toJSONString(lquote));
 		    		//System.out.println("股票价格变化: "+stock.getName()+",涨跌幅:"+stock.getPer()+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
 		    }	
 		}
@@ -302,8 +307,8 @@ public class StockManager extends MgrBase{
 	 			//只保留最新120个行情:
 	 			LinkedList<Quote> quotes = new LinkedList<Quote>();
 	 			int firstIndex = 0;
-	 			if (lquote.size()>120){
-	 				firstIndex = lquote.size() - 120;
+	 			if (lquote.size()>QUOTE_MAXLENGTH){
+	 				firstIndex = lquote.size() - QUOTE_MAXLENGTH;
 	 			}
 	 			for (int j=firstIndex;j<lquote.size();j++){
 		 			quotes.offer(lquote.get(j));
