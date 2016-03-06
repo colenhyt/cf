@@ -52,6 +52,7 @@ public class MgrBase {
 	public JSONObject cfgObj;
 	public String openidurl;
 	public String openidparam;
+	public int sessionTime = 0;
 
 	public MgrBase(){
 		String path = "/root/";
@@ -90,6 +91,10 @@ public class MgrBase {
 		if (cfgObj.containsKey("toplistTime")){
 			toplistTime = Long.valueOf(cfgObj.getString("toplistTime"));
 		}
+		if (cfgObj.containsKey("sessionTime")){
+			sessionTime = Integer.valueOf(cfgObj.getString("sessionTime"));
+		}
+		
 		jedisClient3 = new RedisClient(redisCfg3);
 		
 		cfg = (Config) JSON.parseObject(cfgstr, Config.class);

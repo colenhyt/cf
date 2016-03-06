@@ -37,7 +37,7 @@ public class DataManager extends MgrBase {
 	protected Logger log = Logger.getLogger(getClass());
 	public List<String> pps = new ArrayList<String>();
 	private final int idStep = 100;
-	private final int SESSION_PERIOD = 1000*60*15;		//15分钟，令牌
+	private int SESSION_PERIOD = 1000*60*10;		//15分钟，令牌
 	private int currMaxPlayerId = -1;
 	private Vector<RedisClient> redisClients;
 	private Vector<Integer> signinMoneys;
@@ -202,9 +202,16 @@ public class DataManager extends MgrBase {
 	}
 	
 	public synchronized String login(String openId,String playerName,String sexstr,String playerstr,String settingStr,HttpServletRequest request) {
+		long clientSessionid = 0;
+		String sessionstr = request.getParameter("sessionid");
+		if (sessionstr!=null){
+			clientSessionid = Long.valueOf(sessionstr);
+		}
+		
 		String loginStr = "loginReq: openId:"+openId+",playerName:"+playerName+",";
 		if (playerstr!=null)
 			loginStr += "playerid:"+playerstr;
+		loginStr += ",sessioid:"+clientSessionid;
 		loginStr += ",setting:"+settingStr+",ip:"+loginAction.getIpAddress(request);
 		log.warn(loginStr);
 //		return null;
@@ -228,12 +235,6 @@ public class DataManager extends MgrBase {
 		int playerid = -1;
 		if (playerstr!=null)
 			playerid = Integer.valueOf(playerstr);
-		
-		long clientSessionid = 0;
-		String sessionstr = request.getParameter("sessionid");
-		if (sessionstr!=null){
-			clientSessionid = Long.valueOf(sessionstr);
-		}
 		
 		return loginAction.login(playerid,playerName,openId,(byte)sex,clientSessionid);
 	}
@@ -423,6 +424,10 @@ public class DataManager extends MgrBase {
 
 	//是否能执行存款，股票，保险，签到等登陆后修改数据操作:
 	public synchronized long canSubmit(int playerid,long clientSessionid) {
+		//不限制:
+		if (SESSION_PERIOD==-1)
+			return 1;
+		
 		//执行操作时必须有客户端sessionid:
 		if (clientSessionid<=0)
 			return RetMsg.MSG_WrongSession;
@@ -447,6 +452,10 @@ public class DataManager extends MgrBase {
 
 	//是否能进行登陆:
 	public synchronized long canLogin(int playerid,long clientSessionid,boolean isRegister) {
+		//不限制:
+		if (SESSION_PERIOD==-1)
+			return 1;
+		
 		long serverSessionid = findSession(playerid);
 		//session尚未存在
 		if (serverSessionid<=0){
@@ -557,6 +566,7 @@ public class DataManager extends MgrBase {
 
 		Player data = new Player();
 		data.setPlayerid(playerid);
+		data.setType(type);
 		switch (type){
 		case 0:
 			if (DateUtil.isToday(last)){
@@ -667,6 +677,12 @@ public class DataManager extends MgrBase {
 		signinExps.add(30);
 		signinExps.add(35);
 		
+		if (sessionTime!=0){
+			if (sessionTime>0)
+				SESSION_PERIOD = 1000*sessionTime;
+			else
+				SESSION_PERIOD = sessionTime;
+		}
 		Jedis j3 = jedisClient3.getJedis();
 		
 		String strinit = j3.get(MgrBase.DATAKEY_DATA_INIT);

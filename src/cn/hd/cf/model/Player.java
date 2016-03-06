@@ -12,7 +12,16 @@ public class Player {
 	private Date signinCountTime;
 	private int top;
 	private long sessionid;
+	private int type;
 	
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
 	public long getSessionid() {
 		return sessionid;
 	}
