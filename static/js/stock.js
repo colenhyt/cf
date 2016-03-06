@@ -179,10 +179,7 @@ Stock.prototype.show = function(){
 }
 
 Stock.prototype.confirmOpen = function(){
-	g_player.setOpenstock();
 	g_msg.hide();
-	g_msg.tip("证券账户已开通");
-	this.show();
 	
 	g_player.commitData(2,0,0);		
 }

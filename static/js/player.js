@@ -288,6 +288,13 @@ Player.prototype.commitData = function(type,itemid,amount) {
 					g_player.data.weektop = obj.top;
 				}
 				 g_player.flushPageview();
+				 if (obj.type!=null&&obj.type==2)
+				 {
+					g_player.setOpenstock();
+					g_msg.tip("证券账户已开通");
+					g_stock.show();
+
+				 }
 			}
 		    }});
 		}   catch  (e)   {
