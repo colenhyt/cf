@@ -441,13 +441,16 @@ public class DataManager extends MgrBase {
 		long diff = curr - sessionid;
 		if (diff<=SESSION_PERIOD){			//未过期
 			if (sessionid!=clientSessionid)			//有效期内必须相等，否则客户端session无效
-				return RetMsg.MSG_WrongSession;
+				return RetMsg.MSG_WrongSessionSubmit;
 			else
 				return sessionid;
 		}
 		
-		//session过期,重置返回新的sessionid:
-		return resetSession(playerid);
+		//session过期,
+		if (sessionid==clientSessionid)
+			return resetSession(playerid);				//原来的session重置,并返回新的sessionid:
+		else
+			return RetMsg.MSG_WrongSessionSubmit;		//非原来的，需要退出重登;
 	}
 
 	//是否能进行登陆:
@@ -467,17 +470,17 @@ public class DataManager extends MgrBase {
 		
 		//注册时已有sessionid:
 		if (serverSessionid>0&&isRegister)
-			return RetMsg.MSG_WrongSession;
+			return RetMsg.MSG_WrongSessionSubmit;
 		
 		long curr = System.currentTimeMillis();
 		long diff = curr - serverSessionid;
-		if (diff>SESSION_PERIOD){			//过期,,重置返回新的sessionid
+		if (diff>SESSION_PERIOD){			//过期,不管请求方是否为原来的,重置返回新的sessionid
 			return resetSession(playerid);
 		}
 		
 		//session未过期，服务器和客户端必须相等:
 		if (serverSessionid!=clientSessionid)
-			return RetMsg.MSG_WrongSession;
+			return RetMsg.MSG_WrongSessionSubmit;
 		else
 			return serverSessionid;
 	}
@@ -559,7 +562,7 @@ public class DataManager extends MgrBase {
 		
 		long canSubmit = canSubmit(playerid, clientSessionid);
 		if (canSubmit<=0){
-			return loginAction.msgStr((int)RetMsg.MSG_WrongSession);
+			return loginAction.msgStr((int)canSubmit);
 		}
 		
 		Date last = p.getLastlogin();

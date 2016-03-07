@@ -219,7 +219,7 @@ public class InsureManager extends MgrBase{
 		}
 		long canSubmit = DataManager.getInstance().canSubmit(playerid, clientSessionid);
 		if (canSubmit<=0){
-			return action.msgStr((int)RetMsg.MSG_WrongSession);
+			return action.msgStr((int)canSubmit);
 		}
 		
 		Insure item = new Insure();

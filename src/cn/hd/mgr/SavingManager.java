@@ -58,7 +58,7 @@ public class SavingManager extends MgrBase{
 		}
 		long canSubmit = DataManager.getInstance().canSubmit(playerid, clientSessionid);
 		if (canSubmit<=0){
-			return savingAction.msgStr((int)RetMsg.MSG_WrongSession);
+			return savingAction.msgStr((int)canSubmit);
 		}
 		
 		Saving item = new Saving();
