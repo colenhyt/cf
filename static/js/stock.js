@@ -1,6 +1,7 @@
 Stock = function(){
     this.name = "stock";
     this.quotename = "quote";
+    this.quotetime = "quotetime";
     this.pagequote = "pageq";
     this.cname = "股票";
     this.pageCount = 4;
@@ -345,9 +346,8 @@ Stock.prototype.showDetail = function(id,isflush){
 	this.currShowStockId = id;
 	this.currStockPs = ps;
 	
-	var quotes = this.findQuotes();
-	if (quotes)
-    	g_stockdetail.drawQuote(id,ps,quotes,this.graphName);
+	//draw this stock K-line graph:
+	this.drawStockQuotes();
         
     if (isflush==null)
 		$('#'+this.tagdetailname).modal({position:0,show: true});  
@@ -535,21 +535,33 @@ Stock.prototype.buyCallback = function(ret){
 	this.buildPage(0);
 }
 
-Stock.prototype.findQuotes = function()
+Stock.prototype.drawStockQuotes = function()
 {
 	var stockid = g_stock.currShowStockId;
 	if (!stockid) return;
 
-	var qdatas = store.get(this.quotename);
-	var squotes = qdatas[stockid];
+	var qdatas = store.get(this.quotename+stockid);
+	var qtime = store.get(g_stock.quotetime+stockid);
+	var rebuild = false;
+	if (qtime!=null){
+		var now = Date.parse(new Date());
+		var diff = (now - qtime)/1000;
+		//exceed 300 sec:
+		if (parseInt(diff/QUOTETIME)>0)
+		 rebuild = true;
+	}
+	if (qdatas!=null&&(rebuild==false||!this.isStockOpen())){
+		g_stockdetail.drawQuote(stockid,g_stock.currStockPs,qdatas,g_stock.graphName);		
+		return;
+	}
 	
-	g_msg.showload("g_stock.findQuotes");
+	g_msg.showload("g_stock.drawStockQuotes");
 
 	try  {
 		$.ajax({type:"post",url:"/cf/stock_quotes.do",data:"stock.id="+stockid,success:function(dataobj){
-			squotes =cfeval(dataobj);
-			qdatas[stockid] = squotes;	
-			store.set(g_stock.quotename,qdatas);
+			var squotes =cfeval(dataobj);
+			store.set(g_stock.quotename+stockid,squotes);
+			store.set(g_stock.quotetime+stockid,Date.parse(new Date()));
 			g_stockdetail.drawQuote(stockid,g_stock.currStockPs,squotes,g_stock.graphName);
 			g_stock.currShowStockId = null;
 	 		g_msg.destroyload();
@@ -577,7 +589,7 @@ Stock.prototype.findQuoteLostTime = function(){
 	if (!g_player.data||!g_player.data.lastlogin) return 0;
 	
 	var now = Date.parse(new Date());
-	var enterTime = (now - g_player.data.lastlogin)/1000;		//进入系统时间(秒);
+	var enterTime = (now - g_player.data.lastlogin)/1000;		//进入系统时间差(秒);
 	var quotePassTime = parseInt(enterTime+g_player.data.quotetime);
 	var mm = quotePassTime%QUOTETIME;
 	var lsec = QUOTETIME - mm;
