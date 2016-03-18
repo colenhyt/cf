@@ -32,7 +32,6 @@ Login.prototype.init = function(){
 	   g_username = data.playername;
 	   g_playerid = data.playerid;
  		this.sex = data.sex;
- 		break;
 	  }
 	}	
 
