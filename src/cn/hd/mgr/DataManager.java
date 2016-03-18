@@ -36,7 +36,7 @@ import com.alibaba.fastjson.TypeReference;
 public class DataManager extends MgrBase {
 	protected Logger log = Logger.getLogger(getClass());
 	public List<String> pps = new ArrayList<String>();
-	private final int idStep = 100;
+	private final int idStep = 10000;
 	private int SESSION_PERIOD = 1000*60*10;		//15分钟，令牌
 	private int currMaxPlayerId = -1;
 	private Vector<RedisClient> redisClients;
