@@ -88,7 +88,7 @@ public class StockManager extends MgrBase{
 	    		String json = new String(stock.getQuotes());
 	    		JSONArray array = JSONArray.fromObject(json);
 	    		List<Quote> quotes = JSONArray.toList(array, Quote.class);
-	    		log.warn("quotes  length:"+array.size());
+	    		//log.warn("quotes  length:"+array.size());
 	    		if (quotes.size()==0) {
 	    			System.out.println("该股票无行情:"+stock.getName());
 	    			continue;
@@ -316,13 +316,13 @@ public class StockManager extends MgrBase{
 	 			String strqu = JSON.toJSONString(quotes);
 	 			stock.setQuotes(strqu.getBytes());
 //	 			String ss = JSON.toJSONString(stock);
-	 			log.warn("update qutoes :"+quotes.size());
+	 			//log.warn("update qutoes :"+quotes.size());
     			p.hset(MgrBase.DATAKEY_DATA_STOCK, String.valueOf(stock.getId()), JSON.toJSONString(stock));
 	 			//stockDataThread.updateStockdata(stock);
 			}
     		p.sync();
     		jedisClient3.returnResource(jedis);
-			log.warn("resave stock quotes data");
+			//log.warn("resave stock quotes data");
 		}		
 		//数据库保存:
 

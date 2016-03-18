@@ -79,12 +79,12 @@ public class DataManager extends MgrBase {
 				log.error("could not get redis,redis may not be run");
 				return -1;
 			}		
-			String guidplayer = jedis.get(super.DATAKEY_GUID_PLAYER);
+			String guidplayer = jedis.get(MgrBase.DATAKEY_GUID_PLAYER);
 			if (guidplayer!=null){
 				currMaxPlayerId = Integer.valueOf(guidplayer)+idStep;
 			}else
 				currMaxPlayerId = idStep;
-			jedis.set(super.DATAKEY_GUID_PLAYER,String.valueOf(currMaxPlayerId));
+			jedis.set(MgrBase.DATAKEY_GUID_PLAYER,String.valueOf(currMaxPlayerId));
 			nextPlayerId = currMaxPlayerId - idStep;
 			log.warn("reset guid id "+currMaxPlayerId);
 			redisClients.get(0).returnResource(jedis);
@@ -462,10 +462,10 @@ public class DataManager extends MgrBase {
 		long serverSessionid = findSession(playerid);
 		//session尚未存在
 		if (serverSessionid<=0){
-			if (clientSessionid>0)
+			if (clientSessionid>0&&!isRegister)
 				return RetMsg.MSG_WrongSession;			//客户端先于服务器存在
 			else
-				return resetSession(playerid);			//注册/第一次使用, reset并返回最新的
+				return resetSession(playerid);			//注册/第一次使用/重置, reset并返回最新的
 		}
 		
 		//注册时已有sessionid:
@@ -728,11 +728,6 @@ public class DataManager extends MgrBase {
 		playerIdMaps.clear();
 		playerMaps.clear();
 		nextPlayerId = 0;
-//		PlayerService playerService = new PlayerService();
-//		List<PlayerWithBLOBs> players = playerService.findAll();
-//		for (int i = 0; i < players.size(); i++) {
-//			PlayerWithBLOBs player = players.get(i);
-		
 		
 		Jedis jedis = redisClients.get(0).getJedis();
 		if (jedis==null){
@@ -740,21 +735,21 @@ public class DataManager extends MgrBase {
 			return;
 		}
 		
-		String guidplayer = jedis.get(super.DATAKEY_GUID_PLAYER);
-		if (guidplayer!=null){
-			log.info("start playerid "+guidplayer);
+		String guidplayer = jedis.get(MgrBase.DATAKEY_GUID_PLAYER);
+		if (guidplayer==null){
+			currMaxPlayerId = idStep;		//第一次初始化
 		}else
-			log.info("start playerid "+currMaxPlayerId);
+			currMaxPlayerId = Integer.valueOf(guidplayer)+idStep; //最大值+idStep
+		
+		//设置最新最大值到redis:
+		jedis.set(MgrBase.DATAKEY_GUID_PLAYER,String.valueOf(currMaxPlayerId));
+		
+		redisClients.get(0).returnResource(jedis);
+		
+		nextPlayerId = currMaxPlayerId - idStep;
+		
+		log.info("start playerid "+nextPlayerId);
 			
-//		List<String> items = jedis.hvals(super.DATAKEY_PLAYER);
-//		for (String item:items){
-//			PlayerWithBLOBs player = (PlayerWithBLOBs)JSON.parseObject(item,PlayerWithBLOBs.class);
-//			playerMaps.put(player.getPlayerid(), player);
-//			playerIdMaps.put(player.getPlayername(), player.getPlayerid());
-//		}
-//		redisClients.get(0).returnResource(jedis);
-//		log.warn("load all players :" + items.size());
-
 	}
 	
 	private long findPlayerCount(){
@@ -926,8 +921,8 @@ public class DataManager extends MgrBase {
 
 	public static void main(String[] args) {
 		
-		long s = Long.valueOf(1454491582484L);
-		Date now = new Date();
+		long s = Long.valueOf(1457164001552L);
+		Date now = new Date(s);
 		String a1 = null;
 		String b = "aa"+a1;
 		Date last= new Date(1455594730831L);
