@@ -2,7 +2,6 @@ package cn.hd.mgr;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,6 +27,7 @@ import cn.hd.cf.model.Stock;
 import cn.hd.util.DateUtil;
 import cn.hd.util.QuestLog;
 import cn.hd.util.RedisClient;
+import cn.hd.util.RedisConfig;
 import cn.hd.util.SigninLog;
 
 import com.alibaba.fastjson.JSON;
@@ -36,10 +36,12 @@ import com.alibaba.fastjson.TypeReference;
 public class DataManager extends MgrBase {
 	protected Logger log = Logger.getLogger(getClass());
 	public List<String> pps = new ArrayList<String>();
-	private final int idStep = 10000;
+	private final int idStep = 1000;
 	private int SESSION_PERIOD = 1000*60*10;		//15分钟，令牌
 	private int currMaxPlayerId = -1;
 	private Vector<RedisClient> redisClients;
+	private Map<Integer,Vector<RedisClient>> playerRedisClientsMap;
+	protected Map<Integer,Vector<DataThread>>	playerDataThreadsMap;
 	private Vector<Integer> signinMoneys;
 	private Vector<Integer> signinExps;
 
@@ -213,9 +215,9 @@ public class DataManager extends MgrBase {
 			loginStr += "playerid:"+playerstr;
 		loginStr += ",sessioid:"+clientSessionid;
 		loginStr += ",setting:"+settingStr+",ip:"+loginAction.getIpAddress(request);
-		log.warn(loginStr);
+		LogMgr.getInstance().log(-1,loginStr);
 //		return null;
-		if (settingStr.indexOf("android:true")<0&&settingStr.indexOf("iphone:true")<0){
+		if (settingStr!=null&&settingStr.indexOf("android:true")<0&&settingStr.indexOf("iphone:true")<0){
 			String pwd = request.getParameter("pwd");
 			if (pwd==null||!pwd.endsWith("hdcf")){
 				log.warn("illegal access!!");
@@ -371,6 +373,14 @@ public class DataManager extends MgrBase {
 		return top+1;
 	}
 
+	private synchronized DataThread getThread(int playerid){
+		int key = playerid%playerDataThreadsMap.size();
+		Vector<DataThread> ths = playerDataThreadsMap.get(key);
+		DataThread dataThread = ths.get(playerid%ths.size());
+		
+		return dataThread;
+	}
+	
 	/**
 	 * 新增玩家
 	 * @param Player 对象
@@ -385,7 +395,7 @@ public class DataManager extends MgrBase {
 		//playerMaps.put(playerid, player);
 		playerIdMaps.put(player.getPlayername(), playerid);
 		
-		DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
+		DataThread dataThread = getThread(playerid);
 		dataThread.push(player);
 		//saver.add(player);
 		//LogMgr.getInstance().log(System.currentTimeMillis());
@@ -487,8 +497,7 @@ public class DataManager extends MgrBase {
 	
 	public synchronized long resetSession(int playerid) {
 		long sessionid = System.currentTimeMillis();
-		int index = playerid%redisClients.size();
-		RedisClient jedisClient = redisClients.get(index);
+		RedisClient jedisClient  = getRedisClient(playerid);
 		Jedis jedis = jedisClient.getJedis();
 		jedis.hset(MgrBase.DATAKEY_SESSION, String.valueOf(playerid),String.valueOf(sessionid));
 		jedisClient.returnResource(jedis);	
@@ -498,8 +507,7 @@ public class DataManager extends MgrBase {
 
 	public synchronized long findSession(int playerid) {
 		long sessionid = 0;
-		int index = playerid%redisClients.size();
-		RedisClient jedisClient = redisClients.get(index);
+		RedisClient jedisClient  = getRedisClient(playerid);
 		Jedis jedis = jedisClient.getJedis();
 		String sessionstr = jedis.hget(MgrBase.DATAKEY_SESSION, String.valueOf(playerid));
 		jedisClient.returnResource(jedis);	
@@ -508,6 +516,14 @@ public class DataManager extends MgrBase {
 		}
 		log.warn("pid:"+playerid+" find session:"+sessionid);
 		return sessionid;
+	}
+	
+	private synchronized RedisClient getRedisClient(int playerid){
+		int key = playerid%playerRedisClientsMap.size();
+		Vector<RedisClient> clients = playerRedisClientsMap.get(key);		
+		int index = playerid%clients.size();
+		RedisClient jedisClient = clients.get(index);
+		return jedisClient;
 	}
 	
 	/**
@@ -521,8 +537,7 @@ public class DataManager extends MgrBase {
 
 		if (player==null)
 		{
-			int index = playerid%redisClients.size();
-			RedisClient jedisClient = redisClients.get(index);
+			RedisClient jedisClient  = getRedisClient(playerid);
 			Jedis jedis = jedisClient.getJedis();
 			String itemstr = jedis.hget(super.DATAKEY_PLAYER, String.valueOf(playerid));
 			jedisClient.returnResource(jedis);			
@@ -540,7 +555,7 @@ public class DataManager extends MgrBase {
 	}
 
 	public synchronized void updatePlayerQuest(Player player) {
-		DataThread dataThread = dataThreads.get(player.getPlayerid()%dataThreads.size());
+		DataThread dataThread = getThread(player.getPlayerid());
 		dataThread.updatePlayer(player);
 	}
 	
@@ -625,7 +640,7 @@ public class DataManager extends MgrBase {
 			
 		}
 		data.setSessionid(canSubmit);
-		DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
+		DataThread dataThread = getThread(playerid);
 		dataThread.updatePlayer(p);
 		return JSON.toJSONString(data);
 	}
@@ -646,7 +661,7 @@ public class DataManager extends MgrBase {
 		Player pp = findPlayer(playerid);
 		if (pp != null) {
 			pp.setZan(zan);
-			DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
+			DataThread dataThread = getThread(playerid);
 			dataThread.updatePlayer(pp);
 			return true;
 		}
@@ -654,8 +669,15 @@ public class DataManager extends MgrBase {
 	}
 
 	public synchronized List<String> getplayers() {
-		Jedis jedis = redisClients.get(0).getJedis();
-		return jedis.hvals(super.DATAKEY_PLAYER);
+		List<String> players = new ArrayList<String>();
+		for (int i=0;i<playerRedisClientsMap.size();i++){
+			Vector<RedisClient> rsc = playerRedisClientsMap.get(i);
+			Jedis jedis = rsc.get(0).getJedis();
+			List<String> thisstr = jedis.hvals(MgrBase.DATAKEY_PLAYER);
+			rsc.get(0).returnResource(jedis);	
+			players.addAll(thisstr);
+		}		
+		return players;
 	}
 
 
@@ -714,6 +736,34 @@ public class DataManager extends MgrBase {
 			redisClients.add(client);
 		}
 		
+		
+		playerRedisClientsMap = Collections
+				.synchronizedMap(new HashMap<Integer,Vector<RedisClient>>());
+		playerDataThreadsMap = Collections
+				.synchronizedMap(new HashMap<Integer,Vector<DataThread>>());
+		for (int i=0;i<playerRredisCfgs.size();i++){
+			
+			RedisConfig cfg = playerRredisCfgs.get(i);
+			
+			//读redis集群
+			Vector<RedisClient> cfgs = new Vector<RedisClient>();
+			for (int j=0;j<cfg.getThreadCount();j++){
+				RedisClient client = new RedisClient(cfg);
+				cfgs.add(client);
+			}
+			playerRedisClientsMap.put(i, cfgs);
+			
+			//写redis集群:
+			Vector<DataThread> clients = new Vector<DataThread>();
+			 for (int j=0;j<cfg.getThreadCount();j++){
+				 DataThread dataThread = new DataThread(cfg);
+				 clients.add(dataThread);
+				dataThread.start();
+			 }			
+			 playerDataThreadsMap.put(i, clients);
+		}
+		
+		
 		dataThreads = new Vector<DataThread>();
 		 for (int i=0;i<redisCfg.getThreadCount();i++){
 			 DataThread dataThread = new DataThread(redisCfg);
@@ -753,13 +803,15 @@ public class DataManager extends MgrBase {
 	}
 	
 	private long findPlayerCount(){
-		Jedis jedis = redisClients.get(0).getJedis();
-		if (jedis==null){
-			log.error("could not get player redis,redis0 may not be run");
-			return 0 ;
-		}		
-		long count = jedis.hlen(MgrBase.DATAKEY_PLAYER);
-		redisClients.get(0).returnResource(jedis);	
+		long count = 0;
+		
+		for (int i=0;i<playerRedisClientsMap.size();i++){
+			Vector<RedisClient> rsc = playerRedisClientsMap.get(i);
+			Jedis jedis = rsc.get(0).getJedis();
+			long thiscount = jedis.hlen(MgrBase.DATAKEY_PLAYER);
+			rsc.get(0).returnResource(jedis);	
+			count += thiscount;
+		}
 		return count;
 	}
 	
@@ -808,7 +860,7 @@ public class DataManager extends MgrBase {
 			p.setExp(p.getExp()+(int)qty);
 			if (p.getExp()<=0)
 				p.setExp(0);
-			DataThread dataThread = dataThreads.get(p.getPlayerid()%dataThreads.size());
+			DataThread dataThread = getThread(p.getPlayerid());
 			dataThread.push(p);
 			break;
 		case 1:		//saving
@@ -906,7 +958,7 @@ public class DataManager extends MgrBase {
 					q = String.valueOf(qid);
 			}
 			p.setQuestStr(q);
-			DataThread dataThread2 = dataThreads.get(p.getPlayerid()%dataThreads.size());
+			DataThread dataThread2 = getThread(p.getPlayerid());
 			dataThread2.push(p);
 			break;
 		}

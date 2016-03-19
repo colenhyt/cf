@@ -4,17 +4,16 @@ package cn.hd.mgr;
 import java.net.URL;
 import java.util.Vector;
 
-import net.sf.json.JSONObject;
-
 import org.apache.log4j.Logger;
 
-import redis.clients.jedis.Jedis;
 import cn.hd.base.Config;
 import cn.hd.util.FileUtil;
 import cn.hd.util.RedisClient;
 import cn.hd.util.RedisConfig;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 public class MgrBase {
 	public final static String DATAKEY_PLAYER = "player";
@@ -48,6 +47,7 @@ public class MgrBase {
 	public RedisConfig redisCfg2;
 	public RedisConfig redisCfg3;
 	public RedisConfig redisCfg4;
+	public Vector<RedisConfig> playerRredisCfgs;
 	public int threadCount;
 	public JSONObject cfgObj;
 	public String openidurl;
@@ -69,7 +69,7 @@ public class MgrBase {
 			return;
 			}
 		}
-		cfgObj = JSONObject.fromObject(cfgstr);
+		cfgObj = JSON.parseObject(cfgstr);
 		
 		log.warn("get cfg file "+path);
 		
@@ -85,6 +85,17 @@ public class MgrBase {
 		String cfgstr3 = cfgObj.getString("redisCfg3");
 		redisCfg3 = JSON.parseObject(cfgstr3, RedisConfig.class);
 		
+		String playerRedisCfgStr = cfgObj.getString("playerRedis");
+		if (playerRedisCfgStr!=null&&playerRedisCfgStr.length()>0){
+			playerRredisCfgs = new Vector<RedisConfig>();
+			JSONArray playerCfgArray = JSON.parseArray(playerRedisCfgStr);
+			for (int i=0;i<playerCfgArray.size();i++){
+				JSONObject obj = (JSONObject)playerCfgArray.get(i);
+				RedisConfig cfg = JSON.parseObject(obj.toJSONString(), RedisConfig.class);
+				playerRredisCfgs.add(cfg);
+			}			
+		}
+
 //		redisCfg4 = JSON.parseObject(cfgObj.getString("redisCfg4"), RedisConfig.class);
 //		jedisClient4 = new RedisClient(redisCfg4);
 
