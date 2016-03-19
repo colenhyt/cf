@@ -86,6 +86,9 @@ public class MgrBase {
 		redisCfg3 = JSON.parseObject(cfgstr3, RedisConfig.class);
 		
 		String playerRedisCfgStr = cfgObj.getString("playerRedis");
+		if (playerRedisCfgStr==null){
+			playerRedisCfgStr = "["+cfgstr0+"]";
+		}
 		if (playerRedisCfgStr!=null&&playerRedisCfgStr.length()>0){
 			playerRredisCfgs = new Vector<RedisConfig>();
 			JSONArray playerCfgArray = JSON.parseArray(playerRedisCfgStr);
