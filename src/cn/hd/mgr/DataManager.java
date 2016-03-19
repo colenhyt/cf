@@ -762,14 +762,6 @@ public class DataManager extends MgrBase {
 			 }			
 			 playerDataThreadsMap.put(i, clients);
 		}
-		
-		
-		dataThreads = new Vector<DataThread>();
-		 for (int i=0;i<redisCfg.getThreadCount();i++){
-			 DataThread dataThread = new DataThread(redisCfg);
-			dataThreads.add(dataThread);
-			dataThread.start();
-		 }		
 		 
 		this.load();
 	}
