@@ -21,6 +21,7 @@ public class MgrBase {
 	public final static String DATAKEY_QUEST = "quest";
 	public final static String DATAKEY_PLAYER_ID = "playerid";
 	public final static String DATAKEY_GUID_PLAYER = "guidplayer";
+	public final static String DATAKEY_REDIS_PLAYER_STARTID = "redisplayer_startid";
 	public final static String DATAKEY_SAVING = "saving";
 	public final static String DATAKEY_INSURE = "insure";
 	public final static String DATAKEY_STOCK = "stock";
@@ -34,7 +35,7 @@ public class MgrBase {
 	public final static String DATAKEY_DATA_LOG = "logdata";
 	protected Logger  log = Logger.getLogger(getClass()); 
 	protected int tick = 0;
-	protected int playerRedisStartId = 0;
+	protected int startPlayerRedis = 0;
 	protected final int UPDATE_PERIOD = 20*30;		//20*60: 一小时
 	protected final int BATCH_COUNT = 200;
 	protected final int UPDATE_PERIOD_BATCH = 40;	//2分钟
@@ -86,23 +87,23 @@ public class MgrBase {
 		String cfgstr3 = cfgObj.getString("redisCfg3");
 		redisCfg3 = JSON.parseObject(cfgstr3, RedisConfig.class);
 		
-		String playerRedisCfgStr = cfgObj.getString("playerRedis");
-		if (playerRedisCfgStr==null){
-			playerRedisCfgStr = "["+cfgstr0+"]";
-		}
-		String playerRedisStartIdStr = cfgObj.getString("playerRedisStartId");
-		if (playerRedisStartIdStr!=null){
-			playerRedisStartId = Integer.valueOf(playerRedisStartIdStr);			
+		String startPlayerRedisStr = cfgObj.getString("startPlayerRedis");
+		if (startPlayerRedisStr!=null){
+			startPlayerRedis = Integer.valueOf(startPlayerRedisStr);			
 		}
 		
-		if (playerRedisCfgStr!=null&&playerRedisCfgStr.length()>0){
-			playerRredisCfgs = new Vector<RedisConfig>();
-			JSONArray playerCfgArray = JSON.parseArray(playerRedisCfgStr);
-			for (int i=0;i<playerCfgArray.size();i++){
-				JSONObject obj = (JSONObject)playerCfgArray.get(i);
-				RedisConfig cfg = JSON.parseObject(obj.toJSONString(), RedisConfig.class);
-				playerRredisCfgs.add(cfg);
-			}			
+		//启用player多个redis:
+		playerRredisCfgs = new Vector<RedisConfig>();
+		if (startPlayerRedis==1){			
+			String playerRedisCfgStr = cfgObj.getString("playerRedis");
+			if (playerRedisCfgStr!=null&&playerRedisCfgStr.length()>0){
+				JSONArray playerCfgArray = JSON.parseArray(playerRedisCfgStr);
+				for (int i=0;i<playerCfgArray.size();i++){
+					JSONObject obj = (JSONObject)playerCfgArray.get(i);
+					RedisConfig cfg = JSON.parseObject(obj.toJSONString(), RedisConfig.class);
+					playerRredisCfgs.add(cfg);
+				}			
+			}
 		}
 
 //		redisCfg4 = JSON.parseObject(cfgObj.getString("redisCfg4"), RedisConfig.class);

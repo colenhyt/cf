@@ -34,6 +34,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 
 public class DataManager extends MgrBase {
+	protected int playerRedisStartId = 0;
 	protected Logger log = Logger.getLogger(getClass());
 	public List<String> pps = new ArrayList<String>();
 	private final int idStep = 2000;
@@ -375,7 +376,7 @@ public class DataManager extends MgrBase {
 
 	private synchronized DataThread getThread(int playerid){
 		DataThread dataThread = null;
-		if (playerRedisStartId>0&&playerid>playerRedisStartId){
+		if (playerRedisStartId>0&&playerid>playerRedisStartId&&playerDataThreadsMap.size()>0){
 			int key = playerid%playerDataThreadsMap.size();
 			Vector<DataThread> ths = playerDataThreadsMap.get(key);
 			dataThread = ths.get(playerid%ths.size());
@@ -524,7 +525,7 @@ public class DataManager extends MgrBase {
 	
 	private synchronized RedisClient getRedisClient(int playerid){
 		RedisClient jedisClient = null;
-		if (playerRedisStartId>0&&playerid>playerRedisStartId){
+		if (playerRedisStartId>0&&playerid>playerRedisStartId&&playerRedisClientsMap.size()>0){
 			int key = playerid%playerRedisClientsMap.size();
 			Vector<RedisClient> clients = playerRedisClientsMap.get(key);		
 			int index = playerid%clients.size();
@@ -761,6 +762,13 @@ public class DataManager extends MgrBase {
 				RedisClient client = new RedisClient(cfg);
 				cfgs.add(client);
 			}
+			Jedis jedis = cfgs.get(0).getJedis();
+			if (jedis==null){
+				log.error("could not start extend player redis:cfg:"+cfg.getServerIp()+",port:"+cfg.getServerPort());
+				System.exit(1);
+				return;
+			}			
+			cfgs.get(0).returnResource(jedis);
 			playerRedisClientsMap.put(i, cfgs);
 			
 			//写redis集群:
@@ -790,7 +798,8 @@ public class DataManager extends MgrBase {
 		
 		Jedis jedis = redisClients.get(0).getJedis();
 		if (jedis==null){
-			log.error("could not get player redis,redis0 may not be run");
+			log.error("could not get player redis,redis0 may not be run:ip:"+redisCfg.getServerIp()+",port:"+redisCfg.getServerPort());
+			System.exit(1);
 			return;
 		}
 		
@@ -802,6 +811,15 @@ public class DataManager extends MgrBase {
 		
 		//设置最新最大值到redis:
 		jedis.set(MgrBase.DATAKEY_GUID_PLAYER,String.valueOf(currMaxPlayerId));
+		
+		
+		String redplayer_startstr = jedis.get(MgrBase.DATAKEY_REDIS_PLAYER_STARTID);
+		if (redplayer_startstr!=null){
+			playerRedisStartId = Integer.valueOf(redplayer_startstr);
+		}else if (startPlayerRedis==1){				//首次启用
+			playerRedisStartId = currMaxPlayerId;
+			jedis.set(MgrBase.DATAKEY_REDIS_PLAYER_STARTID,String.valueOf(playerRedisStartId));
+		}
 		
 		redisClients.get(0).returnResource(jedis);
 		
