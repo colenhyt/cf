@@ -380,8 +380,10 @@ public class DataManager extends MgrBase {
 			int key = playerid%playerDataThreadsMap.size();
 			Vector<DataThread> ths = playerDataThreadsMap.get(key);
 			dataThread = ths.get(playerid%ths.size());
+			//log.warn("choose extend thread:"+playerid);
 		}else {
 			dataThread = dataThreads.get(playerid%dataThreads.size());
+			//log.warn("choose basic thread:"+playerid);
 		}
 		return dataThread;
 	}
@@ -529,10 +531,12 @@ public class DataManager extends MgrBase {
 			int key = playerid%playerRedisClientsMap.size();
 			Vector<RedisClient> clients = playerRedisClientsMap.get(key);		
 			int index = playerid%clients.size();
-			jedisClient = clients.get(index);			
+			jedisClient = clients.get(index);	
+			//log.warn("choose extend client"+playerid);
 		}else {
 			int index = playerid%redisClients.size();
 			jedisClient = redisClients.get(index);		
+			//log.warn("choose basic client "+playerid);
 		}
 		return jedisClient;
 	}
@@ -819,11 +823,13 @@ public class DataManager extends MgrBase {
 		
 		
 		String redplayer_startstr = jedis.get(MgrBase.DATAKEY_REDIS_PLAYER_STARTID);
-		if (redplayer_startstr!=null){
-			playerRedisStartId = Integer.valueOf(redplayer_startstr);
-		}else if (startPlayerRedis==1){				//首次启用
-			playerRedisStartId = currMaxPlayerId;
-			jedis.set(MgrBase.DATAKEY_REDIS_PLAYER_STARTID,String.valueOf(playerRedisStartId));
+		if (startPlayerRedis==true){
+			if (redplayer_startstr!=null){
+				playerRedisStartId = Integer.valueOf(redplayer_startstr);
+			}else {				//首次启用
+				playerRedisStartId = currMaxPlayerId;
+				jedis.set(MgrBase.DATAKEY_REDIS_PLAYER_STARTID,String.valueOf(playerRedisStartId));
+			}			
 		}
 		
 		redisClients.get(0).returnResource(jedis);

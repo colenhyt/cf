@@ -35,7 +35,7 @@ public class MgrBase {
 	public final static String DATAKEY_DATA_LOG = "logdata";
 	protected Logger  log = Logger.getLogger(getClass()); 
 	protected int tick = 0;
-	protected int startPlayerRedis = 0;
+	protected boolean startPlayerRedis = false;
 	protected final int UPDATE_PERIOD = 20*30;		//20*60: 一小时
 	protected final int BATCH_COUNT = 200;
 	protected final int UPDATE_PERIOD_BATCH = 40;	//2分钟
@@ -88,13 +88,13 @@ public class MgrBase {
 		redisCfg3 = JSON.parseObject(cfgstr3, RedisConfig.class);
 		
 		String startPlayerRedisStr = cfgObj.getString("startPlayerRedis");
-		if (startPlayerRedisStr!=null){
-			startPlayerRedis = Integer.valueOf(startPlayerRedisStr);			
+		if (startPlayerRedisStr!=null&&startPlayerRedisStr.equalsIgnoreCase("true")){
+			startPlayerRedis = true;			
 		}
 		
 		//启用player多个redis:
 		playerRredisCfgs = new Vector<RedisConfig>();
-		if (startPlayerRedis==1){			
+		if (startPlayerRedis==true){			
 			String playerRedisCfgStr = cfgObj.getString("playerRedis");
 			if (playerRedisCfgStr!=null&&playerRedisCfgStr.length()>0){
 				JSONArray playerCfgArray = JSON.parseArray(playerRedisCfgStr);
