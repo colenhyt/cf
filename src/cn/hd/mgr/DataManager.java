@@ -717,8 +717,13 @@ public class DataManager extends MgrBase {
 			if (sessionTime>0)
 				SESSION_PERIOD = 1000*sessionTime;
 			else
-				SESSION_PERIOD = sessionTime;
+				SESSION_PERIOD = sessionTime;			
 		}
+		if (SESSION_PERIOD>0)
+			log.warn("session running");
+		else
+			log.warn("session stopped");
+		
 		Jedis j3 = jedisClient3.getJedis();
 		
 		String strinit = j3.get(MgrBase.DATAKEY_DATA_INIT);
