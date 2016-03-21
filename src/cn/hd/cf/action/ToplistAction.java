@@ -14,7 +14,7 @@ public class ToplistAction extends BaseAction {
 	 * 获取排行榜数据
 	 * @return String 排行榜json数据
 	 * */
-	public synchronized String list(int playerid){
+	public String list(int playerid){
 		ToplistManager mgr = ToplistManager.getInstance();
 		mgr.load();
 		int zan = 0;

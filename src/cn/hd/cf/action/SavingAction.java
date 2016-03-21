@@ -35,7 +35,7 @@ public class SavingAction extends BaseAction {
 //		this.saving = saving;
 //	}
 	
-	public synchronized boolean playerTopUpdate(int playerid){
+	public boolean playerTopUpdate(int playerid){
 		Player player = DataManager.getInstance().findPlayer(playerid);
 		if (player!=null){
 			float money = ToplistManager.getInstance().calculatePlayerMoney(playerid);
@@ -103,7 +103,7 @@ public class SavingAction extends BaseAction {
 	 * @param saving 对象
 	 * @return 增加/取出 存款对象json数据
 	 * */
-	public synchronized String add(long sessionid, Saving saving2)
+	public String add(long sessionid, Saving saving2)
 	{
 		//活期不存在存款取款:
 		if (saving2.getItemid()==1){

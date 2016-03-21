@@ -36,7 +36,7 @@ public class InsureAction extends SavingAction {
 	 * @param insure 对象
 	 * @return 购买inusre json数据
 	 * */
-	public synchronized String add(long sessionid,Insure insure)
+	public String add(long sessionid,Insure insure)
 	{
 		Saving liveSaving = SavingManager.getInstance().getSaving(insure.getPlayerid(), 1);
 		if (liveSaving.getAmount()<insure.getAmount())

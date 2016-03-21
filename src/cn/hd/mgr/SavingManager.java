@@ -47,7 +47,7 @@ public class SavingManager extends MgrBase{
 	 * @param float 金额
 	 * @return String 存款数据
 	 * */
-    public synchronized String add(int playerid,int itemid,int qty,float price,float amount,String sessionstr){
+    public String add(int playerid,int itemid,int qty,float price,float amount,String sessionstr){
 		Player p = DataManager.getInstance().findPlayer(playerid);
 		if (p==null){
 			return savingAction.msgStr(RetMsg.MSG_PlayerNotExist);
@@ -129,7 +129,7 @@ public class SavingManager extends MgrBase{
 	 * @param float 增加资金
 	 * @return float 存款总额
 	 * */
-    public synchronized float updateLiveSavingAndTop(int playerid,float addedAmount){
+    public float updateLiveSavingAndTop(int playerid,float addedAmount){
 		List<Saving> savings = SavingManager.getInstance().getSavingList(playerid);
 		int liveIndex = 0;
 		if (savings!=null){
@@ -155,7 +155,7 @@ public class SavingManager extends MgrBase{
 	 * @param Saving 活期saving对象
 	 * @return float 存款总额
 	 * */
-    public synchronized float updateLiveSaving(int playerid,Saving liveSaving){
+    public float updateLiveSaving(int playerid,Saving liveSaving){
     	boolean found = false;
 		List<Saving> savings = SavingManager.getInstance().getSavingList(playerid);
 		float savingAmount = 0;
@@ -178,7 +178,7 @@ public class SavingManager extends MgrBase{
 		return savingAmount;
     }
     
-    public synchronized boolean updateLiveSaving(Saving record){
+    public boolean updateLiveSaving(Saving record){
     	record.setItemid(1);
     	return updateSavingAmount(record);
     }
@@ -189,7 +189,7 @@ public class SavingManager extends MgrBase{
 	 * @param Saving saving对象列表
 	 * @return float 存款总额
 	 * */
-    public synchronized float updateSavings(int playerid,List<Saving> list){     	
+    public float updateSavings(int playerid,List<Saving> list){     	
     		DataThread dataThread = dataThreads.get(playerid%dataThreads.size());
     		dataThread.updateSaving(playerid, JSON.toJSONString(list));
     		float savingAmount = 0;
@@ -202,7 +202,7 @@ public class SavingManager extends MgrBase{
     }
     
     
-    public synchronized boolean updateSavingAmount(Saving record){
+    public boolean updateSavingAmount(Saving record){
     	List<Saving> list = getSavingList(record.getPlayerid());
     	if (list==null)
     		return false;
@@ -225,7 +225,7 @@ public class SavingManager extends MgrBase{
     	return false;
     }
     
-    public synchronized boolean updateSaving(int playerId,Saving record){
+    public boolean updateSaving(int playerId,Saving record){
     	List<Saving> list = getSavingList(playerId);
     	if (list==null)
     		return false;
@@ -269,7 +269,7 @@ public class SavingManager extends MgrBase{
     	return saving;
 	}
     
-    public synchronized List<Integer> getSavingIds(int playerId){
+    public List<Integer> getSavingIds(int playerId){
     	List<Integer> itemids = new ArrayList<Integer>();
     	List<Saving> list = getSavingList(playerId);
     	if (list!=null){
@@ -308,7 +308,7 @@ public class SavingManager extends MgrBase{
 	 * @param Saving 对象
 	 * @return int 0表示增加成功
 	 * */
-	public synchronized int deleteSaving(int playerId,Saving record){
+	public int deleteSaving(int playerId,Saving record){
 		List<Saving> list = getSavingList(playerId);
 		if (list==null)
 			return RetMsg.MSG_SavingNotExist;
@@ -350,7 +350,7 @@ public class SavingManager extends MgrBase{
 	 * @param Saving 对象
 	 * @return int 0表示增加成功
 	 * */
-	public synchronized int addSaving(int playerId,Saving record){
+	public int addSaving(int playerId,Saving record){
 		List<Saving> list = getSavingList(playerId);
 		boolean found = false;
 		if (list==null){

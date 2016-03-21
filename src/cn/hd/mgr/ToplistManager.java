@@ -144,7 +144,7 @@ public class ToplistManager extends MgrBase{
     	log.warn("reset week and month toplist,week:" + currWeekToplist.size()+",month:"+currMonthToplist.size());      
     }
     
-	public synchronized Toplist findByPlayerId(int playerid){		
+	public Toplist findByPlayerId(int playerid){		
 		Toplist item = toplistMap.get(playerid);
 		if (item==null){
 			Jedis jedis = jedisClient.getJedis();
@@ -188,7 +188,7 @@ public class ToplistManager extends MgrBase{
 	 * @param float 财富值
 	 * @return int 排名
 	 * */
-	public synchronized int findTopCount(Toplist top,int type,float fPMoney){
+	public int findTopCount(Toplist top,int type,float fPMoney){
 		int intMoney = Float.valueOf(fPMoney).intValue();
 		BigDecimal fMoney = BigDecimal.valueOf(intMoney);
 		if (top!=null){
@@ -231,7 +231,7 @@ public class ToplistManager extends MgrBase{
 	 * @param Toplist对象
 	 * @return int 0表示点赞成功
 	 * */
-	public synchronized int updateZan(Toplist toplist){
+	public int updateZan(Toplist toplist){
 		Toplist top = findByPlayerId(toplist.getPlayerid());
 		if (top!=null){
 			top.setZan(toplist.getZan());
@@ -265,7 +265,7 @@ public class ToplistManager extends MgrBase{
 		return 0;
 	}
 	
-	private synchronized String buildTopsStr(List<Toplist> list){
+	private String buildTopsStr(List<Toplist> list){
 //		String itemStr = "";
 		List<Vector<String>> data = new ArrayList<Vector<String>>();
 		for (Toplist item:list){
@@ -287,7 +287,7 @@ public class ToplistManager extends MgrBase{
 	 * @param double 财富值
 	 * @return boolean true表示增加成功
 	 * */
-	public synchronized boolean addRegisterToplist(int playerid,String playerName,double money){
+	public boolean addRegisterToplist(int playerid,String playerName,double money){
 			Toplist newtop = new Toplist();
 			newtop.setPlayerid(playerid);
 			String pName = playerName;
@@ -316,7 +316,7 @@ public class ToplistManager extends MgrBase{
 	 * @param double 财富值
 	 * @return boolean true表示增加成功
 	 * */
-	public synchronized boolean addToplist(int playerid,String playerName,double money){
+	public boolean addToplist(int playerid,String playerName,double money){
 		Toplist newtop = findByPlayerId(playerid);
 		if (newtop==null) {
 			return addRegisterToplist(playerid,playerName,money);	
@@ -359,7 +359,7 @@ public class ToplistManager extends MgrBase{
 		return firstDate;
 	}
 	
-	public synchronized List<Toplist> getTopItems(String startMonth,boolean isFirst){
+	public List<Toplist> getTopItems(String startMonth,boolean isFirst){
 		List<Toplist> tops = new ArrayList<Toplist>();
 		
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
@@ -422,7 +422,7 @@ public class ToplistManager extends MgrBase{
 	 * @param int 数量
 	 * @return String json排名数据
 	 * */
-	public synchronized String getActivityList(int count){
+	public String getActivityList(int count){
 		
     	Jedis jedis = jedisClient.getJedis();   	
 		
@@ -447,7 +447,7 @@ public class ToplistManager extends MgrBase{
     	
 		return JSON.toJSONString(tops);
 	}
-	public synchronized List<Toplist> getAlltoplist(int count){
+	public List<Toplist> getAlltoplist(int count){
 		List<Toplist> tops = new ArrayList<Toplist>();
 		
 		List<Toplist> list = new ArrayList<Toplist>();
@@ -471,7 +471,7 @@ public class ToplistManager extends MgrBase{
 	 * @param float 财富值
 	 * @return boolean true表示更新成功
 	 * */
-	public synchronized boolean updateToplist(int playerid,String playerName,double money){
+	public boolean updateToplist(int playerid,String playerName,double money){
 		Toplist toplist = findByPlayerId(playerid);
 		int imoney = Double.valueOf(money).intValue();
 		if (toplist==null){
@@ -491,7 +491,7 @@ public class ToplistManager extends MgrBase{
 		return true;		
 	}
 	
-	public synchronized String list(int playerid,int type){
+	public String list(int playerid,int type){
 			return topAction.list(playerid);
 		}
 	
@@ -519,7 +519,7 @@ public class ToplistManager extends MgrBase{
 		return amount;
 	}
 	
-	public synchronized int findCountByGreaterMoney(int playerid,int type,float fPMoney){
+	public int findCountByGreaterMoney(int playerid,int type,float fPMoney){
 		Toplist top = findByPlayerId(playerid);
 		return findTopCount(top,type,fPMoney);
 	}
@@ -529,7 +529,7 @@ public class ToplistManager extends MgrBase{
 	 * @param int 类型，表示当周还是当月
 	 * @return List<Toplist> 排名列表
 	 * */
-	public synchronized String findByType(int type){
+	public String findByType(int type){
 		
 		if (type==0)
 			return topWeekToplistStr;

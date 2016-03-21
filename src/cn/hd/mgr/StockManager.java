@@ -112,7 +112,7 @@ public class StockManager extends MgrBase{
     }
         
     
-	public synchronized Map<Integer,List<Stock>> findMapStocks(int playerId)
+	public Map<Integer,List<Stock>> findMapStocks(int playerId)
 	{
 		Map<Integer,List<Stock>> smap = new HashMap<Integer,List<Stock>>();
 		
@@ -132,7 +132,7 @@ public class StockManager extends MgrBase{
 		return smap;
 	}
 	
-	public synchronized int updateStock(Stock stock){
+	public int updateStock(Stock stock){
 		List<Stock> list =getStockList(stock.getPlayerid());
 		boolean updated = false;
 		for (Stock item:list){

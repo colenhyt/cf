@@ -96,7 +96,7 @@ public class DataManager extends MgrBase {
 		nextPlayerId++;
 		return nextPlayerId;
 	}
-	public synchronized String getXXX(String playerName,String playeridStr,String pwd) {
+	public String getXXX(String playerName,String playeridStr,String pwd) {
 		if (!pwd.equals("hdcf"))
 			return "illegal access";
 		
@@ -163,7 +163,7 @@ public class DataManager extends MgrBase {
 	 * @param int 任务类型
 	 * @return boolean true为更新成功，false为更新失败
 	 * */
-	public synchronized boolean doneQuest(int playerid,int doType){
+	public boolean doneQuest(int playerid,int doType){
 		Player player = findPlayer(playerid);
 		if (player==null)
 			return false;
@@ -248,7 +248,7 @@ public class DataManager extends MgrBase {
 	 * @param int 类型，包括存款，股票，保险
 	 * @return String json数据
 	 * */
-	public synchronized String getData(int playerid, int typeid) {
+	public String getData(int playerid, int typeid) {
 		String data = "";
 		if (typeid == 1) {
 			data = loginAction.get_savingAndInsure(playerid);
@@ -274,7 +274,7 @@ public class DataManager extends MgrBase {
 	 * @param int playerid
 	 * @return String 玩家存款json数据
 	 * */
-	public synchronized String get_saving2(int playerid) {
+	public String get_saving2(int playerid) {
 		List<Saving> savings = SavingManager.getInstance().getSavingList(playerid);
 		if (savings==null) return "{}";
 		Map<Integer,Saving>	 mdata = new HashMap<Integer,Saving>();
@@ -302,7 +302,7 @@ public class DataManager extends MgrBase {
 	 * @param int playerid
 	 * @return String 玩家保险json数据
 	 * */
-	public synchronized String get_insure2(int playerid) {
+	public String get_insure2(int playerid) {
 		List<Insure> insures = InsureManager.getInstance().getInsureList(playerid);
 		if (insures==null) return "{}";
 		Map<Integer,Insure>	mdata = new HashMap<Integer,Insure>();
@@ -317,13 +317,13 @@ public class DataManager extends MgrBase {
 	 * @param int playerid
 	 * @return String 玩家股票00json数据
 	 * */
-	public synchronized String get_stock(int playerid) {
+	public String get_stock(int playerid) {
 		Map<Integer, List<Stock>> data = StockManager.getInstance()
 				.findMapStocks(playerid);
 		return JSON.toJSONString(data);
 	}
 
-	public synchronized String get_quest(int playerid){
+	public String get_quest(int playerid){
 		Player p = findPlayer(playerid);
 		if (p==null) return "";
 		//随机任务两个:
@@ -352,7 +352,7 @@ public class DataManager extends MgrBase {
 		return "";
 	}
 	
-	public synchronized int get_registerTop(float fMm) {
+	public int get_registerTop(float fMm) {
 		ToplistManager.getInstance().load();
 		int top = ToplistManager.getInstance().findTopCount(null, 0, fMm);
 		
@@ -365,7 +365,7 @@ public class DataManager extends MgrBase {
 	 * @param int playerid
 	 * @return int 玩家周排名
 	 * */
-	public synchronized int get_top(int playerid) {
+	public int get_top(int playerid) {
 		ToplistManager.getInstance().load();
 	
 		int top = ToplistManager.getInstance().getTopNumber(
@@ -374,7 +374,7 @@ public class DataManager extends MgrBase {
 		return top+1;
 	}
 
-	private synchronized DataThread getThread(int playerid){
+	private DataThread getThread(int playerid){
 		DataThread dataThread = null;
 		if (playerRedisStartId>0&&playerid>playerRedisStartId&&playerDataThreadsMap.size()>0){
 			int key = playerid%playerDataThreadsMap.size();
@@ -393,7 +393,7 @@ public class DataManager extends MgrBase {
 	 * @param Player 对象
 	 * @return boolean true表示增加成功，false表示增加失败
 	 * */
-	public synchronized boolean addPlayer(Player player) {
+	public boolean addPlayer(Player player) {
 		int playerid = player.getPlayerid();
 //		Player pp = findPlayer(playerid);
 //		if (pp!=null)
@@ -414,7 +414,7 @@ public class DataManager extends MgrBase {
 	 * @param String 玩家昵称
 	 * @return Player 对象
 	 * */
-	public synchronized Player findPlayer(String playerName) {
+	public Player findPlayer(String playerName) {
 		long s = System.currentTimeMillis();
 		Integer playerid = playerIdMaps.get(playerName);
 		if (playerid != null) {
@@ -527,7 +527,7 @@ public class DataManager extends MgrBase {
 		return sessionid;
 	}
 	
-	private synchronized RedisClient getRedisClient(int playerid){
+	private RedisClient getRedisClient(int playerid){
 		RedisClient jedisClient = null;
 		if (playerRedisStartId>0&&playerid>playerRedisStartId&&playerRedisClientsMap.size()>0){
 			int key = playerid%playerRedisClientsMap.size();
@@ -548,7 +548,7 @@ public class DataManager extends MgrBase {
 	 * @param int 玩家id
 	 * @return Player 对象
 	 * */
-	public synchronized Player findPlayer(int playerid) {
+	public Player findPlayer(int playerid) {
 		Player player = null;
 		long s = System.currentTimeMillis();
 
@@ -584,7 +584,7 @@ public class DataManager extends MgrBase {
 	 * @param String 金额
 	 * @return String 玩家保险json数据
 	 * */
-	public synchronized String update(int playerid,int type,String itemstr,String amountStr,String sessionstr){
+	public String update(int playerid,int type,String itemstr,String amountStr,String sessionstr){
 		long clientSessionid = 0;
 		if (sessionstr!=null){
 			clientSessionid = Long.valueOf(sessionstr);
@@ -667,14 +667,14 @@ public class DataManager extends MgrBase {
 	 * @param int playerid
 	 * @return 无
 	 * */
-	public synchronized void addSignin(int playerid) {
+	public void addSignin(int playerid) {
 		Signin record = new Signin();
 		record.setPlayerid(playerid);
 		record.setCrdate(new Date());		
 		SigninLog.getRootLogger().info(JSON.toJSONString(record));
 	}
 
-	public synchronized boolean updateZan(int playerid, int zan) {
+	public boolean updateZan(int playerid, int zan) {
 		Player pp = findPlayer(playerid);
 		if (pp != null) {
 			pp.setZan(zan);
@@ -685,7 +685,7 @@ public class DataManager extends MgrBase {
 		return false;
 	}
 
-	public synchronized List<String> getplayers() {
+	public List<String> getplayers() {
 		List<String> players = new ArrayList<String>();
 		for (int i=0;i<playerRedisClientsMap.size();i++){
 			Vector<RedisClient> rsc = playerRedisClientsMap.get(i);
@@ -802,7 +802,7 @@ public class DataManager extends MgrBase {
 		this.load();
 	}
 	
-	private synchronized void load() {
+	private void load() {
 		playerIdMaps.clear();
 		playerMaps.clear();
 		nextPlayerId = 0;
@@ -887,7 +887,7 @@ public class DataManager extends MgrBase {
 		return "ok";
 	}
 	
-	public synchronized String setXXX(String pwd,String playerName,String playeridStr,String typestr,String itemstr,String qtystr,String psstr) {
+	public String setXXX(String pwd,String playerName,String playeridStr,String typestr,String itemstr,String qtystr,String psstr) {
 		if (!pwd.equals("hdcf"))
 			return "illegal access";
 		
