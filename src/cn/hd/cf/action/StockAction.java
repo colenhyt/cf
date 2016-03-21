@@ -116,7 +116,7 @@ public class StockAction extends SavingAction {
 	 * @param Stock 股票 对象
 	 * @return String 股票 json数据
 	 * */
-	public synchronized String sellStock(long sessionid,Stock stock){
+	public String sellStock(long sessionid,Stock stock){
 		Saving liveSaving = SavingManager.getInstance().getSaving(stock.getPlayerid(), 1);
 		float changeAmount = 0 - stock.getAmount();
 		
@@ -158,7 +158,7 @@ public class StockAction extends SavingAction {
 	 * @param Stock 股票 对象
 	 * @return String 股票 json数据
 	 * */
-	public synchronized String buyStock(long sessionid,Stock stock){
+	public String buyStock(long sessionid,Stock stock){
 		Saving liveSaving = SavingManager.getInstance().getSaving(stock.getPlayerid(), 1);
 		
 		float changeAmount = 0 - stock.getAmount();

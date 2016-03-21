@@ -204,7 +204,7 @@ public class DataManager extends MgrBase {
 		return false;
 	}
 	
-	public synchronized String login(String openId,String playerName,String sexstr,String playerstr,String settingStr,HttpServletRequest request) {
+	public String login(String openId,String playerName,String sexstr,String playerstr,String settingStr,HttpServletRequest request) {
 		//long clientSessionid = 0;
 //		String sessionstr = request.getParameter("sessionid");
 //		if (sessionstr!=null){
@@ -440,7 +440,7 @@ public class DataManager extends MgrBase {
 	}
 
 	//是否能执行存款，股票，保险，签到等登陆后修改数据操作:
-	public synchronized long canSubmit(int playerid,long clientSessionid) {
+	public long canSubmit(int playerid,long clientSessionid) {
 		return 1;
 //		//不限制:
 //		if (SESSION_PERIOD==-1)
@@ -472,7 +472,7 @@ public class DataManager extends MgrBase {
 	}
 
 	//是否能进行登陆:
-	public synchronized long canLogin(int playerid,long clientSessionid,boolean isRegister) {
+	public long canLogin(int playerid,long clientSessionid,boolean isRegister) {
 		return 1;
 //		//不限制:
 //		if (SESSION_PERIOD==-1)
@@ -571,7 +571,7 @@ public class DataManager extends MgrBase {
 		return player;
 	}
 
-	public synchronized void updatePlayerQuest(Player player) {
+	public void updatePlayerQuest(Player player) {
 		DataThread dataThread = getThread(player.getPlayerid());
 		dataThread.updatePlayer(player);
 	}

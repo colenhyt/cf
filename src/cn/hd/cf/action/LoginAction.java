@@ -145,7 +145,7 @@ public class LoginAction extends SavingAction {
 	 * @param p 
 	 * @return string json返回数据
 	 * */
-	public synchronized String loginPlayer(Player p,String openid,long clientSessionid)
+	public String loginPlayer(Player p,String openid,long clientSessionid)
 	{
 		if (!p.getOpenid().equals(openid))
 			return super.msgStr(RetMsg.MSG_PlayerNameIsExist);
@@ -176,7 +176,7 @@ public class LoginAction extends SavingAction {
 	 * @param player对象
 	 * @return string json返回数据
 	 * */
-	public synchronized String login(int playerid,String playername,String openid,byte sex,long clientSessionid)
+	public String login(int playerid,String playername,String openid,byte sex,long clientSessionid)
 	{
 		DataManager mgr = DataManager.getInstance();
 		if (playerid>0){
@@ -344,7 +344,7 @@ public class LoginAction extends SavingAction {
 	 * @param String playername
 	 * @return string json返回数据
 	 * */
-	public synchronized String register(String playername,String openid,byte sex,long clientSessionid){
+	public String register(String playername,String openid,byte sex,long clientSessionid){
 		DataManager mgr = DataManager.getInstance();
 
 		//System.out.println("玩家注册:"+player.getPlayername());

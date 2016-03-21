@@ -254,7 +254,7 @@ public class SavingManager extends MgrBase{
 	 * @param int 存款id
 	 * @return Saving 对象
 	 * */
-    public synchronized Saving getSaving(int playerId,int itemid){
+    public Saving getSaving(int playerId,int itemid){
 		Saving saving = null;
     	List<Saving> list = getSavingList(playerId);
     	if (list==null)
@@ -285,7 +285,7 @@ public class SavingManager extends MgrBase{
 	 * @param int playerid
 	 * @return Saving 对象列表
 	 * */
-    public synchronized List<Saving> getSavingList(int playerId){
+    public List<Saving> getSavingList(int playerId){
     	List<Saving> list = null;
     	if (list==null){
     		int index = playerId%redisClients.size();
@@ -335,7 +335,7 @@ public class SavingManager extends MgrBase{
 	 * @param Saving 对象
 	 * @return int 0表示增加成功
 	 * */
-	public synchronized int addFirstSaving(int playerId,Saving record){
+	public int addFirstSaving(int playerId,Saving record){
 		List<Saving> list  = new ArrayList<Saving>();
 		//savingsMap.put(playerId, list);
 		list.add(record);

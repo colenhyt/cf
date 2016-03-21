@@ -495,7 +495,7 @@ public class ToplistManager extends MgrBase{
 			return topAction.list(playerid);
 		}
 	
-	public synchronized float getCurrentTotalMoney(int playerId,float totalSaving){
+	public float getCurrentTotalMoney(int playerId,float totalSaving){
 		float savingamount = Float.valueOf(totalSaving).intValue();
 		
 		float insureamount = InsureManager.getInstance().getInsureAmount(playerId);
@@ -504,7 +504,7 @@ public class ToplistManager extends MgrBase{
 		return amount;
 	}
 	
-	public synchronized float calculatePlayerMoney(int playerId){
+	public float calculatePlayerMoney(int playerId){
 		List<Saving> savings = SavingManager.getInstance().getSavingList(playerId);
 		float savingamount = 0;
 		if (savings!=null){

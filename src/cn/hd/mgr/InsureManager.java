@@ -105,7 +105,7 @@ public class InsureManager extends MgrBase{
 	 * @param int playerid
 	 * @return float 保险总金额
 	 * */
-    public synchronized float getInsureAmount(int playerId){
+    public float getInsureAmount(int playerId){
 		float insureamount = 0;
 		List<Insure> insures = getInsureList(playerId);
 		if (insures!=null){
@@ -122,7 +122,7 @@ public class InsureManager extends MgrBase{
 	 * @param int playerid
 	 * @return Insure list 对象
 	 * */
-    public synchronized List<Insure> getInsureList(int playerId){
+    public List<Insure> getInsureList(int playerId){
     	List<Insure> list = null;
     	if (list==null){
     		int index = playerId%redisClients.size();
