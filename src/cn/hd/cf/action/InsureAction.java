@@ -12,31 +12,31 @@ import cn.hd.mgr.SavingManager;
 import com.alibaba.fastjson.JSON;
 
 public class InsureAction extends SavingAction {
-	private Insure		insure;
-
-	/**
-	 * 获取insure参数
-	 * @return insure
-	 * */
-	public Insure getInsure() {
-		return insure;
-	}
-
-	/**
-	 * 设置insure参数
-	 * @param insure 对象
-	 * @return 无
-	 * */
-	public void setInsure(Insure insure) {
-		this.insure = insure;
-	}
+//	private Insure		insure;
+//
+//	/**
+//	 * 获取insure参数
+//	 * @return insure
+//	 * */
+//	public Insure getInsure() {
+//		return insure;
+//	}
+//
+//	/**
+//	 * 设置insure参数
+//	 * @param insure 对象
+//	 * @return 无
+//	 * */
+//	public void setInsure(Insure insure) {
+//		this.insure = insure;
+//	}
 
 	/**
 	 * 保险产品购买
 	 * @param insure 对象
 	 * @return 购买inusre json数据
 	 * */
-	public synchronized String add(long sessionid)
+	public synchronized String add(long sessionid,Insure insure)
 	{
 		Saving liveSaving = SavingManager.getInstance().getSaving(insure.getPlayerid(), 1);
 		if (liveSaving.getAmount()<insure.getAmount())

@@ -427,8 +427,8 @@ public class StockManager extends MgrBase{
 		item.setQty(qty);
 		item.setAmount(amount);
 		item.setPrice(price);
-		action.setStock(item);
-		return action.add(canSubmit);
+		//action.setStock(item);
+		return action.add(canSubmit,item);
 	}
 
 	public static void main(String[] args) {

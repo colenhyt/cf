@@ -21,15 +21,15 @@ import com.alibaba.fastjson.JSONArray;
 
 public class StockAction extends SavingAction {
 	private StockManager stockMgr;
-	private Stock	stock;
-	
-	public Stock getStock() {
-		return stock;
-	}
-
-	public void setStock(Stock stock) {
-		this.stock = stock;
-	}
+//	private Stock	stock;
+//	
+//	public Stock getStock() {
+//		return stock;
+//	}
+//
+//	public void setStock(Stock stock) {
+//		this.stock = stock;
+//	}
 
 	public StockAction(){
 		stockMgr = StockManager.getInstance();
@@ -40,9 +40,13 @@ public class StockAction extends SavingAction {
 	 * @return String 行情json数据
 	 * */
 	public String quotes(){
-		List<Quote> lquotes = StockManager.getInstance().getBigQuotes(stock.getId());
-		String str = JSON.toJSONString(lquotes);
-		write(str,"utf-8");		
+		String stockidstr = getHttpRequest().getParameter("stockid");
+		if (stockidstr!=null){
+			int stockid = Integer.valueOf(stockidstr);
+			List<Quote> lquotes = StockManager.getInstance().getBigQuotes(stockid);
+			String str = JSON.toJSONString(lquotes);
+			write(str,"utf-8");		
+		}
 		//log.warn("stock("+stock.getId()+") found quote sizes:"+lquotes.size()+",string:"+str.length());
 		return null;
 	}
@@ -89,7 +93,7 @@ public class StockAction extends SavingAction {
 	 * @param Stock 股票 对象
 	 * @return String 股票 json数据
 	 * */
-	public synchronized String add(long sessionid){
+	public synchronized String add(long sessionid,Stock stock){
 		if (stock.getQty()==0){
 			return msgStr2(RetMsg.MSG_StockQtyIsZero,String.valueOf(sessionid));
 		}
@@ -101,9 +105,9 @@ public class StockAction extends SavingAction {
 		}
 		
 		if (stock.getQty()>0){
-			return this.buyStock(sessionid);
+			return this.buyStock(sessionid,stock);
 		}else {
-			return this.sellStock(sessionid);
+			return this.sellStock(sessionid,stock);
 		}
 	}	
 
@@ -112,7 +116,7 @@ public class StockAction extends SavingAction {
 	 * @param Stock 股票 对象
 	 * @return String 股票 json数据
 	 * */
-	public synchronized String sellStock(long sessionid){
+	public synchronized String sellStock(long sessionid,Stock stock){
 		Saving liveSaving = SavingManager.getInstance().getSaving(stock.getPlayerid(), 1);
 		float changeAmount = 0 - stock.getAmount();
 		
@@ -154,7 +158,7 @@ public class StockAction extends SavingAction {
 	 * @param Stock 股票 对象
 	 * @return String 股票 json数据
 	 * */
-	public synchronized String buyStock(long sessionid){
+	public synchronized String buyStock(long sessionid,Stock stock){
 		Saving liveSaving = SavingManager.getInstance().getSaving(stock.getPlayerid(), 1);
 		
 		float changeAmount = 0 - stock.getAmount();

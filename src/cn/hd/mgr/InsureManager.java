@@ -19,7 +19,7 @@ import com.alibaba.fastjson.JSON;
 
 public class InsureManager extends MgrBase{
 	private Map<Integer,Insure>	insureCfgMap;
-	private Map<Integer,List<Insure>>	insuresMap;
+	//private Map<Integer,List<Insure>>	insuresMap;
 	private InsureAction action;
 	private Vector<RedisClient> redisClients;
 	
@@ -66,7 +66,7 @@ public class InsureManager extends MgrBase{
     	}
     	log.warn("init insuredata:"+insureCfgMap.size());
     	
-    	insuresMap = Collections.synchronizedMap(new HashMap<Integer,List<Insure>>());
+    	//insuresMap = Collections.synchronizedMap(new HashMap<Integer,List<Insure>>());
     	
 //    	Jedis jedis = jedisClient.getJedis();   
 //    	
@@ -214,9 +214,9 @@ public class InsureManager extends MgrBase{
 		}    	
 
 		long clientSessionid = 0;
-		if (sessionstr!=null){
-			clientSessionid = Long.valueOf(sessionstr);
-		}
+//		if (sessionstr!=null){
+//			clientSessionid = Long.valueOf(sessionstr);
+//		}
 		long canSubmit = DataManager.getInstance().canSubmit(playerid, clientSessionid);
 		if (canSubmit<=0){
 			return action.msgStr((int)canSubmit);
@@ -228,8 +228,8 @@ public class InsureManager extends MgrBase{
 		item.setQty(qty);
 		item.setAmount(amount);
 		item.setPrice(price);
-		action.setInsure(item);
-		return action.add(canSubmit);
+//		action.setInsure(item);
+		return action.add(canSubmit,item);
 	}
 
 	/**
