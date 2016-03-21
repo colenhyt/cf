@@ -40,7 +40,6 @@ public class StockManager extends MgrBase{
 	private List<Stockdata> stockData;
     private static StockManager uniqueInstance = null;  
 	private Vector<RedisClient> redisClients;
-	private StockAction action;
 	
     public static StockManager getInstance() {  
         if (uniqueInstance == null) {  
@@ -50,8 +49,7 @@ public class StockManager extends MgrBase{
      } 
     
     public void init(){
-    	action = new StockAction();
-		lastQuoteTime = System.currentTimeMillis();
+ 		lastQuoteTime = System.currentTimeMillis();
 		lastUpdateDate = null;
 		
 		redisClients = new Vector<RedisClient>();
@@ -408,6 +406,7 @@ public class StockManager extends MgrBase{
 	 * @return String 股票数据
 	 * */
 	public synchronized String add(int playerid,int itemid,int qty,float price,float amount,String sessionstr){
+	   	StockAction action = new StockAction();
 		Player p = DataManager.getInstance().findPlayer(playerid);
 		if (p==null){
 			return action.msgStr(RetMsg.MSG_PlayerNotExist);

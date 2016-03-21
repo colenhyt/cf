@@ -20,7 +20,6 @@ import com.alibaba.fastjson.JSON;
 public class InsureManager extends MgrBase{
 	private Map<Integer,Insure>	insureCfgMap;
 	//private Map<Integer,List<Insure>>	insuresMap;
-	private InsureAction action;
 	private Vector<RedisClient> redisClients;
 	
     public synchronized Insure getInsureCfg(int itemId) {
@@ -37,8 +36,7 @@ public class InsureManager extends MgrBase{
      } 
     
     public void init(){
-    	action = new InsureAction();
-		
+ 		
 		redisClients = new Vector<RedisClient>();
 		dataThreads = new Vector<DataThread>();
 		 for (int i=0;i<redisCfg1.getThreadCount();i++){
@@ -208,6 +206,7 @@ public class InsureManager extends MgrBase{
 	 * @return String 保险数据
 	 * */
 	public synchronized String add(int playerid,int itemid,int qty,float price,float amount,String sessionstr){
+	   	InsureAction action = new InsureAction();
 		Player p = DataManager.getInstance().findPlayer(playerid);
 		if (p==null){
 			return action.msgStr(RetMsg.MSG_PlayerNotExist);
