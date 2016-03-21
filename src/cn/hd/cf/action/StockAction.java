@@ -93,7 +93,7 @@ public class StockAction extends SavingAction {
 	 * @param Stock 股票 对象
 	 * @return String 股票 json数据
 	 * */
-	public synchronized String add(long sessionid,Stock stock){
+	public String add(long sessionid,Stock stock){
 		if (stock.getQty()==0){
 			return msgStr2(RetMsg.MSG_StockQtyIsZero,String.valueOf(sessionid));
 		}

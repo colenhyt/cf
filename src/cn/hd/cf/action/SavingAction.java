@@ -214,7 +214,7 @@ public class SavingAction extends BaseAction {
 		}
 	}
 
-	public synchronized float findUpdatedInsures(int playerId,Saving liveSaving,Map<Integer,Insure> mdata)
+	public float findUpdatedInsures(int playerId,Saving liveSaving,Map<Integer,Insure> mdata)
 		{
 			List<Insure> insures = InsureManager.getInstance().getInsureList(playerId);
 //			System.out.println("找到保险个数:"+playerId+" from db:"+insures.size()+",session:"+MybatisSessionFactory.getSession().toString());

@@ -152,7 +152,7 @@ public class StockManager extends MgrBase{
 		return RetMsg.MSG_StockNotExist;
 	}
 	
-    public synchronized List<Stock> getStockList(int playerId){
+    public List<Stock> getStockList(int playerId){
     	List<Stock> list = null;
     	if (list==null){
     		int index = playerId%redisClients.size();
@@ -173,7 +173,7 @@ public class StockManager extends MgrBase{
 	 * @param int playerid
 	 * @return float 总金额
 	 * */
-	public synchronized float getStockAmount(int playerid){
+	public float getStockAmount(int playerid){
 		List<Stock> stocks = getStockList(playerid);
 		float stockamount = 0;
 		if (stocks!=null){
@@ -225,7 +225,7 @@ public class StockManager extends MgrBase{
 	 * 交易市场是否开市
 	 * @return boolean true表示开市, false表示休市
 	 * */
-    public synchronized boolean isStockOpen(){
+    public boolean isStockOpen(){
 		Date now = new Date();
 		Calendar cl = Calendar.getInstance();
 		cl.setTime(now);
@@ -332,7 +332,7 @@ public class StockManager extends MgrBase{
 	 * @param Stock 对象
 	 * @return int 0表示增加成功
 	 * */
-    public synchronized int addStock(int playerId,Stock record){
+    public int addStock(int playerId,Stock record){
 		List<Stock> list = getStockList(playerId);
 		if (list==null){
 			list = new ArrayList<Stock>();
@@ -351,7 +351,7 @@ public class StockManager extends MgrBase{
 	 * @param int 抛售数量
 	 * @return Vector 股票剩余总额
 	 * */
-	public synchronized Vector<Float> deleteStock(int playerId,int stockId,int qty){
+	public Vector<Float> deleteStock(int playerId,int stockId,int qty){
 		List<Stock> list = getStockList(playerId);
 		Vector<Float> reps = new Vector<Float>();
 		if (list==null)
@@ -405,7 +405,7 @@ public class StockManager extends MgrBase{
 	 * @param float 金额
 	 * @return String 股票数据
 	 * */
-	public synchronized String add(int playerid,int itemid,int qty,float price,float amount,String sessionstr){
+	public String add(int playerid,int itemid,int qty,float price,float amount,String sessionstr){
 	   	StockAction action = new StockAction();
 		Player p = DataManager.getInstance().findPlayer(playerid);
 		if (p==null){

@@ -22,7 +22,7 @@ public class InsureManager extends MgrBase{
 	//private Map<Integer,List<Insure>>	insuresMap;
 	private Vector<RedisClient> redisClients;
 	
-    public synchronized Insure getInsureCfg(int itemId) {
+    public Insure getInsureCfg(int itemId) {
 		return insureCfgMap.get(itemId);
 	}
 
@@ -85,7 +85,7 @@ public class InsureManager extends MgrBase{
 	 * @param int itemid
 	 * @return Insure 对象
 	 * */
-    public synchronized Insure getInsure(int playerId,int itemid){
+    public Insure getInsure(int playerId,int itemid){
 		Insure insure = null;
     	List<Insure> list = getInsureList(playerId);
     	if (list==null)
@@ -144,7 +144,7 @@ public class InsureManager extends MgrBase{
 	 * @param Insure 对象
 	 * @return int 0表示操作成功
 	 * */
-	public synchronized int updateInsure(int playerId,Insure record){
+	public int updateInsure(int playerId,Insure record){
 		List<Insure> list = getInsureList(playerId);
 		if (list==null)
 			return RetMsg.MSG_InsureNotExist;
@@ -173,7 +173,7 @@ public class InsureManager extends MgrBase{
 	 * @param Insure 对象
 	 * @return int 0表示增加成功
 	 * */
-	public synchronized int addInsure(int playerId,Insure record){
+	public int addInsure(int playerId,Insure record){
 		List<Insure> list = getInsureList(playerId);
 		boolean found = false;
 		if (list==null){
@@ -205,7 +205,7 @@ public class InsureManager extends MgrBase{
 	 * @param float 金额
 	 * @return String 保险数据
 	 * */
-	public synchronized String add(int playerid,int itemid,int qty,float price,float amount,String sessionstr){
+	public String add(int playerid,int itemid,int qty,float price,float amount,String sessionstr){
 	   	InsureAction action = new InsureAction();
 		Player p = DataManager.getInstance().findPlayer(playerid);
 		if (p==null){
@@ -237,7 +237,7 @@ public class InsureManager extends MgrBase{
 	 * @param List<Insure> 全部保险
 	 * @return 无
 	 * */
-	public synchronized void updateInsures(int playerId,List<Insure> insures){
+	public void updateInsures(int playerId,List<Insure> insures){
 		DataThread dataThread = dataThreads.get(playerId%dataThreads.size());
 		dataThread.updateInsure(playerId, JSON.toJSONString(insures));
 	}
@@ -248,7 +248,7 @@ public class InsureManager extends MgrBase{
 	 * @param Insure 对象
 	 * @return int 0 表示操作成功
 	 * */
-	public synchronized int deleteInsure(int playerId,Insure record){
+	public int deleteInsure(int playerId,Insure record){
 		List<Insure> list = getInsureList(playerId);
 		if (list==null)
 			return RetMsg.MSG_InsureNotExist;

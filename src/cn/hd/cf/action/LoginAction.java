@@ -51,7 +51,7 @@ public class LoginAction extends SavingAction {
 		return 0;
 	}
 	
-	public synchronized String getPlayerJsonData(Player playerBlob)
+	public String getPlayerJsonData(Player playerBlob)
 	{
 		String insures = DataManager.getInstance().get_insure2(playerBlob.getPlayerid());
 		playerBlob.setInsure(insures);		
@@ -82,7 +82,7 @@ public class LoginAction extends SavingAction {
 	 * @param playerid
 	 * @return string json返回数据
 	 * */
-	public synchronized String get_savingAndInsure(int playerId)
+	public String get_savingAndInsure(int playerId)
 	{
 		Map<Integer,Saving>	 mdata = new HashMap<Integer,Saving>();
 		List<Saving> savings = SavingManager.getInstance().getSavingList(playerId);
@@ -237,7 +237,7 @@ public class LoginAction extends SavingAction {
 	 * @param player 对象
 	 * @return boolean ture为要签到，false为不需要签到
 	 * */
-	private synchronized boolean countSignin(Player p){
+	private boolean countSignin(Player p){
 		Date last = p.getLastlogin();
 		if (DateUtil.isToday(last)){
 			return false;
@@ -263,7 +263,7 @@ public class LoginAction extends SavingAction {
 		return true;
 	}
 	
-	private synchronized String serialize(Player player,int isregister,String savingStr){
+	private String serialize(Player player,int isregister,String savingStr){
 		float margin = StockManager.getInstance().getMarginSec();
 		player.setQuotetime(margin);
 		String pp = JSON.toJSONString(player);
