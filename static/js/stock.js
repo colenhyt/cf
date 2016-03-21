@@ -558,7 +558,7 @@ Stock.prototype.drawStockQuotes = function()
 	g_msg.showload("g_stock.drawStockQuotes");
 
 	try  {
-		$.ajax({type:"post",url:"/cf/stock_quotes.do",data:"stock.id="+stockid,success:function(dataobj){
+		$.ajax({type:"post",url:"/cf/stock_quotes.do",data:"stockid="+stockid,success:function(dataobj){
 			var squotes =cfeval(dataobj);
 			store.set(g_stock.quotename+stockid,squotes);
 			store.set(g_stock.quotetime+stockid,Date.parse(new Date()));
