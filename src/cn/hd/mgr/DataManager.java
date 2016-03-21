@@ -206,16 +206,16 @@ public class DataManager extends MgrBase {
 	
 	public synchronized String login(String openId,String playerName,String sexstr,String playerstr,String settingStr,HttpServletRequest request) {
 		long clientSessionid = 0;
-		String sessionstr = request.getParameter("sessionid");
-		if (sessionstr!=null){
-			clientSessionid = Long.valueOf(sessionstr);
-		}
+//		String sessionstr = request.getParameter("sessionid");
+//		if (sessionstr!=null){
+//			clientSessionid = Long.valueOf(sessionstr);
+//		}
 		
 		String loginStr = "loginReq: openId:"+openId+",playerName:"+playerName+",";
 		if (playerstr!=null)
 			loginStr += "playerid:"+playerstr;
-		loginStr += ",sessioid:"+clientSessionid;
-		loginStr += ",setting:"+settingStr+",ip:"+loginAction.getIpAddress(request);
+		//loginStr += ",sessioid:"+clientSessionid;
+		loginStr += ",setting:"+settingStr; //+",ip:"+loginAction.getIpAddress(request);
 		LogMgr.getInstance().log(-1,loginStr);
 //		return null;
 		if (settingStr!=null&&settingStr.indexOf("android:true")<0&&settingStr.indexOf("iphone:true")<0){
@@ -441,65 +441,67 @@ public class DataManager extends MgrBase {
 
 	//是否能执行存款，股票，保险，签到等登陆后修改数据操作:
 	public synchronized long canSubmit(int playerid,long clientSessionid) {
-		//不限制:
-		if (SESSION_PERIOD==-1)
-			return 1;
-		
-		//执行操作时必须有客户端sessionid:
-		if (clientSessionid<=0)
-			return RetMsg.MSG_WrongSession;
-		
-		long sessionid = findSession(playerid);
-		if (sessionid<=0){
-			return RetMsg.MSG_WrongSession;
-		}
-		
-		long curr = System.currentTimeMillis();
-		long diff = curr - sessionid;
-		if (diff<=SESSION_PERIOD){			//未过期
-			if (sessionid!=clientSessionid)			//有效期内必须相等，否则客户端session无效
-				return RetMsg.MSG_WrongSessionSubmit;
-			else
-				return sessionid;
-		}
-		
-		//session过期,
-		if (sessionid==clientSessionid)
-			return resetSession(playerid);				//原来的session重置,并返回新的sessionid:
-		else
-			return RetMsg.MSG_WrongSessionSubmit;		//非原来的，需要退出重登;
+		return 1;
+//		//不限制:
+//		if (SESSION_PERIOD==-1)
+//			return 1;
+//		
+//		//执行操作时必须有客户端sessionid:
+//		if (clientSessionid<=0)
+//			return RetMsg.MSG_WrongSession;
+//		
+//		long sessionid = findSession(playerid);
+//		if (sessionid<=0){
+//			return RetMsg.MSG_WrongSession;
+//		}
+//		
+//		long curr = System.currentTimeMillis();
+//		long diff = curr - sessionid;
+//		if (diff<=SESSION_PERIOD){			//未过期
+//			if (sessionid!=clientSessionid)			//有效期内必须相等，否则客户端session无效
+//				return RetMsg.MSG_WrongSessionSubmit;
+//			else
+//				return sessionid;
+//		}
+//		
+//		//session过期,
+//		if (sessionid==clientSessionid)
+//			return resetSession(playerid);				//原来的session重置,并返回新的sessionid:
+//		else
+//			return RetMsg.MSG_WrongSessionSubmit;		//非原来的，需要退出重登;
 	}
 
 	//是否能进行登陆:
 	public synchronized long canLogin(int playerid,long clientSessionid,boolean isRegister) {
-		//不限制:
-		if (SESSION_PERIOD==-1)
-			return 1;
-		
-		long serverSessionid = findSession(playerid);
-		//session尚未存在
-		if (serverSessionid<=0){
-			if (clientSessionid>0&&!isRegister)
-				return RetMsg.MSG_WrongSession;			//客户端先于服务器存在
-			else
-				return resetSession(playerid);			//注册/第一次使用/重置, reset并返回最新的
-		}
-		
-		//注册时已有sessionid:
-		if (serverSessionid>0&&isRegister)
-			return RetMsg.MSG_WrongSessionSubmit;
-		
-		long curr = System.currentTimeMillis();
-		long diff = curr - serverSessionid;
-		if (diff>SESSION_PERIOD){			//过期,不管请求方是否为原来的,重置返回新的sessionid
-			return resetSession(playerid);
-		}
-		
-		//session未过期，服务器和客户端必须相等:
-		if (serverSessionid!=clientSessionid)
-			return RetMsg.MSG_WrongSessionSubmit;
-		else
-			return serverSessionid;
+		return 1;
+//		//不限制:
+//		if (SESSION_PERIOD==-1)
+//			return 1;
+//		
+//		long serverSessionid = findSession(playerid);
+//		//session尚未存在
+//		if (serverSessionid<=0){
+//			if (clientSessionid>0&&!isRegister)
+//				return RetMsg.MSG_WrongSession;			//客户端先于服务器存在
+//			else
+//				return resetSession(playerid);			//注册/第一次使用/重置, reset并返回最新的
+//		}
+//		
+//		//注册时已有sessionid:
+//		if (serverSessionid>0&&isRegister)
+//			return RetMsg.MSG_WrongSessionSubmit;
+//		
+//		long curr = System.currentTimeMillis();
+//		long diff = curr - serverSessionid;
+//		if (diff>SESSION_PERIOD){			//过期,不管请求方是否为原来的,重置返回新的sessionid
+//			return resetSession(playerid);
+//		}
+//		
+//		//session未过期，服务器和客户端必须相等:
+//		if (serverSessionid!=clientSessionid)
+//			return RetMsg.MSG_WrongSessionSubmit;
+//		else
+//			return serverSessionid;
 	}
 	
 	public synchronized long resetSession(int playerid) {

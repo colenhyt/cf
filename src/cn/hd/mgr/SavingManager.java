@@ -67,8 +67,8 @@ public class SavingManager extends MgrBase{
 		item.setQty(qty);
 		item.setAmount(amount);
 		item.setPrice(price);
-    	savingAction.setSaving(item);
-    	return savingAction.add(canSubmit);
+    	//savingAction.setSaving(item);
+    	return savingAction.add(canSubmit,item);
     }
     
     public void init(){

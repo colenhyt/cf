@@ -25,15 +25,15 @@ import cn.hd.mgr.ToplistManager;
 import com.alibaba.fastjson.JSON;
 
 public class SavingAction extends BaseAction {
-	public Saving		saving;
-	
-	public Saving getSaving() {
-		return saving;
-	}
-
-	public void setSaving(Saving saving) {
-		this.saving = saving;
-	}
+//	public Saving		saving;
+//	
+//	public Saving getSaving() {
+//		return saving;
+//	}
+//
+//	public void setSaving(Saving saving) {
+//		this.saving = saving;
+//	}
 	
 	public synchronized boolean playerTopUpdate(int playerid){
 		Player player = DataManager.getInstance().findPlayer(playerid);
@@ -103,21 +103,21 @@ public class SavingAction extends BaseAction {
 	 * @param saving 对象
 	 * @return 增加/取出 存款对象json数据
 	 * */
-	public synchronized String add(long sessionid)
+	public synchronized String add(long sessionid, Saving saving2)
 	{
 		//活期不存在存款取款:
-		if (saving.getItemid()==1){
+		if (saving2.getItemid()==1){
 			return msgStr2(RetMsg.MSG_NoSavingData,String.valueOf(sessionid));
 		}
 		
 		Saving newsaving = new Saving();
-		newsaving.setItemid(saving.getItemid());
-		newsaving.setPlayerid(saving.getPlayerid());
-		newsaving.setAmount(saving.getAmount());
+		newsaving.setItemid(saving2.getItemid());
+		newsaving.setPlayerid(saving2.getPlayerid());
+		newsaving.setAmount(saving2.getAmount());
 		int ret = RetMsg.MSG_OK;
 		
 	
-		List<Saving> list = SavingManager.getInstance().getSavingList(saving.getPlayerid());
+		List<Saving> list = SavingManager.getInstance().getSavingList(saving2.getPlayerid());
 		Saving liveSaving = null;
 		int liveIndex = 0;
     	for (int i=0;i<list.size();i++){
@@ -132,47 +132,47 @@ public class SavingAction extends BaseAction {
     		return msgStr2(RetMsg.MSG_NoSavingData,String.valueOf(sessionid));
     	}
     	
-		float changeAmount = 0 - saving.getAmount();
+		float changeAmount = 0 - saving2.getAmount();
 		//取出存款:
-		if (saving.getAmount()<0){
-			Saving saving2 = null;
+		if (saving2.getAmount()<0){
+			Saving saving3 = null;
 			int itemIndex = -1;
 			for (int i=0;i<list.size();i++){
-				if (list.get(i).getItemid().intValue()==saving.getItemid().intValue()){
+				if (list.get(i).getItemid().intValue()==saving2.getItemid().intValue()){
 					itemIndex = i;
-					saving2 = list.get(i);
+					saving3 = list.get(i);
 					break;
 				}
 			}			
-			if (saving2==null){
+			if (saving3==null){
 				return msgStr2(RetMsg.MSG_SavingNotExist,String.valueOf(sessionid));
 			}
 			//已到期的存款:
-			boolean isout = isSavingTimeout(saving2);
-			LogMgr.getInstance().log(saving.getPlayerid()," saving is out:"+isout);
+			boolean isout = isSavingTimeout(saving3);
+			LogMgr.getInstance().log(saving2.getPlayerid()," saving is out:"+isout);
 			float inter  = 0;
-			if ((saving.getStatus()!=null&&saving.getStatus()==1)||isout)		
+			if ((saving2.getStatus()!=null&&saving2.getStatus()==1)||isout)		
 			{
-				inter = (saving2.getAmount()*saving2.getRate()/100);
+				inter = (saving3.getAmount()*saving3.getRate()/100);
 			}else {			//按活期得到利息
-				inter = getLiveInter(saving2);
+				inter = getLiveInter(saving3);
 			}
 			if (Math.abs(inter-0.9)>0){
 				BigDecimal b = new BigDecimal(inter);  
 				int iInter = (int)b.setScale(0,BigDecimal.ROUND_HALF_UP).floatValue();
 				changeAmount += iInter;	
-				LogMgr.getInstance().log(saving.getPlayerid()," get inter:"+iInter);
+				LogMgr.getInstance().log(saving2.getPlayerid()," get inter:"+iInter);
 				newsaving.setProfit((float)iInter);				
 			}
 			list.remove(itemIndex);
 			ret = RetMsg.MSG_OK;
 		}else {
-			if (liveSaving.getAmount()<saving.getAmount())
+			if (liveSaving.getAmount()<saving2.getAmount())
 				return msgStr2(RetMsg.MSG_MoneyNotEnough,String.valueOf(sessionid));
 			
 			boolean found = false;
 			for (int i=0;i<list.size();i++){
-				if (list.get(i).getItemid().intValue()==saving.getItemid().intValue()){
+				if (list.get(i).getItemid().intValue()==saving2.getItemid().intValue()){
 					found = true;
 					break;
 				}
@@ -180,21 +180,21 @@ public class SavingAction extends BaseAction {
 			if (found){
 				return msgStr2(RetMsg.MSG_SavingIsExist,String.valueOf(sessionid));
 			}
-			Saving savingCfg = SavingManager.getInstance().getSavingCfg(saving.getItemid());
-			saving.setName(savingCfg.getName());
+			Saving savingCfg = SavingManager.getInstance().getSavingCfg(saving2.getItemid());
+			saving2.setName(savingCfg.getName());
 			Date d = new Date();
-			saving.setCreatetime(d);
-			saving.setUpdatetime(d);
-			saving.setRate(savingCfg.getRate());
-			saving.setQty(1);
-			saving.setType(savingCfg.getType());
-			saving.setPeriod(savingCfg.getPeriod());
-			list.add(saving);
+			saving2.setCreatetime(d);
+			saving2.setUpdatetime(d);
+			saving2.setRate(savingCfg.getRate());
+			saving2.setQty(1);
+			saving2.setType(savingCfg.getType());
+			saving2.setPeriod(savingCfg.getPeriod());
+			list.add(saving2);
 			ret = RetMsg.MSG_OK;
-			boolean doneQuest = DataManager.getInstance().doneQuest(saving.getPlayerid(), 1);
+			boolean doneQuest = DataManager.getInstance().doneQuest(saving2.getPlayerid(), 1);
 			if (doneQuest){
 				changeAmount += 5000;
-				LogMgr.getInstance().log(saving.getPlayerid()," saving quest prize 5000");
+				LogMgr.getInstance().log(saving2.getPlayerid()," saving quest prize 5000");
 			}
 		}
 		
@@ -205,11 +205,11 @@ public class SavingAction extends BaseAction {
 			newsaving.setSessionid(sessionid);
 			list.get(liveIndex).setAmount(liveSaving.getAmount());
 			String str = JSON.toJSONString(newsaving);
-			LogMgr.getInstance().log(saving.getPlayerid()," add/remove saving itemid="+saving.getItemid()+",ret:"+ret+",amount:"+saving.getAmount()+", retdata:"+str);
-			SavingManager.getInstance().updateSavings(saving.getPlayerid(), list);
+			LogMgr.getInstance().log(saving2.getPlayerid()," add/remove saving itemid="+saving2.getItemid()+",ret:"+ret+",amount:"+saving2.getAmount()+", retdata:"+str);
+			SavingManager.getInstance().updateSavings(saving2.getPlayerid(), list);
 			return msgStr2(RetMsg.MSG_OK,str);
 		}else {
-			LogMgr.getInstance().log(saving.getPlayerid(),",error,saving: "+ret);
+			LogMgr.getInstance().log(saving2.getPlayerid(),",error,saving: "+ret);
 			return msgStr2(ret,String.valueOf(sessionid));
 		}
 	}
