@@ -492,10 +492,7 @@ public class ToplistManager extends MgrBase{
 	}
 	
 	public synchronized String list(int playerid,int type){
-		Toplist toplist = new Toplist();
-		toplist.setPlayerid(playerid);
-		topAction.setToplist(toplist);	
-			return topAction.list();
+			return topAction.list(playerid);
 		}
 	
 	public synchronized float getCurrentTotalMoney(int playerId,float totalSaving){

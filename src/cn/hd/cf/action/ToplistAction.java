@@ -14,10 +14,9 @@ public class ToplistAction extends BaseAction {
 	 * 获取排行榜数据
 	 * @return String 排行榜json数据
 	 * */
-	public synchronized String list(){
+	public synchronized String list(int playerid){
 		ToplistManager mgr = ToplistManager.getInstance();
 		mgr.load();
-		int playerid = toplist.getPlayerid();
 		int zan = 0;
 		float fMoney = 0;
 		Toplist top = mgr.findByPlayerId(playerid);
