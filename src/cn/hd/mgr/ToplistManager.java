@@ -69,10 +69,10 @@ public class ToplistManager extends MgrBase{
 		jedisClient.returnResource(jedis);
     	log.warn("toplist init,reloadtime:"+toplistTime+"s");
     	
-		currWeekToplist = new ArrayList<Toplist>();
-		currMonthToplist = new ArrayList<Toplist>();
-		topWeekToplist = new ArrayList<Toplist>();
-		topMonthToplist = new ArrayList<Toplist>();
+		currWeekToplist = Collections.synchronizedList(new ArrayList<Toplist>());
+		currMonthToplist = Collections.synchronizedList(new ArrayList<Toplist>());
+		topWeekToplist = Collections.synchronizedList(new ArrayList<Toplist>());
+		topMonthToplist = Collections.synchronizedList(new ArrayList<Toplist>());
     	load();
     }
     

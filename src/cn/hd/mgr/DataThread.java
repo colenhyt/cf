@@ -2,16 +2,19 @@ package cn.hd.mgr;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
+import com.alibaba.fastjson.JSON;
+
 import cn.hd.cf.model.Player;
 import cn.hd.cf.model.Signin;
 import cn.hd.cf.model.Stock;
@@ -19,13 +22,13 @@ import cn.hd.cf.model.Toplist;
 import cn.hd.cf.service.PlayerService;
 import cn.hd.util.RedisClient;
 import cn.hd.util.RedisConfig;
-
-import com.alibaba.fastjson.JSON;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Pipeline;
 
 public class DataThread extends Thread {
 	private RedisClient		jedisClient;
-	private Vector<Player> newPlayersVect;
-	private Vector<Player>	updatePlayersVect;	
+	private List<Player> newPlayersVect;
+	private List<Player>	updatePlayersVect;	
 	private Map<Integer,String>		updateSavingMap;
 	
 	private Map<Integer,Vector<String>>		playerLogs;
@@ -40,35 +43,35 @@ public class DataThread extends Thread {
 		this.updateDuration = updateDuration;
 	}
 
-	private Vector<Stock>			newStockVect;
-	private Vector<Stock>			updateStockVect;
-	private Vector<Stock>			deleteStockVect;
-	private Vector<Toplist>			updateToplistVect;		
-	private Vector<Toplist>			updateToplistZanVect;		
-	private Vector<String>			signinVect;
-	private Vector<Integer>			doneQuestVect;
+	private List<Stock>			newStockVect;
+	private List<Stock>			updateStockVect;
+	private List<Stock>			deleteStockVect;
+	private List<Toplist>			updateToplistVect;		
+	private List<Toplist>			updateToplistZanVect;		
+	private List<String>			signinVect;
+	private List<Integer>			doneQuestVect;
 	protected Logger  log = Logger.getLogger(getClass()); 
 	
 	public DataThread(RedisConfig cfg){
 		jedisClient = new RedisClient(cfg);
 		
-		newPlayersVect = new Vector<Player>();
-		updatePlayersVect = new Vector<Player>();
+		newPlayersVect = Collections.synchronizedList(new ArrayList<Player>());
+		updatePlayersVect = Collections.synchronizedList(new ArrayList<Player>());
 		
-		updateSavingMap  = new HashMap<Integer,String>();
+		updateSavingMap  = Collections.synchronizedMap(new HashMap<Integer,String>());
 		
-		updateInsureMap = new HashMap<Integer,String>();
+		updateInsureMap = Collections.synchronizedMap(new HashMap<Integer,String>());
 		
-		updateStockMap = new HashMap<Integer,String>();
+		updateStockMap = Collections.synchronizedMap(new HashMap<Integer,String>());
 		
-		playerLogs = new HashMap<Integer,Vector<String>>();
+		playerLogs = Collections.synchronizedMap(new HashMap<Integer,Vector<String>>());
 		
-		newStockVect = new Vector<Stock>();
-		deleteStockVect = new Vector<Stock>();		
-		updateStockVect = new Vector<Stock>();	
+		newStockVect = Collections.synchronizedList(new ArrayList<Stock>());
+		deleteStockVect = Collections.synchronizedList(new ArrayList<Stock>());		
+		updateStockVect = Collections.synchronizedList(new ArrayList<Stock>());	
 		
-		updateToplistVect = new Vector<Toplist>();
-		updateToplistZanVect = new Vector<Toplist>();
+		updateToplistVect = Collections.synchronizedList(new ArrayList<Toplist>());
+		updateToplistZanVect = Collections.synchronizedList(new ArrayList<Toplist>());
 		
 		signinVect = new Vector<String>();
 		doneQuestVect = new Vector<Integer>();
@@ -80,16 +83,16 @@ public class DataThread extends Thread {
 	 * @return 无
 	 * */
 	public synchronized void push(Player record){
-		InetAddress addr;
-		try {
-			addr = InetAddress.getLocalHost();
-			String ip=addr.getHostAddress().toString();	
-			record.setIpAddress(ip);
-//			log.warn("ip address "+ip);
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-		}
+//		InetAddress addr;
+//		try {
+//			addr = InetAddress.getLocalHost();
+//			String ip=addr.getHostAddress().toString();	
+//			record.setIpAddress(ip);
+////			log.warn("ip address "+ip);
+//		} catch (UnknownHostException e) {
+//			// TODO Auto-generated catch block
+//			//e.printStackTrace();
+//		}
 		newPlayersVect.add(record);
 	}
 	
@@ -286,12 +289,12 @@ public class DataThread extends Thread {
 	    		}	    		
 				
 	        	
-	    		if (doneQuestVect.size()>0){
-	    			PlayerService service2= new PlayerService();
-		    		service2.addDoneQuests(doneQuestVect);
-		    		log.warn("batch add donequest:"+doneQuestVect.size());
-		    		doneQuestVect.clear();    	    			
-	    		}
+//	    		if (doneQuestVect.size()>0){
+//	    			PlayerService service2= new PlayerService();
+//		    		service2.addDoneQuests(doneQuestVect);
+//		    		log.warn("batch add donequest:"+doneQuestVect.size());
+//		    		doneQuestVect.clear();    	    			
+//	    		}
         		p.sync();
         		jedisClient.returnResource(jedis);
 	    		

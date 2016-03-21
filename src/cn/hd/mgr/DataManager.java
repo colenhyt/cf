@@ -205,7 +205,7 @@ public class DataManager extends MgrBase {
 	}
 	
 	public synchronized String login(String openId,String playerName,String sexstr,String playerstr,String settingStr,HttpServletRequest request) {
-		long clientSessionid = 0;
+		//long clientSessionid = 0;
 //		String sessionstr = request.getParameter("sessionid");
 //		if (sessionstr!=null){
 //			clientSessionid = Long.valueOf(sessionstr);
@@ -239,7 +239,7 @@ public class DataManager extends MgrBase {
 		if (playerstr!=null)
 			playerid = Integer.valueOf(playerstr);
 		
-		return loginAction.login(playerid,playerName,openId,(byte)sex,clientSessionid);
+		return loginAction.login(playerid,playerName,openId,(byte)sex,0);
 	}
 
 	/**
