@@ -81,7 +81,7 @@ public class StockAction extends SavingAction {
 		}
 		String quotestr = JSON.toJSONString(mquotes);
 		write(quotestr,"utf-8");		
-		log.warn("request some stocks last quote:"+quotestr);
+		//log.warn("request some stocks last quote:"+quotestr);
 		return null;
 	}	
 
