@@ -180,9 +180,8 @@ public class StockManager extends MgrBase{
 			for (int i=0;i<stocks.size();i++){
 				Stock ps = stocks.get(i);
 				if (ps==null) continue;
-				List<Quote> qq = getLastQuotes(ps.getItemid());
-				if (qq.size()>0)
-					stockamount += qq.get(0).getPrice()*ps.getQty();
+				float currps = getCurrQuotePs(ps.getItemid());
+				stockamount += currps*ps.getQty();
 			}   			
 		}
 		stockamount = Float.valueOf(stockamount).intValue();
@@ -203,6 +202,29 @@ public class StockManager extends MgrBase{
     		}
     	}
     	return quotes;
+    }
+    
+	/**
+	 * 取股票最新行情价格
+	 * @param int 股票id
+	 * @return List<Quote> 行情列表
+	 * */
+    public synchronized float getCurrQuotePs(int stockid){
+    	float currPs = 0;;
+    	if (stockid>=0){
+    		Jedis j3 = jedisClient3.getJedis();
+    		String psstr = j3.hget(MgrBase.DATAKEY_CURRENT_STOCK_PS,String.valueOf(stockid));
+    		if (psstr!=null){
+    			currPs = Float.valueOf(psstr);
+    		}else {
+    			LinkedList<Quote> q = quoteMap.get(stockid);
+    			Quote qs = q.peekLast();
+    			currPs = qs.getPrice();
+    			j3.hset(MgrBase.DATAKEY_CURRENT_STOCK_PS,String.valueOf(stockid),String.valueOf(currPs));
+    		}
+    		jedisClient3.returnResource(j3);    		
+    	}
+    	return currPs;
     }
     
 	/**
@@ -255,6 +277,8 @@ public class StockManager extends MgrBase{
 			}
     		lastUpdateDate = new Date();
 			lastQuoteTime = System.currentTimeMillis();
+			Jedis jedis = jedisClient3.getJedis();
+			Pipeline p0 = jedis.pipelined();
 			for (int i=0;i<stockData.size();i++){
 	    		Stockdata  stock = stockData.get(i);
 	 			LinkedList<Quote> lquote = quoteMap.get(stock.getId());
@@ -290,9 +314,12 @@ public class StockManager extends MgrBase{
 		    		Quote newq = new Quote();
 		    		newq.setPrice(ps);
 		    		lquote.offer(newq);
+	    			p0.hset(MgrBase.DATAKEY_CURRENT_STOCK_PS, String.valueOf(stock.getId()), JSON.toJSONString(ps));
 //	    			log.warn("quotes "+lquote.size()+",str"+JSON.toJSONString(lquote));
 		    		//System.out.println("股票价格变化: "+stock.getName()+",涨跌幅:"+stock.getPer()+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
 		    }	
+    		p0.sync();
+    		jedisClient3.returnResource(jedis);
 		}
 		    	
 		if (tick%STOCK_SAVE_PERIOD==0){

@@ -76,11 +76,8 @@ public class StockAction extends SavingAction {
 			if (ppObj.get(i)==null) continue;
 			String strstockid = (String)ppObj.get(i);
 			int stockid = Integer.valueOf(strstockid);
-			List<Quote> list = stockMgr.getLastQuotes(stockid);
-			if (list.size()>0){
-				Quote q = list.get(0);
-				mquotes.put(stockid, q.getPrice());
-			}
+			float ps = stockMgr.getCurrQuotePs(stockid);
+			mquotes.put(stockid, ps);
 		}
 		String quotestr = JSON.toJSONString(mquotes);
 		write(quotestr,"utf-8");		
