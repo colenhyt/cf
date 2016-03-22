@@ -40,6 +40,7 @@ public class StockManager extends MgrBase{
 	private List<Stockdata> stockData;
     private static StockManager uniqueInstance = null;  
 	private Vector<RedisClient> redisClients;
+	private Vector<RedisClient> quoteClients;
 	
     public static StockManager getInstance() {  
         if (uniqueInstance == null) {  
@@ -73,6 +74,13 @@ public class StockManager extends MgrBase{
     	
 		stockData = new ArrayList<Stockdata>();
 	    	
+		quoteClients = new Vector<RedisClient>();
+		
+		for (int i=0;i<5;i++){
+			RedisClient quclient = new RedisClient(redisCfg3);
+			quoteClients.add(quclient);
+		}
+		
 		Jedis j3 = jedisClient3.getJedis();
 		List<String> stockitems = j3.hvals(MgrBase.DATAKEY_DATA_STOCK);
 		jedisClient3.returnResource(j3);
@@ -212,7 +220,8 @@ public class StockManager extends MgrBase{
     public synchronized float getCurrQuotePs(int stockid){
     	float currPs = 0;;
     	if (stockid>=0){
-    		Jedis j3 = jedisClient3.getJedis();
+    		int index = stockid%quoteClients.size();
+    		Jedis j3 = quoteClients.get(index).getJedis();
     		String psstr = j3.hget(MgrBase.DATAKEY_CURRENT_STOCK_PS,String.valueOf(stockid));
     		if (psstr!=null){
     			currPs = Float.valueOf(psstr);
@@ -222,8 +231,10 @@ public class StockManager extends MgrBase{
     			currPs = qs.getPrice();
     			j3.hset(MgrBase.DATAKEY_CURRENT_STOCK_PS,String.valueOf(stockid),String.valueOf(currPs));
     		}
-    		jedisClient3.returnResource(j3);    		
+    		quoteClients.get(index).returnResource(j3);    		
     	}
+    	 long   l1   =   Math.round(currPs*100);   //四舍五入  
+    	currPs = (float)(l1/100.0);
     	return currPs;
     }
     
@@ -286,7 +297,7 @@ public class StockManager extends MgrBase{
 	 			Random r = new Random();
 	 			
 		    		float r2 = (float)r.nextInt(stock.getPer().intValue());
-		    		float per = r2/100;
+		    		float per = r2/200;
 		    		int addOrMinus = r.nextInt(100);
 		    		Quote quote = lquote.peekLast();
 		    		float ps = quote.getPrice();
@@ -308,7 +319,7 @@ public class StockManager extends MgrBase{
 		    		
 		    		//lquote.poll();	//不删除行情数据:
 		    		
-		    		if (lquote.size()>=500){
+		    		if (lquote.size()>=300){
 		    			lquote.removeFirst();
 		    		}
 		    		Quote newq = new Quote();
@@ -399,11 +410,11 @@ public class StockManager extends MgrBase{
 				needRemoveQty -= ss.getQty();
 				list.remove(i);
 				i--;
-				LogMgr.getInstance().log(playerId,"delete stock:"+ss.getQty());
+				//LogMgr.getInstance().log(playerId,"delete stock:"+ss.getQty());
 			}else {
 				ss.setQty(ss.getQty()-needRemoveQty);
 				ss.setAmount(ss.getQty()*ss.getPrice());
-				LogMgr.getInstance().log(playerId,"update stock:"+ss.getQty());
+				//LogMgr.getInstance().log(playerId,"update stock:"+ss.getQty());
 				needRemoveQty = 0;
 			}
 			if (needRemoveQty==0) {

@@ -115,7 +115,8 @@ public class StockAction extends SavingAction {
 	 * */
 	public String sellStock(long sessionid,Stock stock){
 		Saving liveSaving = SavingManager.getInstance().getSaving(stock.getPlayerid(), 1);
-		float changeAmount = 0 - stock.getAmount();
+		float currps = StockManager.getInstance().getCurrQuotePs(stock.getItemid());
+		float changeAmount = 0 - currps*stock.getQty();
 		
 		int doType = 5;
 		int qq = (0 - stock.getQty());
@@ -157,12 +158,14 @@ public class StockAction extends SavingAction {
 	 * */
 	public String buyStock(long sessionid,Stock stock){
 		Saving liveSaving = SavingManager.getInstance().getSaving(stock.getPlayerid(), 1);
-		
-		float changeAmount = 0 - stock.getAmount();
+		float currps = StockManager.getInstance().getCurrQuotePs(stock.getItemid());
+	
+		float amount = currps*stock.getQty();
+		float changeAmount = 0 - amount;
 		
 		int ret = RetMsg.MSG_OK;
 		int doType = 4;
-		if (liveSaving.getAmount()<stock.getAmount())
+		if (liveSaving.getAmount()<amount)
 			return msgStr2(RetMsg.MSG_MoneyNotEnough,String.valueOf(sessionid));
 		stock.setCreatetime(new Date());
 		ret = stockMgr.addStock(stock.getPlayerid(), stock);	
