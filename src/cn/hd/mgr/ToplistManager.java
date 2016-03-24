@@ -111,7 +111,9 @@ public class ToplistManager extends MgrBase{
 			if (top.getUpdatetime().compareTo(firstWeekDate)>0){
 				allweeklist.add(top);
 			}
-			if (top.getUpdatetime().compareTo(firstMonthDate)>0){
+			//当月全部算上:
+//			if (top.getUpdatetime().compareTo(firstMonthDate)>0)
+			{
 				allmonthlist.add(top);
 			}
 		}
