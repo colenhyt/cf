@@ -94,9 +94,9 @@ Toplist.prototype.showToplist = function(type,page)
  			 content += "        <table class='cf_top_header'>"
 			 content += "             <tr>"
 			 content += "               <td class='cftoplist_content'>昵称</td>"
-			 content += "               <td class='cftoplist_content'>资产</td>"
+			 content += "               <td class='cftoplist_content'>资产(万)</td>"
 			 content += "               <td class='cftoplist_c4'>排名</td>"
-			 content += "               <td class='cftoplist_c3'>赞</td>"
+			 content += "               <td class='cftoplist_c30'>赞</td>"
 			content += "              </tr>"
 			content += "          </table>"
 			 content += "        <table>"
@@ -145,6 +145,7 @@ Toplist.prototype.showToplist = function(type,page)
 				 name = item.playername.substring(0,8);
 			 }else
 				 name = "";
+			 var totalmoney = parseInt(item.money/10000);
 			if (i==0)			//第一个：自己
 			{
 			 var topStr = "无";
@@ -158,7 +159,7 @@ Toplist.prototype.showToplist = function(type,page)
 			 }
 			 content += "             <tr>"
 			 content += "               <td class='cftoplist_content' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+name+"</div></td>"
-			 content += "               <td class='cftoplist_c5' style='color:yellow'><div class='cficon_money toplist' onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+parseInt(item.money)+"</div></td>"
+			 content += "               <td class='cftoplist_c5' style='color:yellow'><div class='cficon_money toplist' onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+totalmoney+"</div></td>"
 			 if (hasImg==true)
 			  content += "               <td class='cftoplist_c4' style='color:yellow'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'><img class='cftoplist_top' src='static/img/icon_top_"+topStr+".png'></div></td>"
 			 else
@@ -168,7 +169,7 @@ Toplist.prototype.showToplist = function(type,page)
 			  if (item.playerid==me.playerid&&!Is_InBrowser)
 			   content += "<input type='button' class='cf_top_share'/><span class='cftoplist_c6'>&nbsp;<span id='zan_"+item.playerid+"'>"+item.zan+"</span></span>"
 			 else
-			   content += "<input type='button' class='cf_top_zan'/><span class='cftoplist_c6'>*<span id='zan_"+item.playerid+"'>"+item.zan+"</span></span>"
+			   content += "<input type='button' class='cf_top_zan'/><span class='cftoplist_c6'><span id='zan_"+item.playerid+"'>"+item.zan+"</span></span>"
 			 content +="</div></td>"
 			 
 			 content += "              </tr>"			
@@ -176,13 +177,13 @@ Toplist.prototype.showToplist = function(type,page)
 			
 			 content += "             <tr>"
 			 content += "               <td class='cftoplist_content'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+name+"</div></td>"
-			 content += "               <td class='cftoplist_c5'><div class='cficon_money toplist' onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+parseInt(item.money)+"</div></td>"
+			 content += "               <td class='cftoplist_c5'><div class='cficon_money toplist' onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+totalmoney+"</div></td>"
 			 if (item.top<=3)
 			  content += "               <td class='cftoplist_c4'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'><img class='cftoplist_top' src='static/img/icon_top_"+item.top+".png'></div></td>"
 			 else
 			  content += "               <td class='cftoplist_c4'><div onclick='g_playerinfo.showOneInfo("+item.playerid+")'>"+item.top+"</div></td>"
 			  
-			 content += "               <td class='cftoplist_c3'><div onclick='g_toplist.zan("+page+","+item.playerid+")'<input type='button' class='cf_top_zan'/><span class='cftoplist_c6'>*<span id='zan_"+item.playerid+"'>"+item.zan+"</span></span></div></td>"
+			 content += "               <td class='cftoplist_c3'><div onclick='g_toplist.zan("+page+","+item.playerid+")'<input type='button' class='cf_top_zan'/><span class='cftoplist_c6' id='zan_"+item.playerid+"'>"+item.zan+"</span></div></td>"
 			 content += "              </tr>"
 			}
 			
