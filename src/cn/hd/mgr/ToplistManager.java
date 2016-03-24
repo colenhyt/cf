@@ -201,12 +201,6 @@ public class ToplistManager extends MgrBase{
 				int hisweek = cl.get(Calendar.WEEK_OF_YEAR);
 				if (week!=hisweek)
 					return -1;
-			}else {
-				int month = cl.get(Calendar.MONTH);
-				cl.setTime(top.getUpdatetime());
-				int hismonth = cl.get(Calendar.MONTH);
-				if (month!=hismonth)
-					return -1;
 			}
 		}
 		

@@ -354,7 +354,7 @@ public class DataManager extends MgrBase {
 	
 	public int get_registerTop(float fMm) {
 		ToplistManager.getInstance().load();
-		int top = ToplistManager.getInstance().findTopCount(null, 0, fMm);
+		int top = ToplistManager.getInstance().findTopCount(null, 1, fMm);
 		
 		// 800ms/1k
 		return top+1;
@@ -369,7 +369,7 @@ public class DataManager extends MgrBase {
 		ToplistManager.getInstance().load();
 	
 		int top = ToplistManager.getInstance().getTopNumber(
-				playerid, 0);
+				playerid, 1);
 		// 800ms/1k
 		return top+1;
 	}
@@ -621,7 +621,7 @@ public class DataManager extends MgrBase {
 			this.addSignin(playerid);
 			data.setExp(p.getExp());
 			float newTotal = SavingManager.getInstance().updateLiveSavingAndTop(playerid,money);
-			int newTop = ToplistManager.getInstance().findTopCount(null,0,newTotal);
+			int newTop = ToplistManager.getInstance().findTopCount(null,1,newTotal);
 			data.setTop(newTop+1);
 			LogMgr.getInstance().log(playerid," signin days:"+days+" add prize,money: "+money+", exp:"+exp);
 			break;
@@ -651,7 +651,7 @@ public class DataManager extends MgrBase {
 			}
 			LogMgr.getInstance().log(playerid," event fire, amount:"+amount);
 			float newTotal2 = SavingManager.getInstance().updateLiveSavingAndTop(playerid,amount);
-			int newTop2 = ToplistManager.getInstance().findTopCount(null,0,newTotal2);
+			int newTop2 = ToplistManager.getInstance().findTopCount(null,1,newTotal2);
 			data.setTop(newTop2+1);
 			break;
 			
