@@ -126,16 +126,16 @@ Player.prototype.getTotal = function(data) {
 Player.prototype.flushPageview = function() {
     var tag = document.getElementById("tagsaving");
     var data = this.getTotal(g_player);
-    tag.innerHTML = "总资产: " +data.total;	
+    tag.innerHTML = "总资产(万):" +ForDight(data.total/10000);	
     var strTop = "";
-    if (this.data.weektop>0){
-    	if (this.data.weektop==4001)
+    if (this.data.monthtop>0){
+    	if (this.data.monthtop==4001)
     	 strTop = ">4000";
     	else
-    	 strTop = this.data.weektop;
+    	 strTop = this.data.monthtop;
     }
     tag = document.getElementById("tagweektop");
-    tag.innerHTML = "周排名: "+strTop;	
+    tag.innerHTML = "总排名:"+strTop;	
     tag = document.getElementById("tagplayerinfo");
 	var lv = g_title.getLevel();
     tag.innerHTML = g_title.getData(lv).name;	
@@ -285,7 +285,7 @@ Player.prototype.commitData = function(type,itemid,amount) {
 				}
 				if (obj.top!=null&&obj.top>0)
 				{
-					g_player.data.weektop = obj.top;
+					g_player.data.monthtop = obj.top;
 				}
 				 g_player.flushPageview();
 				 if (obj.type!=null&&obj.type==2)

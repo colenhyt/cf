@@ -104,8 +104,8 @@ Toplist.prototype.showToplist = function(type,page)
 			 var me = tdata[tdata.length-1];
 			 var amount = g_player.getTotal(g_player);
 			 me.money = amount.total;
-			 if (type==0&&me.top!=g_player.data.weektop){
-			  g_player.data.weektop=me.top;
+			 if (type==1&&me.top!=g_player.data.monthtop){
+			  g_player.data.monthtop=me.top;
 			  g_player.flushPageview();
 			 }
 			

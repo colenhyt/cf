@@ -373,7 +373,7 @@ Login.prototype.syncLoadDataCallback_stock = function(data,flag){
 }
 
 Login.prototype.syncLoadDataCallback_top = function(data){
- g_player.data.weektop = parseInt(data);
+ g_player.data.monthtop = parseInt(data);
  g_login.callbackDone();
 }
 

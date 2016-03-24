@@ -46,7 +46,14 @@ Playerinfo.prototype.showInfo = function(jsondata){
      content += "<tr><td> 经&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp验: </td>"
      content += "<td><div class='cfinfo_exp_bg'><div class='cfinfo_exp_img' id='cfinfo_exp_img' style='width:"+expPer+"%'></div>"
      content += "<div class='cfinfo_exp'><span style='color:yellow'>"+jsondata.data.exp+"</span>/"+g_title.getData(lv+1).exp+"</div></div></td></tr>"	
-     content += "<tr><td>当周排名: </td><td> <span style='color:yellow'>"+jsondata.data.weektop+"</span></td></tr>"	
+    var strTop = "";
+    if (jsondata.data.monthtop>0){
+    	if (jsondata.data.monthtop==4001)
+    	 strTop = ">4000";
+    	else
+    	 strTop = jsondata.data.monthtop;
+    }
+     content += "<tr><td>当前排名: </td><td> <span style='color:yellow'>"+strTop+"</span></td></tr>"	
     content += " </table>"	
     content +=            " </div>"
     content += "</td>"
