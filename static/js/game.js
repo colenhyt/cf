@@ -288,23 +288,27 @@ Game.prototype.init = function(canvas){
 	var scene = this.m_scene;
 	scene.init(canvas);
 	
+	g_loading.set(43);
+
 	var game = this;
 	
 	setInterval(function(){
 	   g_game.update();
 	  },UpdateDuration
 	);
-	
+
+	  var versions = browser.versions;
 	this.register(g_insure);
 	this.register(g_title);
 	this.register(g_quest);
 	this.register(g_playerinfo);
 	this.register(g_toplist);
+	g_loading.set(47);
 	this.register(g_stock);
 	this.register(g_bank);
 	this.register(g_help);
 	this.register(g_login);
-	
+
 	g_loading.set(RES_INIT);
 	
 	g_login.init();
