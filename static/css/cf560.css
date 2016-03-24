@@ -276,11 +276,11 @@ td{font-size:24px;font-weight:bold;}
 
 .cfevent_prize{color:red;display:block;left:262px;position:absolute;top:0px;z-index:3000;}
 
-.cf_top_zan{background:url('../../static/img/zan.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:24px;width:27px;}
+.cf_top_zan{background:url('../../static/img/zan.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:19px;width:19px;}
 
 .cf_top_share{background:url('../../static/img/bt_share.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:33px;width:30px;}
 
-.cf_top_zan_me{background:url('../../static/img/zan.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:24px;width:27px;}
+.cf_top_zan_me{background:url('../../static/img/zan.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:19px;width:19px;}
 
 .cf_count{background:url('../../static/img/bt_minus.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:50px;margin-top:13px;width:70px;}
 
@@ -324,13 +324,15 @@ td{font-size:24px;font-weight:bold;}
 
 .cftoplist_c2{width:52px;}
 
-.cftoplist_c3{margin-left:8px;width:52px;}
+.cftoplist_c30{margin-left:8px;width:62px;}
 
-.cftoplist_c4{text-align:center;width:87px;}
+.cftoplist_c3{margin-left:8px;width:62px;}
+
+.cftoplist_c4{text-align:center;width:77px;}
 
 .cftoplist_c5{width:166px;}
 
-.cftoplist_c6{padding-left:26px;}
+.cftoplist_c6{padding-left:16px;}
 
 .cftoplist_c6.me{}
 

@@ -276,11 +276,11 @@ td{font-size:21px;font-weight:bold;}
 
 .cfevent_prize{color:red;display:block;left:225px;position:absolute;top:0px;z-index:3000;}
 
-.cf_top_zan{background:url('../../static/img/zan.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:21px;width:23px;}
+.cf_top_zan{background:url('../../static/img/zan.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:17px;width:14px;}
 
 .cf_top_share{background:url('../../static/img/bt_share.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:28px;width:26px;}
 
-.cf_top_zan_me{background:url('../../static/img/zan.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:21px;width:23px;}
+.cf_top_zan_me{background:url('../../static/img/zan.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:17px;width:14px;}
 
 .cf_count{background:url('../../static/img/bt_minus.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:43px;margin-top:11px;width:60px;}
 
@@ -324,13 +324,15 @@ td{font-size:21px;font-weight:bold;}
 
 .cftoplist_c2{width:45px;}
 
-.cftoplist_c3{margin-left:7px;width:45px;}
+.cftoplist_c30{margin-left:7px;width:56px;}
 
-.cftoplist_c4{text-align:center;width:75px;}
+.cftoplist_c3{margin-left:31px;width:56px;}
 
-.cftoplist_c5{width:142px;}
+.cftoplist_c4{text-align:center;width:65px;}
 
-.cftoplist_c6{padding-left:22px;}
+.cftoplist_c5{width:135px;}
+
+.cftoplist_c6{padding-left:13px;}
 
 .cftoplist_c6.me{}
 

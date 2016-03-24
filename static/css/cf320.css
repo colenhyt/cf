@@ -276,11 +276,11 @@ td{font-size:14px;font-weight:bold;}
 
 .cfevent_prize{color:red;display:block;left:150px;position:absolute;top:0px;z-index:3000;}
 
-.cf_top_zan{background:url('../../static/img/zan.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:14px;width:15px;}
+.cf_top_zan{background:url('../../static/img/zan.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:11px;width:9px;}
 
 .cf_top_share{background:url('../../static/img/bt_share.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:19px;width:17px;}
 
-.cf_top_zan_me{background:url('../../static/img/zan.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:14px;width:15px;}
+.cf_top_zan_me{background:url('../../static/img/zan.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:11px;width:9px;}
 
 .cf_count{background:url('../../static/img/bt_minus.png') no-repeat;background-size:100% 100%;-moz-background-size:100% 100%;border:none;border-bottom-style:none;border-style:none;border-top:none;border-top-style:none;height:29px;margin-top:7px;width:40px;}
 
@@ -324,11 +324,13 @@ td{font-size:14px;font-weight:bold;}
 
 .cftoplist_c2{width:30px;}
 
-.cftoplist_c3{margin-left:5px;width:30px;}
+.cftoplist_c30{margin-left:8px;width:37px;}
 
-.cftoplist_c4{text-align:center;width:50px;}
+.cftoplist_c3{margin-left:5px;width:37px;}
 
-.cftoplist_c5{width:95px;}
+.cftoplist_c4{text-align:center;width:43px;}
+
+.cftoplist_c5{width:90px;}
 
 .cftoplist_c6{padding-left:15px;}
 

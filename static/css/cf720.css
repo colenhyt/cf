@@ -903,8 +903,8 @@ z-index:3000;
 
 .cf_top_zan{
   border: none;
-  width: 31px;
-  height: 28px;
+  width: 20px;
+  height: 22px;
 background:url('../../static/img/zan.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;    
@@ -921,8 +921,8 @@ background:url('../../static/img/bt_share.png') no-repeat;
 
 .cf_top_zan_me{
   border: none;
-  width: 31px;
-  height: 28px;
+  width: 20px;
+  height: 22px;
 background:url('../../static/img/zan.png') no-repeat;
 -moz-background-size:100% 100%;  
     background-size:100% 100%;    
@@ -1040,14 +1040,19 @@ height:55px;
 width:60px;
 }
 
+.cftoplist_c30 {
+margin-left:10px;
+width:70px;
+}
+
 .cftoplist_c3 {
 margin-left:10px;
-width:60px;
+width:70px;
 }
 
 .cftoplist_c4 {
 text-align:center;
-width:100px;
+width:90px;
 }
 
 .cftoplist_c5 {
@@ -1055,7 +1060,7 @@ width:190px;
 }
 
 .cftoplist_c6 {
-padding-left:30px
+padding-left:20px
 }
 
 .cftoplist_c6.me {
