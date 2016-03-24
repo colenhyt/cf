@@ -113,7 +113,6 @@ public class InsureManager extends MgrBase{
 			insureamount += insures.get(i).getAmount();
 		}
 		}
-		insureamount = Float.valueOf(insureamount).intValue();
 		return insureamount;
 	}
     

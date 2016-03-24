@@ -192,7 +192,6 @@ public class StockManager extends MgrBase{
 				stockamount += currps*ps.getQty();
 			}   			
 		}
-		stockamount = Float.valueOf(stockamount).intValue();
 		return stockamount;
 	}
 	

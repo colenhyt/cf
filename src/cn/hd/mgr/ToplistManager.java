@@ -189,10 +189,7 @@ public class ToplistManager extends MgrBase{
 	 * @return int 排名
 	 * */
 	public int findTopCount(Toplist top,int type,float fPMoney){
-		int intMoney = Float.valueOf(fPMoney).intValue();
-		BigDecimal fMoney = BigDecimal.valueOf(intMoney);
 		if (top!=null){
-			fMoney = top.getMoney();
 			Calendar cl = Calendar.getInstance();
 			Date now = new Date();
 			cl.setTime(now);
@@ -496,7 +493,7 @@ public class ToplistManager extends MgrBase{
 		}
 	
 	public float getCurrentTotalMoney(int playerId,float totalSaving){
-		float savingamount = Float.valueOf(totalSaving).intValue();
+		float savingamount = totalSaving;
 		
 		float insureamount = InsureManager.getInstance().getInsureAmount(playerId);
 
@@ -512,7 +509,6 @@ public class ToplistManager extends MgrBase{
 				savingamount += savings.get(i).getAmount();
 			}			
 		}
-		savingamount = Float.valueOf(savingamount).intValue();
 		float insureamount = InsureManager.getInstance().getInsureAmount(playerId);
 
 		float amount = savingamount + insureamount + StockManager.getInstance().getStockAmount(playerId);
@@ -539,6 +535,8 @@ public class ToplistManager extends MgrBase{
 
 	public static void main(String[] args){
 //		ToplistManager.getInstance().init();
+		float f = (float)1456047321192.33;
+		System.out.println(f);
 		Date d = new Date(1456047321192L);
 		List<Float> list = new ArrayList<Float>();
 		list.add((float)100.0);

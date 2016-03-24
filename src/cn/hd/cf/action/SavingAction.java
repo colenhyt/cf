@@ -271,8 +271,6 @@ public class SavingAction extends BaseAction {
 			}catch (Exception e){
 				e.printStackTrace();
 			}	
-			insureamount = Float.valueOf(insureamount).intValue();
-//			System.out.println("return insure :"+mdata.size());
 			return insureamount;
 		}
 

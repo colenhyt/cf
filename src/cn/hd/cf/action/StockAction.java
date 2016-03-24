@@ -85,6 +85,11 @@ public class StockAction extends SavingAction {
 		return null;
 	}	
 
+	public boolean countCheck(long sessionid,Stock stock){
+		
+		return false;
+	}
+	
 	/**
 	 * 买入/抛售股票
 	 * @param Stock 股票 对象
