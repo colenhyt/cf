@@ -333,12 +333,13 @@ Stock.prototype.showDetail = function(id,isflush){
 	 content += "               <td colspan='2'><input type='button' class='cf_bt_green' value='卖出100股' onclick='g_stock.countBuy("+id+",-100,"+ps+")'></td>"
 	 content += "               <td colspan='2'><input type='button' class='cf_bt_green right' value='买入100股' onclick='g_stock.countBuy("+id+",100,"+ps+")'></td>"
 	content += "              </tr>"
+	 content += "             <tr>"
+	 content += "               <td colspan='4'><div class='cf_stockdetail_btn' style='padding-top:20px;font-size:130%'> "
+	content += " <button class='cf_bt bt_cancel' onclick='g_stock.closeDetail()'>退出</button>"
+	 content += "               <button class='cf_bt' onclick='g_stock.doBuy()'>确定</button></td>"
+	content += "              </div></tr>"
 	content += "          </table>     "
 	content += "           </div>  "
-	content += "           <div class='cf_stockdetail_btn'>  "
-	content += "          <button class='cf_bt bt_cancel' onclick='g_stock.closeDetail()'>退出</button>      "  
-	content += "          <button class='cf_bt' onclick='g_stock.doBuy()'>确定</button>"
-	content += "             </div>"
 	
 	var tag = document.getElementById(this.pagedetailname);
 	tag.innerHTML = content;
