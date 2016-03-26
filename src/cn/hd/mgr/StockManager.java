@@ -92,7 +92,6 @@ public class StockManager extends MgrBase{
    		stockData.add(stock);
     		int fre = 20;
     		STOCK_QUOTE_PERIOD = fre*60*1000/EventManager.TICK_PERIOD;
-    		STOCK_QUOTE_PERIOD = 3;
 	    		String json = new String(stock.getQuotes());
 	    		JSONArray array = JSONArray.fromObject(json);
 	    		List<Quote> quotes = JSONArray.toList(array, Quote.class);
