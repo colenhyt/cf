@@ -318,7 +318,7 @@ Stock.prototype.showDetail = function(id,isflush){
 	 content += "           <div class='cfstock_content'>  "
 	 content += "        <table id='toplist1_tab'>"
 	 content += "             <tr>"
-	 content += "               <td>买入价</td>"
+	 content += "               <td>买入价:</td>"
 	 content += "               <td>"+ps+"</td>"
 	 content += "               <td colspan='2' style='text-align:right'>还可买入:"+canBuyQty+"手</td>"
 	content += "              </tr>"
@@ -326,13 +326,13 @@ Stock.prototype.showDetail = function(id,isflush){
 	 content += "               <td colspan='4'>当前持有: "+pitem.qty/100+"手"+pitem.buyps+"</td>"
 	content += "              </tr>"
  content += "             <tr>"
- content += "               <td>买卖:</td>"
- content += "               <td><input type='button' class='cf_count' onclick='g_stock.countBuy("+id+",-10,"+ps+")'></td>"
- content += "               <td><input type='text' id='stock_qty' onBlur='' value='0' class='cfsaving_qty'>手</td>"
- content += "               <td><input type='button' class='cf_count add' onclick='g_stock.countBuy("+id+",10,"+ps+")'></td>"
+ content += "               <td style='margin-top:0px'>买卖:</td>"
+ content += "               <td><input type='button' class='cf_count' style='margin-top:0px' onclick='g_stock.countBuy("+id+",-10,"+ps+")'></td>"
+ content += "               <td style='margin-top:0px'><input type='text' style='margin-top:-3px' id='stock_qty' onBlur='' value='0' class='cfsaving_qty'>手</td>"
+ content += "               <td><input type='button' class='cf_count add' style='margin-top:0px' onclick='g_stock.countBuy("+id+",10,"+ps+")'></td>"
 content += "              </tr>"
 	 content += "             <tr>"
-	 content += "               <td colspan='4'><div class='cf_stockdetail_btn' style='padding-top:20px;font-size:130%'> "
+	 content += "               <td colspan='4'><div class='cf_stockdetail_btn' style='padding-top:12px;font-size:130%'> "
 	content += " <button class='cf_bt bt_cancel' onclick='g_stock.closeDetail()'>退出</button>"
 	 content += "               <button class='cf_bt' onclick='g_stock.doBuy()'>确定</button></td>"
 	content += "              </div></tr>"
@@ -344,6 +344,7 @@ content += "              </tr>"
 	
 	this.currShowStockId = id;
 	this.currStockPs = ps;
+	this.waitStockid = id;
 	
 	//draw this stock K-line graph:
 	this.drawStockQuotes();
@@ -369,8 +370,6 @@ Stock.prototype.isStockOpen = function()
 Stock.prototype.countBuy = function(stockid,count,price)
 {
 	var tag = document.getElementById('stock_qty');
-
-	this.waitStockid = stockid;
 		
    if (price<=0){
    		g_msg.tip("价格不能为零，购买失败!");	
@@ -390,7 +389,6 @@ Stock.prototype.countBuy = function(stockid,count,price)
    		return;
    }
    		
-	this.buyPrice = price;
 	tag.value = count2;
 	
 }
@@ -403,8 +401,11 @@ Stock.prototype.doBuy = function()
 	}	
 	var tag = document.getElementById('stock_qty');
     var buyCount = parseInt(tag.value);
-	if (buyCount==0){
-		g_msg.tip("请买入或者卖出");
+    if (isNaN(buyCount)){
+		g_msg.tip("输入数量错误");
+		return;
+    }else if (buyCount==0){
+		g_msg.tip("请输入有效数量");
 		return;
 	}
 		
@@ -417,11 +418,11 @@ Stock.prototype.doBuy = function()
 	
    var item = store.get(this.name)[this.waitStockid];
    if (!item){
-   		g_msg.tip("找不到"+this.name+"数据");
+   		g_msg.tip("找不到这只股票");
    		return;
    }
 	   
-   var ps = this.buyPrice;
+   var ps = this.currStockPs;
     
    if (buyCount>0){
 	    var needCash = ps * buyCount;
@@ -437,15 +438,14 @@ Stock.prototype.doBuy = function()
 	   		return;
 	   }
     }
-	
-	this.requestBuy(this.waitStockid,buyCount,this.buyPrice);
+	this.requestBuy(this.waitStockid,buyCount,ps);
 }
 
 Stock.prototype.requestBuy = function(id,qty,ps) {
  
  if (id){
   g_stock.buyItem = {itemid:id,playerid:g_player.data.playerid,
-			qty:qty,price:ps,amount:parseInt(ps*qty)};  
+			qty:qty,price:ps,amount:(ps*qty)};  
  }
  
  if (!g_stock.buyItem) return false; 
