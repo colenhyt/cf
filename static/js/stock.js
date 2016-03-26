@@ -7,6 +7,7 @@ Stock = function(){
     this.pageCount = 4;
     this.currPage = 0;
     this.lastquotes = {};
+    this.maxOpenCount = 1000;
     this.syncDuration = 1;
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
@@ -276,7 +277,6 @@ Stock.prototype.showDetail = function(id,isflush){
    var item = tdata[id];
    if (item==null) return;
         
-   this.waitCount = 0;
    var strPro = "尚未持有";
 	currentquotes = store.get(g_stock.pagequote+g_stock.currPage);   
  	var quote = currentquotes[id];
@@ -320,19 +320,18 @@ Stock.prototype.showDetail = function(id,isflush){
 	 content += "             <tr>"
 	 content += "               <td>买入价</td>"
 	 content += "               <td>"+ps+"</td>"
-	 content += "               <td>持有:</td>"
-	 content += "               <td>"+pitem.qty/100+"手"+pitem.buyps+"</td>"
+	 content += "               <td>还可买入:</td>"
+	 content += "               <td>"+canBuyQty+"手</td>"
 	content += "              </tr>"
 	 content += "             <tr>"
-	 content += "               <td>买卖:</td>"
-	 content += "               <td><span id='stockTradeCount' style='color:red'>0</span> 手</td>"
-	 content += "               <td>可买入:</td>"
-	 content += "               <td><span id='canBuyCount'>"+canBuyQty+"</span>手</td>"
+	 content += "               <td colspan='4'>当前持有: "+pitem.qty/100+"手"+pitem.buyps+"</td>"
 	content += "              </tr>"
-	 content += "             <tr>"
-	 content += "               <td colspan='2'><input type='button' class='cf_bt_green' value='卖出100股' onclick='g_stock.countBuy("+id+",-100,"+ps+")'></td>"
-	 content += "               <td colspan='2'><input type='button' class='cf_bt_green right' value='买入100股' onclick='g_stock.countBuy("+id+",100,"+ps+")'></td>"
-	content += "              </tr>"
+ content += "             <tr>"
+ content += "               <td>买卖:</td>"
+ content += "               <td><input type='button' class='cf_count' onclick='g_stock.countBuy("+id+",-10,"+ps+")'></td>"
+ content += "               <td><input type='text' id='stock_qty' onBlur='' value='0' class='cfsaving_qty'>手</td>"
+ content += "               <td><input type='button' class='cf_count add' onclick='g_stock.countBuy("+id+",10,"+ps+")'></td>"
+content += "              </tr>"
 	 content += "             <tr>"
 	 content += "               <td colspan='4'><div class='cf_stockdetail_btn' style='padding-top:20px;font-size:130%'> "
 	content += " <button class='cf_bt bt_cancel' onclick='g_stock.closeDetail()'>退出</button>"
@@ -370,27 +369,30 @@ Stock.prototype.isStockOpen = function()
 
 Stock.prototype.countBuy = function(stockid,count,price)
 {
+	var tag = document.getElementById('stock_qty');
+
 	this.waitStockid = stockid;
-	if (this.waitCount==null)
-		this.waitCount = 0;
 		
    if (price<=0){
    		g_msg.tip("价格不能为零，购买失败!");	
    		return;    
    }
+   
+   var count2 = parseInt(tag.value)+ count;
+		
+   if (count2>this.maxOpenCount){
+   		g_msg.tip("超过单次购买数量限制!");	
+   		return;    
+   }
+      
    var pitem = g_player.getStockItem(stockid);
-   var count2 = this.waitCount+ count;
-   if (count2<0&&pitem.qty<(0-count2)){
+   if (count2<0&&pitem.qty<(0-count2)*100){
    		g_msg.tip("卖出数量不能大于您持有数量!");	
    		return;
    }
    		
-	this.waitCount += count;
 	this.buyPrice = price;
-	var tag = document.getElementById('stockTradeCount');
-	tag.innerHTML = this.waitCount/100;
-//	tag = document.getElementById('canBuyCount');
-//	tag.innerHTML = this.waitCount/100;
+	tag.value = count2;
 	
 }
 
@@ -400,10 +402,19 @@ Stock.prototype.doBuy = function()
 		g_msg.tip("现在休市，不能交易");
 		return;
 	}	
-	if (this.waitCount==null||this.waitCount==0){
+	var tag = document.getElementById('stock_qty');
+    var buyCount = parseInt(tag.value);
+	if (buyCount==0){
 		g_msg.tip("请买入或者卖出");
 		return;
 	}
+		
+   if (buyCount>this.maxOpenCount){
+   		g_msg.tip("超过单次购买数量限制!");	
+   		return;    
+   }
+   	
+	buyCount *= 100;
 	
    var item = store.get(this.name)[this.waitStockid];
    if (!item){
@@ -413,8 +424,8 @@ Stock.prototype.doBuy = function()
 	   
    var ps = this.buyPrice;
     
-   if (this.waitCount>0){
-	    var needCash = ps * this.waitCount;
+   if (buyCount>0){
+	    var needCash = ps * buyCount;
 	    var cash = g_player.saving[1].amount;
 	    if (cash<needCash){
 		    g_msg.tip("您的现金不够，购买失败!");
@@ -422,14 +433,13 @@ Stock.prototype.doBuy = function()
 	    }		
     }else {
 	   var pitem = g_player.getStockItem(this.waitStockid);
-	   if (pitem.qty<(0-this.waitCount)){
+	   if (pitem.qty<(0-buyCount)){
 	   		g_msg.tip("持有数量少于您抛售数量!");	
 	   		return;
 	   }
     }
 	
-	//alert(this.waitCount);
-	this.requestBuy(this.waitStockid,this.waitCount,this.buyPrice);
+	this.requestBuy(this.waitStockid,buyCount,this.buyPrice);
 }
 
 Stock.prototype.requestBuy = function(id,qty,ps) {
