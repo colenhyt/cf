@@ -90,8 +90,9 @@ public class StockManager extends MgrBase{
 	   	for (String str:stockitems){
     		Stockdata  stock = JSON.parseObject(str,Stockdata.class);
    		stockData.add(stock);
-    		int fre = 20;
+    		int fre = stock.getFreq();
     		STOCK_QUOTE_PERIOD = fre*60*1000/EventManager.TICK_PERIOD;
+//    		STOCK_QUOTE_PERIOD = 3;
 	    		String json = new String(stock.getQuotes());
 	    		JSONArray array = JSONArray.fromObject(json);
 	    		List<Quote> quotes = JSONArray.toList(array, Quote.class);
@@ -283,24 +284,17 @@ public class StockManager extends MgrBase{
 			lastQuoteTime = System.currentTimeMillis();
 			Jedis jedis = jedisClient3.getJedis();
 			Pipeline p0 = jedis.pipelined();
-			int thisUpdateCount = r.nextInt(stockData.size());
-			Map<Integer,Integer> updateIds = new HashMap<Integer,Integer>();
-			for (int i=0;i<thisUpdateCount;i++){
-				Stockdata stock = stockData.get(r.nextInt(stockData.size()));
-				if (updateIds.containsKey(stock.getId())) continue;
-				
-				updateIds.put(stock.getId(), stock.getId());
-			}
 //			log.warn(" ------"+thisUpdateCount);
-			Set<Integer> ids = updateIds.keySet();
-			for (int itemid:ids){
-	 			LinkedList<Quote> lquote = quoteMap.get(itemid);
+			for (int i=0;i<stockData.size();i++){
+	    		Stockdata  stock = stockData.get(i);
+	 			LinkedList<Quote> lquote = quoteMap.get(stock.getId());
 	 			if (lquote==null||lquote.size()==0) continue;
 	 			
-		    		float r2 = (float)r.nextInt(maxStockPer);
+//		    		float r2 = (float)r.nextInt(maxStockPer);
+		    		float r2 = (float)r.nextInt(stock.getPer().intValue());
 		    		if (r2==0) continue;
 		    		
-		    		float per = r2/100;
+		    		float per = r2/200;
 		    		Quote quote = lquote.peekLast();
 		    		float ps = quote.getPrice();
 		    		int addOrMinus = r.nextInt(100);
@@ -322,10 +316,10 @@ public class StockManager extends MgrBase{
 		    		Quote newq = new Quote();
 		    		newq.setPrice(ps);
 		    		lquote.offer(newq);
-	    			p0.hset(MgrBase.DATAKEY_CURRENT_STOCK_PS, String.valueOf(itemid), JSON.toJSONString(ps));
+	    			p0.hset(MgrBase.DATAKEY_CURRENT_STOCK_PS, String.valueOf(stock.getId()), JSON.toJSONString(ps));
 //	    			log.warn("quotes "+lquote.size()+",str"+JSON.toJSONString(lquote));
 //	    			if (ra)
-//		    		System.out.println("股票价格变化: "+itemid+",涨跌幅:"+per+","+ra+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
+//		    		System.out.println("股票价格变化: "+stock.getId()+",涨跌幅:"+per+","+ra+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
 		    }	
     		p0.sync();
     		jedisClient3.returnResource(jedis);

@@ -59,7 +59,7 @@ public class MgrBase {
 	public int sessionTime = 0;
 	public int maxStockPer = 4;
 	public int stockRaisePer = 35;
-	public int maxStockAmount = 50000000;
+	public int maxStockAmount = 100000000;
 
 	public MgrBase(){
 		String path = "/root/";

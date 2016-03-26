@@ -99,7 +99,7 @@ public class StockAction extends SavingAction {
 		if (stock.getQty()==0){
 			return msgStr2(RetMsg.MSG_StockQtyIsZero,String.valueOf(sessionid));
 		}
-		if (stock.getQty()>50000){
+		if (stock.getQty()>200000){
 			return msgStr2(RetMsg.MSG_ExceedMaxOpenCount,String.valueOf(sessionid));
 		}
 		
@@ -170,10 +170,10 @@ public class StockAction extends SavingAction {
 		float currps = StockManager.getInstance().getCurrQuotePs(stock.getItemid());
 	
 		float amount = currps*stock.getQty();
-		boolean canAdded = StockManager.getInstance().addStockTradeAmount(stock.getPlayerid(),amount);
-		if (canAdded==false){
-			return msgStr2(RetMsg.MSG_ExceedTodayMaxBuyAmount,String.valueOf(sessionid));
-		}
+//		boolean canAdded = StockManager.getInstance().addStockTradeAmount(stock.getPlayerid(),amount);
+//		if (canAdded==false){
+//			return msgStr2(RetMsg.MSG_ExceedTodayMaxBuyAmount,String.valueOf(sessionid));
+//		}
 		
 		float changeAmount = 0 - amount;
 		
