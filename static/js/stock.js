@@ -7,7 +7,7 @@ Stock = function(){
     this.pageCount = 4;
     this.currPage = 0;
     this.lastquotes = {};
-    this.maxOpenCount = 1000;
+    this.maxOpenCount = 500;
     this.syncDuration = 1;
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
@@ -381,7 +381,7 @@ Stock.prototype.countBuy = function(stockid,count,price)
    var count2 = parseInt(tag.value)+ count;
 		
    if (count2>this.maxOpenCount){
-   		g_msg.tip("超过单次购买数量限制!");	
+   		g_msg.tip(ERR_MSG[MSG_ExceedMaxOpenCount]);	
    		return;    
    }
       
@@ -410,7 +410,7 @@ Stock.prototype.doBuy = function()
 	}
 		
    if (buyCount>this.maxOpenCount){
-   		g_msg.tip("超过单次购买数量限制!");	
+   		g_msg.tip(ERR_MSG[MSG_ExceedMaxOpenCount]);	
    		return;    
    }
    	
