@@ -133,6 +133,7 @@ var MSG_IllegalAccess = 15;
 var MSG_WrongOpenID = 16;
 var MSG_WrongStockPrice = 17;
 var MSG_ExceedMaxOpenCount = 18;
+var MSG_ExceedTodayMaxBuyAmount = 19;
 var MSG_WrongSession = -1;
 var MSG_WrongSessionSubmit = -2;
 
@@ -156,6 +157,7 @@ ERR_MSG[MSG_IllegalAccess] = "非法客户端登入";
 ERR_MSG[MSG_WrongOpenID] = "错误OPENID";
 ERR_MSG[MSG_WrongStockPrice] = "股票购买价格不能为零";
 ERR_MSG[MSG_ExceedMaxOpenCount] = "超过单次购买数量限制";
+ERR_MSG[MSG_ExceedTodayMaxBuyAmount] = "您已超过当日购买总金额限制";
 ERR_MSG[MSG_WrongSession] = "错误session";
 ERR_MSG[MSG_WrongSessionSubmit] = "该账号已在另一台设备登陆";
 
