@@ -7,7 +7,7 @@ Stock = function(){
     this.pageCount = 4;
     this.currPage = 0;
     this.lastquotes = {};
-    this.maxOpenCount = 500;
+    this.maxOpenCount = 2000;
     this.syncDuration = 1;
     this.tagname = "my"+this.name;
     this.pagename = this.tagname+"page";
@@ -251,9 +251,9 @@ Stock.prototype.buildPage = function(page)
 		}
 			content += "           <div class='cfinsure_tip'>  "
 			content += "          股市开市为9:00AM-9:00PM"
-//			if (this.isStockOpen()==true){
-//			 content += "<br>距离下次行情跳动还有: <span id='"+this.name+"_quotetime' style='color:yellow'></span>"
-//			}  
+			if (this.isStockOpen()==true){
+			 content += "<br>距离下次行情跳动还有: <span id='"+this.name+"_quotetime' style='color:yellow'></span>"
+			}  
 			content += "             </div>"
      		content += "</div>"
 		
