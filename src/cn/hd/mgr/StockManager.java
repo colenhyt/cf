@@ -295,13 +295,13 @@ public class StockManager extends MgrBase{
 	 			if (lquote==null||lquote.size()==0) continue;
 	 			Random r = new Random();
 	 			
-		    		float r2 = (float)r.nextInt(stock.getPer().intValue());
-		    		float per = r2/200;
+		    		float r2 = (float)r.nextInt(maxStockPer);
+		    		float per = r2/100;
 		    		int addOrMinus = r.nextInt(100);
 		    		Quote quote = lquote.peekLast();
 		    		float ps = quote.getPrice();
 		    		//涨:
-		    		if (addOrMinus<50)
+		    		if (addOrMinus<stockRaisePer)
 		    			ps += ps*per;
 		    		else
 		    			ps -= ps*per;
@@ -326,7 +326,7 @@ public class StockManager extends MgrBase{
 		    		lquote.offer(newq);
 	    			p0.hset(MgrBase.DATAKEY_CURRENT_STOCK_PS, String.valueOf(stock.getId()), JSON.toJSONString(ps));
 //	    			log.warn("quotes "+lquote.size()+",str"+JSON.toJSONString(lquote));
-		    		//System.out.println("股票价格变化: "+stock.getName()+",涨跌幅:"+stock.getPer()+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
+//		    		System.out.println("股票价格变化: "+stock.getName()+",涨跌幅:"+per+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
 		    }	
     		p0.sync();
     		jedisClient3.returnResource(jedis);
@@ -468,31 +468,16 @@ public class StockManager extends MgrBase{
 	}
 
 	public static void main(String[] args) {
-//    	String a = "{'id':3,'name':'万科A','desc':'最大房地产股','price':18.7,'unit':100}";
-//    	JSONObject obj = JSONObject.fromObject(a);
-		Date d = new Date(1452488318664L);
-    	StockManager stmgr = StockManager.getInstance();
-    	stmgr.init();
-    	//stmgr.getLastQuotes(8);
-    	//stmgr.update();
-    	Stock record = new Stock();
-    	record.setItemid(1);
-    	record.setQty(100);
-    	record.setPrice(Float.valueOf(10));
-    	stmgr.addStock(2, record);
-    	
-    	record = new Stock();
-    	record.setItemid(1);
-    	record.setPrice(Float.valueOf(10));
-    	record.setQty(200);
-    	stmgr.addStock(2, record);
+			Random r = new Random();
+ 			
+    		float r2 = 0;
+    		int addOrMinus = 0;
+    		for (int i=0;i<200;i++){
+        		addOrMinus = r.nextInt(100);	
+        		r2 = (float)r.nextInt(5);
+       		System.out.println(r2);
+        		System.out.println(addOrMinus);   			
+    		}
 
-    	record = new Stock();
-    	record.setItemid(1);
-    	record.setPrice(Float.valueOf(10));
-    	record.setQty(300);
-    	stmgr.addStock(2, record);
-    	
-    	stmgr.deleteStock(2, 1, 800);
     }
 }

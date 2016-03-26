@@ -56,6 +56,8 @@ public class MgrBase {
 	public String openidurl;
 	public String openidparam;
 	public int sessionTime = 0;
+	public int maxStockPer = 5;
+	public int stockRaisePer = 35;
 
 	public MgrBase(){
 		String path = "/root/";
@@ -116,7 +118,12 @@ public class MgrBase {
 		if (cfgObj.containsKey("sessionTime")){
 			sessionTime = Integer.valueOf(cfgObj.getString("sessionTime"));
 		}
-		
+		if (cfgObj.containsKey("maxStockPer")){
+			maxStockPer = Integer.valueOf(cfgObj.getString("maxStockPer"));
+		}
+		if (cfgObj.containsKey("stockRaisePer")){
+			stockRaisePer = Integer.valueOf(cfgObj.getString("stockRaisePer"));
+		}		
 		jedisClient3 = new RedisClient(redisCfg3);
 		
 		cfg = (Config) JSON.parseObject(cfgstr, Config.class);
