@@ -58,7 +58,7 @@ public class MgrBase {
 	public String openidparam;
 	public int sessionTime = 0;
 	public int maxStockPer = 4;
-	public int stockRaisePer = 35;
+	public int stockRaisePer = 50;
 	public int maxStockAmount = 100000000;
 
 	public MgrBase(){
