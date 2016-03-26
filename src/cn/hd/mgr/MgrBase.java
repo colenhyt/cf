@@ -26,6 +26,7 @@ public class MgrBase {
 	public final static String DATAKEY_INSURE = "insure";
 	public final static String DATAKEY_STOCK = "stock";
 	public final static String DATAKEY_CURRENT_STOCK_PS = "currentstockps";
+	public final static String DATAKEY_MAX_STOCK_AMOUNT = "maxstockamount";
 	public final static String DATAKEY_TOPLIST = "toplist";
 	public final static String DATAKEY_SESSION = "session";
 	public final static String DATAKEY_DATA_INIT = "initdata";
@@ -58,6 +59,7 @@ public class MgrBase {
 	public int sessionTime = 0;
 	public int maxStockPer = 5;
 	public int stockRaisePer = 35;
+	public int maxStockAmount = 50000000;
 
 	public MgrBase(){
 		String path = "/root/";
@@ -123,6 +125,9 @@ public class MgrBase {
 		}
 		if (cfgObj.containsKey("stockRaisePer")){
 			stockRaisePer = Integer.valueOf(cfgObj.getString("stockRaisePer"));
+		}		
+		if (cfgObj.containsKey("maxStockAmount")){
+			maxStockAmount = Integer.valueOf(cfgObj.getString("maxStockAmount"));
 		}		
 		jedisClient3 = new RedisClient(redisCfg3);
 		

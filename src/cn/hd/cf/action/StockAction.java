@@ -170,6 +170,11 @@ public class StockAction extends SavingAction {
 		float currps = StockManager.getInstance().getCurrQuotePs(stock.getItemid());
 	
 		float amount = currps*stock.getQty();
+		boolean canAdded = StockManager.getInstance().addStockTradeAmount(stock.getPlayerid(),amount);
+		if (canAdded==false){
+			return msgStr2(RetMsg.MSG_ExceedTodayMaxBuyAmount,String.valueOf(sessionid));
+		}
+		
 		float changeAmount = 0 - amount;
 		
 		int ret = RetMsg.MSG_OK;

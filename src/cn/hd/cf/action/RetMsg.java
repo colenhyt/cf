@@ -20,6 +20,7 @@ public interface RetMsg {
 	public static int MSG_WrongOpenID= 16;
 	public static int MSG_WrongStockPrice= 17;
 	public static int MSG_ExceedMaxOpenCount= 18;
+	public static int MSG_ExceedTodayMaxBuyAmount= 19;
 	
 	public static long MSG_WrongSession = -1;
 	public static long MSG_WrongSessionSubmit = -2;

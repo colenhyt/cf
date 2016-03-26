@@ -216,25 +216,28 @@ public class StockManager extends MgrBase{
 	 * @param int 股票id
 	 * @return List<Quote> 行情列表
 	 * */
-    public synchronized float getCurrQuotePs(int stockid){
-    	float currPs = 0;;
-    	if (stockid>=0){
-    		int index = stockid%quoteClients.size();
-    		Jedis j3 = quoteClients.get(index).getJedis();
-    		String psstr = j3.hget(MgrBase.DATAKEY_CURRENT_STOCK_PS,String.valueOf(stockid));
-    		if (psstr!=null){
-    			currPs = Float.valueOf(psstr);
-    		}else {
-    			LinkedList<Quote> q = quoteMap.get(stockid);
-    			Quote qs = q.peekLast();
-    			currPs = qs.getPrice();
-    			j3.hset(MgrBase.DATAKEY_CURRENT_STOCK_PS,String.valueOf(stockid),String.valueOf(currPs));
-    		}
-    		quoteClients.get(index).returnResource(j3);    		
-    	}
-    	 long   l1   =   Math.round(currPs*100);   //四舍五入  
-    	currPs = (float)(l1/100.0);
-    	return currPs;
+    public boolean addStockTradeAmount(int playerid,float addedAmount){
+    	boolean canAdded = false;
+    	if (addedAmount<=0||playerid<=0)
+    		return canAdded;
+    	
+       Calendar aCalendar = Calendar.getInstance();
+       int day1 = aCalendar.get(Calendar.DAY_OF_YEAR);
+    	float maxAmount = 0;;
+		int index = playerid%quoteClients.size();
+		Jedis j3 = quoteClients.get(index).getJedis();
+		String pkey = String.valueOf(playerid)+"_"+day1;
+		String amountstr = j3.hget(MgrBase.DATAKEY_MAX_STOCK_AMOUNT,pkey);
+		if (amountstr!=null){
+			maxAmount = Float.valueOf(amountstr);
+		}
+		maxAmount += addedAmount;
+		if (maxAmount<=super.maxStockAmount){
+			canAdded = true;
+			j3.hset(MgrBase.DATAKEY_MAX_STOCK_AMOUNT,pkey,String.valueOf(maxAmount));
+		}
+		quoteClients.get(index).returnResource(j3);    		
+    	return canAdded;
     }
     
 	/**
@@ -467,8 +470,36 @@ public class StockManager extends MgrBase{
 		return action.add(canSubmit,item);
 	}
 
+	/**
+	 * 取股票最新行情价格
+	 * @param int 股票id
+	 * @return List<Quote> 行情列表
+	 * */
+	public synchronized float getCurrQuotePs(int stockid){
+		float currPs = 0;;
+		if (stockid>=0){
+			int index = stockid%quoteClients.size();
+			Jedis j3 = quoteClients.get(index).getJedis();
+			String psstr = j3.hget(MgrBase.DATAKEY_CURRENT_STOCK_PS,String.valueOf(stockid));
+			if (psstr!=null){
+				currPs = Float.valueOf(psstr);
+			}else {
+				LinkedList<Quote> q = quoteMap.get(stockid);
+				Quote qs = q.peekLast();
+				currPs = qs.getPrice();
+				j3.hset(MgrBase.DATAKEY_CURRENT_STOCK_PS,String.valueOf(stockid),String.valueOf(currPs));
+			}
+			quoteClients.get(index).returnResource(j3);    		
+		}
+		 long   l1   =   Math.round(currPs*100);   //四舍五入  
+		currPs = (float)(l1/100.0);
+		return currPs;
+	}
+
 	public static void main(String[] args) {
 			Random r = new Random();
+	 	       Calendar aCalendar = Calendar.getInstance();
+		       int day1 = aCalendar.get(Calendar.DAY_OF_YEAR);
  			
     		float r2 = 0;
     		int addOrMinus = 0;
