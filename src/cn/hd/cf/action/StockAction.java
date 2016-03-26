@@ -99,6 +99,10 @@ public class StockAction extends SavingAction {
 		if (stock.getQty()==0){
 			return msgStr2(RetMsg.MSG_StockQtyIsZero,String.valueOf(sessionid));
 		}
+		if (stock.getQty()>50000){
+			return msgStr2(RetMsg.MSG_ExceedMaxOpenCount,String.valueOf(sessionid));
+		}
+		
 		if (stock.getPrice()<=0){
 			return msgStr2(RetMsg.MSG_WrongStockPrice,String.valueOf(sessionid));
 		}
