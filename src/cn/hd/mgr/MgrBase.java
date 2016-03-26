@@ -57,7 +57,7 @@ public class MgrBase {
 	public String openidurl;
 	public String openidparam;
 	public int sessionTime = 0;
-	public int maxStockPer = 5;
+	public int maxStockPer = 4;
 	public int stockRaisePer = 35;
 	public int maxStockAmount = 50000000;
 

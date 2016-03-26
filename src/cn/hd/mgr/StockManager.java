@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.Vector;
 
 import net.sf.json.JSONArray;
@@ -89,8 +90,9 @@ public class StockManager extends MgrBase{
 	   	for (String str:stockitems){
     		Stockdata  stock = JSON.parseObject(str,Stockdata.class);
    		stockData.add(stock);
-    		int fre = stock.getFreq();
+    		int fre = 20;
     		STOCK_QUOTE_PERIOD = fre*60*1000/EventManager.TICK_PERIOD;
+    		STOCK_QUOTE_PERIOD = 3;
 	    		String json = new String(stock.getQuotes());
 	    		JSONArray array = JSONArray.fromObject(json);
 	    		List<Quote> quotes = JSONArray.toList(array, Quote.class);
@@ -278,58 +280,53 @@ public class StockManager extends MgrBase{
 			//System.out.println("stock update"+isOpen);
 			if (isOpen!=true) return;
 			
-    		Date now = new Date();
-    		boolean isNewDay = false;
-			if (lastUpdateDate!=null){
-				Calendar cl = Calendar.getInstance();
-				cl.setTime(now);
-				int day = cl.get(Calendar.DAY_OF_MONTH);
-				cl.setTime(lastUpdateDate);
-				int hisday = cl.get(Calendar.DAY_OF_MONTH);
-				isNewDay = hisday!=day; 
-			}
-    		lastUpdateDate = new Date();
+ 			Random r = new Random();
 			lastQuoteTime = System.currentTimeMillis();
 			Jedis jedis = jedisClient3.getJedis();
 			Pipeline p0 = jedis.pipelined();
-			for (int i=0;i<stockData.size();i++){
-	    		Stockdata  stock = stockData.get(i);
-	 			LinkedList<Quote> lquote = quoteMap.get(stock.getId());
+			int thisUpdateCount = r.nextInt(stockData.size());
+			Map<Integer,Integer> updateIds = new HashMap<Integer,Integer>();
+			for (int i=0;i<thisUpdateCount;i++){
+				Stockdata stock = stockData.get(r.nextInt(stockData.size()));
+				if (updateIds.containsKey(stock.getId())) continue;
+				
+				updateIds.put(stock.getId(), stock.getId());
+			}
+//			log.warn(" ------"+thisUpdateCount);
+			Set<Integer> ids = updateIds.keySet();
+			for (int itemid:ids){
+	 			LinkedList<Quote> lquote = quoteMap.get(itemid);
 	 			if (lquote==null||lquote.size()==0) continue;
-	 			Random r = new Random();
 	 			
 		    		float r2 = (float)r.nextInt(maxStockPer);
+		    		if (r2==0) continue;
+		    		
 		    		float per = r2/100;
-		    		int addOrMinus = r.nextInt(100);
 		    		Quote quote = lquote.peekLast();
 		    		float ps = quote.getPrice();
+		    		int addOrMinus = r.nextInt(100);
+		    		boolean ra = false;
 		    		//涨:
-		    		if (addOrMinus<stockRaisePer)
+		    		if (addOrMinus<stockRaisePer){
 		    			ps += ps*per;
-		    		else
+		    			ra = true;
+		    		}else
 		    			ps -= ps*per;
 		    		
 		    		if (ps<0.1){
 		    			ps = (float)0.1;
 		    		}
 
-					//假如前一天，取休市价，并清空行情价格
-		    		if (isNewDay){
-		    			//lquote.clear();
-		    			log.debug("清空昨天价格");
-		    		}
-		    		
-		    		//lquote.poll();	//不删除行情数据:
-		    		
 		    		if (lquote.size()>=300){
 		    			lquote.removeFirst();
 		    		}
 		    		Quote newq = new Quote();
 		    		newq.setPrice(ps);
 		    		lquote.offer(newq);
-	    			p0.hset(MgrBase.DATAKEY_CURRENT_STOCK_PS, String.valueOf(stock.getId()), JSON.toJSONString(ps));
+	    			p0.hset(MgrBase.DATAKEY_CURRENT_STOCK_PS, String.valueOf(itemid), JSON.toJSONString(ps));
 //	    			log.warn("quotes "+lquote.size()+",str"+JSON.toJSONString(lquote));
-//		    		System.out.println("股票价格变化: "+stock.getName()+",涨跌幅:"+per+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
+//	    			if (ra)
+//		    		System.out.println("股票价格变化: "+itemid+",涨跌幅:"+per+","+ra+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
 		    }	
     		p0.sync();
     		jedisClient3.returnResource(jedis);
@@ -506,8 +503,8 @@ public class StockManager extends MgrBase{
     		for (int i=0;i<200;i++){
         		addOrMinus = r.nextInt(100);	
         		r2 = (float)r.nextInt(5);
-       		System.out.println(r2);
-        		System.out.println(addOrMinus);   			
+        			System.out.println(r2);
+//        		System.out.println(addOrMinus);   			
     		}
 
     }
