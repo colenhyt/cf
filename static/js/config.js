@@ -26,7 +26,7 @@ var StockDuration = 1000;	//股票刷帧频率(ms)
 
 var NetReqWait = 12000;	//网络请求等待时间(ms)
 
-var QUOTETIME = 600;		//行情跳动时间(秒)
+var QUOTETIME = 300;		//行情跳动时间(秒)
 
 var FirstEventTriggerTime = 60*5;	//注册后首次意外事件触发事件,
 
