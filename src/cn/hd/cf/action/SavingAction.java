@@ -234,7 +234,8 @@ public class SavingAction extends BaseAction {
 				float inter = 0;	// 0表明未到期
 		        c2.setTime(insure.getUpdatetime());
 				float diffdd = Base.findDayMargin(cCurr.getTimeInMillis(),c2.getTimeInMillis(),0);
-				float periodMinutes = insure.getPeriod()*60; //天:分钟
+				Insure incfg = InsureManager.getInstance().getInsureCfg(insure.getItemid());
+				float periodMinutes = incfg.getPeriod()*60; //天:分钟
 //				System.out.println("(peroid:"+insure.getPeriod()+") diffdd:"+diffdd+",periodMinutes:"+periodMinutes);
 	//			periodMinutes = 5;
 				//到期:
@@ -243,7 +244,6 @@ public class SavingAction extends BaseAction {
 					//理财产品,得到收益:
 					if (insure.getType()!=null&&insure.getType()==1){
 					
-						Insure incfg = InsureManager.getInstance().getInsureCfg(insure.getItemid());
 						float oriAmount = insure.getAmount();
 						inter = incfg.getProfit()*insure.getQty();
 						liveSaving.setAmount(liveSaving.getAmount()+oriAmount+inter);

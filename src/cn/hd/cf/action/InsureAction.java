@@ -48,7 +48,7 @@ public class InsureAction extends SavingAction {
 		insure.setCreatetime(d1);
 		insure.setUpdatetime(d1);
 		Insure incfg = InsureManager.getInstance().getInsureCfg(insure.getItemid());
-		insure.setPeriod(incfg.getPeriod()*insure.getQty());
+		insure.setPeriod(incfg.getPeriod());
 		insure.setType(incfg.getType());
 		int ret = InsureManager.getInstance().addInsure(insure.getPlayerid(), insure);	
 		if (ret==RetMsg.MSG_OK){
