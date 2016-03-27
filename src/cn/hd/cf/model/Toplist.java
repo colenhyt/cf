@@ -180,9 +180,9 @@ public class Toplist implements Comparable {
 
     	Toplist sdto = (Toplist)o;
 
-    	BigDecimal otherMoney = sdto.getMoney();
+    	Float otherMoney = Float.valueOf(sdto.getMoney().floatValue());
 
-          return otherMoney.compareTo(this.getMoney());
+          return otherMoney.compareTo(this.getMoney().floatValue());
     }
     
     /**

@@ -265,7 +265,7 @@ public class ToplistManager extends MgrBase{
 			Vector<String> a = new Vector<String>();
 			a.add(String.valueOf(item.getPlayerid()));
 			a.add(String.valueOf(item.getPlayername()));
-			a.add(String.valueOf(item.getMoney()));
+			a.add(String.valueOf(item.getMoney().floatValue()));
 			a.add(String.valueOf(item.getZan()));
 			data.add(a);
 //			itemStr += "["+item.getPlayerid()+",\""+item.getPlayername()+"\","+item.getMoney().intValue()+","+item.getZan().intValue()+"],";
