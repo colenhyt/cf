@@ -145,7 +145,9 @@ Toplist.prototype.showToplist = function(type,page)
 				 name = item.playername.substring(0,8);
 			 }else
 				 name = "";
-			 var totalmoney = parseInt(item.money/10000);
+			 var mm2 = item.money/10000;
+			 mm2 = Math.round(mm2*Math.pow(10,0))/Math.pow(10,0);
+			 var totalmoney = mm2;
 			if (i==0)			//第一个：自己
 			{
 			 var topStr = "无";
@@ -274,7 +276,7 @@ Toplist.prototype.syncData2 = function(){
 		var weekdata = datas[0];
 		g_toplist.weekdata = [];
 		for (var i=0;i<weekdata.length;i++){
-		 var item = {playerid:parseInt(weekdata[i][0]),playername:weekdata[i][1],money:parseInt(weekdata[i][2]),zan:parseInt(weekdata[i][3]),top:0};
+		 var item = {playerid:parseInt(weekdata[i][0]),playername:weekdata[i][1],money:(weekdata[i][2]),zan:parseInt(weekdata[i][3]),top:0};
 		 if (item.playerid==g_player.data.playerid){
 		  item.playername = g_player.data.playername;
 		  item.top = parseInt(weekdata[i][4]);
@@ -285,7 +287,7 @@ Toplist.prototype.syncData2 = function(){
 		var monthdata = datas[1];
 		g_toplist.monthdata = [];
 		for (var i=0;i<monthdata.length;i++){
-		 var item = {playerid:parseInt(monthdata[i][0]),playername:monthdata[i][1],money:parseInt(monthdata[i][2]),zan:parseInt(monthdata[i][3]),top:0};
+		 var item = {playerid:parseInt(monthdata[i][0]),playername:monthdata[i][1],money:(monthdata[i][2]),zan:parseInt(monthdata[i][3]),top:0};
 		 if (item.playerid==g_player.data.playerid){
 		  item.playername = g_player.data.playername;
 		  item.top = parseInt(monthdata[i][4]);
