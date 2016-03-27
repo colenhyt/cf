@@ -42,6 +42,7 @@ public class StockManager extends MgrBase{
     private static StockManager uniqueInstance = null;  
 	private Vector<RedisClient> redisClients;
 	private Vector<RedisClient> quoteClients;
+	private float f1,f2;
 	
     public static StockManager getInstance() {  
         if (uniqueInstance == null) {  
@@ -92,7 +93,7 @@ public class StockManager extends MgrBase{
    		stockData.add(stock);
     		int fre = stock.getFreq();
     		STOCK_QUOTE_PERIOD = fre*60*1000/EventManager.TICK_PERIOD;
-//    		STOCK_QUOTE_PERIOD = 3;
+//    		STOCK_QUOTE_PERIOD = 1;
 	    		String json = new String(stock.getQuotes());
 	    		JSONArray array = JSONArray.fromObject(json);
 	    		List<Quote> quotes = JSONArray.toList(array, Quote.class);
@@ -290,21 +291,34 @@ public class StockManager extends MgrBase{
 	 			LinkedList<Quote> lquote = quoteMap.get(stock.getId());
 	 			if (lquote==null||lquote.size()==0) continue;
 	 			
+	 			int r00 = r.nextInt(10);
+	 			if (r00==0) continue;
 //		    		float r2 = (float)r.nextInt(maxStockPer);
-		    		float r2 = (float)r.nextInt(stock.getPer().intValue());
-		    		if (r2==0) continue;
+		    		float r2 = (float)r.nextInt(r00);
+		    		if (r2==0) 
+		    			r2 = (float)0.5;
 		    		
 		    		float per = r2/200;
 		    		Quote quote = lquote.peekLast();
 		    		float ps = quote.getPrice();
 		    		int addOrMinus = r.nextInt(100);
 		    		boolean ra = false;
-		    		//涨:
+		    		//跌:
 		    		if (addOrMinus<stockRaisePer){
-		    			ps += ps*per;
-		    			ra = true;
-		    		}else
-		    			ps -= ps*per;
+		    			//有几率跌大点:
+		    			float r03 = r.nextInt(26);
+		    			r03 /= 10;
+		    			if (r03!=0)
+		    				per = -1*r03*per;
+		    			else
+		    				per = -1*per;
+//		    			f1 += per;
+		    			
+		    		}else {
+//		    			f2 += per;
+		    		}
+		    		
+		    		ps += ps*per;
 		    		
 		    		if (ps<0.1){
 		    			ps = (float)0.1;
@@ -318,8 +332,9 @@ public class StockManager extends MgrBase{
 		    		lquote.offer(newq);
 	    			p0.hset(MgrBase.DATAKEY_CURRENT_STOCK_PS, String.valueOf(stock.getId()), JSON.toJSONString(ps));
 //	    			log.warn("quotes "+lquote.size()+",str"+JSON.toJSONString(lquote));
-//	    			if (ra)
-//		    		System.out.println("股票价格变化: "+stock.getId()+",涨跌幅:"+per+","+ra+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
+//	    			if (stock.getId()==43)
+//	    			log.warn("perperper:"+stock.getId()+":"+f1+",f2:"+f2);
+		    		System.out.println("股票价格变化: "+stock.getId()+",涨跌幅:"+per+","+ra+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
 		    }	
     		p0.sync();
     		jedisClient3.returnResource(jedis);
