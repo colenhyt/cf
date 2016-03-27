@@ -293,7 +293,7 @@ public class ToplistManager extends MgrBase{
 			newtop.setPlayername(pName);
 			newtop.setCreatetime(new Date());
 			newtop.setUpdatetime(new Date());
-			int imoney = Double.valueOf(money).intValue();
+			float imoney = Double.valueOf(money).floatValue();
 			newtop.setMoney(BigDecimal.valueOf(imoney));
 			newtop.setZan(0);
 			toplistMap.put(newtop.getPlayerid(), newtop);
@@ -466,7 +466,7 @@ public class ToplistManager extends MgrBase{
 	 * */
 	public boolean updateToplist(int playerid,String playerName,double money){
 		Toplist toplist = findByPlayerId(playerid);
-		int imoney = Double.valueOf(money).intValue();
+		float imoney = Double.valueOf(money).floatValue();
 		if (toplist==null){
 			addToplist(playerid,playerName,imoney);				
 			//System.out.println("增加最新排行榜记录: "+newtop.getPlayername()+":"+newtop.getMoney());
@@ -530,6 +530,10 @@ public class ToplistManager extends MgrBase{
 	}
 
 	public static void main(String[] args){
+		
+		float imoney = (float)3935730340.0;
+		BigDecimal a = BigDecimal.valueOf(imoney);
+		float be = a.floatValue();
 //		ToplistManager.getInstance().init();
 		float f = (float)1456047321192.33;
 		System.out.println(f);
