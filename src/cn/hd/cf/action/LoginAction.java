@@ -264,8 +264,8 @@ public class LoginAction extends SavingAction {
 	}
 	
 	private String serialize(Player player,int isregister,String savingStr){
-//		float margin = StockManager.getInstance().getMarginSec();
-		player.setQuotetime((float)0);
+		float margin = StockManager.getInstance().getMarginSec();
+		player.setQuotetime(margin);
 		String pp = JSON.toJSONString(player);
 		String data = "{player:"+pp+",flag:"+isregister;
 		if (isregister==1){
