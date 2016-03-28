@@ -71,6 +71,11 @@ public class StockAction extends SavingAction {
 	public String pagelastquotes(){
 		String pp = getHttpRequest().getParameter("stockids");
 		JSONArray ppObj = JSON.parseArray(pp);
+//		if (ppObj==null){
+//			log.warn("error,no stock param  for: "+pp);
+//			writeMsg(RetMsg.MSG_NoThisStock);
+//			return null;
+//		}
 		Map<Integer,Float> mquotes = new HashMap<Integer,Float>();
 		for (int i=0;i<ppObj.size();i++){
 			if (ppObj.get(i)==null) continue;
@@ -80,8 +85,9 @@ public class StockAction extends SavingAction {
 			mquotes.put(stockid, ps);
 		}
 		String quotestr = JSON.toJSONString(mquotes);
-		write(quotestr,"utf-8");		
-		//log.warn("request some stocks last quote:"+quotestr);
+		write(quotestr,"utf-8");	
+		if (pp.indexOf("43")>=0)
+			log.warn("request some stocks last quote:"+quotestr);
 		return null;
 	}	
 

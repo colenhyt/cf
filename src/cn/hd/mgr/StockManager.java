@@ -107,6 +107,9 @@ public class StockManager extends MgrBase{
 	    			Quote qq = new Quote();
 	    			qq.setPrice(quotes.get(j).getPrice());
 	    			qquotes.offer(qq);
+		    		if (stock.getId()==43){
+		    			log.warn("eeeeeeeeeee "+quotes.get(j).getPrice());
+		    		}
 	    		}
 	    		quoteMap.put(stock.getId(), qquotes);
 	    		
@@ -332,9 +335,9 @@ public class StockManager extends MgrBase{
 		    		lquote.offer(newq);
 	    			p0.hset(MgrBase.DATAKEY_CURRENT_STOCK_PS, String.valueOf(stock.getId()), JSON.toJSONString(ps));
 //	    			log.warn("quotes "+lquote.size()+",str"+JSON.toJSONString(lquote));
-//	    			if (stock.getId()==43)
-//	    			log.warn("perperper:"+stock.getId()+":"+f1+",f2:"+f2);
-		    		System.out.println("股票价格变化: "+stock.getId()+",涨跌幅:"+per+","+ra+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
+	    			if (stock.getId()==43)
+	    			log.warn("perperper:"+stock.getId()+" ps:"+ps);
+		    		//System.out.println("股票价格变化: "+stock.getId()+",涨跌幅:"+per+","+ra+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
 		    }	
     		p0.sync();
     		jedisClient3.returnResource(jedis);
@@ -493,6 +496,8 @@ public class StockManager extends MgrBase{
 				Quote qs = q.peekLast();
 				currPs = qs.getPrice();
 				j3.hset(MgrBase.DATAKEY_CURRENT_STOCK_PS,String.valueOf(stockid),String.valueOf(currPs));
+				if (stockid==43)
+					log.warn("aaaaaaaaaaaa:"+currPs);
 			}
 			quoteClients.get(index).returnResource(j3);    		
 		}
@@ -503,6 +508,8 @@ public class StockManager extends MgrBase{
 
 	public static void main(String[] args) {
 			Random r = new Random();
+			float a2 = (float)10039393939.0;
+			System.out.println(a2);
 	 	       Calendar aCalendar = Calendar.getInstance();
 		       int day1 = aCalendar.get(Calendar.DAY_OF_YEAR);
  			
