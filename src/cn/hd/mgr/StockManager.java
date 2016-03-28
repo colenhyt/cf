@@ -83,38 +83,39 @@ public class StockManager extends MgrBase{
 			quoteClients.add(quclient);
 		}
 		
-		Jedis j3 = jedisClient3.getJedis();
-		List<String> stockitems = j3.hvals(MgrBase.DATAKEY_DATA_STOCK);
-		jedisClient3.returnResource(j3);
+		STOCK_QUOTE_PERIOD = 5*60*1000/EventManager.TICK_PERIOD;
+//		STOCK_QUOTE_PERIOD = 1;
 		
 		quoteMap = Collections.synchronizedMap(new HashMap<Integer,LinkedList<Quote>>());
-	   	for (String str:stockitems){
-    		Stockdata  stock = JSON.parseObject(str,Stockdata.class);
-   		stockData.add(stock);
-    		int fre = stock.getFreq();
-    		STOCK_QUOTE_PERIOD = fre*60*1000/EventManager.TICK_PERIOD;
-//    		STOCK_QUOTE_PERIOD = 1;
-	    		String json = new String(stock.getQuotes());
-	    		JSONArray array = JSONArray.fromObject(json);
-	    		List<Quote> quotes = JSONArray.toList(array, Quote.class);
-	    		//log.warn("quotes  length:"+array.size());
-	    		if (quotes.size()==0) {
-	    			System.out.println("该股票无行情:"+stock.getName());
-	    			continue;
-	    		}
-	    		LinkedList<Quote> qquotes = new LinkedList<Quote>();
-	    		for(int j=0;j<quotes.size();j++){
+		Jedis j3 = jedisClient3.getJedis();
+		Set<String> stockids = j3.hkeys(MgrBase.DATAKEY_CURRENT_STOCK_PS);
+		for (String idstr:stockids){
+ 			Random r = new Random();
+			String lastpsstr = j3.hget(MgrBase.DATAKEY_CURRENT_STOCK_PS,idstr);
+			LinkedList<Quote> qquotes = new LinkedList<Quote>();
+			if (lastpsstr!=null){
+				//随机30个过去价格:
+				float lastps = Float.valueOf(lastpsstr);
+				for (int i=0;i<29;i++){
+					float per = r.nextInt(30);
+					int raise = r.nextInt(2);
+					if (raise==0)
+						per = -1*per;
+					
+					per /= 100.0;
+					float preps = lastps*(1+per);
 	    			Quote qq = new Quote();
-	    			qq.setPrice(quotes.get(j).getPrice());
-	    			qquotes.offer(qq);
-		    		if (stock.getId()==43){
-		    			log.warn("eeeeeeeeeee "+quotes.get(j).getPrice());
-		    		}
-	    		}
-	    		quoteMap.put(stock.getId(), qquotes);
-	    		
-	    }	
-	   	log.warn("stock init :"+quoteMap.size());
+	    			qq.setPrice(preps);
+	    			qquotes.offer(qq);					
+				}
+    			Quote lastq = new Quote();
+    			lastq.setPrice(lastps);
+				qquotes.offer(lastq);
+				quoteMap.put(Integer.valueOf(idstr), qquotes);
+			}
+		}
+		jedisClient3.returnResource(j3);
+	   	log.warn("sssstock init :"+quoteMap.size());
 
 				
      }
@@ -209,7 +210,7 @@ public class StockManager extends MgrBase{
     public synchronized List<Quote> getBigQuotes(int stockid){
     	LinkedList<Quote> details = quoteMap.get(stockid);
     	List<Quote> quotes = new ArrayList<Quote>();
-    	for (int i=0;i<details.size();i+=2){
+    	for (int i=0;i<details.size();i++){
     		if (details.size()>i){
     			quotes.add(details.get(i));
     		}
@@ -289,9 +290,9 @@ public class StockManager extends MgrBase{
 			Jedis jedis = jedisClient3.getJedis();
 			Pipeline p0 = jedis.pipelined();
 //			log.warn(" ------"+thisUpdateCount);
-			for (int i=0;i<stockData.size();i++){
-	    		Stockdata  stock = stockData.get(i);
-	 			LinkedList<Quote> lquote = quoteMap.get(stock.getId());
+			Set<Integer> ids = quoteMap.keySet();
+			for (int stockid:ids){
+	 			LinkedList<Quote> lquote = quoteMap.get(stockid);
 	 			if (lquote==null||lquote.size()==0) continue;
 	 			
 	 			int r00 = r.nextInt(10);
@@ -309,68 +310,39 @@ public class StockManager extends MgrBase{
 		    		//跌:
 		    		if (addOrMinus<stockRaisePer){
 		    			//有几率跌大点:
-		    			float r03 = r.nextInt(26);
-		    			r03 /= 10;
-		    			if (r03!=0)
-		    				per = -1*r03*per;
-		    			else
+//		    			float r03 = r.nextInt(26);
+//		    			r03 /= 10;
+//		    			if (r03!=0)
+//		    				per = -1*r03*per;
+//		    			else
 		    				per = -1*per;
-//		    			f1 += per;
 		    			
 		    		}else {
-//		    			f2 += per;
 		    		}
+		    		//暴击:
+		    		int hithot = r.nextInt(100);
+		    		if (hithot<10)
+		    			per *= 4;
 		    		
 		    		ps += ps*per;
 		    		
-		    		if (ps<0.1){
-		    			ps = (float)0.1;
+		    		if (ps<0.3){
+		    			ps = (float)0.3;
 		    		}
 
-		    		if (lquote.size()>=300){
+		    		if (lquote.size()>=150){
 		    			lquote.removeFirst();
 		    		}
 		    		Quote newq = new Quote();
 		    		newq.setPrice(ps);
 		    		lquote.offer(newq);
-	    			p0.hset(MgrBase.DATAKEY_CURRENT_STOCK_PS, String.valueOf(stock.getId()), JSON.toJSONString(ps));
-//	    			log.warn("quotes "+lquote.size()+",str"+JSON.toJSONString(lquote));
-	    			if (stock.getId()==43)
-	    			log.warn("perperper:"+stock.getId()+" ps:"+ps);
+	    			p0.hset(MgrBase.DATAKEY_CURRENT_STOCK_PS, String.valueOf(stockid), JSON.toJSONString(ps));
+	    			log.warn(stockid+" system update next ps:"+ps+",per:"+per);
 		    		//System.out.println("股票价格变化: "+stock.getId()+",涨跌幅:"+per+","+ra+",上一个价格:"+quote.getPrice()+",现价格:"+newq.getPrice());
 		    }	
     		p0.sync();
     		jedisClient3.returnResource(jedis);
 		}
-		    	
-		if (tick%STOCK_SAVE_PERIOD==0){
-			Jedis jedis = jedisClient3.getJedis();
-			Pipeline p = jedis.pipelined();
-			for (int i=0;i<stockData.size();i++){
-	    		Stockdata  stock = stockData.get(i);
-	 			LinkedList<Quote> lquote = quoteMap.get(stock.getId());
-	 			if (lquote==null||lquote.size()==0) continue;
-	 			//只保留最新120个行情:
-	 			LinkedList<Quote> quotes = new LinkedList<Quote>();
-	 			int firstIndex = 0;
-	 			if (lquote.size()>QUOTE_MAXLENGTH){
-	 				firstIndex = lquote.size() - QUOTE_MAXLENGTH;
-	 			}
-	 			for (int j=firstIndex;j<lquote.size();j++){
-		 			quotes.offer(lquote.get(j));
-	 			}
-	 			String strqu = JSON.toJSONString(quotes);
-	 			stock.setQuotes(strqu.getBytes());
-//	 			String ss = JSON.toJSONString(stock);
-	 			//log.warn("update qutoes :"+quotes.size());
-    			p.hset(MgrBase.DATAKEY_DATA_STOCK, String.valueOf(stock.getId()), JSON.toJSONString(stock));
-	 			//stockDataThread.updateStockdata(stock);
-			}
-    		p.sync();
-    		jedisClient3.returnResource(jedis);
-			//log.warn("resave stock quotes data");
-		}		
-		//数据库保存:
 
 	}
     
@@ -489,17 +461,15 @@ public class StockManager extends MgrBase{
 			int index = stockid%quoteClients.size();
 			Jedis j3 = quoteClients.get(index).getJedis();
 			String psstr = j3.hget(MgrBase.DATAKEY_CURRENT_STOCK_PS,String.valueOf(stockid));
+			quoteClients.get(index).returnResource(j3);    		
 			if (psstr!=null){
 				currPs = Float.valueOf(psstr);
 			}else {
 				LinkedList<Quote> q = quoteMap.get(stockid);
 				Quote qs = q.peekLast();
 				currPs = qs.getPrice();
-				j3.hset(MgrBase.DATAKEY_CURRENT_STOCK_PS,String.valueOf(stockid),String.valueOf(currPs));
-				if (stockid==43)
-					log.warn("aaaaaaaaaaaa:"+currPs);
+				log.warn("getgetgetget:"+stockid+",ps:"+currPs);
 			}
-			quoteClients.get(index).returnResource(j3);    		
 		}
 		 long   l1   =   Math.round(currPs*100);   //四舍五入  
 		currPs = (float)(l1/100.0);
