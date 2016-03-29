@@ -158,15 +158,18 @@ Insure.prototype.showDetail = function(title,desc,okCallback,itemid,qty,confmTex
 	var content =      "        <div class='cfinsure_content'>"
 	if (confmText&&isInsure){
 		content += "<div class='cfmsg_h2 insure'>"+title+"</div>"
-		content += "<div class='cfmsg_text insure'>"+desc+"</div>"
+		content += "<div class='cfmsg_text insure'>"+desc
 		tagdetail = $('#'+this.pagedetailname)
 		tagdetail.css("height",this.smallPageDetail)
 	}else {
 		content += "<div class='cfmsg_h2'>"+title+"</div>"
-		content += "<div class='cfmsg_text final'>"+desc+"</div>"
+		content += "<div class='cfmsg_text final'>"+desc
 		tagdetail = $('#'+this.pagedetailname)
 		tagdetail.css("height",this.finalPageDetail)
 	}
+//	content += " dfa<br>fda<br>www<br>www<br>www<br>www<br> "
+//	content += "           </div>"
+	content += "             <div style='padding-top:47px;'>"
 		
 	if (confmText){
 		content += "          <button class='cf_bt bt_cancel' onclick='g_insure.closeDetail()'>取消</button>"
@@ -174,6 +177,7 @@ Insure.prototype.showDetail = function(title,desc,okCallback,itemid,qty,confmTex
 	}else {
 		content += "          <button class='cf_bt bt_cancel' onclick='g_insure.closeDetail()'>确认</button>"
 	}
+	content += "             </div>"
 		
 	content += "             </div>"
 	var tag = document.getElementById(detail);
