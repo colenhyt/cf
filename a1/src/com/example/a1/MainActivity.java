@@ -34,8 +34,6 @@ private PackageManager mPackageManager;
 		super.onCreate(savedInstanceState);
 		
 		WebView wvBody = new WebView(this);
-		
-		
 		//pingan ios: https://itunes.apple.com/cn/app/ping-an-ren-shou/id549421060?mt=8
 //		NSString *str = [NSString stringWithFormat:@"http://itunes.apple.com/us/app/id%d", 436957167];
 //		[[UIApplication sharedApplication] openURL:[NSURL urlWithString:str]];
@@ -60,16 +58,16 @@ private PackageManager mPackageManager;
 	
 		List<String> configs = getConfigStrings();
 		try {
-			String a1 = "open1";
-			String a2 = "close1";
-			String a3 = "money";
-			AssetFileDescriptor afdOpen = getResources().getAssets().openFd(a1+".wav");
-			AssetFileDescriptor afdClose = getResources().getAssets().openFd(a2+".wav");
-			AssetFileDescriptor afdMoney = getResources().getAssets().openFd(a3+".wav");
+//			String a1 = "open1";
+//			String a2 = "close1";
+//			String a3 = "money";
+//			AssetFileDescriptor afdOpen = getResources().getAssets().openFd(a1+".wav");
+//			AssetFileDescriptor afdClose = getResources().getAssets().openFd(a2+".wav");
+//			AssetFileDescriptor afdMoney = getResources().getAssets().openFd(a3+".wav");
 			Map<String,AssetFileDescriptor> audioMap = new HashMap<String,AssetFileDescriptor>();
-			audioMap.put(a1, afdOpen);
-			audioMap.put(a2, afdClose);
-			audioMap.put(a3, afdMoney);
+//			audioMap.put(a1, afdOpen);
+//			audioMap.put(a2, afdClose);
+//			audioMap.put(a3, afdMoney);
 		// you must call the following line after the webviewclient is set into the webview
 		ShareSDKUtils.prepare(wvBody, wvClient,audioMap);
 		//wvBody.getSettings().setJavaScriptEnabled(true);
@@ -78,11 +76,10 @@ private PackageManager mPackageManager;
 			
 		//wvBody.loadUrl("http://192.168.43.168:8080/cf/index.html");	//vtion
 		String url = configs.get(0);
-		url += "/index.html";
 		wvBody.loadUrl(url);//xiaomi wifi
 		//wvBody.loadUrl("http://202.69.27.223:8081/cf/index.html");	//pingan-test-wifi
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
