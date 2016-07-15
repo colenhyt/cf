@@ -78,6 +78,12 @@ public class MgrBase {
 		}
 		cfgObj = JSON.parseObject(cfgstr);
 		
+		String cfgstr22 = FileUtil.readFile(res.getPath() + "list.txt");	
+//		JSONArray list = JSON.parseArray(cfgstr22);
+//		for (int i=0;i<list.size();i++){
+//			log.warn(list.get(i).toString());
+//		}
+		
 		log.warn("get cfg file "+path);
 		
 		String cfgstr0 = cfgObj.getString("redisCfg");

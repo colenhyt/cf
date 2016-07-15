@@ -1,7 +1,6 @@
 package cn.hd.mgr;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +11,7 @@ import cn.hd.cf.action.InsureAction;
 import cn.hd.cf.action.RetMsg;
 import cn.hd.cf.model.Insure;
 import cn.hd.cf.model.Player;
+import cn.hd.cf.tools.InsuredataService;
 import cn.hd.util.RedisClient;
 
 import com.alibaba.fastjson.JSON;
@@ -55,6 +55,12 @@ public class InsureManager extends MgrBase{
 		Jedis j3 = jedisClient3.getJedis();
 		
 		String dataStr = j3.get(MgrBase.DATAKEY_DATA_INSURE);
+		if (dataStr==null){
+	    	InsuredataService insuredataService = new InsuredataService();
+	    	List<Insure> data = insuredataService.findInsures();
+			j3.set(MgrBase.DATAKEY_DATA_INSURE,JSON.toJSONString(data));
+			dataStr = j3.get(MgrBase.DATAKEY_DATA_INSURE);
+		}
 		jedisClient3.returnResource(j3);
 		List<Insure> data2 = JSON.parseArray(dataStr, Insure.class);    	
     	for (int i=0;i<data2.size();i++){

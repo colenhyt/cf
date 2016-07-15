@@ -24,6 +24,7 @@ import cn.hd.cf.model.Quest;
 import cn.hd.cf.model.Saving;
 import cn.hd.cf.model.Signin;
 import cn.hd.cf.model.Stock;
+import cn.hd.cf.tools.InitdataService;
 import cn.hd.util.DateUtil;
 import cn.hd.util.QuestLog;
 import cn.hd.util.RedisClient;
@@ -733,7 +734,11 @@ public class DataManager extends MgrBase {
 		Jedis j3 = jedisClient3.getJedis();
 		
 		String strinit = j3.get(MgrBase.DATAKEY_DATA_INIT);
-		init = JSON.parseObject(strinit, Init.class);
+		if (strinit==null){
+			InitdataService initdataService = new InitdataService();
+			init = initdataService.findInit();
+		}else
+			init = JSON.parseObject(strinit, Init.class);
 
 		log.warn("find init:"+strinit);
 		

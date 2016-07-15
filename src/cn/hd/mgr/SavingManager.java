@@ -13,6 +13,7 @@ import cn.hd.cf.action.RetMsg;
 import cn.hd.cf.action.SavingAction;
 import cn.hd.cf.model.Player;
 import cn.hd.cf.model.Saving;
+import cn.hd.cf.tools.SavingdataService;
 import cn.hd.util.RedisClient;
 
 import com.alibaba.fastjson.JSON;
@@ -91,8 +92,16 @@ public class SavingManager extends MgrBase{
 		 }	    	
     	
     	savingCfgMap = new HashMap<Integer,Saving>();
+    	
 		Jedis j3 = jedisClient3.getJedis();
 		String dataStr = j3.get(MgrBase.DATAKEY_DATA_SAVING);
+		if (dataStr==null){
+	    	SavingdataService savingdataService = new SavingdataService();
+	    	List<Saving> data = savingdataService.findSavings();
+			j3.set(MgrBase.DATAKEY_DATA_SAVING,JSON.toJSONString(data));
+			dataStr = j3.get(MgrBase.DATAKEY_DATA_SAVING);
+		}
+		
 		jedisClient3.returnResource(j3);
 		List<Saving> data2 = JSON.parseArray(dataStr, Saving.class);
 		

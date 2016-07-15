@@ -25,9 +25,11 @@ import cn.hd.cf.model.Player;
 import cn.hd.cf.model.Quote;
 import cn.hd.cf.model.Stock;
 import cn.hd.cf.model.Stockdata;
+import cn.hd.cf.tools.StockdataService;
 import cn.hd.util.RedisClient;
 
 import com.alibaba.fastjson.JSON;
+
 
 public class StockManager extends MgrBase{
 	protected Logger  log = Logger.getLogger(getClass()); 
@@ -89,6 +91,18 @@ public class StockManager extends MgrBase{
 		quoteMap = Collections.synchronizedMap(new HashMap<Integer,LinkedList<Quote>>());
 		Jedis j3 = jedisClient3.getJedis();
 		Set<String> stockids = j3.hkeys(MgrBase.DATAKEY_CURRENT_STOCK_PS);
+		if (stockids==null||stockids.size()<=0){
+			StockdataService stockdataService = new StockdataService();
+			stockData = stockdataService.findActive();		
+			for (Stockdata stock:stockData){
+				String json = new String(stock.getQuotes());
+	    		JSONArray array = JSONArray.fromObject(json);
+	    		List<Quote> quotes = JSONArray.toList(array, Quote.class);
+	    		float ps = quotes.get(quotes.size()-1).getPrice();
+	    		j3.hset(MgrBase.DATAKEY_CURRENT_STOCK_PS, String.valueOf(stock.getId()), JSON.toJSONString(ps));
+	    		stockids.add(String.valueOf(stock.getId()));
+			}
+		}
 		for (String idstr:stockids){
  			Random r = new Random();
 			String lastpsstr = j3.hget(MgrBase.DATAKEY_CURRENT_STOCK_PS,idstr);

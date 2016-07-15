@@ -417,29 +417,37 @@ public class ToplistManager extends MgrBase{
 	 * */
 	public String getActivityList(int count){
 		
-    	Jedis jedis = jedisClient.getJedis();   	
+		List<Toplist>  allmonthlist = new ArrayList<Toplist>();
+		Collection<Toplist> toplists = toplistMap.values();
+		for (Toplist top:toplists){
+			{
+				allmonthlist.add(top);
+			}
+		}
+		Collections.sort((List<Toplist>)allmonthlist);
 		
-    	List<String> itemstrs = jedis.hvals(MgrBase.DATAKEY_TOPLIST);
-    	jedisClient.returnResource(jedis);
-		List<Toplist> list = new ArrayList<Toplist>();
-    	for (String str:itemstrs){
-    		Toplist item = (Toplist)JSON.parseObject(str, Toplist.class);
-			Player p = DataManager.getInstance().findPlayer(item.getPlayerid());
-			if (p!=null)
-				item.setOpenid(p.getOpenid());
-			list.add(item);
-    	}
-    	log.warn("get all toplist data:" + itemstrs.size()); 
-		Collections.sort((List<Toplist>)list);
  
 		List<Toplist> tops = new ArrayList<Toplist>();
-		for (int i=0;i<list.size();i++){
+		for (int i=0;i<allmonthlist.size();i++){
 			if (i>=count) break;
-			tops.add(list.get(i));
+			Toplist item = allmonthlist.get(i);
+			Toplist item2 = new Toplist();
+			item2.setMoney(item.getMoney());
+			item2.setPlayername(item.getPlayername());
+			item2.setPlayerid(item.getPlayerid());
+			Player p = DataManager.getInstance().findPlayer(item.getPlayerid());
+			if (p!=null){
+				item2.setOpenid(p.getOpenid());		
+			}
+			tops.add(item2);
 		}		
+    	log.warn("get toplist data:" + tops.size()); 
     	
-		return JSON.toJSONString(tops);
+    	String str = JSON.toJSONString(tops);
+//    	log.warn(str);
+		return str;
 	}
+	
 	public List<Toplist> getAlltoplist(int count){
 		List<Toplist> tops = new ArrayList<Toplist>();
 		
